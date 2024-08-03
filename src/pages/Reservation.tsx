@@ -1,0 +1,115 @@
+import { useState } from "react";
+import DashboardNav from "../components/DashboardNav";
+import DashboardLayout from "../layouts/DashboardLayout";
+import StepOne from "../components/Reservation/StepOne";
+import StepTwo from "../components/Reservation/StepTwo";
+import StepThree from "../components/Reservation/StepThree";
+
+const steps = ["Apartment", "Details", "Confirmation"];
+
+function Reservation() {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const [formDetails, setFormDetails] = useState({
+    name: "",
+    noOfGuests: "",
+    email: "",
+    number: "",
+    duration: "",
+    checkIn: "",
+    checkOut: "",
+    price: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormDetails({
+      ...formDetails,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  return (
+    <DashboardLayout>
+      <div>
+        <DashboardNav
+          title="Reservation"
+          description="Create, edit, and send reservations."
+        />
+
+        <div className="flex flex-col lg:flex-row gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-6 my-5">
+          <div className="relative flex lg:flex-col items-start gap-3 lg:gap-14">
+            {steps.map((step, index) => (
+              <div
+                onClick={() => setCurrentStep(index)}
+                key={index}
+                className="flex items-center cursor-pointer"
+              >
+                <div className="relative flex items-center">
+                  <div
+                    className={`flex items-center justify-center h-8 w-8 text-sm rounded-full border z-10 ${
+                      currentStep >= index
+                        ? "border-[#C4C4C4] bg-[#F3F3F3] text-gray-500"
+                        : "border-gray-300 bg-white text-[#C4C4C4]"
+                    }`}
+                  >
+                    {index + 1}
+                  </div>
+                  {index !== steps.length - 1 && (
+                    <div
+                      className={`absolute invisible lg:visible left-1/2 transform -translate-x-1/2 w-0.5 ${
+                        currentStep > index ? "bg-gray-300" : "bg-[#F3F3F3]"
+                      }`}
+                      style={{
+                        top: "50%",
+                        height: "calc(100% + 2.5rem)",
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="ml-2 lg:ml-4 text-sm font-light text-[#121212] invisible md:visible">
+                  {step}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className={`border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full ${
+              currentStep > 1 && "hidden"
+            }`}
+          >
+            {
+              {
+                0: (
+                  <StepOne
+                    handleChange={handleChange}
+                    formDetails={formDetails}
+                  />
+                ),
+                1: <StepTwo formDetails={formDetails} />,
+              }[currentStep]
+            }
+            <div className="my-3 w-full flex justify-center">
+              <button
+                onClick={handleNext}
+                className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
+              >
+                {currentStep === 0 ? "Continue" : "Reserve"}
+              </button>
+            </div>
+          </div>
+
+          {currentStep === 2 && <StepThree formDetails={formDetails} />}
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+export default Reservation;

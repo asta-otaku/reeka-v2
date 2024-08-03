@@ -1,0 +1,76 @@
+import {
+  Chart as ChartJs,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Filler,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJs.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Filler,
+  Legend
+);
+
+function LineChart({
+  current,
+  previous,
+}: {
+  current: number[];
+  previous: number[];
+}) {
+  const data = {
+    labels: ["Dec 4", "Dec 25", "Jan 4"],
+    datasets: [
+      {
+        label: "Current Month",
+        data: current,
+        fill: false,
+        backgroundColor: "#E36B37",
+        borderColor: "#E36B37",
+        borderWidth: 1.5,
+        tension: 0.6,
+      },
+      {
+        label: "Previous Month",
+        data: previous,
+        fill: false,
+        backgroundColor: "#F94144",
+        borderColor: "#F94144",
+        borderWidth: 1.5,
+        tension: 0.6,
+      },
+    ],
+  };
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        grid: {
+          display: true,
+        },
+      },
+      x: {
+        grid: {
+          display: true,
+        },
+      },
+    },
+  };
+  return <Line data={data} options={options} />;
+}
+
+export default LineChart;

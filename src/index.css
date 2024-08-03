@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Modak&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Geist";
+  src: url("./assets/fonts/geist-font-family-1722395769-0/Geist-Light-BF6569491dc9c01.otf")
+    format("opentype");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("./assets/fonts/geist-font-family-1722395769-0/Geist-Regular-BF6569491e3eff1.otf")
+    format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("./assets/fonts/geist-font-family-1722395769-0/Geist-Medium-BF6569491e1c281.otf")
+    format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("./assets/fonts/geist-font-family-1722395769-0/Geist-SemiBold-BF6569491e8c368.otf")
+    format("opentype");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("./assets/fonts/geist-font-family-1722395769-0/Geist-Bold-BF6569491da5a14.otf")
+    format("opentype");
+  font-weight: 700;
+}
+
+* {
+  font-family: "Geist", sans-serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
