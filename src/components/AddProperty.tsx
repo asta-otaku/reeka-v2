@@ -8,9 +8,9 @@ import propertyIcon from "../assets/property.svg";
 import pricetag from "../assets/pricetag.svg";
 import amenity from "../assets/amenity.svg";
 import imageIcon from "../assets/image.svg";
-import plusIcon from "../assets/plus-sign-square.svg";
-import cloud from "../assets/cloud-upload.svg";
-import graycancel from "../assets/graycancel.svg";
+// import plusIcon from "../assets/plus-sign-square.svg";
+// import cloud from "../assets/cloud-upload.svg";
+// import graycancel from "../assets/graycancel.svg";
 import blackcancel from "../assets/blackcancel.svg";
 import success from "../assets/success.svg";
 
