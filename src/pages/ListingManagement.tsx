@@ -12,38 +12,45 @@ import prop4 from "../assets/prop4.svg";
 import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
 
+const properties = [
+  {
+    name: "Ama's Nest",
+    location: "24 Drive, Lagos Island, Nigeria",
+    image: prop1,
+  },
+  {
+    name: "Ama's Nest",
+    location: "24 Drive, Lagos Island, Nigeria",
+    image: prop2,
+  },
+  {
+    name: "Ama's Nest",
+    location: "24 Drive, Lagos Island, Nigeria",
+    image: prop2,
+  },
+  {
+    name: "Ama's Place",
+    location: "24 Drive, Lagos Island, Nigeria",
+    image: prop3,
+  },
+  {
+    name: "Ama's Palace",
+    location: "24 Drive, Lagos Island, Kenya",
+    image: prop4,
+  },
+];
+
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
-
-  const properties = [
+  const [data] = useState<
     {
-      name: "Ama's Nest",
-      location: "24 Drive, Lagos Island, Nigeria",
-      image: prop1,
-    },
-    {
-      name: "Ama's Nest",
-      location: "24 Drive, Lagos Island, Nigeria",
-      image: prop2,
-    },
-    {
-      name: "Ama's Nest",
-      location: "24 Drive, Lagos Island, Nigeria",
-      image: prop2,
-    },
-    {
-      name: "Ama's Place",
-      location: "24 Drive, Lagos Island, Nigeria",
-      image: prop3,
-    },
-    {
-      name: "Ama's Palace",
-      location: "24 Drive, Lagos Island, Kenya",
-      image: prop4,
-    },
-  ];
+      name: string;
+      location: string;
+      image: string;
+    }[]
+  >(properties);
 
   return (
     <DashboardLayout>
@@ -105,7 +112,7 @@ function ListingManagement() {
                   grid ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"
                 }`}
               >
-                {properties
+                {data
                   .filter(
                     (property) =>
                       property.name
@@ -151,7 +158,7 @@ function ListingManagement() {
               </div>
             </div>
           ),
-          2: <AddProperty setStep={setStep} setData={() => {}} data={[]} />,
+          2: <AddProperty setStep={setStep} />,
         }[step]
       }
     </DashboardLayout>
