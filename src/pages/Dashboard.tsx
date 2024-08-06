@@ -3,9 +3,11 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import { getDate, getDateRange } from "../helpers/getDate";
 import { useState } from "react";
 import DashboardCharts from "../components/DashboardCharts";
+import NotificationModal from "../components/NotificationModal";
 
 function Dashboard() {
   const [selected, setSelected] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
 
   return (
     <DashboardLayout>
@@ -17,7 +19,12 @@ function Dashboard() {
               Welcome {"Deborah"}
             </h3>
           </div>
-          <NotificationIcon className="w-5 h-5 cursor-pointer" />
+          <NotificationIcon
+            onClick={() => setOpenModal(!openModal)}
+            className="w-5 h-5 cursor-pointer"
+          />
+
+          {openModal && <NotificationModal setOpenModal={setOpenModal} />}
         </div>
         <div className="p-4">
           <section>

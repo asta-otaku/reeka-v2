@@ -6,10 +6,12 @@ import Amenities from "./Amenities";
 import Properties from "./Properties";
 import Pricing from "./Pricing";
 import ImageUpload from "./ImageUpload";
+import NotificationModal from "../NotificationModal";
 
 function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const setModal = useStore((state: any) => state.setModal);
+  const [openModal, setOpenModal] = useState(false);
 
   const toggleSection = (section: string) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -39,7 +41,12 @@ function AddProperty({ setStep }: { setStep: any }) {
             <span className="text-[#121212]">Add Property</span>
           </h3>
         </div>
-        <NotificationIcon className="w-5 h-5 cursor-pointer" />
+        <NotificationIcon
+          onClick={() => setOpenModal(!openModal)}
+          className="w-5 h-5 cursor-pointer"
+        />
+
+        {openModal && <NotificationModal setOpenModal={setOpenModal} />}
       </div>
 
       <div className="my-4 px-6">
