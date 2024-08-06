@@ -11,6 +11,7 @@ import prop3 from "../assets/prop3.svg";
 import prop4 from "../assets/prop4.svg";
 import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
+import { useNavigate } from "react-router-dom";
 
 const properties = [
   {
@@ -51,6 +52,7 @@ function ListingManagement() {
       image: string;
     }[]
   >(properties);
+  const navigate = useNavigate();
 
   return (
     <DashboardLayout>
@@ -125,6 +127,11 @@ function ListingManagement() {
                   .map((property, index) => (
                     <div
                       key={index}
+                      onClick={() =>
+                        navigate(`/listing/${index}`, {
+                          state: { property },
+                        })
+                      }
                       className="bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer"
                     >
                       <div className="flex items-center justify-between">

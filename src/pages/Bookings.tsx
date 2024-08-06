@@ -37,7 +37,7 @@ const data = [
     name: "Olojo Ayomide",
     amount: "$4000",
     duration: "For 3 Nights",
-    status: "Confirmed",
+    status: "Completed",
     guest: 2,
     child: 1,
   },

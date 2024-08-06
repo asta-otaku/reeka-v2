@@ -1,4 +1,4 @@
-import { ChevronDownIcon } from "../assets/icons";
+import { Calendar, ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import chart1 from "../assets/chart1.svg";
@@ -7,6 +7,7 @@ import deleteIcon from "../assets/delete-01.svg";
 import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import { useState } from "react";
+import useStore from "../store";
 
 const data = [
   {
@@ -25,6 +26,7 @@ const data = [
 
 function ReportCenter() {
   const [search, setSearch] = useState("");
+  const setModal = useStore((state: any) => state.setModal);
 
   return (
     <DashboardLayout>
@@ -59,7 +61,10 @@ function ReportCenter() {
                 className="outline-none text-secondary text-xs bg-transparent w-full"
               />
             </div>
-            <button className="bg-primary p-2 rounded-xl text-white w-full md:w-fit md:absolute md:-top-20 z-10 right-6 font-medium text-sm border border-primary">
+            <button
+              onClick={() => setModal(<ReportModal />)}
+              className="bg-primary p-2 rounded-xl text-white w-full md:w-fit md:absolute md:-top-20 z-10 right-6 font-medium text-sm border border-primary"
+            >
               New Report
             </button>
           </div>
@@ -110,3 +115,64 @@ function ReportCenter() {
 }
 
 export default ReportCenter;
+
+function ReportModal() {
+  return (
+    <div className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl p-4">
+      <h2 className="text-secondary font-semibold text-lg">Report</h2>
+      <form className="flex flex-col gap-2 mt-4">
+        <div className="flex flex-col gap-2 w-full">
+          <h4 className="text-[#3A3A3A] text-sm font-medium">Report Type*</h4>
+          <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+            <select
+              name="type"
+              className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
+            >
+              <option value="Apartment">Report Type</option>
+            </select>
+            <ChevronDownIcon width={16} />
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <h4 className="text-[#3A3A3A] text-sm font-medium">Property*</h4>
+          <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+            <select
+              name="type"
+              className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
+            >
+              <option value="Apartment">Property</option>
+            </select>
+            <ChevronDownIcon width={16} />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-2 w-full">
+            <h4 className="text-[#3A3A3A] text-sm font-medium">From</h4>
+            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+              <Calendar className="w-6" />
+              <input
+                type="date"
+                placeholder="Price per night"
+                className="w-full outline-none bg-transparent text-[#667085]"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 w-full">
+            <h4 className="text-[#3A3A3A] text-sm font-medium">To</h4>
+            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+              <Calendar className="w-6" />
+              <input
+                type="date"
+                placeholder="Price per night"
+                className="w-full outline-none bg-transparent text-[#667085]"
+              />
+            </div>
+          </div>
+        </div>
+        <button className="bg-primary p-2 rounded-lg text-white mt-8 w-32 mx-auto font-semibold text-sm">
+          Generate
+        </button>
+      </form>
+    </div>
+  );
+}

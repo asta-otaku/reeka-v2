@@ -5,7 +5,7 @@ import miniprop from "../assets/miniprop.svg";
 
 function BookingTable({ data }: { data: any[] }) {
   return (
-    <div className="flex flex-col gap-6 overflow-x-auto">
+    <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar">
       {data.map((item, i) => (
         <div key={i}>
           <div className="bg-[#F2F2F2] rounded-xl shadow">
@@ -96,7 +96,15 @@ function BookingTable({ data }: { data: any[] }) {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-xs text-[#34C759] bg-[#DBFFE4] p-1.5 rounded-lg font-medium">
+                    <div
+                      style={{
+                        color:
+                          item.status === "Ongoing" ? "#34C759" : "#007AFF",
+                        backgroundColor:
+                          item.status === "Ongoing" ? "#DBFFE4" : "#DFEEFF",
+                      }}
+                      className="text-xs p-1.5 rounded-lg font-medium"
+                    >
                       {item.status}
                     </div>
                   </td>

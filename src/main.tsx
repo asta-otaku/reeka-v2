@@ -11,6 +11,7 @@ import Integrations from "./pages/Integrations.tsx";
 import ListingManagement from "./pages/ListingManagement.tsx";
 import ReportCenter from "./pages/ReportCenter.tsx";
 import Reservation from "./pages/Reservation.tsx";
+import ViewProperty from "./components/ViewProperty.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/integration" element={<Integrations />} />
         <Route path="/listing" element={<ListingManagement />} />
+        <Route path="/listing/:id" element={<ViewProperty />} />
         <Route path="/report" element={<ReportCenter />} />
         <Route path="/reservation" element={<Reservation />} />
       </Routes>
