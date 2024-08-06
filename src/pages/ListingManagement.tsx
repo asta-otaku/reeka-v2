@@ -100,7 +100,7 @@ function ListingManagement() {
                   <img src={line} />
                   <button
                     onClick={() => setStep(2)}
-                    className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary shadow-inner shadow-black/20"
+                    className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary"
                   >
                     Add Property
                   </button>

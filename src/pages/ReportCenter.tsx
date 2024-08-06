@@ -59,7 +59,7 @@ function ReportCenter() {
                 className="outline-none text-secondary text-xs bg-transparent w-full"
               />
             </div>
-            <button className="bg-primary p-2 rounded-xl text-white absolute -top-20 z-10 right-6 font-medium text-sm border border-primary shadow-inner shadow-black/20">
+            <button className="bg-primary p-2 rounded-xl text-white w-full md:w-fit md:absolute md:-top-20 z-10 right-6 font-medium text-sm border border-primary">
               New Report
             </button>
           </div>

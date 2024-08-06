@@ -58,7 +58,7 @@ function DashboardLayout({ children }: any) {
 
             <button
               onClick={() => navigate("/reservation")}
-              className="bg-primary my-5 p-3 flex items-center justify-center gap-2 font-semibold rounded-xl text-white text-sm border border-primary shadow-inner shadow-black/20"
+              className="bg-primary my-5 p-3 flex items-center justify-center gap-2 font-semibold rounded-xl text-white text-sm border border-primary"
             >
               <img src={plus} alt="plus" />
               Create Reservation

@@ -58,12 +58,12 @@ function Calendar() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary shadow-inner shadow-black/20">
+            <button className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary">
               Create Booking
             </button>
             <button
               onClick={() => navigate("/reservation")}
-              className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary shadow-inner shadow-black/20"
+              className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary"
             >
               Create Reservation
             </button>

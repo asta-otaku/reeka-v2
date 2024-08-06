@@ -70,7 +70,7 @@ function Bookings() {
           </div>
           <button
             onClick={() => navigate("/reservation")}
-            className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary shadow-inner shadow-black/20"
+            className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary"
           >
             Create Reservation
           </button>
