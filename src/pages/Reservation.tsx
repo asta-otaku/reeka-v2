@@ -4,18 +4,12 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import StepOne from "../components/Reservation/StepOne";
 import StepTwo from "../components/Reservation/StepTwo";
 import StepThree from "../components/Reservation/StepThree";
+import StepZero from "../components/Reservation/StepZero";
 
 const steps = ["Apartment", "Details", "Confirmation"];
 
 function Reservation() {
   const [currentStep, setCurrentStep] = useState(0);
-
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
   const [formDetails, setFormDetails] = useState({
     name: "",
     noOfGuests: "",
@@ -81,31 +75,29 @@ function Reservation() {
 
           <div
             className={`border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full ${
-              currentStep > 1 && "hidden"
+              currentStep === 0 || currentStep === 3 ? "hidden" : "block"
             }`}
           >
             {
               {
-                0: (
+                1: (
                   <StepOne
                     handleChange={handleChange}
                     formDetails={formDetails}
+                    setStep={setCurrentStep}
                   />
                 ),
-                1: <StepTwo formDetails={formDetails} />,
+                2: (
+                  <StepTwo formDetails={formDetails} setStep={setCurrentStep} />
+                ),
               }[currentStep]
             }
-            <div className="my-3 w-full flex justify-center">
-              <button
-                onClick={handleNext}
-                className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
-              >
-                {currentStep === 0 ? "Continue" : "Reserve"}
-              </button>
-            </div>
           </div>
 
-          {currentStep === 2 && <StepThree formDetails={formDetails} />}
+          {currentStep === 0 && <StepZero setStep={setCurrentStep} />}
+          {currentStep === 3 && (
+            <StepThree setStep={setCurrentStep} formDetails={formDetails} />
+          )}
         </div>
       </div>
     </DashboardLayout>

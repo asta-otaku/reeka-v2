@@ -4,6 +4,7 @@ import prop from "../../assets/prop1.svg";
 function StepTwo({
   formDetails,
   hideFeatures,
+  setStep,
 }: {
   formDetails: {
     name: string;
@@ -16,6 +17,7 @@ function StepTwo({
     price: string;
   };
   hideFeatures?: boolean;
+  setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
     <>
@@ -57,7 +59,7 @@ function StepTwo({
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 my-2">
           <div>
             <h2 className="text-[#808080] text-xs">Name</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
@@ -107,6 +109,18 @@ function StepTwo({
             </h4>
           </div>
         </div>
+      </div>
+      <div
+        className={`my-3 w-full flex justify-center ${
+          hideFeatures && "hidden"
+        }`}
+      >
+        <button
+          onClick={() => setStep(3)}
+          className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
+        >
+          Reserve
+        </button>
       </div>
     </>
   );

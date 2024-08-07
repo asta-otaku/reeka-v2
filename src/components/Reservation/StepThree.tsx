@@ -2,6 +2,7 @@ import StepTwo from "./StepTwo";
 
 function StepThree({
   formDetails,
+  setStep,
 }: {
   formDetails: {
     name: string;
@@ -13,6 +14,7 @@ function StepThree({
     checkOut: string;
     price: string;
   };
+  setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
     <div className="border border-[#C0C0C0] rounded-2xl py-5 bg-[#E6FFF1] max-w-xl w-full">
@@ -23,7 +25,7 @@ function StepThree({
         Email containing payment link sent to the provided email
       </p>
 
-      <StepTwo formDetails={formDetails} hideFeatures />
+      <StepTwo setStep={setStep} formDetails={formDetails} hideFeatures />
 
       <div className="my-3 w-full flex gap-4 justify-center">
         <button className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2">
