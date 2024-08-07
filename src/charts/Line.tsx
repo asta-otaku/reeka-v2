@@ -20,6 +20,10 @@ ChartJs.register(
   Legend
 );
 
+const handleResize = (chart: any) => {
+  chart.resize();
+};
+
 function LineChart({
   current,
   previous,
@@ -36,7 +40,7 @@ function LineChart({
         fill: false,
         backgroundColor: "#E36B37",
         borderColor: "#E36B37",
-        borderWidth: 1.5,
+        borderWidth: 1,
         tension: 0.6,
       },
       {
@@ -45,13 +49,15 @@ function LineChart({
         fill: false,
         backgroundColor: "#F94144",
         borderColor: "#F94144",
-        borderWidth: 1.5,
+        borderWidth: 1,
         tension: 0.6,
       },
     ],
   };
   const options = {
     responsive: true,
+    onResize: handleResize,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         display: false,
