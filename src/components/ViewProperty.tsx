@@ -1,9 +1,5 @@
 import { useMemo, useState } from "react";
-import {
-  ArrowLongLeftIcon,
-  ChevronDownIcon,
-  NotificationIcon,
-} from "../assets/icons";
+import { ArrowLongLeftIcon, NotificationIcon } from "../assets/icons";
 import countryList from "react-select-country-list";
 import Select from "react-select";
 import NotificationModal from "./NotificationModal";
@@ -163,11 +159,12 @@ function ViewProperty() {
                 </h4>
                 <input
                   name="name"
+                  value={property.name}
                   placeholder="Name"
                   className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
                 />
               </div>
-              <div className="flex flex-col gap-2 w-full">
+              {/* <div className="flex flex-col gap-2 w-full">
                 <h4 className="text-[#3A3A3A] text-sm font-medium">
                   Property Type
                 </h4>
@@ -184,7 +181,7 @@ function ViewProperty() {
                   </select>
                   <ChevronDownIcon width={16} />
                 </div>
-              </div>
+              </div> */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2 w-full">
                   <h4 className="text-[#3A3A3A] text-sm font-medium">

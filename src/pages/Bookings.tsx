@@ -3,6 +3,9 @@ import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import BookingTable from "../components/BookingTable";
 import { useNavigate } from "react-router-dom";
+// import { useEffect } from "react";
+// import axios from "axios";
+// import { CONSTANT } from "../util";
 
 const data = [
   {
@@ -45,6 +48,18 @@ const data = [
 
 function Bookings() {
   const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${CONSTANT.BASE_URL}/booking/719aed84-d814-482f-ae97-8c358d198eee`)
+  //     .then((response) => {
+  //       console.log(response);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }, []);
+
   return (
     <DashboardLayout>
       <div>

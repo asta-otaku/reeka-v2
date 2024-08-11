@@ -91,7 +91,7 @@ function DashboardLayout({ children }: any) {
               <ListItem
                 route="/booking"
                 Icon={FileBookmarkIcon}
-                title="Booking Management"
+                title="Reservation Management"
               />
               {/* <ListItem
                 route="/account"

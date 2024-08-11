@@ -5,11 +5,11 @@ function StepThree({
   setStep,
 }: {
   formDetails: {
-    name: string;
+    firstName: string;
+    lastName: string;
     noOfGuests: string;
     email: string;
     number: string;
-    duration: string;
     checkIn: string;
     checkOut: string;
     price: string;

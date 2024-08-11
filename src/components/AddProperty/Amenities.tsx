@@ -15,13 +15,13 @@ function Amenities({
 }) {
   const [counterStates, setCounterStates] = useState<any>({
     rooms: {
-      bedroom: 0,
-      bathroom: 0,
+      bedroom: 1,
+      bathroom: 1,
     },
 
     amenities: {
-      "Swimming Pool": 0,
-      "Basket Court": 0,
+      "Swimming Pool": 1,
+      "Basket Court": 1,
     },
   });
   return (

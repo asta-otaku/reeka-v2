@@ -6,6 +6,7 @@ import airbnb from "../assets/airbnb.svg";
 import bookingsIcon from "../assets/Booking.com_logo 2.svg";
 import expedia from "../assets/expedia.svg";
 import finance from "../assets/finance.svg";
+import mpesa from "../assets/icons8-mpesa-48.png";
 import vrbo from "../assets/vrbo-removebg-preview 1.svg";
 import trivago from "../assets/trivago.svg";
 
@@ -14,6 +15,7 @@ const bookings: {
   description: string;
   logo: string;
   status: boolean;
+  disabled?: boolean;
 }[] = [
   {
     name: "Airbnb",
@@ -52,18 +54,21 @@ const finances: {
   description: string;
   logo: string;
   status: boolean;
+  disabled?: boolean;
 }[] = [
   {
     name: "Paystack",
     description: "Manage your payments with ease.",
     logo: finance,
     status: false,
+    disabled: false,
   },
   {
-    name: "Mpeso",
+    name: "Mpesa",
     description: "Manage your payments with ease.",
-    logo: finance,
+    logo: mpesa,
     status: false,
+    disabled: true,
   },
 ];
 

@@ -11,10 +11,10 @@ function AddNewFacility({
   setModal: any;
 }) {
   const [facilityList] = useState<any>({
-    "Swimming Pool": 0,
-    Griller: 0,
-    Bathroom: 0,
-    "Basket Court": 0,
+    "Swimming Pool": 1,
+    Griller: 1,
+    Bathroom: 1,
+    "Basket Court": 1,
   });
 
   const [selectedFacility, setSelectedFacility] = useState<any>({});
@@ -41,7 +41,7 @@ function AddNewFacility({
             onClick={() =>
               setSelectedFacility({
                 ...selectedFacility,
-                [facility]: 0,
+                [facility]: 1,
               })
             }
             className={`${

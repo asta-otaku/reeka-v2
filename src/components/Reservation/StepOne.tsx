@@ -1,37 +1,87 @@
-import { Calendar } from "../../assets/icons";
+import { Calendar, ChevronDownIcon } from "../../assets/icons";
+import toast, { Toaster } from "react-hot-toast";
 
 function StepOne({
   handleChange,
   formDetails,
+  setFormDetails,
   setStep,
 }: {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formDetails: {
-    name: string;
+    firstName: string;
+    lastName: string;
     noOfGuests: string;
     email: string;
     number: string;
-    duration: string;
     checkIn: string;
     checkOut: string;
     price: string;
   };
+  setFormDetails: React.Dispatch<
+    React.SetStateAction<{
+      firstName: string;
+      lastName: string;
+      noOfGuests: string;
+      email: string;
+      number: string;
+      checkIn: string;
+      checkOut: string;
+      price: string;
+    }>
+  >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const bookings = localStorage.getItem("bookings");
+  const bookingsArray = bookings ? JSON.parse(bookings) : [];
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(formDetails);
+
+    if (
+      !formDetails.firstName ||
+      !formDetails.lastName ||
+      !formDetails.noOfGuests ||
+      !formDetails.email ||
+      !formDetails.number ||
+      !formDetails.checkIn ||
+      !formDetails.checkOut ||
+      !formDetails.price
+    ) {
+      return toast.error("Please fill all fields");
+    }
+
+    bookingsArray.push(formDetails);
+    localStorage.setItem("bookings", JSON.stringify(bookingsArray));
+    setStep(2);
+  };
   return (
     <>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
+        <Toaster />
         <h4 className="font-light text-center">
           Enter the correct details required
         </h4>
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
           <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">Name*</h4>
+            <h4 className="text-[#121212] text-sm font-medium">First Name*</h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <input
-                name="name"
-                value={formDetails.name}
-                placeholder="Name"
+                name="firstName"
+                value={formDetails.firstName}
+                placeholder="First Name"
+                className="w-full outline-none bg-transparent text-[#667085]"
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-1 w-full">
+            <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
+            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+              <input
+                name="lastName"
+                value={formDetails.lastName}
+                placeholder="Last Name"
                 className="w-full outline-none bg-transparent text-[#667085]"
                 onChange={handleChange}
               />
@@ -80,30 +130,23 @@ function StepOne({
           </div>
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Duration of stay*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="duration"
-                value={formDetails.duration}
-                placeholder="Duration of Stay"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
               Price per night*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
+              <select
                 name="price"
                 value={formDetails.price}
-                placeholder="Price per night"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
+                onChange={(e: any) =>
+                  setFormDetails({ ...formDetails, price: e.target.value })
+                }
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
+              >
+                <option value="">Select price</option>
+                <option value="base">Base</option>
+                <option value="low">Low</option>
+                <option value="high">High</option>
+              </select>
+              <ChevronDownIcon width={12} />
             </div>
           </div>
           <div className="flex flex-col gap-1 w-full">
@@ -142,7 +185,7 @@ function StepOne({
       </div>
       <div className="my-3 w-full flex justify-center">
         <button
-          onClick={() => setStep(2)}
+          onClick={handleSubmit}
           className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
         >
           Continue

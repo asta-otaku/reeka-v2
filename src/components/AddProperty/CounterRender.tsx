@@ -34,15 +34,9 @@ function CounterRender({
 
   return (
     <div className="flex justify-between items-center w-full">
-      <div className="flex gap-1.5 items-center">
-        <input type="checkbox" id={tag} className="accent-[#219653]" />
-        <label
-          htmlFor={tag}
-          className="text-[#3A3A3A] font-medium text-xs cursor-pointer"
-        >
-          {title}
-        </label>
-      </div>
+      <h2 className="text-[#3A3A3A] font-medium text-xs cursor-pointer">
+        {title}
+      </h2>
       <div className="bg-[#ECECEC] p-1 rounded-3xl flex gap-1.5 items-center">
         <button
           onClick={() => decreaseCount(tag, cat)}

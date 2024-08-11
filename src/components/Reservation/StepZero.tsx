@@ -4,6 +4,7 @@ import prop2 from "../../assets/prop2.svg";
 import prop3 from "../../assets/prop3.svg";
 import prop4 from "../../assets/prop4.svg";
 import searchIcon from "../../assets/search-01.svg";
+import toast, { Toaster } from "react-hot-toast";
 
 const properties = [
   {
@@ -42,9 +43,11 @@ function StepZero({
   >(properties);
 
   const [search, setSearch] = useState<string>("");
+  const [selectedApartment, setSelectedApartment] = useState<string | null>();
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">
+      <Toaster />
       <h3 className="text-xl font-medium text-center">Choose Apartment</h3>
       <div className="flex items-center gap-2 p-2 rounded-3xl bg-[#FAFAFA] w-4/5 lg:w-3/5">
         <img src={searchIcon} alt="search" />
@@ -67,7 +70,12 @@ function StepZero({
           .map((property, index) => (
             <div
               key={index}
-              className="bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer"
+              onClick={() => setSelectedApartment(index.toString())}
+              className={`bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer ${
+                selectedApartment === index.toString()
+                  ? "border-2 border-primary"
+                  : ""
+              }`}
             >
               <div>
                 <img
@@ -89,7 +97,13 @@ function StepZero({
       </div>
       <div className="my-3 w-full flex justify-center">
         <button
-          onClick={() => setStep(1)}
+          onClick={() => {
+            if (selectedApartment) {
+              setStep(1);
+            } else {
+              toast.error("Please select an apartment");
+            }
+          }}
           className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
         >
           Continue

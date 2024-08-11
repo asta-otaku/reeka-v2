@@ -11,11 +11,11 @@ const steps = ["Apartment", "Details", "Confirmation"];
 function Reservation() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formDetails, setFormDetails] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     noOfGuests: "",
     email: "",
     number: "",
-    duration: "",
     checkIn: "",
     checkOut: "",
     price: "",
@@ -84,6 +84,7 @@ function Reservation() {
                   <StepOne
                     handleChange={handleChange}
                     formDetails={formDetails}
+                    setFormDetails={setFormDetails}
                     setStep={setCurrentStep}
                   />
                 ),

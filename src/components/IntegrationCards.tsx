@@ -33,17 +33,18 @@ function Cards({
               </div>
             </div>
             <button
+              disabled={booking?.disabled}
               onClick={() => {
-                const newList = list.map((bk) => {
-                  if (bk.name === booking.name) {
-                    return {
-                      ...bk,
-                      status: !tag,
-                    };
-                  }
-                  return bk;
-                });
-                setList(newList);
+                setList((prev: any) =>
+                  prev.map((bk: any) =>
+                    bk.name === booking.name
+                      ? { ...bk, status: !bk.status }
+                      : bk
+                  )
+                );
+              }}
+              style={{
+                cursor: booking?.disabled ? "not-allowed" : "pointer",
               }}
               className={`${
                 tag ? "bg-primary w-28 h-9" : "bg-[#FAFAFA] w-24 h-10"

@@ -6,21 +6,21 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
 
-const events = [
-  {
-    label: "Meeting",
-    start: "2024-02-01 10:00",
-    end: "2024-02-01 12:00",
-  },
-  {
-    label: "Conference",
-    start: "2024-02-01 14:00",
-    end: "2024-02-01 18:00",
-  },
-];
+const bookings = localStorage.getItem("bookings");
 
 function Calendar() {
   const navigate = useNavigate();
+  const events: any[] = [];
+
+  const bookingsArray = bookings ? JSON.parse(bookings) : [];
+
+  bookingsArray.forEach((booking: any) => {
+    events.push({
+      label: `${booking.firstName} ${booking.lastName}`,
+      start: booking.checkIn,
+      end: booking.checkOut,
+    });
+  });
 
   return (
     <DashboardLayout>
@@ -46,7 +46,7 @@ function Calendar() {
             </div>
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                <option>Bookings</option>
+                <option>Reservations</option>
               </select>
               <ChevronDownIcon width={12} />
             </div>
@@ -58,9 +58,9 @@ function Calendar() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary">
+            {/* <button className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary">
               Create Booking
-            </button>
+            </button> */}
             <button
               onClick={() => navigate("/reservation")}
               className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary"

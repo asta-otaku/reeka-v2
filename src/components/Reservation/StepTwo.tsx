@@ -7,11 +7,11 @@ function StepTwo({
   setStep,
 }: {
   formDetails: {
-    name: string;
+    firstName: string;
+    lastName: string;
     noOfGuests: string;
     email: string;
     number: string;
-    duration: string;
     checkIn: string;
     checkOut: string;
     price: string;
@@ -61,9 +61,15 @@ function StepTwo({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 my-2">
           <div>
-            <h2 className="text-[#808080] text-xs">Name</h2>
+            <h2 className="text-[#808080] text-xs">First Name</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              {formDetails.name}
+              {formDetails.firstName}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Last Name</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {formDetails.lastName}
             </h4>
           </div>
           <div>
@@ -76,12 +82,6 @@ function StepTwo({
             <h2 className="text-[#808080] text-xs">Email</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
               {formDetails.email}
-            </h4>
-          </div>
-          <div>
-            <h2 className="text-[#808080] text-xs">Duration of stay</h2>
-            <h4 className="text-[#121212] text-xs mt-0.5">
-              {formDetails.duration}
             </h4>
           </div>
           <div>

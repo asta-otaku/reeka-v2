@@ -3,14 +3,14 @@ import info from "../assets/info.svg";
 
 const chartData = [
   {
-    title: "Booking",
+    title: "Bookings",
     amount: "$20,000",
     percentage: +2.4,
     current: [50, 31, 40],
     previous: [60, 40, 44],
   },
   {
-    title: "Report",
+    title: "Average Nightly Rate",
     amount: "$20,000",
     percentage: -2.4,
     current: [16, 22, 60],
@@ -30,16 +30,19 @@ const cardData = [
     title: "Bookings",
     amount: "2,000",
     percentage: 200,
+    caption: "total nights booked",
   },
   {
     title: "Revenue",
-    amount: "2,000",
+    amount: "$2,000",
     percentage: -200,
+    caption: "total revenue earned",
   },
   {
-    title: "Report",
-    amount: "2,000",
+    title: "Average Nightly Rate",
+    amount: "$2,000",
     percentage: 200,
+    caption: "revenue/booked nights",
   },
 ];
 
@@ -72,7 +75,7 @@ function DashboardCharts() {
               <h2 className="text-[#121212] text-2xl font-medium">
                 {data.amount}
               </h2>
-              <p className="text-xs text-[#808080]">1,000 previous period</p>
+              <p className="text-xs text-[#808080]">{data.caption}</p>
             </div>
           </div>
         ))}
