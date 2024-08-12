@@ -8,45 +8,6 @@ import axios from "axios";
 import { CONSTANT } from "../util";
 import ReactPaginate from "react-paginate";
 
-// const data = [
-//   {
-//     date: "Dec 14",
-//     time: "12:00 PM",
-//     apartment: "Ama's Nest",
-//     location: "25 Bello Drive, Lagos Island Nigeria",
-//     name: "Olojo Ayomide",
-//     amount: "$4000",
-//     duration: "For 3 Nights",
-//     status: "Ongoing",
-//     guest: 2,
-//     child: 1,
-//   },
-//   {
-//     date: "Dec 14",
-//     time: "12:00 PM",
-//     apartment: "Ama's Nest",
-//     location: "25 Bello Drive, Lagos Island Nigeria",
-//     name: "Olojo Ayomide",
-//     amount: "$4000",
-//     duration: "For 3 Nights",
-//     status: "Ongoing",
-//     guest: 2,
-//     child: 1,
-//   },
-//   {
-//     date: "Dec 14",
-//     time: "12:00 PM",
-//     apartment: "Ama's Nest",
-//     location: "25 Bello Drive, Lagos Island Nigeria",
-//     name: "Olojo Ayomide",
-//     amount: "$4000",
-//     duration: "For 3 Nights",
-//     status: "Completed",
-//     guest: 2,
-//     child: 1,
-//   },
-// ];
-
 const userId = CONSTANT.USER_ID;
 
 function Bookings() {

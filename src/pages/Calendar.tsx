@@ -5,20 +5,26 @@ import { getDateRange } from "../helpers/getDate";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
-
-const bookings = localStorage.getItem("bookings");
+import { useEffect, useState } from "react";
 
 function Calendar() {
   const navigate = useNavigate();
+  const [bookingsArray, setBookingsArray] = useState<any[]>([]);
   const events: any[] = [];
 
-  const bookingsArray = bookings ? JSON.parse(bookings) : [];
+  useEffect(() => {
+    const bookings = localStorage.getItem("bookings");
+    if (bookings) {
+      setBookingsArray(JSON.parse(bookings));
+    }
+  }, []);
 
-  bookingsArray.forEach((booking: any) => {
+  bookingsArray.forEach((booking) => {
     events.push({
-      label: `${booking.firstName} ${booking.lastName}`,
-      start: booking.checkIn,
-      end: booking.checkOut,
+      id: booking._id,
+      label: booking.guestFirstName + " " + booking.guestLastName,
+      start: new Date(booking.createdAt),
+      end: new Date(booking.endDate),
     });
   });
 

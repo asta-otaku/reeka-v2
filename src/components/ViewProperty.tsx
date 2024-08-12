@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLongLeftIcon, NotificationIcon } from "../assets/icons";
 import countryList from "react-select-country-list";
 import Select from "react-select";
@@ -8,56 +8,16 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import buy from "../assets/Buy.svg";
 import cloud from "../assets/cloud-upload-white.svg";
 import searchIcon from "../assets/search-01.svg";
-import prop1 from "../assets/prop1.svg";
-import prop2 from "../assets/prop2.svg";
-import prop3 from "../assets/prop3.svg";
-import prop4 from "../assets/prop4.svg";
 import BookingTable from "./BookingTable";
-
-const data = [
-  {
-    date: "Dec 14",
-    time: "12:00 PM",
-    apartment: "Ama's Nest",
-    location: "25 Bello Drive, Lagos Island Nigeria",
-    name: "Olojo Ayomide",
-    amount: "$4000",
-    duration: "For 3 Nights",
-    status: "Ongoing",
-    guest: 2,
-    child: 1,
-  },
-  {
-    date: "Dec 14",
-    time: "12:00 PM",
-    apartment: "Ama's Nest",
-    location: "25 Bello Drive, Lagos Island Nigeria",
-    name: "Olojo Ayomide",
-    amount: "$4000",
-    duration: "For 3 Nights",
-    status: "Ongoing",
-    guest: 2,
-    child: 1,
-  },
-  {
-    date: "Dec 14",
-    time: "12:00 PM",
-    apartment: "Ama's Nest",
-    location: "25 Bello Drive, Lagos Island Nigeria",
-    name: "Olojo Ayomide",
-    amount: "$4000",
-    duration: "For 3 Nights",
-    status: "Completed",
-    guest: 2,
-    child: 1,
-  },
-];
+import axios from "axios";
+import { CONSTANT } from "../util";
 
 function ViewProperty() {
   const [openModal, setOpenModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { property } = location.state || {};
   const options = useMemo(() => countryList().getData(), []);
   const [value, setValue] = useState("");
   const [facilityList] = useState<any>({
@@ -67,13 +27,24 @@ function ViewProperty() {
     "Basket Court": 0,
   });
   const [selected, setSelected] = useState(0);
-  const [images, setImages] = useState<any>([prop1, prop2, prop3, prop4]);
+  const [images, setImages] = useState<any>([...property?.images]);
 
   const changeHandler = (value: any) => {
     setValue(value);
   };
 
-  const { property } = location.state || {};
+  const [bookings, setBookings] = useState<any>([]);
+
+  useEffect(() => {
+    axios
+      .get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`)
+      .then((response) => {
+        setBookings(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   return (
     <DashboardLayout>
@@ -88,7 +59,7 @@ function ViewProperty() {
             </span>
             <h3 className="text-[#808080] font-light text-xs">
               Listing Management /{" "}
-              <span className="text-[#121212]">{property.name}</span>
+              <span className="text-[#121212]">{property?.propertyName}</span>
             </h3>
           </div>
           <NotificationIcon
@@ -120,7 +91,7 @@ function ViewProperty() {
                 Booked
               </span>
               <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
-                {property.name},{" "}
+                {property?.propertyName},{" "}
                 <span className="text-base">{property?.address}</span>
               </h2>
               <div className="flex items-center gap-2 text-sm text-[#808080]">
@@ -164,24 +135,6 @@ function ViewProperty() {
                   className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
                 />
               </div>
-              {/* <div className="flex flex-col gap-2 w-full">
-                <h4 className="text-[#3A3A3A] text-sm font-medium">
-                  Property Type
-                </h4>
-                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-                  <select
-                    name="type"
-                    className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
-                  >
-                    <option value="Apartment">Apartment</option>
-                    <option value="Condo">Condo</option>
-                    <option value="House">House</option>
-                    <option value="Villa">Villa</option>
-                    <option value="Bungalow">Bungalow</option>
-                  </select>
-                  <ChevronDownIcon width={16} />
-                </div>
-              </div> */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2 w-full">
                   <h4 className="text-[#3A3A3A] text-sm font-medium">
@@ -370,7 +323,7 @@ function ViewProperty() {
               </button>
             </div>
             <div className="px-4 overflow-x-auto">
-              <BookingTable data={data} />
+              <BookingTable data={bookings} setData={setBookings} />
             </div>
           </div>
         </div>

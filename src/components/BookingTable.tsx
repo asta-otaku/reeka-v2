@@ -89,17 +89,17 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                         className="w-10 h-10"
                       />
                       <div>
-                        <div className="text-sm text-[#121212] font-medium">
+                        <div className="text-sm text-[#121212] font-medium max-w-24 truncate text-ellipsis">
                           {item?.propertyId?.propertyName}
                         </div>
-                        <div className="text-[10px] text-[#808080] font-light">
+                        <div className="text-[10px] text-[#808080] font-light max-w-24 truncate text-ellipsis">
                           {item?.propertyId.address}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-[#121212] font-medium">
+                    <div className="text-sm text-[#121212] font-medium max-w-24 truncate text-ellipsis">
                       {item.guestFirstName} {item.guestLastName}
                     </div>
                   </td>

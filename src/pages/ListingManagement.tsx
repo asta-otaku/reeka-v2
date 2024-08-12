@@ -5,57 +5,19 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import gridIcon from "../assets/grid-view.svg";
 import line from "../assets/line.svg";
 import menuIcon from "../assets/menu-01.svg";
-// import prop1 from "../assets/prop1.svg";
-// import prop2 from "../assets/prop2.svg";
-// import prop3 from "../assets/prop3.svg";
-// import prop4 from "../assets/prop4.svg";
 import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CONSTANT } from "../util";
 import axios from "axios";
-
-// const properties = [
-//   {
-//     name: "Ama's Nest",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop1,
-//   },
-//   {
-//     name: "Ama's Nest",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop2,
-//   },
-//   {
-//     name: "Ama's Nest",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop2,
-//   },
-//   {
-//     name: "Ama's Place",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop3,
-//   },
-//   {
-//     name: "Ama's Palace",
-//     location: "24 Drive, Lagos Island, Kenya",
-//     image: prop4,
-//   },
-// ];
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
   const [properties, setProperties] = useState([]);
-  // const [data] = useState<
-  //   {
-  //     name: string;
-  //     location: string;
-  //     image: string;
-  //   }[]
-  // >(properties);
-  // const navigate = useNavigate();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -144,15 +106,19 @@ function ListingManagement() {
                   .map((property: any, index) => (
                     <div
                       key={index}
-                      // onClick={() =>
-                      //   navigate(`/listing/${index}`, {
-                      //     state: { property },
-                      //   })
-                      // }
+                      onClick={() =>
+                        navigate(`/listing/${index}`, {
+                          state: { property },
+                        })
+                      }
                       className="bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer"
                     >
                       <div className="flex items-center justify-between">
-                        <div className={`${grid && "flex gap-3 items-center"}`}>
+                        <div
+                          className={`${
+                            grid && "flex gap-3 items-center"
+                          } w-full`}
+                        >
                           <img
                             src={property?.images[0]}
                             alt="property"

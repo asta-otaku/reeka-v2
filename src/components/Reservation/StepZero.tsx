@@ -1,35 +1,8 @@
 import { useState, useEffect } from "react";
-// import prop1 from "../../assets/prop1.svg";
-// import prop2 from "../../assets/prop2.svg";
-// import prop3 from "../../assets/prop3.svg";
-// import prop4 from "../../assets/prop4.svg";
 import searchIcon from "../../assets/search-01.svg";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { CONSTANT } from "../../util";
-
-// const properties = [
-//   {
-//     name: "Ama's Nest",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop1,
-//   },
-//   {
-//     name: "Ama's Nest",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop2,
-//   },
-//   {
-//     name: "Ama's Place",
-//     location: "24 Drive, Lagos Island, Nigeria",
-//     image: prop3,
-//   },
-//   {
-//     name: "Ama's Palace",
-//     location: "24 Drive, Lagos Island, Kenya",
-//     image: prop4,
-//   },
-// ];
 
 function StepZero({
   setStep,
@@ -38,14 +11,6 @@ function StepZero({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setProperty: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  // const [data] = useState<
-  //   {
-  //     name: string;
-  //     location: string;
-  //     image: string;
-  //   }[]
-  // >(properties);
-
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const [properties, setProperties] = useState<any>([]);
