@@ -110,7 +110,7 @@ function ViewProperty() {
           <div className="flex items-center gap-4">
             <span className="hidden md:block w-32 h-24 bg-[#D9D9D9] rounded-2xl">
               <img
-                src={property.image}
+                src={property?.images[0]}
                 alt="property"
                 className="w-full h-full object-cover rounded-2xl"
               />
@@ -121,7 +121,7 @@ function ViewProperty() {
               </span>
               <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
                 {property.name},{" "}
-                <span className="text-base">{property.location}</span>
+                <span className="text-base">{property?.address}</span>
               </h2>
               <div className="flex items-center gap-2 text-sm text-[#808080]">
                 <span>Apartment</span>

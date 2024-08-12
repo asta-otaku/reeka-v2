@@ -1,58 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import gridIcon from "../assets/grid-view.svg";
 import line from "../assets/line.svg";
 import menuIcon from "../assets/menu-01.svg";
-import prop1 from "../assets/prop1.svg";
-import prop2 from "../assets/prop2.svg";
-import prop3 from "../assets/prop3.svg";
-import prop4 from "../assets/prop4.svg";
+// import prop1 from "../assets/prop1.svg";
+// import prop2 from "../assets/prop2.svg";
+// import prop3 from "../assets/prop3.svg";
+// import prop4 from "../assets/prop4.svg";
 import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import { CONSTANT } from "../util";
+import axios from "axios";
 
-const properties = [
-  {
-    name: "Ama's Nest",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop1,
-  },
-  {
-    name: "Ama's Nest",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop2,
-  },
-  {
-    name: "Ama's Nest",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop2,
-  },
-  {
-    name: "Ama's Place",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop3,
-  },
-  {
-    name: "Ama's Palace",
-    location: "24 Drive, Lagos Island, Kenya",
-    image: prop4,
-  },
-];
+// const properties = [
+//   {
+//     name: "Ama's Nest",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop1,
+//   },
+//   {
+//     name: "Ama's Nest",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop2,
+//   },
+//   {
+//     name: "Ama's Nest",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop2,
+//   },
+//   {
+//     name: "Ama's Place",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop3,
+//   },
+//   {
+//     name: "Ama's Palace",
+//     location: "24 Drive, Lagos Island, Kenya",
+//     image: prop4,
+//   },
+// ];
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
-  const [data] = useState<
-    {
-      name: string;
-      location: string;
-      image: string;
-    }[]
-  >(properties);
-  const navigate = useNavigate();
+  const [properties, setProperties] = useState([]);
+  // const [data] = useState<
+  //   {
+  //     name: string;
+  //     location: string;
+  //     image: string;
+  //   }[]
+  // >(properties);
+  // const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+        );
+        setProperties(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -114,30 +131,30 @@ function ListingManagement() {
                   grid ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"
                 }`}
               >
-                {data
+                {properties
                   .filter(
-                    (property) =>
-                      property.name
+                    (property: any) =>
+                      property.propertyName
                         .toLowerCase()
                         .includes(search.toLowerCase()) ||
-                      property.location
+                      property?.address
                         .toLowerCase()
                         .includes(search.toLowerCase())
                   )
-                  .map((property, index) => (
+                  .map((property: any, index) => (
                     <div
                       key={index}
-                      onClick={() =>
-                        navigate(`/listing/${index}`, {
-                          state: { property },
-                        })
-                      }
+                      // onClick={() =>
+                      //   navigate(`/listing/${index}`, {
+                      //     state: { property },
+                      //   })
+                      // }
                       className="bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer"
                     >
                       <div className="flex items-center justify-between">
                         <div className={`${grid && "flex gap-3 items-center"}`}>
                           <img
-                            src={property.image}
+                            src={property?.images[0]}
                             alt="property"
                             className={`${
                               grid ? "w-28 h-16 hidden md:block" : "h-48 w-full"
@@ -145,10 +162,10 @@ function ListingManagement() {
                           />
                           <div className="mt-2">
                             <h3 className="text-[#808080] font-medium text-xs">
-                              {property.name}
+                              {property?.propertyName}
                             </h3>
                             <p className="text-secondary text-[10px]">
-                              {property.location}
+                              {property?.address}
                             </p>
                           </div>
                         </div>

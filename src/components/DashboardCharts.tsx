@@ -24,7 +24,7 @@ function DashboardCharts() {
   ] = useState<any>({});
 
   //userId is hardcoded for now
-  const userId = "0108ba0f-ff0e-44da-a819-aba575d5bddf";
+  const userId = CONSTANT.USER_ID;
 
   useEffect(() => {
     const fetchMonthlyBookings = async () => {
@@ -225,7 +225,9 @@ function DashboardCharts() {
               <h2 className="text-[#121212] text-2xl font-medium">
                 {data.title === "Bookings"
                   ? data?.amount
-                  : `$${data?.amount?.toFixed(2)}`}
+                  : `$${data?.amount
+                      ?.toFixed(2)
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               </h2>
               <p className="text-xs text-[#808080]">{data.caption}</p>
             </div>

@@ -11,6 +11,7 @@ function StepTwo({
   formDetails,
   hideFeatures,
   setStep,
+  property,
 }: {
   formDetails: {
     firstName: string;
@@ -24,12 +25,13 @@ function StepTwo({
   };
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  property: any;
 }) {
   const handleReserve = () => {
     axios
       .post(`${CONSTANT.BASE_URL}/booking`, {
-        propertyId: window.crypto.randomUUID(),
-        userId: "41dbe035-5d64-45ed-9b07-fb00d421080f",
+        propertyId: property._id,
+        userId: CONSTANT.USER_ID,
         startDate: formDetails.checkIn,
         endDate: formDetails.checkOut,
         status: "Ongoing",
@@ -39,11 +41,11 @@ function StepTwo({
         guestEmail: formDetails.email,
         guestPhone: formDetails.number,
         totalBookingValue: 200,
+        numberOfGuests: formDetails.noOfGuests,
       })
       .then((res) => {
         bookingsArray.push(res.data);
         localStorage.setItem("bookings", JSON.stringify(bookingsArray));
-        console.log(res);
         toast.success("Reservation successful");
         setStep(3);
       })
@@ -52,6 +54,7 @@ function StepTwo({
         toast.error("An error occured");
       });
   };
+
   return (
     <>
       <div
@@ -63,9 +66,11 @@ function StepTwo({
         <h5 className="text-[#808080] font-light text-xs">Apartment</h5>
         <div className="flex w-full justify-between items-center my-3">
           <div>
-            <h2 className="text-[#121212] font-semibold text-xs">Ama's Nest</h2>
+            <h2 className="text-[#121212] font-semibold text-xs">
+              {property?.propertyName}
+            </h2>
             <p className="text-[#3A3A3A] font-light text-[10px]">
-              24 Drive, Lagos Island, Nigeria
+              {property?.address}
             </p>
           </div>
           <img
@@ -75,7 +80,10 @@ function StepTwo({
           />
         </div>
         <div className="w-full h-40">
-          <img className="w-full h-full object-cover rounded-xl" src={prop} />
+          <img
+            className="w-full h-full object-cover rounded-xl"
+            src={property?.images[0] ?? prop}
+          />
         </div>
       </div>
 

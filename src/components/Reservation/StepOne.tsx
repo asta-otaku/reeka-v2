@@ -34,7 +34,6 @@ function StepOne({
 }) {
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(formDetails);
 
     if (
       !formDetails.firstName ||

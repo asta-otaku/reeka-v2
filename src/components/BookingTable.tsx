@@ -1,7 +1,6 @@
 import exportIcon from "../assets/sent.svg";
 import deleteIcon from "../assets/delete-01.svg";
 import share from "../assets/share-08.svg";
-// import miniprop from "../assets/miniprop.svg";
 
 function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
   function formatDate(date: string) {
@@ -32,12 +31,12 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                   >
                     Date
                   </th>
-                  {/* <th
+                  <th
                     scope="col"
                     className="px-6 py-4 whitespace-nowrap font-bold"
                   >
                     Apartment
-                  </th> */}
+                  </th>
                   <th
                     scope="col"
                     className="px-6 py-4 whitespace-nowrap font-bold"
@@ -83,19 +82,22 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                       </div>
                     </div>
                   </td>
-                  {/* <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
-                      <img src={miniprop} />
+                      <img
+                        src={item?.propertyId?.images[0]}
+                        className="w-10 h-10"
+                      />
                       <div>
                         <div className="text-sm text-[#121212] font-medium">
-                          {item.apartment}
+                          {item?.propertyId?.propertyName}
                         </div>
                         <div className="text-[10px] text-[#808080] font-light">
-                          {item.location}
+                          {item?.propertyId.address}
                         </div>
                       </div>
                     </div>
-                  </td> */}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-[#121212] font-medium">
                       {item.guestFirstName} {item.guestLastName}

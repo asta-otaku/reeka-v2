@@ -47,7 +47,7 @@ import ReactPaginate from "react-paginate";
 //   },
 // ];
 
-const userId = "0108ba0f-ff0e-44da-a819-aba575d5bddf";
+const userId = CONSTANT.USER_ID;
 
 function Bookings() {
   const navigate = useNavigate();

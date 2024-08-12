@@ -20,6 +20,7 @@ function Reservation() {
     checkOut: "",
     price: "",
   });
+  const [property, setProperty] = useState<any>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -89,15 +90,25 @@ function Reservation() {
                   />
                 ),
                 2: (
-                  <StepTwo formDetails={formDetails} setStep={setCurrentStep} />
+                  <StepTwo
+                    formDetails={formDetails}
+                    setStep={setCurrentStep}
+                    property={property}
+                  />
                 ),
               }[currentStep]
             }
           </div>
 
-          {currentStep === 0 && <StepZero setStep={setCurrentStep} />}
+          {currentStep === 0 && (
+            <StepZero setStep={setCurrentStep} setProperty={setProperty} />
+          )}
           {currentStep === 3 && (
-            <StepThree setStep={setCurrentStep} formDetails={formDetails} />
+            <StepThree
+              setStep={setCurrentStep}
+              formDetails={formDetails}
+              property={property}
+            />
           )}
         </div>
       </div>

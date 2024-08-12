@@ -1,49 +1,68 @@
-import { useState } from "react";
-import prop1 from "../../assets/prop1.svg";
-import prop2 from "../../assets/prop2.svg";
-import prop3 from "../../assets/prop3.svg";
-import prop4 from "../../assets/prop4.svg";
+import { useState, useEffect } from "react";
+// import prop1 from "../../assets/prop1.svg";
+// import prop2 from "../../assets/prop2.svg";
+// import prop3 from "../../assets/prop3.svg";
+// import prop4 from "../../assets/prop4.svg";
 import searchIcon from "../../assets/search-01.svg";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { CONSTANT } from "../../util";
 
-const properties = [
-  {
-    name: "Ama's Nest",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop1,
-  },
-  {
-    name: "Ama's Nest",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop2,
-  },
-  {
-    name: "Ama's Place",
-    location: "24 Drive, Lagos Island, Nigeria",
-    image: prop3,
-  },
-  {
-    name: "Ama's Palace",
-    location: "24 Drive, Lagos Island, Kenya",
-    image: prop4,
-  },
-];
+// const properties = [
+//   {
+//     name: "Ama's Nest",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop1,
+//   },
+//   {
+//     name: "Ama's Nest",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop2,
+//   },
+//   {
+//     name: "Ama's Place",
+//     location: "24 Drive, Lagos Island, Nigeria",
+//     image: prop3,
+//   },
+//   {
+//     name: "Ama's Palace",
+//     location: "24 Drive, Lagos Island, Kenya",
+//     image: prop4,
+//   },
+// ];
 
 function StepZero({
   setStep,
+  setProperty,
 }: {
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  setProperty: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const [data] = useState<
-    {
-      name: string;
-      location: string;
-      image: string;
-    }[]
-  >(properties);
+  // const [data] = useState<
+  //   {
+  //     name: string;
+  //     location: string;
+  //     image: string;
+  //   }[]
+  // >(properties);
 
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
+  const [properties, setProperties] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+        );
+        setProperties(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">
@@ -61,34 +80,36 @@ function StepZero({
       </div>
 
       <div className="grid gap-6 px-6 grid-cols-1 lg:grid-cols-2">
-        {data
+        {properties
           .filter(
-            (property) =>
-              property.name.toLowerCase().includes(search.toLowerCase()) ||
-              property.location.toLowerCase().includes(search.toLowerCase())
+            (property: any) =>
+              property?.propertyName
+                ?.toLowerCase()
+                .includes(search.toLowerCase()) ||
+              property?.address?.toLowerCase().includes(search.toLowerCase())
           )
-          .map((property, index) => (
+          .map((property: any) => (
             <div
-              key={index}
-              onClick={() => setSelectedApartment(index.toString())}
+              key={property._id}
+              onClick={() => setSelectedApartment(property._id)}
               className={`bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer ${
-                selectedApartment === index.toString()
+                selectedApartment === property._id
                   ? "border-2 border-primary"
                   : ""
               }`}
             >
               <div>
                 <img
-                  src={property.image}
+                  src={property?.images[0]}
                   alt="property"
                   className="h-48 w-full object-cover rounded-xl"
                 />
                 <div className="mt-2">
                   <h3 className="text-[#808080] font-medium text-xs">
-                    {property.name}
+                    {property?.propertyName}
                   </h3>
                   <p className="text-secondary text-[10px]">
-                    {property.location}
+                    {property?.address}
                   </p>
                 </div>
               </div>
@@ -99,6 +120,11 @@ function StepZero({
         <button
           onClick={() => {
             if (selectedApartment) {
+              setProperty(
+                properties.find(
+                  (property: any) => property._id === selectedApartment
+                )
+              );
               setStep(1);
             } else {
               toast.error("Please select an apartment");
