@@ -3,62 +3,84 @@ import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import BookingTable from "../components/BookingTable";
 import { useNavigate } from "react-router-dom";
-// import { useEffect } from "react";
-// import axios from "axios";
-// import { CONSTANT } from "../util";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { CONSTANT } from "../util";
+import ReactPaginate from "react-paginate";
 
-const data = [
-  {
-    date: "Dec 14",
-    time: "12:00 PM",
-    apartment: "Ama's Nest",
-    location: "25 Bello Drive, Lagos Island Nigeria",
-    name: "Olojo Ayomide",
-    amount: "$4000",
-    duration: "For 3 Nights",
-    status: "Ongoing",
-    guest: 2,
-    child: 1,
-  },
-  {
-    date: "Dec 14",
-    time: "12:00 PM",
-    apartment: "Ama's Nest",
-    location: "25 Bello Drive, Lagos Island Nigeria",
-    name: "Olojo Ayomide",
-    amount: "$4000",
-    duration: "For 3 Nights",
-    status: "Ongoing",
-    guest: 2,
-    child: 1,
-  },
-  {
-    date: "Dec 14",
-    time: "12:00 PM",
-    apartment: "Ama's Nest",
-    location: "25 Bello Drive, Lagos Island Nigeria",
-    name: "Olojo Ayomide",
-    amount: "$4000",
-    duration: "For 3 Nights",
-    status: "Completed",
-    guest: 2,
-    child: 1,
-  },
-];
+// const data = [
+//   {
+//     date: "Dec 14",
+//     time: "12:00 PM",
+//     apartment: "Ama's Nest",
+//     location: "25 Bello Drive, Lagos Island Nigeria",
+//     name: "Olojo Ayomide",
+//     amount: "$4000",
+//     duration: "For 3 Nights",
+//     status: "Ongoing",
+//     guest: 2,
+//     child: 1,
+//   },
+//   {
+//     date: "Dec 14",
+//     time: "12:00 PM",
+//     apartment: "Ama's Nest",
+//     location: "25 Bello Drive, Lagos Island Nigeria",
+//     name: "Olojo Ayomide",
+//     amount: "$4000",
+//     duration: "For 3 Nights",
+//     status: "Ongoing",
+//     guest: 2,
+//     child: 1,
+//   },
+//   {
+//     date: "Dec 14",
+//     time: "12:00 PM",
+//     apartment: "Ama's Nest",
+//     location: "25 Bello Drive, Lagos Island Nigeria",
+//     name: "Olojo Ayomide",
+//     amount: "$4000",
+//     duration: "For 3 Nights",
+//     status: "Completed",
+//     guest: 2,
+//     child: 1,
+//   },
+// ];
+
+const userId = "0108ba0f-ff0e-44da-a819-aba575d5bddf";
 
 function Bookings() {
   const navigate = useNavigate();
+  const [bookings, setBookings] = useState([]);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`${CONSTANT.BASE_URL}/booking/719aed84-d814-482f-ae97-8c358d198eee`)
-  //     .then((response) => {
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // }, []);
+  useEffect(() => {
+    axios
+      .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
+      .then((response) => {
+        setBookings(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  //pagination logic
+
+  const itemsPerPage = 21;
+
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const pageCount = Math.ceil(bookings.length / itemsPerPage);
+
+  const handlePageChange = ({ selected }: { selected: any }) => {
+    setCurrentPage(selected);
+  };
+
+  const displayedData = bookings.slice(
+    currentPage * itemsPerPage,
+
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <DashboardLayout>
@@ -92,8 +114,20 @@ function Bookings() {
         </div>
 
         <div className="overflow-x-auto px-6 no-scrollbar mt-6">
-          <BookingTable data={data} />
+          <BookingTable data={displayedData} setData={setBookings} />
         </div>
+        <ReactPaginate
+          previousLabel={""}
+          nextLabel={""}
+          breakLabel={"..."}
+          pageCount={pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={2}
+          onPageChange={handlePageChange}
+          pageClassName="block border hover:bg-primary/80 hover:text-white border-primary rounded-lg p-1.5 cursor-pointer"
+          containerClassName="flex justify-center items-center font-medium mt-12 gap-5"
+          activeClassName="bg-primary border border-primary text-white"
+        />
       </div>
     </DashboardLayout>
   );

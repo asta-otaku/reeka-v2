@@ -1,5 +1,11 @@
 import editIcon from "../../assets/edit-01.svg";
 import prop from "../../assets/prop1.svg";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { CONSTANT } from "../../util";
+
+const bookings = localStorage.getItem("bookings");
+const bookingsArray = bookings ? JSON.parse(bookings) : [];
 
 function StepTwo({
   formDetails,
@@ -19,6 +25,33 @@ function StepTwo({
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const handleReserve = () => {
+    axios
+      .post(`${CONSTANT.BASE_URL}/booking`, {
+        propertyId: window.crypto.randomUUID(),
+        userId: "41dbe035-5d64-45ed-9b07-fb00d421080f",
+        startDate: formDetails.checkIn,
+        endDate: formDetails.checkOut,
+        status: "Ongoing",
+        sourcePlatform: "Web",
+        guestFirstName: formDetails.firstName,
+        guestLastName: formDetails.lastName,
+        guestEmail: formDetails.email,
+        guestPhone: formDetails.number,
+        totalBookingValue: 200,
+      })
+      .then((res) => {
+        bookingsArray.push(res.data);
+        localStorage.setItem("bookings", JSON.stringify(bookingsArray));
+        console.log(res);
+        toast.success("Reservation successful");
+        setStep(3);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("An error occured");
+      });
+  };
   return (
     <>
       <div
@@ -26,6 +59,7 @@ function StepTwo({
           hideFeatures && "border-x-0 shadow"
         }`}
       >
+        <Toaster />
         <h5 className="text-[#808080] font-light text-xs">Apartment</h5>
         <div className="flex w-full justify-between items-center my-3">
           <div>
@@ -116,7 +150,7 @@ function StepTwo({
         }`}
       >
         <button
-          onClick={() => setStep(3)}
+          onClick={handleReserve}
           className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
         >
           Reserve

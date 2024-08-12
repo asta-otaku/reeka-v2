@@ -32,8 +32,6 @@ function StepOne({
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const bookings = localStorage.getItem("bookings");
-  const bookingsArray = bookings ? JSON.parse(bookings) : [];
   const handleSubmit = (e: any) => {
     e.preventDefault();
     console.log(formDetails);
@@ -50,9 +48,6 @@ function StepOne({
     ) {
       return toast.error("Please fill all fields");
     }
-
-    bookingsArray.push(formDetails);
-    localStorage.setItem("bookings", JSON.stringify(bookingsArray));
     setStep(2);
   };
   return (

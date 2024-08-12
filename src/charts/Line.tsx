@@ -27,12 +27,14 @@ const handleResize = (chart: any) => {
 function LineChart({
   current,
   previous,
+  labels,
 }: {
   current: number[];
   previous: number[];
+  labels: string[];
 }) {
   const data = {
-    labels: ["Dec 4", "Dec 25", "Jan 4"],
+    labels: labels,
     datasets: [
       {
         label: "Current Month",
