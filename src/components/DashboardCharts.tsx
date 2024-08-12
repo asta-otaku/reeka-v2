@@ -167,32 +167,32 @@ function DashboardCharts() {
     },
     {
       title: "Revenue",
-      amount: monthlyRevenue.totalRevenue || 0,
-      percentage: monthlyRevenue.percentageChangeRevenue || 0,
+      amount: monthlyRevenue?.totalRevenue || 0,
+      percentage: monthlyRevenue?.percentageChangeRevenue || 0,
       current: dailyRevenue.length
-        ? dailyRevenue.map((item: any) => item.totalRevenue)
+        ? dailyRevenue?.map((item: any) => item?.totalRevenue)
         : [],
       previous: previousMonthlyRevenue.length
-        ? previousMonthlyRevenue.map((item: any) => item.totalRevenue)
+        ? previousMonthlyRevenue?.map((item: any) => item?.totalRevenue)
         : [],
-      labels: dailyRevenue.length
-        ? dailyRevenue.map((_item: any, idx: any) => idx)
+      labels: dailyRevenue?.length
+        ? dailyRevenue?.map((_item: any, idx: any) => idx)
         : [],
     },
     {
       title: "Average Nightly Rate",
-      amount: monthlyAverageNightlyRate.averageNightlyRate || 0,
-      percentage: monthlyAverageNightlyRate.percentageChangeNightlyRate || 0,
+      amount: monthlyAverageNightlyRate?.averageNightlyRate || 0,
+      percentage: monthlyAverageNightlyRate?.percentageChangeNightlyRate || 0,
       current: dailyAverageNightlyRate.length
-        ? dailyAverageNightlyRate.map((item: any) => item.averageNightlyRate)
+        ? dailyAverageNightlyRate?.map((item: any) => item?.averageNightlyRate)
         : [],
       previous: previousMonthlyAverageNightlyRate.length
-        ? previousMonthlyAverageNightlyRate.map(
+        ? previousMonthlyAverageNightlyRate?.map(
             (item: any) => item.averageNightlyRate
           )
         : [],
       labels: dailyAverageNightlyRate.length
-        ? dailyAverageNightlyRate.map((_item: any, idx: any) => idx)
+        ? dailyAverageNightlyRate?.map((_item: any, idx: any) => idx)
         : [],
     },
   ];
