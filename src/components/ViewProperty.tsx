@@ -11,6 +11,7 @@ import searchIcon from "../assets/search-01.svg";
 import BookingTable from "./BookingTable";
 import axios from "axios";
 import { CONSTANT } from "../util";
+import ReactPaginate from "react-paginate";
 
 function ViewProperty() {
   const [openModal, setOpenModal] = useState(false);
@@ -28,6 +29,7 @@ function ViewProperty() {
   });
   const [selected, setSelected] = useState(0);
   const [images, setImages] = useState<any>([...property?.images]);
+  const [search, setSearch] = useState("");
 
   const changeHandler = (value: any) => {
     setValue(value);
@@ -39,12 +41,38 @@ function ViewProperty() {
     axios
       .get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`)
       .then((response) => {
-        setBookings(response.data);
+        setBookings(response.data.slice(0, 15));
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
+  //pagination logic
+
+  const itemsPerPage = 5;
+
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const pageCount = Math.ceil(bookings.length / itemsPerPage);
+
+  const handlePageChange = ({ selected }: { selected: any }) => {
+    setCurrentPage(selected);
+  };
+
+  const displayedData = bookings
+    .filter(
+      (bk: any) =>
+        bk?.properyName?.toLowerCase().includes(search.toLowerCase()) ||
+        bk?.address?.toLowerCase().includes(search.toLowerCase()) ||
+        bk?.guestFirstName?.toLowerCase().includes(search.toLowerCase()) ||
+        bk?.guestLastName?.toLowerCase().includes(search.toLowerCase())
+    )
+    .slice(
+      currentPage * itemsPerPage,
+
+      (currentPage + 1) * itemsPerPage
+    );
 
   return (
     <DashboardLayout>
@@ -297,6 +325,7 @@ function ViewProperty() {
               <input
                 type="text"
                 placeholder="Search"
+                onChange={(e) => setSearch(e.target.value)}
                 className="w-full outline-none bg-transparent text-[#808080] text-xs"
               />
             </div>
@@ -322,8 +351,20 @@ function ViewProperty() {
                 Finance
               </button>
             </div>
-            <div className="px-4 overflow-x-auto">
-              <BookingTable data={bookings} setData={setBookings} />
+            <div className="px-4 overflow-auto max-h-[400px] no-scrollbar">
+              <BookingTable data={displayedData} setData={setBookings} />
+              <ReactPaginate
+                previousLabel={""}
+                nextLabel={""}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={2}
+                onPageChange={handlePageChange}
+                pageClassName="block border hover:bg-primary/80 hover:text-white border-primary rounded-lg p-1.5 cursor-pointer"
+                containerClassName="flex justify-center items-center font-medium mt-12 gap-5"
+                activeClassName="bg-primary border border-primary text-white"
+              />
             </div>
           </div>
         </div>

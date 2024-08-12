@@ -176,7 +176,7 @@ function DashboardCharts() {
         ? previousMonthlyRevenue?.map((item: any) => item?.totalRevenue)
         : [],
       labels: dailyRevenue?.length
-        ? dailyRevenue?.map((_item: any, idx: any) => idx)
+        ? dailyRevenue?.map((item: any) => item?.date)
         : [],
     },
     {
@@ -192,7 +192,7 @@ function DashboardCharts() {
           )
         : [],
       labels: dailyAverageNightlyRate.length
-        ? dailyAverageNightlyRate?.map((_item: any, idx: any) => idx)
+        ? dailyAverageNightlyRate?.map((item: any) => item?.date)
         : [],
     },
   ];

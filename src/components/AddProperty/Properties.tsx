@@ -1,26 +1,28 @@
 import countryList from "react-select-country-list";
 import Select from "react-select";
 import propertyIcon from "../../assets/property.svg";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 function Properties({
   handleChange,
-  // formDetails,
-  // setFormDetails,
+  formDetails,
+  setFormDetails,
   toggleSection,
   openSection,
 }: {
   handleChange: any;
-  // formDetails: any;
-  // setFormDetails: any;
+  formDetails: any;
+  setFormDetails: any;
   toggleSection: any;
   openSection: any;
 }) {
   const options = useMemo(() => countryList().getData(), []);
-  const [value, setValue] = useState("");
 
   const changeHandler = (value: any) => {
-    setValue(value);
+    setFormDetails({
+      ...formDetails,
+      country: value.label,
+    });
   };
 
   return (
@@ -42,8 +44,17 @@ function Properties({
               Property Name
             </h4>
             <input
-              name="name"
-              placeholder="Name"
+              name="propertyName"
+              placeholder="Property Name"
+              onChange={handleChange}
+              className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
+            />
+          </div>
+          <div className="flex flex-col gap-2 w-full">
+            <h4 className="text-[#3A3A3A] text-sm font-medium">City</h4>
+            <input
+              name="city"
+              placeholder="City"
               onChange={handleChange}
               className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
             />
@@ -53,7 +64,7 @@ function Properties({
               <h4 className="text-[#3A3A3A] text-sm font-medium">Country</h4>
               <Select
                 options={options}
-                value={value}
+                placeholder="Country"
                 onChange={changeHandler}
               />
             </div>

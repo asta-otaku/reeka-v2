@@ -7,6 +7,9 @@ import Properties from "./Properties";
 import Pricing from "./Pricing";
 import ImageUpload from "./ImageUpload";
 import NotificationModal from "../NotificationModal";
+import { CONSTANT } from "../../util";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>(null);
@@ -17,7 +20,47 @@ function AddProperty({ setStep }: { setStep: any }) {
     setOpenSection((prev) => (prev === section ? null : section));
   };
 
-  const [formDetails, setFormDetails] = useState<any>({});
+  const [formDetails, setFormDetails] = useState<{
+    propertyName: string;
+    address: string;
+    city: string;
+    country: string;
+    baseCurrency: string;
+    owner: string;
+    employees: string[];
+    price: {
+      basePrice: number;
+      discountPercentage: number;
+      boostPercentage: number;
+    };
+    pricingState: string;
+    bedroomCount: number;
+    bathroomCount: number;
+    amenities: {
+      [key: string]: number;
+    };
+    images: string[];
+  }>({
+    propertyName: "",
+    address: "",
+    city: "",
+    country: "",
+    baseCurrency: "USD",
+    owner: CONSTANT.USER_ID,
+    employees: [""],
+    price: {
+      basePrice: 0,
+      discountPercentage: 0,
+      boostPercentage: 0,
+    },
+    pricingState: "base",
+    bedroomCount: 0,
+    bathroomCount: 0,
+    amenities: {},
+    images: [""],
+  });
+
+  console.log(formDetails);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -26,8 +69,38 @@ function AddProperty({ setStep }: { setStep: any }) {
     });
   };
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    if (
+      !formDetails.propertyName ||
+      !formDetails.address ||
+      !formDetails.city ||
+      !formDetails.country ||
+      !formDetails.bedroomCount ||
+      !formDetails.bathroomCount ||
+      !formDetails.price.basePrice
+    ) {
+      return toast.error("Please fill all required fields");
+    } else {
+      axios
+        .post(`${CONSTANT.BASE_URL}/properties`, formDetails, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          toast.success("Property added successfully");
+          setModal(<SuccessModal setModal={setModal} />);
+        })
+        .catch(() => {
+          toast.error("An error occurred");
+        });
+    }
+  };
+
   return (
     <div>
+      <Toaster />
       <div className="w-full flex justify-between items-center py-4 px-6">
         <div className="flex items-center gap-5">
           <span className="p-2 rounded-full border border-[#DCDCDC]">
@@ -56,12 +129,12 @@ function AddProperty({ setStep }: { setStep: any }) {
         </p>
       </div>
 
-      <div className="px-4">
+      <div className="px-4 mb-4">
         <div className="max-w-lg mx-auto w-full border bg-[#F8F8F8] flex flex-col gap-2 rounded-2xl py-2">
           {/* Properties */}
           <Properties
-            // formDetails={formDetails}
-            // setFormDetails={setFormDetails}
+            formDetails={formDetails}
+            setFormDetails={setFormDetails}
             handleChange={handleChange}
             toggleSection={toggleSection}
             openSection={openSection}
@@ -72,19 +145,24 @@ function AddProperty({ setStep }: { setStep: any }) {
             toggleSection={toggleSection}
             openSection={openSection}
             setModal={setModal}
+            formDetails={formDetails}
+            setFormDetails={setFormDetails}
           />
 
           {/* Images */}
           <ImageUpload
+            formDetails={formDetails}
+            setFormDetails={setFormDetails}
             toggleSection={toggleSection}
             openSection={openSection}
           />
 
           {/* Pricing */}
           <Pricing
-            handleChange={handleChange}
             openSection={openSection}
             toggleSection={toggleSection}
+            formDetails={formDetails}
+            setFormDetails={setFormDetails}
           />
 
           <div className="flex items-center justify-between w-full border-0 border-t px-4 py-2">
@@ -92,7 +170,7 @@ function AddProperty({ setStep }: { setStep: any }) {
               Save as draft
             </button>
             <button
-              onClick={() => setModal(<SuccessModal setModal={setModal} />)}
+              onClick={handleSubmit}
               className="bg-primary border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 rounded-md"
             >
               Add Property

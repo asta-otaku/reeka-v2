@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import StepTwo from "./StepTwo";
 
 function StepThree({
@@ -18,6 +19,8 @@ function StepThree({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
+  const navigate = useNavigate();
+
   return (
     <div className="border border-[#C0C0C0] rounded-2xl py-5 bg-[#E6FFF1] max-w-xl w-full">
       <h4 className="font-medium text-center text-[#219653] text-xl">
@@ -35,7 +38,10 @@ function StepThree({
       />
 
       <div className="my-3 w-full flex gap-4 justify-center">
-        <button className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2">
+        <button
+          onClick={() => navigate("/calendar")}
+          className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2"
+        >
           View in calendar
         </button>
         <button className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2">

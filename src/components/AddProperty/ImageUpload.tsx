@@ -1,16 +1,27 @@
 import imageIcon from "../../assets/image.svg";
 import cloud from "../../assets/cloud-upload.svg";
 import graycancel from "../../assets/graycancel.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function ImageUpload({
   toggleSection,
   openSection,
+  formDetails,
+  setFormDetails,
 }: {
   toggleSection: any;
   openSection: any;
+  formDetails: any;
+  setFormDetails: any;
 }) {
   const [images, setImages] = useState<any>([]);
+
+  useEffect(() => {
+    setFormDetails({
+      ...formDetails,
+      images: [...images],
+    });
+  }, [images]);
 
   return (
     <div

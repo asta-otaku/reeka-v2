@@ -27,7 +27,7 @@ function Bookings() {
 
   //pagination logic
 
-  const itemsPerPage = 21;
+  const itemsPerPage = 15;
 
   const [currentPage, setCurrentPage] = useState(0);
 

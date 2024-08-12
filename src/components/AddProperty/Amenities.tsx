@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CounterRender from "./CounterRender";
 import amenity from "../.././assets/amenity.svg";
 import plusIcon from "../../assets/add-circle.svg";
@@ -8,10 +8,14 @@ function Amenities({
   toggleSection,
   openSection,
   setModal,
+  formDetails,
+  setFormDetails,
 }: {
   toggleSection: any;
   openSection: any;
   setModal: any;
+  formDetails: any;
+  setFormDetails: any;
 }) {
   const [counterStates, setCounterStates] = useState<any>({
     rooms: {
@@ -24,6 +28,18 @@ function Amenities({
       "Basket Court": 1,
     },
   });
+
+  useEffect(() => {
+    setFormDetails({
+      ...formDetails,
+      amenities: {
+        ...counterStates?.amenities,
+      },
+      bathroomCount: counterStates?.rooms?.bathroom || 0,
+      bedroomCount: counterStates?.rooms?.bedroom || 0,
+    });
+  }, [counterStates]);
+
   return (
     <div
       onClick={() => toggleSection("amenities")}
