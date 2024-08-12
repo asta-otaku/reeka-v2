@@ -9,10 +9,10 @@ function DashboardCharts() {
   const [monthlyRevenue, setMonthlyRevenue] = useState<any>({});
   const [monthlyAverageNightlyRate, setMonthlyAverageNightlyRate] =
     useState<any>({});
-  const [dailyBookings, setDailyBookings] = useState<any>({});
-  const [dailyRevenue, setDailyRevenue] = useState<any>({});
+  const [dailyBookings, setDailyBookings] = useState<any>([]);
+  const [dailyRevenue, setDailyRevenue] = useState<any>([]);
   const [dailyAverageNightlyRate, setdailyAverageNightlyRate] = useState<any>(
-    {}
+    []
   );
   const [previousMonthlyBookings, setPreviousMonthlyBookings] = useState<any>(
     {}
