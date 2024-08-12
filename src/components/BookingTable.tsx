@@ -3,7 +3,7 @@ import deleteIcon from "../assets/delete-01.svg";
 import share from "../assets/share-08.svg";
 // import miniprop from "../assets/miniprop.svg";
 
-function BookingTable({ data, setData }: { data: any[]; setData: any }) {
+function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
   function formatDate(date: string) {
     const d = new Date(date);
     return d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
