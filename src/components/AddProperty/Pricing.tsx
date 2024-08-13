@@ -52,78 +52,94 @@ function Pricing({
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="flex flex-col items-center gap-1.5 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-              <h4 className="text-[#3A3A3A] text-sm font-medium">
-                Discounted Price
-              </h4>
-              <p className="text-[#121212]">
-                $
-                {price.basePrice -
-                  (price.discountPercentage / 100) * price.basePrice}
-              </p>
-              <div className="bg-[#ECECEC] p-1 rounded-3xl flex gap-1.5 items-center">
-                <button
-                  onClick={() => {
-                    if (price.discountPercentage == 0) return;
-                    setPrice({
-                      ...price,
-                      discountPercentage: price.discountPercentage - 1,
-                    });
-                  }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
-                >
-                  -
-                </button>
-                <span className="text-sm">{price.discountPercentage}</span>
-                <button
-                  onClick={() => {
-                    if (price.discountPercentage > 100) return;
-                    setPrice({
-                      ...price,
-                      discountPercentage: price.discountPercentage + 1,
-                    });
-                  }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
-                >
-                  +
-                </button>
+            <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
+              <div className="bg-white rounded-2xl p-2">
+                <h4 className="text-[#808080] text-xs">Discounted Price</h4>
+                <p className="text-[#121212] mt-2 text-2xl">
+                  $
+                  {price.basePrice -
+                    (price.discountPercentage / 100) * price.basePrice}
+                </p>
+              </div>
+
+              <div className="mt-2 flex justify-center gap-2 items-center">
+                <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                  <button
+                    onClick={() => {
+                      if (price.discountPercentage == 0) return;
+                      setPrice({
+                        ...price,
+                        discountPercentage: price.discountPercentage - 1,
+                      });
+                    }}
+                    className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  >
+                    -
+                  </button>
+                </span>
+
+                <span className="text-xs text-[#808080]">
+                  Discount by {price.discountPercentage}%
+                </span>
+                <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                  <button
+                    onClick={() => {
+                      if (price.discountPercentage > 100) return;
+                      setPrice({
+                        ...price,
+                        discountPercentage: price.discountPercentage + 1,
+                      });
+                    }}
+                    className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  >
+                    +
+                  </button>
+                </span>
               </div>
             </div>
-            <div className="flex flex-col items-center gap-1.5 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-              <h4 className="text-[#3A3A3A] text-sm font-medium">
-                Boosted Price
-              </h4>
-              <p className="text-[#121212]">
-                $
-                {price.basePrice +
-                  (price.boostPercentage / 100) * price.basePrice}
-              </p>
-              <div className="bg-[#ECECEC] p-1 rounded-3xl flex gap-1.5 items-center">
-                <button
-                  onClick={() => {
-                    if (price.boostPercentage == 0) return;
-                    setPrice({
-                      ...price,
-                      boostPercentage: price.boostPercentage - 1,
-                    });
-                  }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
-                >
-                  -
-                </button>
-                <span className="text-sm">{price.boostPercentage}</span>
-                <button
-                  onClick={() => {
-                    if (price.boostPercentage > 100) return;
-                    setPrice({
-                      ...price,
-                      boostPercentage: price.boostPercentage + 1,
-                    });
-                  }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
-                >
-                  +
-                </button>
+            <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
+              <div className="bg-white rounded-2xl p-2">
+                <h4 className="text-[#808080] text-xs">Boosted Price</h4>
+                <p className="text-[#121212] text-2xl">
+                  $
+                  {price.basePrice +
+                    (price.boostPercentage / 100) * price.basePrice}
+                </p>
+              </div>
+
+              <div className="mt-2 flex justify-center gap-2 items-center">
+                <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                  <button
+                    onClick={() => {
+                      if (price.boostPercentage == 0) return;
+                      setPrice({
+                        ...price,
+                        boostPercentage: price.boostPercentage - 1,
+                      });
+                    }}
+                    className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  >
+                    -
+                  </button>
+                </span>
+
+                <span className="text-xs text-[#808080]">
+                  Increase by {price.boostPercentage}%
+                </span>
+                <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                  <button
+                    onClick={() => {
+                      if (price.boostPercentage > 100) return;
+                      setPrice({
+                        ...price,
+                        boostPercentage: price.boostPercentage + 1,
+                      });
+                    }}
+                    className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  >
+                    +
+                  </button>
+                </span>
               </div>
             </div>
           </div>

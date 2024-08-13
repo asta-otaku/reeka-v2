@@ -60,7 +60,7 @@ function AddProperty({ setStep }: { setStep: any }) {
     images: [""],
   });
 
-  console.log(formDetails);
+  // console.log(formDetails);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({

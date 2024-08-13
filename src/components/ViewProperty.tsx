@@ -18,7 +18,8 @@ function ViewProperty() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { property } = location.state || {};
+  const prop = location.state.property || {};
+  const [property, setProperty] = useState<any>(prop);
   const options = useMemo(() => countryList().getData(), []);
   const [value, setValue] = useState("");
   const [facilityList] = useState<any>({
@@ -158,7 +159,10 @@ function ViewProperty() {
                 </h4>
                 <input
                   name="name"
-                  value={property.name}
+                  value={property?.propertyName}
+                  onChange={(e) =>
+                    setProperty({ ...property, propertyName: e.target.value })
+                  }
                   placeholder="Name"
                   className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
                 />
@@ -181,6 +185,10 @@ function ViewProperty() {
                   <input
                     name="address"
                     placeholder="Address"
+                    value={property?.address}
+                    onChange={(e) =>
+                      setProperty({ ...property, address: e.target.value })
+                    }
                     className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
                   />
                 </div>
@@ -282,36 +290,132 @@ function ViewProperty() {
                     <input
                       name="basePrice"
                       placeholder="$"
+                      onChange={(e) => {
+                        setProperty({
+                          ...property,
+                          price: {
+                            ...property.price,
+                            basePrice: Number(e.target.value),
+                          },
+                        });
+                      }}
+                      value={property?.price?.basePrice}
                       className="w-full outline-none bg-transparent"
                     />
                     <h4 className="text-[#808080]">/Night</h4>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2 w-full">
-                    <h4 className="text-[#3A3A3A] text-sm font-medium">
-                      Min Price
-                    </h4>
-                    <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-                      <input
-                        name="minPrice"
-                        placeholder="$"
-                        className="w-full outline-none bg-transparent"
-                      />
-                      <h4 className="text-[#808080]">/Night</h4>
+                  <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
+                    <div className="bg-white rounded-2xl p-2">
+                      <h4 className="text-[#808080] text-xs">
+                        Discounted Price
+                      </h4>
+                      <p className="text-[#121212] mt-2 text-2xl">
+                        $
+                        {property?.price?.basePrice -
+                          (property?.price?.discountPercentage / 100) *
+                            property?.price?.basePrice}
+                      </p>
+                    </div>
+
+                    <div className="mt-2 flex justify-center gap-2 items-center">
+                      <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                        <button
+                          onClick={() => {
+                            if (property?.price?.discountPercentage == 0)
+                              return;
+                            setProperty({
+                              ...property,
+                              price: {
+                                ...property.price,
+                                discountPercentage:
+                                  property.price.discountPercentage - 1,
+                              },
+                            });
+                          }}
+                          className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                        >
+                          -
+                        </button>
+                      </span>
+
+                      <span className="text-xs text-[#808080]">
+                        Discount by {property?.price?.discountPercentage}%
+                      </span>
+                      <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                        <button
+                          onClick={() => {
+                            if (property?.price?.discountPercentage > 100)
+                              return;
+                            setProperty({
+                              ...property,
+                              price: {
+                                ...property.price,
+                                discountPercentage:
+                                  property.price.discountPercentage + 1,
+                              },
+                            });
+                          }}
+                          className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                        >
+                          +
+                        </button>
+                      </span>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 w-full">
-                    <h4 className="text-[#3A3A3A] text-sm font-medium">
-                      Max Price
-                    </h4>
-                    <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-                      <input
-                        name="maxPrice"
-                        placeholder="$"
-                        className="w-full outline-none bg-transparent"
-                      />
-                      <h4 className="text-[#808080]">/Night</h4>
+                  <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
+                    <div className="bg-white rounded-2xl p-2">
+                      <h4 className="text-[#808080] text-xs">Boosted Price</h4>
+                      <p className="text-[#121212] text-2xl">
+                        $
+                        {property?.price?.basePrice +
+                          (property?.price?.boostPercentage / 100) *
+                            property?.price?.basePrice}
+                      </p>
+                    </div>
+
+                    <div className="mt-2 flex justify-center gap-2 items-center">
+                      <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                        <button
+                          onClick={() => {
+                            if (property?.price?.boostPercentage == 0) return;
+                            setProperty({
+                              ...property,
+                              price: {
+                                ...property.price,
+                                boostPercentage:
+                                  property.price.boostPercentage - 1,
+                              },
+                            });
+                          }}
+                          className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                        >
+                          -
+                        </button>
+                      </span>
+
+                      <span className="text-xs text-[#808080]">
+                        Increase by {property?.price?.boostPercentage}%
+                      </span>
+                      <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
+                        <button
+                          onClick={() => {
+                            if (property?.price?.boostPercentage > 100) return;
+                            setProperty({
+                              ...property,
+                              price: {
+                                ...property.price,
+                                boostPercentage:
+                                  property.price.boostPercentage + 1,
+                              },
+                            });
+                          }}
+                          className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                        >
+                          +
+                        </button>
+                      </span>
                     </div>
                   </div>
                 </div>
