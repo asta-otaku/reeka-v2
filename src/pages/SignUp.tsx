@@ -6,11 +6,9 @@ import { useState, useMemo } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { CONSTANT } from "../util";
-import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
 function SignUp() {
-  const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [formDetails, setFormDetails] = useState({
     lastName: "",
