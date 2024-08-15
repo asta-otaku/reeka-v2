@@ -237,7 +237,7 @@ function ViewProperty() {
                       fileInput.click();
                     }
                   }}
-                  className="flex flex-col gap-1 items-center justify-center min-w-32 min-h-28 rounded-xl border-2 border-white text-white bg-[#C4C4C4]"
+                  className="flex flex-col gap-1 items-center justify-center min-w-32 min-h-28 rounded-xl border-2 border-white text-white bg-[#C4C4C4] cursor-pointer"
                 >
                   <img src={cloud} alt="cloud" />
                   <h4 className="text-xs font-light max-w-12 text-center">
