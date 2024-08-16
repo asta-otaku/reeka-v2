@@ -23,7 +23,6 @@ function DashboardCharts() {
     setPreviousMonthlyAverageNightlyRate,
   ] = useState<any>({});
 
-  //userId is hardcoded for now
   const userId = CONSTANT.USER_ID;
 
   useEffect(() => {

@@ -1,9 +1,10 @@
 import { Calendar, ChevronDownIcon, NotificationIcon } from "../assets/icons";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getDate, getDateRange } from "../helpers/getDate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardCharts from "../components/DashboardCharts";
 import NotificationModal from "../components/NotificationModal";
+import { useNavigate } from "react-router-dom";
 
 const propertyCardData = [
   {
@@ -24,8 +25,18 @@ const propertyCardData = [
 ];
 
 function Dashboard() {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  useEffect(() => {
+    if (Object.keys(user).length === 0) {
+      navigate("/signin");
+    }
+  }, [user]);
+
+  console.log(user);
 
   return (
     <DashboardLayout>
@@ -34,7 +45,7 @@ function Dashboard() {
           <div>
             <span className="text-[#808080] text-xs">{getDate()}</span>
             <h3 className="mt-1 text-deepBlue font-medium text-2xl">
-              Welcome {"Deborah"}
+              Welcome {user?.firstName || "Deborah"}
             </h3>
           </div>
           <NotificationIcon

@@ -29,6 +29,7 @@ function SignIn() {
       .then((res) => {
         if (res.status === 200) {
           toast.success("Logged in successfully");
+          localStorage.setItem("user", JSON.stringify(res.data));
           setTimeout(() => {
             navigate("/dashboard");
           }, 2000);
