@@ -34,6 +34,8 @@ function SignUp() {
           setTimeout(() => {
             setStep(1);
           }, 2000);
+        } else {
+          toast.error("An error occurred");
         }
       })
       .catch((err) => {
