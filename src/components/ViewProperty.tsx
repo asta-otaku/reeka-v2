@@ -23,7 +23,7 @@ function ViewProperty() {
     ...prop,
     price: {
       ...prop?.price,
-      discountPercentage: Math.abs(prop?.price?.discountPercentage),
+      discountPercentage: prop?.price?.discountPercentage,
     },
   });
   const options = useMemo(() => countryList().getData(), []);
@@ -319,7 +319,7 @@ function ViewProperty() {
                       </h4>
                       <p className="text-[#121212] mt-2 text-2xl">
                         $
-                        {property?.price?.basePrice -
+                        {property?.price?.basePrice +
                           (property?.price?.discountPercentage / 100) *
                             property?.price?.basePrice}
                       </p>
@@ -336,7 +336,7 @@ function ViewProperty() {
                               price: {
                                 ...property.price,
                                 discountPercentage:
-                                  property.price.discountPercentage - 1,
+                                  property.price.discountPercentage + 1,
                               },
                             });
                           }}
@@ -359,7 +359,7 @@ function ViewProperty() {
                               price: {
                                 ...property.price,
                                 discountPercentage:
-                                  property.price.discountPercentage + 1,
+                                  property.price.discountPercentage - 1,
                               },
                             });
                           }}

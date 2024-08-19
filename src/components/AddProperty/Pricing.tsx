@@ -14,8 +14,8 @@ function Pricing({
 }) {
   const [price, setPrice] = useState({
     basePrice: 0,
-    discountPercentage: 0,
-    boostPercentage: 0,
+    discountPercentage: -25,
+    boostPercentage: 25,
   });
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function Pricing({
                 <h4 className="text-[#808080] text-xs">Discounted Price</h4>
                 <p className="text-[#121212] mt-2 text-2xl">
                   $
-                  {price.basePrice -
+                  {price.basePrice +
                     (price.discountPercentage / 100) * price.basePrice}
                 </p>
               </div>
@@ -69,7 +69,7 @@ function Pricing({
                       if (price.discountPercentage == 0) return;
                       setPrice({
                         ...price,
-                        discountPercentage: price.discountPercentage - 1,
+                        discountPercentage: price.discountPercentage + 1,
                       });
                     }}
                     className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
@@ -84,10 +84,10 @@ function Pricing({
                 <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                   <button
                     onClick={() => {
-                      if (price.discountPercentage > 100) return;
+                      if (price.discountPercentage < -100) return;
                       setPrice({
                         ...price,
-                        discountPercentage: price.discountPercentage + 1,
+                        discountPercentage: price.discountPercentage - 1,
                       });
                     }}
                     className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
