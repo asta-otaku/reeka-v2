@@ -33,11 +33,12 @@ function SignIn() {
           setTimeout(() => {
             navigate("/dashboard");
           }, 2000);
-        } else {
-          toast.error("Invalid credentials");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        toast.error("Invalid credentials");
+        console.log(err);
+      });
   };
 
   return (
