@@ -36,8 +36,6 @@ function Dashboard() {
     }
   }, [user]);
 
-  // console.log(user);
-
   return (
     <DashboardLayout>
       <div className="no-scrollbar">

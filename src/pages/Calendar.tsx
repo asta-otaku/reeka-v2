@@ -6,11 +6,30 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { CONSTANT } from "../util";
 
 function Calendar() {
   const navigate = useNavigate();
   const [bookingsArray, setBookingsArray] = useState<any[]>([]);
+  const [properties, setProperties] = useState<any[]>([]);
   const events: any[] = [];
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+        );
+        setProperties(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchProperties();
+  }, []);
+
+  console.log(properties);
 
   useEffect(() => {
     const bookings = localStorage.getItem("bookings");
@@ -58,7 +77,10 @@ function Calendar() {
             </div>
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                <option>Ame's Palace</option>
+                <option>All Properties</option>
+                {properties.map((property) => (
+                  <option key={property._id}>{property.propertyName}</option>
+                ))}
               </select>
               <ChevronDownIcon width={12} />
             </div>

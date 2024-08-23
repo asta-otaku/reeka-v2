@@ -30,6 +30,13 @@ function DashboardLayout({ children }: any) {
   }, [currentModal]);
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  useEffect(() => {
+    if (Object.keys(user).length === 0) {
+      navigate("/signin");
+    }
+  }, [user]);
 
   return (
     <div className="bg-[#FAFAFA]">
@@ -51,7 +58,18 @@ function DashboardLayout({ children }: any) {
                 Reeka
               </Link>
               <div className="flex gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#CBCBCB]" />
+                <img
+                  alt="profile"
+                  src={
+                    user?.image ??
+                    `https://ui-avatars.com/api/?name=${encodeURI(
+                      user.firstName + " " + user.lastName
+                    )}`
+                  }
+                  width={35}
+                  height={35}
+                  className="rounded-full border-2 border-blue-1"
+                />
                 {/* <img src={avatar} alt="avatar" /> */}
                 {/* <img src={updown} alt="updown" /> */}
               </div>
