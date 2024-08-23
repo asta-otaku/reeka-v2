@@ -6,7 +6,7 @@ import Amenities from "./Amenities";
 import Properties from "./Properties";
 import Pricing from "./Pricing";
 import ImageUpload from "./ImageUpload";
-import NotificationModal from "../NotificationModal";
+// import NotificationModal from "../NotificationModal";
 import { CONSTANT } from "../../util";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -59,8 +59,6 @@ function AddProperty({ setStep }: { setStep: any }) {
     amenities: {},
     images: [""],
   });
-
-  // console.log(formDetails);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -119,7 +117,7 @@ function AddProperty({ setStep }: { setStep: any }) {
           className="w-5 h-5 cursor-pointer"
         />
 
-        {openModal && <NotificationModal setOpenModal={setOpenModal} />}
+        {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
       </div>
 
       <div className="my-4 px-6">

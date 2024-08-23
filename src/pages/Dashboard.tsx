@@ -3,7 +3,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import { getDate, getDateRange } from "../helpers/getDate";
 import { useEffect, useState } from "react";
 import DashboardCharts from "../components/DashboardCharts";
-import NotificationModal from "../components/NotificationModal";
+// import NotificationModal from "../components/NotificationModal";
 import { useNavigate } from "react-router-dom";
 
 const propertyCardData = [
@@ -36,7 +36,7 @@ function Dashboard() {
     }
   }, [user]);
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <DashboardLayout>
@@ -53,7 +53,7 @@ function Dashboard() {
             className="w-5 h-5 cursor-pointer"
           />
 
-          {openModal && <NotificationModal setOpenModal={setOpenModal} />}
+          {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
         </div>
         <div className="p-4">
           <section>

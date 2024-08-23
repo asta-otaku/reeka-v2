@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowLongLeftIcon, NotificationIcon } from "../assets/icons";
-import NotificationModal from "./NotificationModal";
+// import NotificationModal from "./NotificationModal";
 
 function DashboardNav({
   title,
@@ -33,7 +33,7 @@ function DashboardNav({
         <p className="text-[#808080] font-light text-sm">{description}</p>
       </div>
 
-      {openModal && <NotificationModal setOpenModal={setOpenModal} />}
+      {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
     </>
   );
 }

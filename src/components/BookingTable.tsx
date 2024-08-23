@@ -21,8 +21,8 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
     <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar">
       {data.map((item, i) => (
         <div key={i}>
-          <div className="bg-[#F2F2F2] rounded-xl shadow">
-            <table className="min-w-full text-left text-xs border-collapse">
+          <div className="">
+            <table className="min-w-full text-left text-xs border-collapse bg-[#F2F2F2] rounded-xl shadow">
               <thead className="text-[#BDBDBD] text-sm">
                 <tr className="capitalize">
                   <th
@@ -93,22 +93,22 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                           {item?.propertyId?.propertyName}
                         </div>
                         <div className="text-[10px] text-[#808080] font-light max-w-24 truncate text-ellipsis">
-                          {item?.propertyId.address}
+                          {item?.propertyId?.address}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-[#121212] font-medium max-w-24 truncate text-ellipsis">
-                      {item.guestFirstName} {item.guestLastName}
+                      {item?.guestFirstName} {item?.guestLastName}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-[#121212] font-medium">
-                      ${item.totalBookingValue}
+                      ${item?.totalBookingValue}
                     </div>
                     <div className="text-[10px] text-[#808080] font-light">
-                      For {item.nightsBooked} days
+                      For {item?.nightsBooked} days
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -119,9 +119,9 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                         backgroundColor:
                           item.status === "Ongoing" ? "#DBFFE4" : "#DFEEFF",
                       }}
-                      className="text-xs p-1.5 rounded-lg font-medium w-fit"
+                      className="text-xs p-1.5 rounded-lg font-medium w-[80px] text-center"
                     >
-                      {item.status}
+                      <span>{item.status}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

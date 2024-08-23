@@ -48,6 +48,8 @@ function Cards({
               }}
               className={`${
                 tag ? "bg-primary w-28 h-9" : "bg-[#FAFAFA] w-24 h-10"
+              } ${
+                booking.disabled && "w-32"
               } p-2 rounded-lg flex items-center gap-2 justify-center`}
             >
               <img
@@ -60,7 +62,11 @@ function Cards({
                   tag ? "text-white" : "text-black"
                 }`}
               >
-                {tag ? "Disconnect" : "Set Up"}
+                {booking?.disabled
+                  ? "Coming soon"
+                  : tag
+                  ? "Disconnect"
+                  : "Set Up"}
               </span>
             </button>
           </div>

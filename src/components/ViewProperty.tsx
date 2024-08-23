@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLongLeftIcon, NotificationIcon } from "../assets/icons";
 import countryList from "react-select-country-list";
 import Select from "react-select";
-import NotificationModal from "./NotificationModal";
+// import NotificationModal from "./NotificationModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import buy from "../assets/Buy.svg";
@@ -12,6 +12,7 @@ import BookingTable from "./BookingTable";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import ReactPaginate from "react-paginate";
+import toast, { Toaster } from "react-hot-toast";
 
 function ViewProperty() {
   const [openModal, setOpenModal] = useState(false);
@@ -27,7 +28,6 @@ function ViewProperty() {
     },
   });
   const options = useMemo(() => countryList().getData(), []);
-  const [value, setValue] = useState("");
   const [facilityList] = useState<any>({
     "Swimming Pool": 0,
     Griller: 0,
@@ -39,7 +39,7 @@ function ViewProperty() {
   const [search, setSearch] = useState("");
 
   const changeHandler = (value: any) => {
-    setValue(value);
+    setProperty({ ...property, country: value.label });
   };
 
   const [bookings, setBookings] = useState<any>([]);
@@ -48,12 +48,34 @@ function ViewProperty() {
     axios
       .get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`)
       .then((response) => {
-        setBookings(response.data.slice(0, 15));
+        setBookings(
+          response.data.filter(
+            (bk: any) => bk?.propertyId?._id === property._id
+          )
+        );
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
+  const handleDelete = async () => {
+    try {
+      const res = await axios.delete(
+        `${CONSTANT.BASE_URL}/properties/${property._id}`
+      );
+      if (res.status === 204) {
+        toast.success("Property deleted successfully");
+        setTimeout(() => {
+          navigate("/listing");
+        }, 2000);
+      } else {
+        toast.error("An error occurred");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   //pagination logic
 
@@ -83,6 +105,7 @@ function ViewProperty() {
 
   return (
     <DashboardLayout>
+      <Toaster />
       <div>
         <div className="w-full flex justify-between items-center py-4 px-6">
           <div className="flex items-center gap-5">
@@ -102,7 +125,7 @@ function ViewProperty() {
             className="w-5 h-5 cursor-pointer"
           />
 
-          {openModal && <NotificationModal setOpenModal={setOpenModal} />}
+          {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
         </div>
 
         <div className="my-4 px-6">
@@ -132,15 +155,18 @@ function ViewProperty() {
               <div className="flex items-center gap-2 text-sm text-[#808080]">
                 <span>Apartment</span>
                 <span className="w-2 h-2 rounded-full bg-[#808080]" />
-                <span>$1000 per night</span>
+                <span>${property?.price?.basePrice} per night</span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium">
+            {/* <button className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium">
               De-List Property
-            </button>
-            <button className="px-3 py-2 text-white rounded-lg bg-[#FF3B30] text-sm font-medium">
+            </button> */}
+            <button
+              onClick={handleDelete}
+              className="px-3 py-2 text-white rounded-lg bg-[#FF3B30] text-sm font-medium"
+            >
               Delete Property
             </button>
           </div>
@@ -179,8 +205,11 @@ function ViewProperty() {
                     Country
                   </h4>
                   <Select
+                    className="z-20"
                     options={options}
-                    value={value}
+                    value={options.find(
+                      (option: any) => option.label === property?.country
+                    )}
                     onChange={changeHandler}
                   />
                 </div>
@@ -216,9 +245,9 @@ function ViewProperty() {
                       transform:
                         index === 0
                           ? ""
-                          : `rotate(${Math.floor(
-                              Math.random() * (15 - -15 + 1) + -15
-                            )}deg)`,
+                          : index % 2 === 0
+                          ? "rotate(-10deg)"
+                          : "rotate(10deg)",
                       zIndex: index % 2 === 0 ? 1 : 0,
                     }}
                     className="relative min-w-32 min-h-28 rounded-xl border-2 border-white"
@@ -317,12 +346,42 @@ function ViewProperty() {
                       <h4 className="text-[#808080] text-xs">
                         Discounted Price
                       </h4>
-                      <p className="text-[#121212] mt-2 text-2xl">
+                      <span className="text-[#121212] flex gap-2 py-2 text-2xl">
                         $
-                        {property?.price?.basePrice +
-                          (property?.price?.discountPercentage / 100) *
-                            property?.price?.basePrice}
-                      </p>
+                        <input
+                          className="outline-none w-fit bg-transparent"
+                          value={(
+                            property?.price?.basePrice -
+                            (Math.abs(property?.price?.discountPercentage) /
+                              100) *
+                              property?.price?.basePrice
+                          ).toFixed(0)}
+                          onChange={(e) => {
+                            const newDiscountedPrice = Number(e.target.value);
+                            if (newDiscountedPrice < 0) return;
+                            if (newDiscountedPrice > property.price.basePrice)
+                              return;
+                            // Ensure basePrice is not zero to avoid division by zero
+                            const discountPercentage =
+                              property.price.basePrice !== 0
+                                ? ((property.price.basePrice -
+                                    newDiscountedPrice) /
+                                    property.price.basePrice) *
+                                    100 || 0
+                                : 0;
+
+                            setProperty((prev: any) => ({
+                              ...prev,
+                              price: {
+                                ...prev.price,
+                                discountPercentage: Number(
+                                  discountPercentage.toFixed(2)
+                                ),
+                              },
+                            }));
+                          }}
+                        />
+                      </span>
                     </div>
 
                     <div className="mt-2 flex justify-center gap-2 items-center">
@@ -346,8 +405,24 @@ function ViewProperty() {
                         </button>
                       </span>
 
-                      <span className="text-xs text-[#808080]">
-                        Discount by {property?.price?.discountPercentage}%
+                      <span className="text-xs text-[#808080] flex items-center gap-1">
+                        Discount by
+                        <input
+                          className="w-8 outline-none text-center"
+                          value={property?.price?.discountPercentage || 0}
+                          onChange={(e: any) => {
+                            if (e.target.value > 100) return;
+                            setProperty({
+                              ...property,
+                              price: {
+                                ...property.price,
+                                discountPercentage:
+                                  -Number(e.target.value) || 0,
+                              },
+                            });
+                          }}
+                        />
+                        %
                       </span>
                       <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                         <button
@@ -370,30 +445,58 @@ function ViewProperty() {
                       </span>
                     </div>
                   </div>
+
                   <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
                     <div className="bg-white rounded-2xl p-2">
                       <h4 className="text-[#808080] text-xs">Boosted Price</h4>
-                      <p className="text-[#121212] text-2xl">
+                      <span className="text-[#121212] flex gap-2 py-2 text-2xl">
                         $
-                        {property?.price?.basePrice +
-                          (property?.price?.boostPercentage / 100) *
-                            property?.price?.basePrice}
-                      </p>
+                        <input
+                          className="outline-none w-fit bg-transparent"
+                          value={(
+                            property?.price?.basePrice +
+                            (property?.price?.boostPercentage / 100) *
+                              property?.price?.basePrice
+                          ).toFixed(0)}
+                          onChange={(e) => {
+                            const newBoostedPrice = Number(e.target.value);
+                            if (newBoostedPrice < 0) return;
+                            // Ensure basePrice is not zero to avoid division by zero
+                            const boostPercentage =
+                              property.price.basePrice !== 0
+                                ? ((newBoostedPrice -
+                                    property.price.basePrice) /
+                                    property.price.basePrice) *
+                                    100 || 0
+                                : 0;
+                            setProperty((prev: any) => ({
+                              ...prev,
+                              price: {
+                                ...prev.price,
+                                boostPercentage: Number(
+                                  boostPercentage.toFixed(2)
+                                ),
+                              },
+                            }));
+                          }}
+                        />
+                      </span>
                     </div>
 
                     <div className="mt-2 flex justify-center gap-2 items-center">
                       <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                         <button
                           onClick={() => {
-                            if (property?.price?.boostPercentage == 0) return;
-                            setProperty({
-                              ...property,
+                            setProperty((prev: any) => ({
+                              ...prev,
                               price: {
-                                ...property.price,
-                                boostPercentage:
-                                  property.price.boostPercentage - 1,
+                                ...prev.price,
+                                boostPercentage: Math.max(
+                                  prev.price.boostPercentage - 1,
+                                  0
+                                ),
                               },
-                            });
+                            }));
                           }}
                           className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
                         >
@@ -401,21 +504,37 @@ function ViewProperty() {
                         </button>
                       </span>
 
-                      <span className="text-xs text-[#808080]">
-                        Increase by {property?.price?.boostPercentage}%
+                      <span className="text-xs text-[#808080] flex items-center gap-1">
+                        Boost by
+                        <input
+                          className="w-8 outline-none text-center"
+                          value={property?.price?.boostPercentage || 0}
+                          onChange={(e) => {
+                            setProperty((prev: any) => ({
+                              ...prev,
+                              price: {
+                                ...prev.price,
+                                boostPercentage: Number(e.target.value) || 0,
+                              },
+                            }));
+                          }}
+                        />
+                        %
                       </span>
+
                       <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                         <button
                           onClick={() => {
-                            if (property?.price?.boostPercentage > 100) return;
-                            setProperty({
-                              ...property,
+                            setProperty((prev: any) => ({
+                              ...prev,
                               price: {
-                                ...property.price,
-                                boostPercentage:
-                                  property.price.boostPercentage + 1,
+                                ...prev.price,
+                                boostPercentage: Math.min(
+                                  prev.price.boostPercentage + 1,
+                                  100
+                                ),
                               },
-                            });
+                            }));
                           }}
                           className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
                         >
@@ -450,7 +569,7 @@ function ViewProperty() {
               >
                 Booking
               </button>
-              <button
+              {/* <button
                 onClick={() => setSelected(1)}
                 className={`text-sm pb-2 ${
                   selected === 1
@@ -459,7 +578,7 @@ function ViewProperty() {
                 }`}
               >
                 Finance
-              </button>
+              </button> */}
             </div>
             <div className="px-4 overflow-auto max-h-[400px] no-scrollbar">
               <BookingTable data={displayedData} setData={setBookings} />

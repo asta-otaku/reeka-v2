@@ -46,6 +46,7 @@ function Properties({
             <input
               name="propertyName"
               placeholder="Property Name"
+              value={formDetails.propertyName || ""}
               onChange={handleChange}
               className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
             />
@@ -55,6 +56,7 @@ function Properties({
             <input
               name="city"
               placeholder="City"
+              value={formDetails.city || ""}
               onChange={handleChange}
               className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
             />
@@ -64,6 +66,11 @@ function Properties({
               <h4 className="text-[#3A3A3A] text-sm font-medium">Country</h4>
               <Select
                 options={options}
+                value={
+                  options.find(
+                    (option: any) => option.label === formDetails.country
+                  ) || null
+                }
                 placeholder="Country"
                 onChange={changeHandler}
               />
@@ -73,6 +80,7 @@ function Properties({
               <input
                 name="address"
                 placeholder="Address"
+                value={formDetails.address || ""}
                 onChange={handleChange}
                 className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
               />

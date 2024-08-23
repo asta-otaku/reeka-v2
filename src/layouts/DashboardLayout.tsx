@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import updown from "../assets/updown.svg";
-import avatar from "../assets/avatar.svg";
+// import updown from "../assets/updown.svg";
+// import avatar from "../assets/avatar.svg";
 import plus from "../assets/plus-sign-square.svg";
 
 import {
@@ -51,8 +51,9 @@ function DashboardLayout({ children }: any) {
                 Reeka
               </Link>
               <div className="flex gap-2">
-                <img src={avatar} alt="avatar" />
-                <img src={updown} alt="updown" />
+                <span className="w-6 h-6 rounded-full bg-[#CBCBCB]" />
+                {/* <img src={avatar} alt="avatar" /> */}
+                {/* <img src={updown} alt="updown" /> */}
               </div>
             </div>
 

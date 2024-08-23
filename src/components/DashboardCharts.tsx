@@ -29,7 +29,7 @@ function DashboardCharts() {
     const fetchMonthlyBookings = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/bookings/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/total-nights-booked/${userId}`
         );
         setMonthlyBookings(response.data);
       } catch (error) {
@@ -131,8 +131,8 @@ function DashboardCharts() {
   const CardData = [
     {
       title: "Bookings",
-      amount: monthlyBookings.totalBookings || 0,
-      percentage: monthlyBookings.percentageChangeBookings || 0,
+      amount: monthlyBookings.totalNightsBooked || 0,
+      percentage: monthlyBookings.percentageChangeNightsBooked || 0,
       caption: "total nights booked",
     },
     {
@@ -152,8 +152,8 @@ function DashboardCharts() {
   const ChartData = [
     {
       title: "Bookings",
-      amount: monthlyBookings.totalBookings || 0,
-      percentage: monthlyBookings.percentageChangeBookings || 0,
+      amount: monthlyBookings.totalNightsBooked || 0,
+      percentage: monthlyBookings.percentageChangeNightsBooked || 0,
       current: dailyBookings.length
         ? dailyBookings.map((item: any) => item.count)
         : [],
@@ -161,7 +161,7 @@ function DashboardCharts() {
         ? previousMonthlyBookings.map((item: any) => item.totalNights)
         : [],
       labels: dailyBookings.length
-        ? dailyBookings.map((_item: any, idx: any) => idx)
+        ? dailyBookings.map((_item: any) => " ")
         : [],
     },
     {

@@ -71,12 +71,16 @@ function ListingManagement() {
                     />
                   </div>
                   <img src={line} />
-                  <img src={menuIcon} className="cursor-pointer" />
+                  <img
+                    src={menuIcon}
+                    className="cursor-pointer"
+                    onClick={() => setGrid(false)}
+                  />
                   <img src={line} />
                   <img
                     src={gridIcon}
                     className="cursor-pointer"
-                    onClick={() => setGrid(!grid)}
+                    onClick={() => setGrid(true)}
                   />
                   <img src={line} />
                   <button

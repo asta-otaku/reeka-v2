@@ -52,7 +52,7 @@ function Calendar() {
             </div>
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                <option>Reservations</option>
+                <option>Bookings</option>
               </select>
               <ChevronDownIcon width={12} />
             </div>
