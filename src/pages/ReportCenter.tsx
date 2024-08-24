@@ -6,8 +6,10 @@ import chart2 from "../assets/chart2.svg";
 import deleteIcon from "../assets/delete-01.svg";
 import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useStore from "../store";
+import axios from "axios";
+import { CONSTANT } from "../util";
 
 const data = [
   {
@@ -27,6 +29,22 @@ const data = [
 function ReportCenter() {
   const [search, setSearch] = useState("");
   const setModal = useStore((state: any) => state.setModal);
+  const [properties, setProperties] = useState<any[]>([]);
+  const [, setSelectedProperty] = useState("");
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+        );
+        setProperties(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -45,8 +63,18 @@ function ReportCenter() {
               <ChevronDownIcon width={12} />
             </div>
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
+              <select
+                onChange={(e) => {
+                  setSelectedProperty(e.target.value);
+                }}
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+              >
                 <option>All Properties</option>
+                {properties.map((property) => (
+                  <option key={property._id} value={property.propertyName}>
+                    {property.propertyName}
+                  </option>
+                ))}
               </select>
               <ChevronDownIcon width={12} />
             </div>
@@ -118,7 +146,10 @@ export default ReportCenter;
 
 function ReportModal() {
   return (
-    <div className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl p-4">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl p-4"
+    >
       <h2 className="text-secondary font-semibold text-lg">Report</h2>
       <form className="flex flex-col gap-2 mt-4">
         <div className="flex flex-col gap-2 w-full">

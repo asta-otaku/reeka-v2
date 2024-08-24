@@ -11,7 +11,7 @@ import Integrations from "./pages/Integrations.tsx";
 import ListingManagement from "./pages/ListingManagement.tsx";
 import ReportCenter from "./pages/ReportCenter.tsx";
 import Reservation from "./pages/Reservation.tsx";
-import ViewProperty from "./components/ViewProperty";
+import ViewProperty from "./components/ViewProperty/index.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import SignUp from "./pages/SignUp.tsx";
 

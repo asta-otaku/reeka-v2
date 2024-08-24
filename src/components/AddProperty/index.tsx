@@ -47,7 +47,7 @@ function AddProperty({ setStep }: { setStep: any }) {
     country: "",
     baseCurrency: "USD",
     owner: CONSTANT.USER_ID,
-    employees: [""],
+    employees: [],
     price: {
       basePrice: 0,
       discountPercentage: 0,
@@ -57,7 +57,7 @@ function AddProperty({ setStep }: { setStep: any }) {
     bedroomCount: 0,
     bathroomCount: 0,
     amenities: {},
-    images: [""],
+    images: [],
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,6 +69,7 @@ function AddProperty({ setStep }: { setStep: any }) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    console.log(formDetails);
     if (
       !formDetails.propertyName ||
       !formDetails.address ||
@@ -80,8 +81,24 @@ function AddProperty({ setStep }: { setStep: any }) {
     ) {
       return toast.error("Please fill all required fields");
     } else {
+      const formData = new FormData();
+      formData.append("propertyName", formDetails.propertyName);
+      formData.append("address", formDetails.address);
+      formData.append("city", formDetails.city);
+      formData.append("country", formDetails.country);
+      formData.append("baseCurrency", formDetails.baseCurrency);
+      formData.append("owner", formDetails.owner);
+      formData.append("employees", JSON.stringify(formDetails.employees));
+      formData.append("bedroomCount", formDetails.bedroomCount.toString());
+      formData.append("bathroomCount", formDetails.bathroomCount.toString());
+      formData.append("amenities", JSON.stringify(formDetails.amenities));
+      formData.append("price", JSON.stringify(formDetails.price));
+      formDetails.images.forEach((image) => {
+        formData.append("images", image);
+      });
+
       axios
-        .post(`${CONSTANT.BASE_URL}/properties`, formDetails, {
+        .post(`${CONSTANT.BASE_URL}/properties`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

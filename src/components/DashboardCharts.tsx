@@ -160,8 +160,8 @@ function DashboardCharts() {
       previous: previousMonthlyBookings.length
         ? previousMonthlyBookings.map((item: any) => item.totalNights)
         : [],
-      labels: dailyBookings.length
-        ? dailyBookings.map((_item: any) => " ")
+      labels: dailyAverageNightlyRate.length
+        ? dailyAverageNightlyRate?.map((item: any) => item?.date)
         : [],
     },
     {

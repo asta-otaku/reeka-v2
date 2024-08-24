@@ -44,7 +44,10 @@ function StepTwo({
         numberOfGuests: formDetails.noOfGuests,
       })
       .then((res) => {
-        bookingsArray.push(res.data);
+        bookingsArray.push({
+          ...res.data,
+          ...property,
+        });
         localStorage.setItem("bookings", JSON.stringify(bookingsArray));
         toast.success("Reservation successful");
         setStep(3);

@@ -27,12 +27,7 @@ function ViewProperty() {
       discountPercentage: prop?.price?.discountPercentage,
     },
   });
-  const [facilityList] = useState<any>({
-    "Swimming Pool": 0,
-    Griller: 0,
-    Bathroom: 0,
-    "Basket Court": 0,
-  });
+  const [bookedStatus, setBookedStatus] = useState(false);
   const [selected, setSelected] = useState(0);
   const [images, setImages] = useState<any>([...property?.images]);
   const [search, setSearch] = useState("");
@@ -54,6 +49,14 @@ function ViewProperty() {
       });
   }, []);
 
+  useEffect(() => {
+    if (bookings.length > 0) {
+      setBookedStatus(true);
+    } else {
+      setBookedStatus(false);
+    }
+  }, [bookings]);
+
   const handleDelete = async () => {
     try {
       const res = await axios.delete(
@@ -61,6 +64,40 @@ function ViewProperty() {
       );
       if (res.status === 204) {
         toast.success("Property deleted successfully");
+        setTimeout(() => {
+          navigate("/listing");
+        }, 2000);
+      } else {
+        toast.error("An error occurred");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleUpdate = async () => {
+    const formData = new FormData();
+    formData.append("propertyName", property.propertyName);
+    formData.append("address", property.address);
+    formData.append("city", property.city);
+    formData.append("country", property.country);
+    formData.append("baseCurrency", property.baseCurrency);
+    formData.append("owner", property.owner);
+    formData.append("employees", JSON.stringify(property.employees));
+    formData.append("bedroomCount", property.bedroomCount.toString());
+    formData.append("bathroomCount", property.bathroomCount.toString());
+    formData.append("amenities", JSON.stringify(property.amenities));
+    formData.append("price", JSON.stringify(property.price));
+    property.images.forEach((image: any) => {
+      formData.append("images", image);
+    });
+    try {
+      const res = await axios.put(
+        `${CONSTANT.BASE_URL}/properties/${property._id}`,
+        formData
+      );
+      if (res.status === 200) {
+        toast.success("Property updated successfully");
         setTimeout(() => {
           navigate("/listing");
         }, 2000);
@@ -141,7 +178,7 @@ function ViewProperty() {
             </span>
             <div className="flex flex-col items-start gap-1">
               <span className="bg-[#DBFFE4] rounded-lg font-medium text-xs text-[#34C759] py-1 px-2">
-                Booked
+                {bookedStatus ? "Booked" : "Available"}
               </span>
               <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
                 {property?.propertyName},{" "}
@@ -173,8 +210,17 @@ function ViewProperty() {
           <div className="w-full lg:w-[50%]">
             <PropertyDetails property={property} setProperty={setProperty} />
             <ImageSection images={images} setImages={setImages} />
-            <Amenities facilityList={facilityList} />
+            <Amenities property={property} setProperty={setProperty} />
             <Pricing property={property} setProperty={setProperty} />
+
+            <div className="flex items-center gap-4 mt-6">
+              <button
+                onClick={handleUpdate}
+                className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium"
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
 
           <div className="w-full lg:w-[48%] rounded-2xl border shadow-xl shadow-gray-300">

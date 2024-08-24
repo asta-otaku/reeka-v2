@@ -13,6 +13,22 @@ const userId = CONSTANT.USER_ID;
 function Bookings() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
+  const [properties, setProperties] = useState<any[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState("");
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+        );
+        setProperties(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchProperties();
+  }, []);
 
   useEffect(() => {
     axios
@@ -37,11 +53,17 @@ function Bookings() {
     setCurrentPage(selected);
   };
 
-  const displayedData = bookings.slice(
-    currentPage * itemsPerPage,
+  const displayedData = bookings
+    .filter((booking: any) =>
+      booking?.propertyId?.propertyName
+        ?.toLowerCase()
+        .includes(selectedProperty.toLowerCase())
+    )
+    .slice(
+      currentPage * itemsPerPage,
 
-    (currentPage + 1) * itemsPerPage
-  );
+      (currentPage + 1) * itemsPerPage
+    );
 
   return (
     <DashboardLayout>
@@ -60,8 +82,18 @@ function Bookings() {
               <ChevronDownIcon width={12} />
             </div>
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                <option>All Properties</option>
+              <select
+                onChange={(e) => {
+                  setSelectedProperty(e.target.value);
+                }}
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+              >
+                <option value="">All Properties</option>
+                {properties.map((property) => (
+                  <option key={property._id} value={property.propertyName}>
+                    {property.propertyName}
+                  </option>
+                ))}
               </select>
               <ChevronDownIcon width={12} />
             </div>

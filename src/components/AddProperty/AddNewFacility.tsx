@@ -11,10 +11,13 @@ function AddNewFacility({
   setModal: any;
 }) {
   const [facilityList] = useState<any>({
+    ...counterStates.amenities,
     "Swimming Pool": 1,
     Griller: 1,
     Bathroom: 1,
     "Basket Court": 1,
+    Gym: 1,
+    Wifi: 1,
   });
 
   const [selectedFacility, setSelectedFacility] = useState<any>({});
@@ -78,7 +81,6 @@ function AddNewFacility({
             setCounterStates({
               ...counterStates,
               amenities: {
-                ...counterStates.amenities,
                 ...selectedFacility,
               },
             });
