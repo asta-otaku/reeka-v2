@@ -1,7 +1,9 @@
 function Pricing({
+  edit,
   property,
   setProperty,
 }: {
+  edit: boolean;
   property: any;
   setProperty: any;
 }) {
@@ -9,7 +11,6 @@ function Pricing({
     <div className="my-4">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-[#121212] font-medium text-lg">Price</h3>
-        <button className="text-[#808080] text-xs font-medium">Edit</button>
       </div>
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2 w-full">
@@ -18,6 +19,8 @@ function Pricing({
             <input
               name="basePrice"
               placeholder="$"
+              disabled={!edit}
+              style={{ color: edit ? "#121212" : "#808080" }}
               onChange={(e) => {
                 setProperty({
                   ...property,
@@ -37,20 +40,24 @@ function Pricing({
           <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
             <div className="bg-white rounded-2xl p-2">
               <h4 className="text-[#808080] text-xs">Discounted Price</h4>
-              <span className="text-[#121212] flex gap-2 py-2 text-2xl">
+              <span
+                className="text-[#121212] flex gap-2 py-2 text-2xl"
+                style={{ color: edit ? "#121212" : "#808080" }}
+              >
                 $
                 <input
                   className="outline-none w-fit bg-transparent"
+                  disabled={!edit}
                   value={(
                     property?.price?.basePrice -
                     (Math.abs(property?.price?.discountPercentage) / 100) *
                       property?.price?.basePrice
                   ).toFixed(0)}
                   onChange={(e) => {
+                    if (!edit) return;
                     const newDiscountedPrice = Number(e.target.value);
                     if (newDiscountedPrice < 0) return;
                     if (newDiscountedPrice > property.price.basePrice) return;
-                    // Ensure basePrice is not zero to avoid division by zero
                     const discountPercentage =
                       property.price.basePrice !== 0
                         ? ((property.price.basePrice - newDiscountedPrice) /
@@ -76,7 +83,8 @@ function Pricing({
               <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                 <button
                   onClick={() => {
-                    if (property?.price?.discountPercentage == 0) return;
+                    if (!edit) return;
+                    if (property?.price?.discountPercentage === 0) return;
                     setProperty({
                       ...property,
                       price: {
@@ -86,7 +94,10 @@ function Pricing({
                       },
                     });
                   }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  className={`w-5 h-5 rounded-full ${
+                    edit ? "bg-[#FAFAFA] text-xs" : "bg-gray-200 text-gray-400"
+                  }`}
+                  disabled={!edit}
                 >
                   -
                 </button>
@@ -96,8 +107,11 @@ function Pricing({
                 Discount by
                 <input
                   className="w-8 outline-none text-center"
+                  disabled={!edit}
+                  style={{ color: edit ? "#121212" : "#808080" }}
                   value={property?.price?.discountPercentage || 0}
                   onChange={(e: any) => {
+                    if (!edit) return;
                     if (e.target.value > 100) return;
                     setProperty({
                       ...property,
@@ -113,6 +127,7 @@ function Pricing({
               <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                 <button
                   onClick={() => {
+                    if (!edit) return;
                     if (property?.price?.discountPercentage > 100) return;
                     setProperty({
                       ...property,
@@ -123,7 +138,10 @@ function Pricing({
                       },
                     });
                   }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  className={`w-5 h-5 rounded-full ${
+                    edit ? "bg-[#FAFAFA] text-xs" : "bg-gray-200 text-gray-400"
+                  }`}
+                  disabled={!edit}
                 >
                   +
                 </button>
@@ -134,19 +152,23 @@ function Pricing({
           <div className="bg-[#FAFAFA] border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-2xl p-2 w-full">
             <div className="bg-white rounded-2xl p-2">
               <h4 className="text-[#808080] text-xs">Boosted Price</h4>
-              <span className="text-[#121212] flex gap-2 py-2 text-2xl">
+              <span
+                className="text-[#121212] flex gap-2 py-2 text-2xl"
+                style={{ color: edit ? "#121212" : "#808080" }}
+              >
                 $
                 <input
                   className="outline-none w-fit bg-transparent"
+                  disabled={!edit}
                   value={(
                     property?.price?.basePrice +
                     (property?.price?.boostPercentage / 100) *
                       property?.price?.basePrice
                   ).toFixed(0)}
                   onChange={(e) => {
+                    if (!edit) return;
                     const newBoostedPrice = Number(e.target.value);
                     if (newBoostedPrice < 0) return;
-                    // Ensure basePrice is not zero to avoid division by zero
                     const boostPercentage =
                       property.price.basePrice !== 0
                         ? ((newBoostedPrice - property.price.basePrice) /
@@ -169,6 +191,7 @@ function Pricing({
               <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                 <button
                   onClick={() => {
+                    if (!edit) return;
                     setProperty((prev: any) => ({
                       ...prev,
                       price: {
@@ -180,7 +203,10 @@ function Pricing({
                       },
                     }));
                   }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  className={`w-5 h-5 rounded-full ${
+                    edit ? "bg-[#FAFAFA] text-xs" : "bg-gray-200 text-gray-400"
+                  }`}
+                  disabled={!edit}
                 >
                   -
                 </button>
@@ -190,8 +216,11 @@ function Pricing({
                 Boost by
                 <input
                   className="w-8 outline-none text-center"
+                  disabled={!edit}
+                  style={{ color: edit ? "#121212" : "#808080" }}
                   value={property?.price?.boostPercentage || 0}
                   onChange={(e) => {
+                    if (!edit) return;
                     setProperty((prev: any) => ({
                       ...prev,
                       price: {
@@ -207,6 +236,7 @@ function Pricing({
               <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                 <button
                   onClick={() => {
+                    if (!edit) return;
                     setProperty((prev: any) => ({
                       ...prev,
                       price: {
@@ -218,7 +248,10 @@ function Pricing({
                       },
                     }));
                   }}
-                  className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
+                  className={`w-5 h-5 rounded-full ${
+                    edit ? "bg-[#FAFAFA] text-xs" : "bg-gray-200 text-gray-400"
+                  }`}
+                  disabled={!edit}
                 >
                   +
                 </button>

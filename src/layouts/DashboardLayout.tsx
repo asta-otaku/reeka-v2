@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import plus from "../assets/plus-sign-square.svg";
 
 import {
-  // AccountSettingIcon,
+  AccountSettingIcon,
   CalendarIcon,
   CloseIcon,
   CodeSandBoxIcon,
@@ -19,6 +19,7 @@ import {
 } from "../assets/icons";
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
+import toast, { Toaster } from "react-hot-toast";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
@@ -31,6 +32,7 @@ function DashboardLayout({ children }: any) {
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const pricing = localStorage.getItem("pricingPlan") || "";
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
@@ -38,8 +40,15 @@ function DashboardLayout({ children }: any) {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (pricing === "") {
+      window.location.href = "/pricing";
+    }
+  }, [pricing]);
+
   return (
     <div className="bg-[#FAFAFA]">
+      <Toaster />
       {/* General Modal */}
       {currentModal && <ModalLayout />}
       <div
@@ -127,7 +136,7 @@ function DashboardLayout({ children }: any) {
                 Icon={ManagerIcon}
                 title="Personnel Management"
               /> */}
-              {/* <ListItem route="#" Icon={AccountSettingIcon} title="Settings" /> */}
+              <ListItem route="#" Icon={AccountSettingIcon} title="Logout" />
             </ul>
           </div>
 
@@ -159,6 +168,15 @@ function ListItem({
   return (
     <li>
       <Link
+        onClick={() => {
+          if (route === "#") {
+            toast.success("Logged out successfully");
+            setTimeout(() => {
+              localStorage.removeItem("user");
+              window.location.href = "/signin";
+            }, 2000);
+          }
+        }}
         to={route}
         className={`flex gap-3 items-center w-full p-2 my-1.5 hover:bg-primary/20 rounded-md no-underline ${
           location.pathname.startsWith(route)

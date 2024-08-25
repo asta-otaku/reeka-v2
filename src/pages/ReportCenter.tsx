@@ -1,36 +1,20 @@
 import { Calendar, ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
-import chart1 from "../assets/chart1.svg";
-import chart2 from "../assets/chart2.svg";
-import deleteIcon from "../assets/delete-01.svg";
+// import deleteIcon from "../assets/delete-01.svg";
 import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import { useEffect, useState } from "react";
 import useStore from "../store";
 import axios from "axios";
 import { CONSTANT } from "../util";
-
-const data = [
-  {
-    id: 1,
-    title: "Revenue Report:Allen House",
-    date: "Created 21st February 2024",
-    image: chart1,
-  },
-  {
-    id: 2,
-    title: "Booking Report:Ame's House",
-    date: "Created 1st October, 2024",
-    image: chart2,
-  },
-];
+import toast, { Toaster } from "react-hot-toast";
 
 function ReportCenter() {
   const [search, setSearch] = useState("");
   const setModal = useStore((state: any) => state.setModal);
   const [properties, setProperties] = useState<any[]>([]);
-  const [, setSelectedProperty] = useState("");
+  const [selectedProperty, setSelectedProperty] = useState("");
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -69,7 +53,7 @@ function ReportCenter() {
                 }}
                 className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
               >
-                <option>All Properties</option>
+                <option value="">All Properties</option>
                 {properties.map((property) => (
                   <option key={property._id} value={property.propertyName}>
                     {property.propertyName}
@@ -90,7 +74,7 @@ function ReportCenter() {
               />
             </div>
             <button
-              onClick={() => setModal(<ReportModal />)}
+              onClick={() => setModal(<ReportModal properties={properties} />)}
               className="bg-primary p-2 rounded-xl text-white w-full md:w-fit md:absolute md:-top-20 z-10 right-6 font-medium text-sm border border-primary"
             >
               New Report
@@ -99,30 +83,40 @@ function ReportCenter() {
         </div>
 
         <div className="flex flex-wrap items-center gap-6 px-6">
-          {data
+          {properties
+            .filter((bk: any) =>
+              bk?.propertyName
+                ?.toLowerCase()
+                .includes(selectedProperty.toLowerCase())
+            )
             .filter((item) =>
-              item.title.toLowerCase().includes(search.toLowerCase())
+              item?.propertyName?.toLowerCase().includes(search.toLowerCase())
             )
             .map((dt) => (
               <div
-                key={dt.id}
+                key={dt._id}
                 className="rounded-2xl border w-full md:w-[320px] h-[280px]"
               >
-                <div className="p-4 bg-[#FAFAFA] rounded-t-2xl relative w-full h-[70%] select-none">
-                  <img src={dt.image} alt="chart" />
+                <div className="p-4 bg-[#FAFAFA] rounded-t-[32px] relative w-full h-[70%] select-none">
                   <img
-                    src={dt.image}
+                    src={dt.images[0]}
                     alt="chart"
-                    className="right-4 bottom-4 absolute"
+                    className="w-full h-40 rounded-xl"
                   />
                 </div>
                 <div className="border-t p-4 flex items-center justify-between">
                   <div>
                     <p className="font-medium text-sm truncate max-w-[200px]">
-                      {dt.title}
+                      {dt.propertyName}
                     </p>
                     <p className="font-light text-[#808080] text-xs">
-                      {dt.date}
+                      Created at{" "}
+                      {new Date(dt.createdAt).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </p>
                   </div>
                   <div className="flex gap-4 select-none">
@@ -131,7 +125,7 @@ function ReportCenter() {
                       alt="download"
                       className="cursor-pointer"
                     />
-                    <img src={deleteIcon} className="w-4 cursor-pointer" />
+                    {/* <img src={deleteIcon} className="w-4 cursor-pointer" /> */}
                   </div>
                 </div>
               </div>
@@ -144,22 +138,57 @@ function ReportCenter() {
 
 export default ReportCenter;
 
-function ReportModal() {
+function ReportModal({ properties }: any) {
+  const [form, setForm] = useState({
+    type: "",
+    property: "",
+    from: "",
+    to: "",
+  });
+
+  const handleDownload = (e: any) => {
+    e.preventDefault();
+    if (!form.type) {
+      toast.error("Please select a report type");
+      return;
+    }
+    axios
+      .get(`${CONSTANT.BASE_URL}/report/${CONSTANT.USER_ID}/${form.type}`, {
+        responseType: "blob",
+      })
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `report.${form.type}`);
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch(() => {
+        toast.error("Error copying link");
+      });
+  };
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
       className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl p-4"
     >
+      <Toaster />
       <h2 className="text-secondary font-semibold text-lg">Report</h2>
       <form className="flex flex-col gap-2 mt-4">
         <div className="flex flex-col gap-2 w-full">
           <h4 className="text-[#3A3A3A] text-sm font-medium">Report Type*</h4>
           <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
             <select
-              name="type"
+              onChange={(e) => {
+                setForm({ ...form, type: e.target.value });
+              }}
               className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
             >
-              <option value="Apartment">Report Type</option>
+              <option value="">Report Type</option>
+              <option value="pdf">PDF</option>
+              <option value="csv">CSV</option>
             </select>
             <ChevronDownIcon width={16} />
           </div>
@@ -168,12 +197,22 @@ function ReportModal() {
           <h4 className="text-[#3A3A3A] text-sm font-medium">Property*</h4>
           <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
             <select
-              name="type"
-              className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
+              onChange={(e) => {
+                setForm({ ...form, property: e.target.value });
+              }}
+              className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
             >
-              <option value="Apartment">Property</option>
+              <option value="">All Properties</option>
+              {properties.map((property: any) => (
+                <option
+                  key={property.propertyName}
+                  value={property.propertyName}
+                >
+                  {property.propertyName}
+                </option>
+              ))}
             </select>
-            <ChevronDownIcon width={16} />
+            <ChevronDownIcon width={12} />
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -183,7 +222,7 @@ function ReportModal() {
               <Calendar className="w-6" />
               <input
                 type="date"
-                placeholder="Price per night"
+                onChange={(e) => setForm({ ...form, from: e.target.value })}
                 className="w-full outline-none bg-transparent text-[#667085]"
               />
             </div>
@@ -194,13 +233,16 @@ function ReportModal() {
               <Calendar className="w-6" />
               <input
                 type="date"
-                placeholder="Price per night"
+                onChange={(e) => setForm({ ...form, to: e.target.value })}
                 className="w-full outline-none bg-transparent text-[#667085]"
               />
             </div>
           </div>
         </div>
-        <button className="bg-primary p-2 rounded-lg text-white mt-8 w-32 mx-auto font-semibold text-sm">
+        <button
+          onClick={handleDownload}
+          className="bg-primary p-2 rounded-lg text-white mt-8 w-32 mx-auto font-semibold text-sm"
+        >
           Generate
         </button>
       </form>

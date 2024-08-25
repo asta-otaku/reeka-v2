@@ -47,6 +47,7 @@ function StepTwo({
         bookingsArray.push({
           ...res.data,
           ...property,
+          color: "#" + Math.floor(Math.random() * 16777215).toString(16),
         });
         localStorage.setItem("bookings", JSON.stringify(bookingsArray));
         toast.success("Reservation successful");

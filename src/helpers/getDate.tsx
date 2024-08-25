@@ -45,13 +45,17 @@ export function getDateRange() {
   // Get the year of the timestamp
   const year = date.getFullYear();
 
-  // Calculate the next month and handle the year change if needed
-  const nextMonth = date.getMonth() + 1 === 12 ? 0 : date.getMonth() + 1;
-  const nextMonthYear = nextMonth === 0 ? year + 1 : year;
+  // Calculate the previous month and handle the year change if needed
+  const previousMonth = date.getMonth() === 0 ? 11 : date.getMonth() - 1;
+  const previousMonthYear = previousMonth === 11 ? year - 1 : year;
 
   // Construct the start and end dates
-  const startDate = new Date(year, date.getMonth(), date.getDate()); // January 4th of the provided year
-  const endDate = new Date(nextMonthYear, nextMonth, date.getDate()); // February 4th of the next month/year
+  const startDate = new Date(
+    previousMonthYear,
+    previousMonth,
+    date.getDate() + 1
+  ); // First day of the previous month
+  const endDate = new Date(year, date.getMonth(), date.getDate()); // Current day
 
   // Format the start and end dates
   const startMonthName = monthNames[startDate.getMonth()];
@@ -60,5 +64,7 @@ export function getDateRange() {
   const endDateOfMonth = endDate.getDate();
 
   // Format the result
-  return `${startMonthName} ${startDateOfMonth} - ${endMonthName} ${endDateOfMonth}`;
+  const dateRange = `${startMonthName} ${startDateOfMonth} - ${endMonthName} ${endDateOfMonth}`;
+
+  return dateRange;
 }

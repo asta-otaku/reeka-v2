@@ -14,6 +14,7 @@ import Reservation from "./pages/Reservation.tsx";
 import ViewProperty from "./components/ViewProperty/index.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import SignUp from "./pages/SignUp.tsx";
+import Pricing from "./pages/Pricing.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/integration" element={<Integrations />} />
         <Route path="/listing" element={<ListingManagement />} />
         <Route path="/listing/:id" element={<ViewProperty />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/report" element={<ReportCenter />} />
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/signin" element={<SignIn />} />

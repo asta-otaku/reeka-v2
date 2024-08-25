@@ -4,7 +4,7 @@ import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import searchIcon from "../../assets/search-01.svg";
-import BookingTable from ".././BookingTable";
+import BookingTable from "../BookingTable";
 import axios from "axios";
 import { CONSTANT } from "../../util";
 import ReactPaginate from "react-paginate";
@@ -20,6 +20,14 @@ function ViewProperty() {
   const navigate = useNavigate();
 
   const prop = location?.state?.property || {};
+
+  // Check if prop is empty and redirect to listing page
+  useEffect(() => {
+    if (Object.keys(prop).length === 0) {
+      window.location.href = "/listing";
+    }
+  }, [prop]);
+
   const [property, setProperty] = useState<any>({
     ...prop,
     price: {
@@ -27,11 +35,20 @@ function ViewProperty() {
       discountPercentage: prop?.price?.discountPercentage,
     },
   });
+
+  const [initialProperty, setInitialProperty] = useState<any>({
+    ...prop,
+    price: {
+      ...prop?.price,
+      discountPercentage: prop?.price?.discountPercentage,
+    },
+  });
+
   const [bookedStatus, setBookedStatus] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [selected, setSelected] = useState(0);
   const [images, setImages] = useState<any>([...property?.images]);
   const [search, setSearch] = useState("");
-
   const [bookings, setBookings] = useState<any>([]);
 
   useEffect(() => {
@@ -47,14 +64,10 @@ function ViewProperty() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [property._id]);
 
   useEffect(() => {
-    if (bookings.length > 0) {
-      setBookedStatus(true);
-    } else {
-      setBookedStatus(false);
-    }
+    setBookedStatus(bookings.length > 0);
   }, [bookings]);
 
   const handleDelete = async () => {
@@ -71,11 +84,21 @@ function ViewProperty() {
         toast.error("An error occurred");
       }
     } catch (error) {
+      toast.error("Failed to delete property");
       console.error(error);
     }
   };
 
+  const hasChanges = () => {
+    return JSON.stringify(initialProperty) !== JSON.stringify(property);
+  };
+
   const handleUpdate = async () => {
+    if (!hasChanges()) {
+      toast.success("No changes detected");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);
@@ -91,6 +114,7 @@ function ViewProperty() {
     property.images.forEach((image: any) => {
       formData.append("images", image);
     });
+
     try {
       const res = await axios.put(
         `${CONSTANT.BASE_URL}/properties/${property._id}`,
@@ -98,6 +122,7 @@ function ViewProperty() {
       );
       if (res.status === 200) {
         toast.success("Property updated successfully");
+        setInitialProperty({ ...property }); // Update initial property after a successful update
         setTimeout(() => {
           navigate("/listing");
         }, 2000);
@@ -105,19 +130,17 @@ function ViewProperty() {
         toast.error("An error occurred");
       }
     } catch (error) {
+      toast.error("Failed to update property");
       console.error(error);
     }
   };
 
-  //pagination logic
-
+  // Pagination logic
   const itemsPerPage = 5;
-
   const [currentPage, setCurrentPage] = useState(0);
-
   const pageCount = Math.ceil(bookings.length / itemsPerPage);
 
-  const handlePageChange = ({ selected }: { selected: any }) => {
+  const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
 
@@ -129,11 +152,7 @@ function ViewProperty() {
         bk?.guestFirstName?.toLowerCase().includes(search.toLowerCase()) ||
         bk?.guestLastName?.toLowerCase().includes(search.toLowerCase())
     )
-    .slice(
-      currentPage * itemsPerPage,
-
-      (currentPage + 1) * itemsPerPage
-    );
+    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
     <DashboardLayout>
@@ -208,10 +227,23 @@ function ViewProperty() {
 
         <div className="my-4 flex flex-col lg:flex-row justify-between items-start gap-8 px-6">
           <div className="w-full lg:w-[50%]">
-            <PropertyDetails property={property} setProperty={setProperty} />
-            <ImageSection images={images} setImages={setImages} />
-            <Amenities property={property} setProperty={setProperty} />
-            <Pricing property={property} setProperty={setProperty} />
+            <PropertyDetails
+              property={property}
+              setProperty={setProperty}
+              edit={edit}
+              setEdit={setEdit}
+            />
+            <ImageSection images={images} setImages={setImages} edit={edit} />
+            <Amenities
+              property={property}
+              setProperty={setProperty}
+              edit={edit}
+            />
+            <Pricing
+              property={property}
+              setProperty={setProperty}
+              edit={edit}
+            />
 
             <div className="flex items-center gap-4 mt-6">
               <button
