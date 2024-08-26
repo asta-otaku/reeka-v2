@@ -153,9 +153,12 @@ function ReportModal({ properties }: any) {
       return;
     }
     axios
-      .get(`${CONSTANT.BASE_URL}/report/${CONSTANT.USER_ID}/${form.type}`, {
-        responseType: "blob",
-      })
+      .get(
+        `${CONSTANT.BASE_URL}/report/${CONSTANT.USER_ID}/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
+        {
+          responseType: "blob",
+        }
+      )
       .then((res) => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
@@ -165,7 +168,7 @@ function ReportModal({ properties }: any) {
         link.click();
       })
       .catch(() => {
-        toast.error("Error copying link");
+        toast.error("An error occurred while generating report");
       });
   };
 
