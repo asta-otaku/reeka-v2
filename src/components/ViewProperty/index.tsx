@@ -288,7 +288,7 @@ function ViewProperty() {
               </button> */}
             </div>
             <div className="px-4 overflow-auto max-h-[400px] no-scrollbar">
-              <BookingTable data={displayedData} setData={setBookings} />
+              <BookingTable data={displayedData} />
               <ReactPaginate
                 previousLabel={""}
                 nextLabel={""}

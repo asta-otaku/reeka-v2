@@ -125,7 +125,7 @@ function AddNewFacility({
             });
             setModal(null);
           }}
-          className="bg-[#C4C4C4] text-white rounded-lg text-sm font-semibold w-24 h-9"
+          className="bg-[#219653] text-white rounded-lg text-sm font-semibold w-24 h-9"
         >
           Add
         </button>

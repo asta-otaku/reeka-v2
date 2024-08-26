@@ -4,9 +4,6 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { CONSTANT } from "../../util";
 
-const bookings = localStorage.getItem("bookings");
-const bookingsArray = bookings ? JSON.parse(bookings) : [];
-
 function StepTwo({
   formDetails,
   hideFeatures,
@@ -43,13 +40,7 @@ function StepTwo({
         totalBookingValue: 200,
         numberOfGuests: formDetails.noOfGuests,
       })
-      .then((res) => {
-        bookingsArray.push({
-          ...res.data,
-          ...property,
-          color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-        });
-        localStorage.setItem("bookings", JSON.stringify(bookingsArray));
+      .then(() => {
         toast.success("Reservation successful");
         setStep(3);
       })

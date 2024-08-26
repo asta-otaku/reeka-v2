@@ -47,7 +47,13 @@ function Bookings() {
 
   const [currentPage, setCurrentPage] = useState(0);
 
-  const pageCount = Math.ceil(bookings.length / itemsPerPage);
+  const pageCount = Math.ceil(
+    bookings.filter((booking: any) =>
+      booking?.propertyId?.propertyName
+        ?.toLowerCase()
+        .includes(selectedProperty.toLowerCase())
+    ).length / itemsPerPage
+  );
 
   const handlePageChange = ({ selected }: { selected: any }) => {
     setCurrentPage(selected);
@@ -107,7 +113,7 @@ function Bookings() {
         </div>
 
         <div className="overflow-x-auto px-6 no-scrollbar mt-6">
-          <BookingTable data={displayedData} setData={setBookings} />
+          <BookingTable data={displayedData} />
         </div>
         <ReactPaginate
           previousLabel={""}

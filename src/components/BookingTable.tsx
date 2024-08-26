@@ -1,8 +1,9 @@
-import exportIcon from "../assets/sent.svg";
-import deleteIcon from "../assets/delete-01.svg";
-import share from "../assets/share-08.svg";
+import useStore from "../store";
+import redcancel from "../assets/cancel-red.svg";
 
-function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
+function BookingTable({ data }: { data: any[] }) {
+  const setModal = useStore((state: any) => state.setModal);
+
   function formatDate(date: string) {
     const d = new Date(date);
     return d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
@@ -23,7 +24,12 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
         data.map((item, i) => (
           <div key={i}>
             <div className="">
-              <table className="min-w-full text-left text-xs border-collapse bg-[#F2F2F2] rounded-xl shadow">
+              <table
+                onClick={() =>
+                  setModal(<Modal setModal={setModal} booking={item} />)
+                }
+                className="min-w-full text-left text-xs border-collapse bg-[#F2F2F2] rounded-xl shadow"
+              >
                 <thead className="text-[#BDBDBD] text-sm">
                   <tr className="capitalize">
                     <th
@@ -65,7 +71,9 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                     <th
                       scope="col"
                       className="px-6 py-4 whitespace-nowrap font-bold"
-                    />
+                    >
+                      Check-out Date
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
@@ -134,24 +142,11 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3 w-full">
-                        <button className="w-full">
-                          <img src={exportIcon} className="min-w-[20px]" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            const newData = data.filter(
-                              (_, index) => index !== i
-                            );
-                            setData(newData);
-                          }}
-                          className="w-full"
-                        >
-                          <img src={deleteIcon} className="min-w-[20px]" />
-                        </button>
-                        <button className="w-full">
-                          <img src={share} className="min-w-[20px]" />
-                        </button>
+                      <div className="text-sm text-[#121212] font-medium">
+                        {formatDate(item?.endDate?.toString())}
+                      </div>
+                      <div className="text-[10px] text-[#808080] font-light">
+                        {formatTime(item?.endDate?.toString())}
                       </div>
                     </td>
                   </tr>
@@ -171,3 +166,98 @@ function BookingTable({ data, setData }: { data: any[]; setData?: any }) {
 }
 
 export default BookingTable;
+
+function Modal({ booking, setModal }: { booking: any; setModal: any }) {
+  console.log(booking);
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full"
+    >
+      <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
+        <h5 className="text-[#808080] font-light text-xs">Apartment</h5>
+        <div className="flex w-full justify-between items-center my-3">
+          <div>
+            <h2 className="text-[#121212] font-semibold text-xs">
+              {booking?.propertyId?.propertyName}
+            </h2>
+            <p className="text-[#3A3A3A] font-light text-[10px]">
+              {booking?.propertyId?.address}
+            </p>
+          </div>
+        </div>
+        <div className="w-full h-40">
+          <img
+            className="w-full h-full object-cover rounded-xl"
+            src={booking?.propertyId?.images[0]}
+          />
+        </div>
+      </div>
+      <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white mt-1">
+        <div className="flex w-full justify-between items-center">
+          <h3 className="text-[#808080] text-xs">Details</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 my-2">
+          <div>
+            <h2 className="text-[#808080] text-xs">First Name</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.guestFirstName}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Last Name</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.guestLastName}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Phone no</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.guestPhone}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Email</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.guestEmail}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Price per night</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              ${booking?.propertyId?.price?.basePrice}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Number of guest</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.numberOfGuests}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Check-in</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.startDate?.split("T")[0]}
+            </h4>
+          </div>
+          <div>
+            <h2 className="text-[#808080] text-xs">Check-out</h2>
+            <h4 className="text-[#121212] text-xs mt-0.5">
+              {booking?.endDate?.split("T")[0]}
+            </h4>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => setModal(null)}
+          className="text-[#F94144] font-medium text-sm flex items-center gap-2"
+        >
+          <img src={redcancel} />
+          Cancel booking
+        </button>
+      </div>
+    </div>
+  );
+}

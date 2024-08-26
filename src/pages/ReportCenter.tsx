@@ -30,15 +30,38 @@ function ReportCenter() {
     fetchProperties();
   }, []);
 
+  const handleSingleDownload = (propertyName: string) => {
+    axios
+      .get(
+        `${CONSTANT.BASE_URL}/report/${CONSTANT.USER_ID}/pdf?startDate=&endDate=&propertyName=${propertyName}`,
+        {
+          responseType: "blob",
+        }
+      )
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `${propertyName}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(() => {
+        toast.error("An error occurred while generating report");
+      });
+  };
+
   return (
     <DashboardLayout>
-      <div>
+      <div className="px-4">
         <DashboardNav
           title="Report Management"
           description="Manage your bookings with ease."
         />
 
-        <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6 relative">
+        <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 relative">
           <div className="flex items-center gap-4">
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
@@ -82,7 +105,7 @@ function ReportCenter() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-6 px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {properties
             .filter((bk: any) =>
               bk?.propertyName
@@ -93,10 +116,7 @@ function ReportCenter() {
               item?.propertyName?.toLowerCase().includes(search.toLowerCase())
             )
             .map((dt) => (
-              <div
-                key={dt._id}
-                className="rounded-2xl border w-full md:w-[320px] h-[280px]"
-              >
+              <div key={dt._id} className="rounded-2xl border max-w-sm">
                 <div className="p-4 bg-[#FAFAFA] rounded-t-[32px] relative w-full h-[70%] select-none">
                   <img
                     src={dt.images[0]}
@@ -123,6 +143,7 @@ function ReportCenter() {
                     <img
                       src={downloadIcon}
                       alt="download"
+                      onClick={() => handleSingleDownload(dt.propertyName)}
                       className="cursor-pointer"
                     />
                     {/* <img src={deleteIcon} className="w-4 cursor-pointer" /> */}
@@ -163,7 +184,14 @@ function ReportModal({ properties }: any) {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", `report.${form.type}`);
+        const filename = `${form.property ? `${form.property}-` : "report"}${
+          form.from
+        }-to-${form.to}.${form.type}`;
+        if (form.property && form.from && form.to && form.type) {
+          link.setAttribute("download", filename);
+        } else {
+          link.setAttribute("download", `report.${form.type}`);
+        }
         document.body.appendChild(link);
         link.click();
       })

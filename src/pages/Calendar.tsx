@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
-// import { getDateRange } from "../helpers/getDate";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
@@ -31,10 +30,24 @@ function Calendar() {
   }, []);
 
   useEffect(() => {
-    const bookings = localStorage.getItem("bookings");
-    if (bookings) {
-      setBookingsArray(JSON.parse(bookings));
-    }
+    axios
+      .get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`)
+      .then((response) => {
+        const formattedBookings = response.data.map((booking: any) => ({
+          _id: booking.id,
+          propertyName: booking.propertyId.propertyName,
+          guestFirstName: booking.guestFirstName,
+          guestLastName: booking.guestLastName,
+          createdAt: booking.createdAt,
+          endDate: booking.endDate,
+          color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+        }));
+
+        setBookingsArray(formattedBookings);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   bookingsArray
@@ -52,8 +65,8 @@ function Calendar() {
           "[" +
           booking.propertyName +
           "]",
-        start: new Date(booking.createdAt),
-        end: new Date(booking.endDate),
+        start: new Date(booking.createdAt.split("T")[0]),
+        end: new Date(booking.endDate.split("T")[0]),
         bgColor: booking.color,
       });
     });
@@ -68,18 +81,6 @@ function Calendar() {
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
           <div className="flex items-center gap-4 min-w-fit overflow-x-auto no-scrollbar">
-            {/* <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                <option>Weekly</option>
-              </select>
-              <ChevronDownIcon width={12} />
-            </div>
-            <div className="flex items-center justify-center gap-2 bg-white border rounded-xl p-2 w-fit">
-              <CalendarIcon width={12} />
-              <select className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent">
-                <option>{getDateRange()}</option>
-              </select>
-            </div> */}
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
                 <option>Bookings</option>
@@ -122,7 +123,6 @@ function Calendar() {
               setBookingsArray(
                 bookingsArray.filter((booking) => booking._id !== event.id)
               );
-              localStorage.setItem("bookings", JSON.stringify(bookingsArray));
             }}
           />
         </div>

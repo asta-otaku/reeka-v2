@@ -152,6 +152,7 @@ function StepOne({
               <input
                 name="checkIn"
                 value={formDetails.checkIn}
+                min={new Date().toISOString().split("T")[0]}
                 type="date"
                 placeholder="Check In Date"
                 className="w-full outline-none bg-transparent text-[#667085]"
@@ -169,6 +170,7 @@ function StepOne({
                 name="checkOut"
                 value={formDetails.checkOut}
                 type="date"
+                min={new Date().toISOString().split("T")[0]}
                 placeholder="Price per night"
                 className="w-full outline-none bg-transparent text-[#667085]"
                 onChange={handleChange}
