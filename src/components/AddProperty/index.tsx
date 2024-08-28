@@ -46,7 +46,7 @@ function AddProperty({ setStep }: { setStep: any }) {
     city: "",
     country: "",
     baseCurrency: "USD",
-    owner: CONSTANT.USER_ID,
+    owner: CONSTANT.USER_ID || "",  // Provide fallback to empty string
     employees: [],
     price: {
       basePrice: 0,
