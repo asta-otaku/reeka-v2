@@ -7,6 +7,8 @@ import Select from "react-select";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import toast, { Toaster } from "react-hot-toast";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 function SignUp() {
   const [step, setStep] = useState(0);
@@ -15,6 +17,7 @@ function SignUp() {
     firstName: "",
     email: "",
     address: "",
+    countryCode: "",
     country: "",
     password: "",
     phoneNumber: "",
@@ -23,6 +26,8 @@ function SignUp() {
   const handleChange = (e: any) => {
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
   };
+
+  console.log(formDetails);
 
   const handleSignUp = (e: any) => {
     e.preventDefault();
@@ -124,18 +129,39 @@ function SignUp() {
                       className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
                     />
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <label
-                      className="text-[#3A3A3A] font-medium text-sm"
-                      htmlFor="phoneNumber"
-                    >
-                      Phone Number
-                    </label>
+                  <div className="flex items-center">
+                    <span>
+                      <PhoneInput
+                        onChange={(e) =>
+                          setFormDetails({
+                            ...formDetails,
+                            countryCode: e,
+                          })
+                        }
+                        country={"au"}
+                        autoFormat={false}
+                        containerStyle={{
+                          border: "1px solid #F7F7F7",
+                          borderStartStartRadius: 8,
+                          borderEndStartRadius: 8,
+                        }}
+                        buttonStyle={{
+                          border: "none",
+                          width: 0,
+                        }}
+                        inputStyle={{
+                          width: "80px",
+                          border: "none",
+                          color: "grey",
+                        }}
+                      />
+                    </span>
                     <input
+                      type="text"
                       name="phoneNumber"
                       onChange={handleChange}
                       placeholder="Phone Number"
-                      className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
+                      className="bg-transparent w-full py-2 px-4 border border-solid rounded-e-lg text-sm font-semibold outline-none"
                     />
                   </div>
                   <div className="flex flex-col gap-2 w-full">

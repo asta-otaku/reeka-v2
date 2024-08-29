@@ -135,7 +135,7 @@ function DashboardCharts() {
     },
     {
       title: "Revenue",
-      amount: monthlyRevenue.totalRevenue,
+      amount: monthlyRevenue.totalRevenue || 0,
       percentage: monthlyRevenue.percentageChangeRevenue || 0,
       caption: "total revenue earned" || 0,
     },
