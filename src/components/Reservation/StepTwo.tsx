@@ -123,8 +123,8 @@ function StepTwo({
           </div>
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
-            <h4 className="text-[#121212] text-xs mt-0.5">
-              ${property?.price?.basePrice}
+            <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
+              {formDetails.price}
             </h4>
           </div>
           <div>

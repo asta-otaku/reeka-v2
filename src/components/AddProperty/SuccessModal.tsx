@@ -22,7 +22,10 @@ function SuccessModal({ setModal }: any) {
             Your property has been successfully added
           </p>
         </div>
-        <button className="bg-primary whitespace-nowrap border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 rounded-md">
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-primary whitespace-nowrap border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 rounded-md"
+        >
           View Property
         </button>
       </div>

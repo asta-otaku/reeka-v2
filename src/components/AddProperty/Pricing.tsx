@@ -60,7 +60,7 @@ function Pricing({
               <div className="bg-white rounded-2xl p-2">
                 <h4 className="text-[#808080] text-xs">Discounted Price</h4>
                 <span className="text-[#121212] flex gap-2 py-2 text-2xl">
-                  $
+                  ₦
                   <input
                     className="outline-none w-fit bg-transparent"
                     value={(
@@ -143,7 +143,7 @@ function Pricing({
               <div className="bg-white rounded-2xl p-2">
                 <h4 className="text-[#808080] text-xs">Boosted Price</h4>
                 <span className="text-[#121212] flex gap-2 py-2 text-2xl">
-                  $
+                  ₦
                   <input
                     className="outline-none w-fit bg-transparent"
                     value={(

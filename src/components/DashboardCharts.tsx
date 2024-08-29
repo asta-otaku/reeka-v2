@@ -14,9 +14,7 @@ function DashboardCharts() {
   const [dailyAverageNightlyRate, setdailyAverageNightlyRate] = useState<any>(
     []
   );
-  const [previousMonthlyBookings, setPreviousMonthlyBookings] = useState<any>(
-    {}
-  );
+  const [previousDailyBooking, setpreviousDailyBooking] = useState<any>({});
   const [previousMonthlyRevenue, setPreviousMonthlyRevenue] = useState<any>({});
   const [
     previousMonthlyAverageNightlyRate,
@@ -59,7 +57,7 @@ function DashboardCharts() {
     const fetchDailyBookings = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-bookings/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/daily-nights-booked/${userId}`
         );
         setDailyBookings(response.data);
       } catch (error) {
@@ -86,12 +84,12 @@ function DashboardCharts() {
         console.error(error);
       }
     };
-    const fetchPreviousMonthlyBookings = async () => {
+    const fetchpreviousDailyBooking = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-bookings/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/previous/daily-nights-booked/${userId}`
         );
-        setPreviousMonthlyBookings(response.data);
+        setpreviousDailyBooking(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -123,7 +121,7 @@ function DashboardCharts() {
     fetchDailyBookings();
     fetchDailyRevenue();
     fetchDailyAverageNightlyRate();
-    fetchPreviousMonthlyBookings();
+    fetchpreviousDailyBooking();
     fetchPreviousMonthlyRevenue();
     fetchPreviousMonthlyAverageNightlyRate();
   }, []);
@@ -152,16 +150,16 @@ function DashboardCharts() {
   const ChartData = [
     {
       title: "Bookings",
-      amount: monthlyBookings.totalNightsBooked || 0,
+      amount: dailyBookings.totalNights || 0,
       percentage: monthlyBookings.percentageChangeNightsBooked || 0,
       current: dailyBookings.length
         ? dailyBookings.map((item: any) => item.count)
         : [],
-      previous: previousMonthlyBookings.length
-        ? previousMonthlyBookings.map((item: any) => item.totalNights)
+      previous: previousDailyBooking.length
+        ? previousDailyBooking.map((item: any) => item.totalNights)
         : [],
-      labels: dailyAverageNightlyRate.length
-        ? dailyAverageNightlyRate?.map((item: any) => item?.date)
+      labels: dailyBookings.length
+        ? dailyBookings.map((item: any) => item?.date)
         : [],
     },
     {
@@ -224,7 +222,7 @@ function DashboardCharts() {
               <h2 className="text-[#121212] text-2xl font-medium">
                 {data.title === "Bookings"
                   ? data?.amount
-                  : `$${data?.amount
+                  : `₦${data?.amount
                       ?.toFixed(2)
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               </h2>
@@ -261,7 +259,7 @@ function DashboardCharts() {
             <h2 className="flex items-baseline gap-2 text-[#121212] text-2xl font-semibold">
               {data.title === "Bookings"
                 ? data?.amount
-                : `$${data?.amount
+                : `₦${data?.amount
                     ?.toFixed(2)
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               <span

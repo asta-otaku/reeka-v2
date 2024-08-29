@@ -206,7 +206,7 @@ function ViewProperty() {
               <div className="flex items-center gap-2 text-sm text-[#808080]">
                 <span>Apartment</span>
                 <span className="w-2 h-2 rounded-full bg-[#808080]" />
-                <span>${property?.price?.basePrice} per night</span>
+                <span>₦{property?.price?.basePrice} per night</span>
               </div>
             </div>
           </div>

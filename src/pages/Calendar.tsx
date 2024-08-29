@@ -15,6 +15,22 @@ function Calendar() {
   const events: any[] = [];
   const [selectedProperty, setSelectedProperty] = useState("");
 
+  function formatTimestamp(timestamp: string) {
+    const date = new Date(timestamp);
+
+    // Extract date components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    // Extract time components
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    // Combine to get the desired format
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  }
+
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -38,9 +54,10 @@ function Calendar() {
           propertyName: booking.propertyId.propertyName,
           guestFirstName: booking.guestFirstName,
           guestLastName: booking.guestLastName,
-          createdAt: booking.createdAt,
-          endDate: booking.endDate,
+          startDate: formatTimestamp(booking.startDate),
+          endDate: formatTimestamp(booking.endDate),
           color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          ...booking,
         }));
 
         setBookingsArray(formattedBookings);
@@ -65,8 +82,8 @@ function Calendar() {
           "[" +
           booking.propertyName +
           "]",
-        start: new Date(booking.createdAt.split("T")[0]),
-        end: new Date(booking.endDate.split("T")[0]),
+        start: booking.startDate,
+        end: booking.endDate,
         bgColor: booking.color,
       });
     });

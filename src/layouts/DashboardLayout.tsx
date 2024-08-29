@@ -20,6 +20,8 @@ import {
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
 import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { CONSTANT } from "../util";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
@@ -32,7 +34,6 @@ function DashboardLayout({ children }: any) {
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const pricing = localStorage.getItem("pricingPlan") || "";
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
@@ -41,10 +42,17 @@ function DashboardLayout({ children }: any) {
   }, [user]);
 
   useEffect(() => {
-    if (pricing === "") {
-      window.location.href = "/pricing";
-    }
-  }, [pricing]);
+    const fetchPricing = async () => {
+      const res = await axios.get(
+        `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${CONSTANT.USER_ID}`
+      );
+      if (res.data.planType === "") {
+        window.location.href = "/pricing";
+      }
+    };
+
+    fetchPricing();
+  }, []);
 
   return (
     <div className="bg-[#FAFAFA]">

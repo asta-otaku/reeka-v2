@@ -44,7 +44,7 @@ function Pricing({
                 className="text-[#121212] flex gap-2 py-2 text-2xl"
                 style={{ color: edit ? "#121212" : "#808080" }}
               >
-                $
+                ₦
                 <input
                   className="outline-none w-fit bg-transparent"
                   disabled={!edit}
@@ -156,7 +156,7 @@ function Pricing({
                 className="text-[#121212] flex gap-2 py-2 text-2xl"
                 style={{ color: edit ? "#121212" : "#808080" }}
               >
-                $
+                ₦
                 <input
                   className="outline-none w-fit bg-transparent"
                   disabled={!edit}

@@ -21,31 +21,36 @@ const bookings: {
     name: "Airbnb",
     description: "Manage your bookings with ease.",
     logo: airbnb,
-    status: true,
+    status: false,
+    disabled: true,
   },
   {
     name: "Booking.com",
     description: "Manage your bookings with ease.",
     logo: bookingsIcon,
     status: false,
+    disabled: true,
   },
   {
     name: "Expedia",
     description: "Manage your bookings with ease.",
     logo: expedia,
     status: false,
+    disabled: true,
   },
   {
     name: "Vrbo",
     description: "Manage your bookings with ease.",
     logo: vrbo,
     status: false,
+    disabled: true,
   },
   {
     name: "Trivago",
     description: "Manage your bookings with ease.",
     logo: trivago,
     status: false,
+    disabled: true,
   },
 ];
 
@@ -61,7 +66,7 @@ const finances: {
     description: "Manage your payments with ease.",
     logo: finance,
     status: false,
-    disabled: false,
+    disabled: true,
   },
   {
     name: "Mpesa",
@@ -99,8 +104,9 @@ function Integrations() {
             Booking
           </button>
           <button
+            disabled
             onClick={() => setSelected(1)}
-            className={`text-sm pb-2 ${
+            className={`text-sm pb-2 cursor-not-allowed ${
               selected === 1
                 ? " text-primary border-b border-primary"
                 : "text-[#808080]"

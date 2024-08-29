@@ -11,6 +11,26 @@ import { CONSTANT } from "../../util";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
+const initialFormDetails = {
+  propertyName: "",
+  address: "",
+  city: "",
+  country: "",
+  baseCurrency: "NGN",
+  owner: CONSTANT.USER_ID || "",
+  employees: [],
+  price: {
+    basePrice: 0,
+    discountPercentage: 0,
+    boostPercentage: 0,
+  },
+  pricingState: "base",
+  bedroomCount: 0,
+  bathroomCount: 0,
+  amenities: {},
+  images: [],
+};
+
 function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const setModal = useStore((state: any) => state.setModal);
@@ -40,25 +60,7 @@ function AddProperty({ setStep }: { setStep: any }) {
       [key: string]: number;
     };
     images: string[];
-  }>({
-    propertyName: "",
-    address: "",
-    city: "",
-    country: "",
-    baseCurrency: "USD",
-    owner: CONSTANT.USER_ID || "",  // Provide fallback to empty string
-    employees: [],
-    price: {
-      basePrice: 0,
-      discountPercentage: 0,
-      boostPercentage: 0,
-    },
-    pricingState: "base",
-    bedroomCount: 0,
-    bathroomCount: 0,
-    amenities: {},
-    images: [],
-  });
+  }>(initialFormDetails);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -69,7 +71,6 @@ function AddProperty({ setStep }: { setStep: any }) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(formDetails);
     if (
       !formDetails.propertyName ||
       !formDetails.address ||
@@ -105,6 +106,7 @@ function AddProperty({ setStep }: { setStep: any }) {
         })
         .then(() => {
           toast.success("Property added successfully");
+          setFormDetails(initialFormDetails);
           setModal(<SuccessModal setModal={setModal} />);
         })
         .catch(() => {

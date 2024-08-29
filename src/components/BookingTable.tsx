@@ -28,7 +28,7 @@ function BookingTable({ data }: { data: any[] }) {
                 onClick={() =>
                   setModal(<Modal setModal={setModal} booking={item} />)
                 }
-                className="min-w-full text-left text-xs border-collapse bg-[#F2F2F2] rounded-xl shadow"
+                className="min-w-full text-left text-xs border-collapse cursor-pointer bg-[#F2F2F2] rounded-xl shadow"
               >
                 <thead className="text-[#BDBDBD] text-sm">
                   <tr className="capitalize">
@@ -114,7 +114,7 @@ function BookingTable({ data }: { data: any[] }) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-[#121212] font-medium">
-                        ${item?.totalBookingValue}
+                        ₦{item?.totalBookingValue}
                       </div>
                       <div className="text-[10px] text-[#808080] font-light">
                         For {item?.nightsBooked} days
@@ -226,7 +226,7 @@ function Modal({ booking, setModal }: { booking: any; setModal: any }) {
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              ${booking?.propertyId?.price?.basePrice}
+              ₦{booking?.propertyId?.price?.basePrice}
             </h4>
           </div>
           <div>
