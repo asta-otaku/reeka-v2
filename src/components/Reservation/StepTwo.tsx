@@ -9,6 +9,7 @@ function StepTwo({
   hideFeatures,
   setStep,
   property,
+  setInvoiceId,
 }: {
   formDetails: {
     firstName: string;
@@ -19,10 +20,12 @@ function StepTwo({
     checkIn: string;
     checkOut: string;
     price: string;
+    countryCode: string;
   };
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
+  setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const handleReserve = () => {
     axios
@@ -39,14 +42,17 @@ function StepTwo({
         guestPhone: formDetails.number,
         totalBookingValue: 200,
         numberOfGuests: formDetails.noOfGuests,
+        countryCode: formDetails.countryCode,
+        color: "#" + Math.floor(Math.random() * 16777215).toString(16),
       })
-      .then(() => {
+      .then((res) => {
         toast.success("Reservation successful");
+        setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
         setStep(3);
       })
       .catch((err) => {
         console.log(err);
-        toast.error("An error occured");
+        toast.error(err.response.data.error || "An error occured");
       });
   };
 

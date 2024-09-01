@@ -27,8 +27,6 @@ function SignUp() {
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
   };
 
-  console.log(formDetails);
-
   const handleSignUp = (e: any) => {
     e.preventDefault();
     axios

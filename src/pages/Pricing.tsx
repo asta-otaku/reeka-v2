@@ -27,8 +27,7 @@ function Pricing() {
           userId: CONSTANT.USER_ID,
           planType: pricingPlan,
         })
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           toast.success(`You have selected the ${pricingPlan} plan`);
           setTimeout(() => {
             window.location.href = "/dashboard";

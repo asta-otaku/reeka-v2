@@ -19,8 +19,10 @@ function Reservation() {
     checkIn: "",
     checkOut: "",
     price: "",
+    countryCode: "",
   });
   const [property, setProperty] = useState<any>(null);
+  const [invoiceId, setInvoiceId] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -94,6 +96,7 @@ function Reservation() {
                     formDetails={formDetails}
                     setStep={setCurrentStep}
                     property={property}
+                    setInvoiceId={setInvoiceId}
                   />
                 ),
               }[currentStep]
@@ -108,6 +111,8 @@ function Reservation() {
               setStep={setCurrentStep}
               formDetails={formDetails}
               property={property}
+              invoiceId={invoiceId}
+              setInvoiceId={setInvoiceId}
             />
           )}
         </div>

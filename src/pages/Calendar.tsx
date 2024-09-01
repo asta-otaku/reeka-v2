@@ -56,7 +56,9 @@ function Calendar() {
           guestLastName: booking.guestLastName,
           startDate: formatTimestamp(booking.startDate),
           endDate: formatTimestamp(booking.endDate),
-          color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+          color:
+            booking.color ||
+            "#" + Math.floor(Math.random() * 16777215).toString(16),
           ...booking,
         }));
 
@@ -141,6 +143,7 @@ function Calendar() {
                 bookingsArray.filter((booking) => booking._id !== event.id)
               );
             }}
+            viewMode="month"
           />
         </div>
       </div>

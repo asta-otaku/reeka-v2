@@ -168,7 +168,6 @@ function BookingTable({ data }: { data: any[] }) {
 export default BookingTable;
 
 function Modal({ booking, setModal }: { booking: any; setModal: any }) {
-  console.log(booking);
   return (
     <div
       onClick={(e) => e.stopPropagation()}

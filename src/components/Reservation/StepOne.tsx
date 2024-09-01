@@ -1,3 +1,5 @@
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -17,6 +19,7 @@ function StepOne({
     checkIn: string;
     checkOut: string;
     price: string;
+    countryCode: string;
   };
   setFormDetails: React.Dispatch<
     React.SetStateAction<{
@@ -28,13 +31,13 @@ function StepOne({
       checkIn: string;
       checkOut: string;
       price: string;
+      countryCode: string;
     }>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const handleSubmit = (e: any) => {
     e.preventDefault();
-
     if (
       !formDetails.firstName ||
       !formDetails.lastName ||
@@ -43,7 +46,8 @@ function StepOne({
       !formDetails.number ||
       !formDetails.checkIn ||
       !formDetails.checkOut ||
-      !formDetails.price
+      !formDetails.price ||
+      !formDetails.countryCode
     ) {
       return toast.error("Please fill all fields");
     }
@@ -110,18 +114,47 @@ function StepOne({
               />
             </div>
           </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">Phone no*</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+          <div>
+            <h4 className="text-[#121212] text-sm font-medium">
+              Phone Number*
+            </h4>
+            <div className="flex items-center">
+              <span>
+                <PhoneInput
+                  onChange={(e) =>
+                    setFormDetails({
+                      ...formDetails,
+                      countryCode: e.slice(0, 3),
+                    })
+                  }
+                  country={"au"}
+                  autoFormat={false}
+                  containerStyle={{
+                    border: "1px solid #F7F7F7",
+                    borderStartStartRadius: 8,
+                    borderEndStartRadius: 8,
+                  }}
+                  buttonStyle={{
+                    border: "none",
+                    width: 0,
+                  }}
+                  inputStyle={{
+                    width: "80px",
+                    border: "none",
+                    color: "grey",
+                  }}
+                />
+              </span>
               <input
+                type="text"
                 name="number"
-                value={formDetails.number}
-                placeholder="Phone No"
-                className="w-full outline-none bg-transparent text-[#667085]"
                 onChange={handleChange}
+                placeholder="Phone Number"
+                className="bg-transparent w-full py-2 px-4 border border-solid rounded-e-lg text-sm font-semibold outline-none"
               />
             </div>
           </div>
+
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
               Price per night*

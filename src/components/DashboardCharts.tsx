@@ -150,10 +150,10 @@ function DashboardCharts() {
   const ChartData = [
     {
       title: "Bookings",
-      amount: dailyBookings.totalNights || 0,
+      amount: monthlyBookings.totalNightsBooked || 0,
       percentage: monthlyBookings.percentageChangeNightsBooked || 0,
       current: dailyBookings.length
-        ? dailyBookings.map((item: any) => item.count)
+        ? dailyBookings.map((item: any) => item.totalNights) || 0
         : [],
       previous: previousDailyBooking.length
         ? previousDailyBooking.map((item: any) => item.totalNights)

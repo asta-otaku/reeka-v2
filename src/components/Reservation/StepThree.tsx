@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import StepTwo from "./StepTwo";
+import { CONSTANT } from "../../util";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 function StepThree({
   formDetails,
   setStep,
   property,
+  invoiceId,
+  setInvoiceId,
 }: {
   formDetails: {
     firstName: string;
@@ -15,14 +20,27 @@ function StepThree({
     checkIn: string;
     checkOut: string;
     price: string;
+    countryCode: string;
   };
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
+  invoiceId: string;
+  setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const navigate = useNavigate();
+  const handleCopy = async () => {
+    const res = await axios.get(`${CONSTANT.BASE_URL}/invoice/${invoiceId}`);
+    if (res.status === 200) {
+      const link = res.data.invoice.paymentLink;
+      navigator.clipboard.writeText(link);
+    } else {
+      toast.error("An error occured");
+    }
+  };
 
   return (
     <div className="border border-[#C0C0C0] rounded-2xl py-5 bg-[#E6FFF1] max-w-xl w-full">
+      <Toaster />
       <h4 className="font-medium text-center text-[#219653] text-xl">
         Reservation successful!
       </h4>
@@ -35,6 +53,7 @@ function StepThree({
         formDetails={formDetails}
         hideFeatures
         property={property}
+        setInvoiceId={setInvoiceId}
       />
 
       <div className="my-3 w-full flex gap-4 justify-center">
@@ -44,7 +63,10 @@ function StepThree({
         >
           View in calendar
         </button>
-        <button className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2">
+        <button
+          onClick={handleCopy}
+          className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2"
+        >
           Copy Link
         </button>
       </div>
