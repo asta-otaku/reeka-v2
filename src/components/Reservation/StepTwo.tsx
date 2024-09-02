@@ -56,6 +56,33 @@ function StepTwo({
       });
   };
 
+  function getPrice(price: string) {
+    if (!property || !property.price) {
+      return 0;
+    }
+
+    switch (price) {
+      case "base":
+        return property.price.basePrice;
+
+      case "high":
+        return (
+          property?.price?.basePrice +
+          (property?.price?.boostPercentage / 100) * property?.price?.basePrice
+        ).toFixed(0);
+
+      case "low":
+        return (
+          property?.price?.basePrice -
+          (Math.abs(property?.price?.discountPercentage) / 100) *
+            property?.price?.basePrice
+        ).toFixed(0);
+
+      default:
+        return property.price.basePrice; // Default to basePrice if the price type is unrecognized
+    }
+  }
+
   return (
     <>
       <div
@@ -118,7 +145,7 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Phone no</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              {formDetails.number}
+              ({formDetails.countryCode}) {formDetails.number}
             </h4>
           </div>
           <div>
@@ -130,7 +157,7 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
-              {formDetails.price}
+              {getPrice(formDetails.price)}
             </h4>
           </div>
           <div>

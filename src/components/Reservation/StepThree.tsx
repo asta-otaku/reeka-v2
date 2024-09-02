@@ -33,6 +33,7 @@ function StepThree({
     if (res.status === 200) {
       const link = res.data.invoice.paymentLink;
       navigator.clipboard.writeText(link);
+      toast.success("Link copied to clipboard");
     } else {
       toast.error("An error occured");
     }

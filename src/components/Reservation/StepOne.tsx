@@ -124,9 +124,11 @@ function StepOne({
                   onChange={(e) =>
                     setFormDetails({
                       ...formDetails,
-                      countryCode: e.slice(0, 3),
+                      countryCode: e,
                     })
                   }
+                  countryCodeEditable={false}
+                  enableSearch
                   country={"au"}
                   autoFormat={false}
                   containerStyle={{

@@ -136,6 +136,8 @@ function SignUp() {
                             countryCode: e,
                           })
                         }
+                        countryCodeEditable={false}
+                        enableSearch
                         country={"au"}
                         autoFormat={false}
                         containerStyle={{
