@@ -128,6 +128,7 @@ function StepOne({
                     })
                   }
                   countryCodeEditable={false}
+                  disableCountryCode
                   enableSearch
                   country={"au"}
                   autoFormat={false}

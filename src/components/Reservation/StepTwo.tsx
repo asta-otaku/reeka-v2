@@ -4,6 +4,18 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { CONSTANT } from "../../util";
 
+function formatTimestamp(timestamp: string) {
+  const date = new Date(timestamp);
+
+  // Extract date components
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  // Combine to get the desired format
+  return `${year}-${month}-${day}`;
+}
+
 function StepTwo({
   formDetails,
   hideFeatures,
@@ -32,17 +44,19 @@ function StepTwo({
       .post(`${CONSTANT.BASE_URL}/booking`, {
         propertyId: property._id,
         userId: CONSTANT.USER_ID,
-        startDate: formDetails.checkIn,
-        endDate: formDetails.checkOut,
-        status: "Ongoing",
+        startDate: formatTimestamp(formDetails.checkIn),
+        endDate: formatTimestamp(formDetails.checkOut),
+        status: "Upcoming",
         sourcePlatform: "Web",
         guestFirstName: formDetails.firstName,
         guestLastName: formDetails.lastName,
         guestEmail: formDetails.email,
         guestPhone: formDetails.number,
-        totalBookingValue: 200,
+        totalBookingValue: 0,
         numberOfGuests: formDetails.noOfGuests,
+        numberOfChildren: 0,
         countryCode: formDetails.countryCode,
+        priceState: formDetails.price,
         color: "#" + Math.floor(Math.random() * 16777215).toString(16),
       })
       .then((res) => {
