@@ -28,26 +28,11 @@ function ViewProperty() {
     }
   }, [prop]);
 
-  const [property, setProperty] = useState<any>({
-    ...prop,
-    price: {
-      ...prop?.price,
-      discountPercentage: prop?.price?.discountPercentage,
-    },
-  });
-
-  const [, setInitialProperty] = useState<any>({
-    ...prop,
-    price: {
-      ...prop?.price,
-      discountPercentage: prop?.price?.discountPercentage,
-    },
-  });
+  const [property, setProperty] = useState<any>(prop);
 
   const [bookedStatus, setBookedStatus] = useState(false);
   const [edit, setEdit] = useState(false);
   const [selected, setSelected] = useState(0);
-  const [images, setImages] = useState<any>([...property?.images]);
   const [search, setSearch] = useState("");
   const [bookings, setBookings] = useState<any>([]);
 
@@ -113,7 +98,6 @@ function ViewProperty() {
       );
       if (res.status === 200) {
         toast.success("Property updated successfully");
-        setInitialProperty({ ...property }); // Update initial property after a successful update
         setTimeout(() => {
           navigate("/listing");
         }, 2000);
@@ -224,7 +208,11 @@ function ViewProperty() {
               edit={edit}
               setEdit={setEdit}
             />
-            <ImageSection images={images} setImages={setImages} edit={edit} />
+            <ImageSection
+              property={property}
+              setProperty={setProperty}
+              edit={edit}
+            />
             <Amenities
               property={property}
               setProperty={setProperty}

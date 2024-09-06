@@ -2,12 +2,12 @@ import cloud from "../../assets/cloud-upload-white.svg";
 import graycancel from "../../assets/graycancel.svg";
 
 function ImageSection({
-  images,
-  setImages,
+  property,
+  setProperty,
   edit,
 }: {
-  images: any;
-  setImages: any;
+  property: any;
+  setProperty: any;
   edit: boolean;
 }) {
   return (
@@ -16,7 +16,7 @@ function ImageSection({
         <h3 className="text-[#121212] font-medium text-lg">Images</h3>
       </div>
       <div className="flex overflow-x-auto w-full no-scrollbar py-4 relative">
-        {images.map((image: any, index: number) => (
+        {property?.images.map((image: any, index: number) => (
           <div
             key={index}
             style={{
@@ -35,7 +35,12 @@ function ImageSection({
                 src={graycancel}
                 alt="cancel"
                 onClick={() =>
-                  setImages(images.filter((img: any) => img !== image))
+                  setProperty((prev: any) => {
+                    const newImages = prev.images.filter(
+                      (_: any, i: number) => i !== index
+                    );
+                    return { ...prev, images: newImages };
+                  })
                 }
                 className="absolute top-0 right-0 cursor-pointer"
               />
@@ -68,13 +73,9 @@ function ImageSection({
               onChange={(e: any) => {
                 const newImage = URL.createObjectURL(e.target.files[0]);
 
-                setImages((prev: any) => {
-                  if (prev.length < 3) {
-                    return [...prev, newImage];
-                  } else {
-                    // Remove the first image and add the new one
-                    return [...prev.slice(1), newImage];
-                  }
+                setProperty((prev: any) => {
+                  const newImages = [...prev.images.slice(-2), newImage];
+                  return { ...prev, images: newImages };
                 });
               }}
             />
