@@ -36,7 +36,7 @@ function ViewProperty() {
     },
   });
 
-  const [initialProperty, setInitialProperty] = useState<any>({
+  const [, setInitialProperty] = useState<any>({
     ...prop,
     price: {
       ...prop?.price,
@@ -89,16 +89,7 @@ function ViewProperty() {
     }
   };
 
-  const hasChanges = () => {
-    return JSON.stringify(initialProperty) !== JSON.stringify(property);
-  };
-
   const handleUpdate = async () => {
-    if (!hasChanges()) {
-      toast.success("No changes detected");
-      return;
-    }
-
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);

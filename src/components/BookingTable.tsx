@@ -1,5 +1,8 @@
 import useStore from "../store";
+import graycancel from "../assets/graycancel.svg";
 import redcancel from "../assets/cancel-red.svg";
+import { CONSTANT } from "../util";
+import axios from "axios";
 
 function BookingTable({ data }: { data: any[] }) {
   const setModal = useStore((state: any) => state.setModal);
@@ -168,11 +171,31 @@ function BookingTable({ data }: { data: any[] }) {
 export default BookingTable;
 
 function Modal({ booking, setModal }: { booking: any; setModal: any }) {
+  console.log(booking);
+
+  const handleDelete = async () => {
+    axios
+      .delete(`${CONSTANT.BASE_URL}/booking/${booking._id}`)
+      .then((res) => {
+        console.log(res.data);
+        setModal(null);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full"
+      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full relative"
     >
+      <img
+        src={graycancel}
+        alt=""
+        onClick={() => setModal(null)}
+        className="absolute top-2 right-2 cursor-pointer"
+      />
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
         <h5 className="text-[#808080] font-light text-xs">Apartment</h5>
         <div className="flex w-full justify-between items-center my-3">
@@ -250,7 +273,7 @@ function Modal({ booking, setModal }: { booking: any; setModal: any }) {
       </div>
       <div className="flex justify-center mt-4">
         <button
-          onClick={() => setModal(null)}
+          onClick={handleDelete}
           className="text-[#F94144] font-medium text-sm flex items-center gap-2"
         >
           <img src={redcancel} />
