@@ -5,6 +5,7 @@ import StepOne from "../components/Reservation/StepOne";
 import StepTwo from "../components/Reservation/StepTwo";
 import StepThree from "../components/Reservation/StepThree";
 import StepZero from "../components/Reservation/StepZero";
+import toast from "react-hot-toast";
 
 const steps = ["Apartment", "Details", "Confirmation"];
 
@@ -25,9 +26,31 @@ function Reservation() {
   const [invoiceId, setInvoiceId] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (name === "checkIn") {
+      // Compare checkIn date with current date
+      if (new Date(value) < new Date()) {
+        toast.error("Check-In Date cannot be earlier than today");
+        return;
+      }
+    }
+
+    // Check if it's the Check-Out Date field
+    if (name === "checkOut") {
+      // Compare checkOut date with checkIn date or current date
+      const checkInDate =
+        formDetails.checkIn || new Date().toLocaleDateString("en-CA");
+      if (new Date(value) < new Date(checkInDate)) {
+        toast.error("Check-Out Date cannot be earlier than Check-In Date");
+        return;
+      }
+    }
+
+    // Update form details
     setFormDetails({
       ...formDetails,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 

@@ -191,7 +191,7 @@ function StepOne({
                 min={new Date().toISOString().split("T")[0]}
                 type="date"
                 placeholder="Check In Date"
-                className="w-full outline-none bg-transparent text-[#667085]"
+                className="w-full text-[#667085]"
                 onChange={handleChange}
               />
             </div>
@@ -210,7 +210,7 @@ function StepOne({
                   formDetails.checkIn || new Date().toISOString().split("T")[0]
                 }
                 placeholder="Price per night"
-                className="w-full outline-none bg-transparent text-[#667085]"
+                className="w-full text-[#667085]"
                 onChange={handleChange}
               />
             </div>
