@@ -51,7 +51,7 @@ function Calendar() {
       .then((response) => {
         const formattedBookings = response.data.map((booking: any) => ({
           _id: booking.id,
-          propertyName: booking.propertyId.propertyName,
+          propertyName: booking?.propertyId?.propertyName,
           guestFirstName: booking.guestFirstName,
           guestLastName: booking.guestLastName,
           startDate: formatTimestamp(booking.startDate),

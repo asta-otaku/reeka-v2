@@ -16,42 +16,49 @@ function ImageSection({
         <h3 className="text-[#121212] font-medium text-lg">Images</h3>
       </div>
       <div className="flex overflow-x-auto w-full no-scrollbar py-4 relative">
-        {property?.images.map((image: any, index: number) => (
-          <div
-            key={index}
-            style={{
-              transform:
-                index === 0
-                  ? ""
-                  : index % 2 === 0
-                  ? "rotate(-10deg)"
-                  : "rotate(10deg)",
-              zIndex: index % 2 === 0 ? 1 : 0,
-            }}
-            className="relative min-w-32 min-h-28 rounded-xl border-2 border-white"
-          >
-            {edit && (
+        {property?.images.map((image: any, index: number) => {
+          // If the image is a file, display it using a temporary URL, but it will remain a file object
+          const imageSrc =
+            typeof image === "string" ? image : URL.createObjectURL(image);
+
+          return (
+            <div
+              key={index}
+              style={{
+                transform:
+                  index === 0
+                    ? ""
+                    : index % 2 === 0
+                    ? "rotate(-10deg)"
+                    : "rotate(10deg)",
+                zIndex: index % 2 === 0 ? 1 : 0,
+              }}
+              className="relative min-w-32 min-h-28 rounded-xl border-2 border-white"
+            >
+              {edit && (
+                <img
+                  src={graycancel}
+                  alt="cancel"
+                  onClick={() =>
+                    setProperty((prev: any) => {
+                      const newImages = prev.images.filter(
+                        (_: any, i: number) => i !== index
+                      );
+                      return { ...prev, images: newImages };
+                    })
+                  }
+                  className="absolute top-0 right-0 cursor-pointer"
+                />
+              )}
               <img
-                src={graycancel}
-                alt="cancel"
-                onClick={() =>
-                  setProperty((prev: any) => {
-                    const newImages = prev.images.filter(
-                      (_: any, i: number) => i !== index
-                    );
-                    return { ...prev, images: newImages };
-                  })
-                }
-                className="absolute top-0 right-0 cursor-pointer"
+                src={imageSrc}
+                alt="property"
+                className="object-cover rounded-xl w-36 h-28"
               />
-            )}
-            <img
-              src={image}
-              alt="property"
-              className="object-cover rounded-xl w-36 h-28"
-            />
-          </div>
-        ))}
+            </div>
+          );
+        })}
+
         {edit && (
           <span
             onClick={() => {
@@ -71,8 +78,7 @@ function ImageSection({
               id="file"
               className="hidden"
               onChange={(e: any) => {
-                const newImage = URL.createObjectURL(e.target.files[0]);
-
+                const newImage = e.target.files[0];
                 setProperty((prev: any) => {
                   const newImages = [...prev.images.slice(-2), newImage];
                   return { ...prev, images: newImages };

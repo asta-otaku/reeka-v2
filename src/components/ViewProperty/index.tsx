@@ -88,7 +88,9 @@ function ViewProperty() {
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
     property.images.forEach((image: any) => {
-      formData.append("images", image);
+      if (image instanceof File) {
+        formData.append("images", image);
+      }
     });
 
     try {
