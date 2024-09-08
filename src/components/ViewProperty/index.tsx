@@ -94,7 +94,12 @@ function ViewProperty() {
     try {
       const res = await axios.put(
         `${CONSTANT.BASE_URL}/properties/${property._id}`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       if (res.status === 200) {
         toast.success("Property updated successfully");

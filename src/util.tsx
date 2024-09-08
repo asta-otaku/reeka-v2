@@ -5,7 +5,7 @@ export const CONSTANT = {
   get USER_ID() {
     if (!cachedUserId) {
       const user = JSON.parse(localStorage.getItem("user") || "{}");
-      cachedUserId = user._id || null;
+      cachedUserId = "4d17d412-7344-4ffd-b893-b1ecaf35b0ea"; // user._id || null;
     }
     return cachedUserId;
   },
