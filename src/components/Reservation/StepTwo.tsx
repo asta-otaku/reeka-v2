@@ -3,6 +3,7 @@ import prop from "../../assets/prop1.svg";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { CONSTANT } from "../../util";
+import { useState } from "react";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -28,7 +29,7 @@ function StepTwo({
     lastName: string;
     noOfGuests: string;
     email: string;
-    number: string;
+    phoneNumber: string;
     checkIn: string;
     checkOut: string;
     price: string;
@@ -39,26 +40,33 @@ function StepTwo({
   property: any;
   setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const [formData, setFormData] = useState({
+    propertyId: property._id,
+    userId: CONSTANT.USER_ID,
+    startDate: formDetails.checkIn,
+    endDate: formDetails.checkOut,
+    status: "Upcoming",
+    sourcePlatform: "Web",
+    guestFirstName: formDetails.firstName,
+    guestLastName: formDetails.lastName,
+    guestEmail: formDetails.email,
+    guestPhone: formDetails.phoneNumber,
+    totalBookingValue: 0,
+    numberOfGuests: formDetails.noOfGuests,
+    numberOfChildren: 0,
+    countryCode: formDetails.countryCode,
+    priceState: formDetails.price,
+    color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+  });
   const handleReserve = () => {
+    setFormData({
+      ...formData,
+      startDate: formatTimestamp(formDetails.checkIn),
+      endDate: formatTimestamp(formDetails.checkOut),
+    });
+
     axios
-      .post(`${CONSTANT.BASE_URL}/booking`, {
-        propertyId: property._id,
-        userId: CONSTANT.USER_ID,
-        startDate: formatTimestamp(formDetails.checkIn),
-        endDate: formatTimestamp(formDetails.checkOut),
-        status: "Upcoming",
-        sourcePlatform: "Web",
-        guestFirstName: formDetails.firstName,
-        guestLastName: formDetails.lastName,
-        guestEmail: formDetails.email,
-        guestPhone: formDetails.number,
-        totalBookingValue: 0,
-        numberOfGuests: formDetails.noOfGuests,
-        numberOfChildren: 0,
-        countryCode: formDetails.countryCode,
-        priceState: formDetails.price,
-        color: "#" + Math.floor(Math.random() * 16777215).toString(16),
-      })
+      .post(`${CONSTANT.BASE_URL}/booking`, formData)
       .then((res) => {
         toast.success("Reservation successful");
         setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
@@ -159,7 +167,7 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Phone no</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              ({formDetails.countryCode}) {formDetails.number}
+              ({formDetails.countryCode}) {formDetails.phoneNumber}
             </h4>
           </div>
           <div>

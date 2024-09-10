@@ -16,7 +16,7 @@ function StepThree({
     lastName: string;
     noOfGuests: string;
     email: string;
-    number: string;
+    phoneNumber: string;
     checkIn: string;
     checkOut: string;
     price: string;

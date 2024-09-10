@@ -100,12 +100,12 @@ function Calendar() {
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
           <div className="flex items-center gap-4 min-w-fit overflow-x-auto no-scrollbar">
-            <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+            {/* <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
                 <option>Bookings</option>
               </select>
               <ChevronDownIcon width={12} />
-            </div>
+            </div> */}
             <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {

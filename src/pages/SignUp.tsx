@@ -7,8 +7,7 @@ import Select from "react-select";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import toast, { Toaster } from "react-hot-toast";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+import PhoneInput from "../components/PhoneInput";
 
 function SignUp() {
   const [step, setStep] = useState(0);
@@ -127,42 +126,13 @@ function SignUp() {
                       className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
                     />
                   </div>
-                  <div className="flex items-center">
-                    <span>
-                      <PhoneInput
-                        onChange={(e) =>
-                          setFormDetails({
-                            ...formDetails,
-                            countryCode: e,
-                          })
-                        }
-                        countryCodeEditable={false}
-                        disableCountryCode
-                        enableSearch
-                        country={"au"}
-                        autoFormat={false}
-                        containerStyle={{
-                          border: "1px solid #F7F7F7",
-                          borderStartStartRadius: 8,
-                          borderEndStartRadius: 8,
-                        }}
-                        buttonStyle={{
-                          border: "none",
-                          width: 0,
-                        }}
-                        inputStyle={{
-                          width: "80px",
-                          border: "none",
-                          color: "grey",
-                        }}
-                      />
-                    </span>
-                    <input
-                      type="text"
-                      name="phoneNumber"
-                      onChange={handleChange}
-                      placeholder="Phone Number"
-                      className="bg-transparent w-full py-2 px-4 border border-solid rounded-e-lg text-sm font-semibold outline-none"
+                  <div className="flex flex-col gap-2 w-full">
+                    <h4 className="text-[#3A3A3A] text-sm font-medium">
+                      Phone Number
+                    </h4>
+                    <PhoneInput
+                      formDetails={formDetails}
+                      setFormDetails={setFormDetails}
                     />
                   </div>
                   <div className="flex flex-col gap-2 w-full">

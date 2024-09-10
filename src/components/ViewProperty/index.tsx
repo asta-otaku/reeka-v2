@@ -82,15 +82,13 @@ function ViewProperty() {
     formData.append("country", property.country);
     formData.append("baseCurrency", property.baseCurrency);
     formData.append("owner", property.owner);
-    formData.append("employees", JSON.stringify(property.employees));
+    formData.append("employees", JSON.stringify([]));
     formData.append("bedroomCount", property.bedroomCount.toString());
     formData.append("bathroomCount", property.bathroomCount.toString());
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
     property.images.forEach((image: any) => {
-      if (image instanceof File) {
-        formData.append("images", image);
-      }
+      formData.append("images", image);
     });
 
     try {

@@ -1,7 +1,6 @@
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast, { Toaster } from "react-hot-toast";
+import PhoneInput from "../PhoneInput";
 
 function StepOne({
   handleChange,
@@ -15,7 +14,7 @@ function StepOne({
     lastName: string;
     noOfGuests: string;
     email: string;
-    number: string;
+    phoneNumber: string;
     checkIn: string;
     checkOut: string;
     price: string;
@@ -27,7 +26,7 @@ function StepOne({
       lastName: string;
       noOfGuests: string;
       email: string;
-      number: string;
+      phoneNumber: string;
       checkIn: string;
       checkOut: string;
       price: string;
@@ -43,7 +42,7 @@ function StepOne({
       !formDetails.lastName ||
       !formDetails.noOfGuests ||
       !formDetails.email ||
-      !formDetails.number ||
+      !formDetails.phoneNumber ||
       !formDetails.checkIn ||
       !formDetails.checkOut ||
       !formDetails.price ||
@@ -118,44 +117,10 @@ function StepOne({
             <h4 className="text-[#121212] text-sm font-medium">
               Phone Number*
             </h4>
-            <div className="flex items-center">
-              <span>
-                <PhoneInput
-                  onChange={(e) =>
-                    setFormDetails({
-                      ...formDetails,
-                      countryCode: e,
-                    })
-                  }
-                  countryCodeEditable={false}
-                  disableCountryCode
-                  enableSearch
-                  country={"au"}
-                  autoFormat={false}
-                  containerStyle={{
-                    border: "1px solid #F7F7F7",
-                    borderStartStartRadius: 8,
-                    borderEndStartRadius: 8,
-                  }}
-                  buttonStyle={{
-                    border: "none",
-                    width: 0,
-                  }}
-                  inputStyle={{
-                    width: "80px",
-                    border: "none",
-                    color: "grey",
-                  }}
-                />
-              </span>
-              <input
-                type="text"
-                name="number"
-                onChange={handleChange}
-                placeholder="Phone Number"
-                className="bg-transparent w-full py-2 px-4 border border-solid rounded-e-lg text-sm font-semibold outline-none"
-              />
-            </div>
+            <PhoneInput
+              formDetails={formDetails}
+              setFormDetails={setFormDetails}
+            />
           </div>
 
           <div className="flex flex-col gap-1 w-full">

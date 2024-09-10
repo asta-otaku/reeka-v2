@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ChevronDownIcon } from "../assets/icons";
+// import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import gridIcon from "../assets/grid-view.svg";
@@ -45,7 +45,7 @@ function ListingManagement() {
               />
 
               <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
-                <div className="flex items-center justify-between gap-4">
+                {/* <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
                     <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
                       <option>All Locations</option>
@@ -58,10 +58,10 @@ function ListingManagement() {
                     </select>
                     <ChevronDownIcon width={12} />
                   </div>
-                </div>
+                </div> */}
 
-                <div className="flex flex-wrap lg:flex-nowrap items-center gap-4">
-                  <div className="w-fit flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
+                <div className="flex w-full flex-wrap md:flex-nowrap justify-between items-center gap-4">
+                  <div className="max-w-2xl w-full flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
                     <img src={searchIcon} className="w-5" />
                     <input
                       type="search"
@@ -85,7 +85,7 @@ function ListingManagement() {
                   <img src={line} />
                   <button
                     onClick={() => setStep(2)}
-                    className="bg-primary p-2 rounded-xl text-white font-medium text-sm border border-primary"
+                    className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary"
                   >
                     Add Property
                   </button>
@@ -139,13 +139,6 @@ function ListingManagement() {
                             </p>
                           </div>
                         </div>
-                        <button
-                          className={`${
-                            !grid && "hidden"
-                          } bg-[#E8E8FF] px-2.5 py-1.5 text-[#5856D6] font-semibold text-xs rounded-md`}
-                        >
-                          Delisted
-                        </button>
                       </div>
                     </div>
                   ))}

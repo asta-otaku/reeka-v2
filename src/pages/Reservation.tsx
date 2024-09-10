@@ -16,7 +16,7 @@ function Reservation() {
     lastName: "",
     noOfGuests: "",
     email: "",
-    number: "",
+    phoneNumber: "",
     checkIn: "",
     checkOut: "",
     price: "",
