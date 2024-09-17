@@ -12,10 +12,9 @@ function Calendar() {
   const navigate = useNavigate();
   const [bookingsArray, setBookingsArray] = useState<any[]>([]);
   const [properties, setProperties] = useState<any[]>([]);
-  const events: any[] = [];
   const [selectedProperty, setSelectedProperty] = useState("");
 
-  function formatTimestamp(timestamp: string) {
+  function formatTimestamp(timestamp: string, isEndDate = false) {
     const date = new Date(timestamp);
 
     // Extract date components
@@ -23,11 +22,11 @@ function Calendar() {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
 
-    // Extract time components
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
+    // Set hours and minutes based on whether it's a start or end date
+    const hours = isEndDate ? "18" : "06";
+    const minutes = isEndDate ? "00" : "00";
 
-    // Combine to get the desired format
+    // Return the formatted string in 'YYYY-MM-DD HH:mm' format
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 
@@ -54,8 +53,8 @@ function Calendar() {
           propertyName: booking?.propertyId?.propertyName,
           guestFirstName: booking.guestFirstName,
           guestLastName: booking.guestLastName,
-          startDate: formatTimestamp(booking.startDate),
-          endDate: formatTimestamp(booking.endDate),
+          startDate: booking.startDate,
+          endDate: booking.endDate,
           color:
             booking.color ||
             "#" + Math.floor(Math.random() * 16777215).toString(16),
@@ -69,33 +68,25 @@ function Calendar() {
       });
   }, []);
 
-  bookingsArray
+  // Filter bookings based on the selected property and map them to events for the Scheduler
+  const events = bookingsArray
     .filter((bk: any) =>
       bk?.propertyName?.toLowerCase().includes(selectedProperty.toLowerCase())
     )
-    .forEach((booking) => {
-      events.push({
-        id: booking._id,
-        label:
-          booking.guestFirstName +
-          " " +
-          booking.guestLastName +
-          " - " +
-          "[" +
-          booking.propertyName +
-          "]",
-        start: booking.startDate,
-        end: booking.endDate,
-        bgColor: booking.color,
-      });
-    });
+    .map((booking) => ({
+      id: booking._id,
+      label: `${booking.guestFirstName} ${booking.guestLastName} - [${booking.propertyName}]`,
+      start: formatTimestamp(booking.startDate),
+      end: formatTimestamp(booking.endDate, true),
+      bgColor: booking.color,
+    }));
 
   return (
     <DashboardLayout>
       <div>
         <DashboardNav
           title="Calendar"
-          description="Create edit and send reservations."
+          description="Create, edit and send reservations."
         />
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
@@ -135,7 +126,7 @@ function Calendar() {
 
         <div className="flex items-center justify-center px-6 my-6">
           <Scheduler
-            events={events}
+            events={events} // Events array with formatted timestamps
             initialDate={new Date()}
             draggable={false}
             onEventDelete={(event: any) => {
