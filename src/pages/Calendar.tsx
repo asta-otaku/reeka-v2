@@ -48,18 +48,27 @@ function Calendar() {
     axios
       .get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`)
       .then((response) => {
-        const formattedBookings = response.data.map((booking: any) => ({
-          _id: booking.id,
-          propertyName: booking?.propertyId?.propertyName,
-          guestFirstName: booking.guestFirstName,
-          guestLastName: booking.guestLastName,
-          startDate: booking.startDate,
-          endDate: booking.endDate,
-          color:
-            booking.color ||
-            "#" + Math.floor(Math.random() * 16777215).toString(16),
-          ...booking,
-        }));
+        const colorMap: { [key: string]: string } = {};
+
+        const formattedBookings = response.data.map((booking: any) => {
+          const propertyName = booking?.propertyId?.propertyName;
+
+          if (!colorMap[propertyName]) {
+            colorMap[propertyName] =
+              "#" + Math.floor(Math.random() * 16777215).toString(16);
+          }
+
+          return {
+            _id: booking.id,
+            propertyName: propertyName,
+            guestFirstName: booking.guestFirstName,
+            guestLastName: booking.guestLastName,
+            startDate: booking.startDate,
+            endDate: booking.endDate,
+            color: colorMap[propertyName],
+            ...booking,
+          };
+        });
 
         setBookingsArray(formattedBookings);
       })
