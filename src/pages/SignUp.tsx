@@ -29,7 +29,11 @@ function SignUp() {
   const handleSignUp = (e: any) => {
     e.preventDefault();
     axios
-      .post(`${CONSTANT.BASE_URL}/auth/signup`, formDetails)
+      .post(`${CONSTANT.BASE_URL}/auth/signup`, formDetails, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         if (res.status === 201) {
           toast.success("Account created successfully");
