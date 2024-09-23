@@ -159,7 +159,7 @@ function DashboardCharts() {
     },
     {
       title: "Occupancy Rate",
-      amount: occupancyRate.occupancy || 0,
+      amount: occupancyRate.occupancy + "%" || 0,
       percentage: occupancyRate.percentageChangeOccupancyRate || 0,
       caption: "percentage of occupied nights",
     },
