@@ -30,7 +30,9 @@ function Reservation() {
 
     if (name === "checkIn") {
       // Compare checkIn date with current date
-      if (new Date(value) < new Date()) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (new Date(value) < yesterday) {
         toast.error("Check-In Date cannot be earlier than today");
         return;
       }

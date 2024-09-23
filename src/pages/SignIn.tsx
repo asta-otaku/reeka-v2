@@ -22,10 +22,18 @@ function SignIn() {
   const handleSignIn = (e: any) => {
     e.preventDefault();
     axios
-      .post(`${CONSTANT.BASE_URL}/auth/login`, {
-        email: formDetails.email,
-        password: formDetails.password,
-      })
+      .post(
+        `${CONSTANT.BASE_URL}/auth/login`,
+        {
+          email: formDetails.email,
+          password: formDetails.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         if (res.status === 200) {
           toast.success("Logged in successfully");
