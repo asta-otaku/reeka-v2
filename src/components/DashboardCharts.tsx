@@ -14,6 +14,7 @@ function DashboardCharts() {
   const [dailyAverageNightlyRate, setdailyAverageNightlyRate] = useState<any>(
     []
   );
+  const [occupancyRate, setOccupancyRate] = useState<any>({});
   const [previousDailyBooking, setpreviousDailyBooking] = useState<any>({});
   const [previousMonthlyRevenue, setPreviousMonthlyRevenue] = useState<any>({});
   const [
@@ -114,6 +115,16 @@ function DashboardCharts() {
         console.error(error);
       }
     };
+    const fetchOccupancyRate = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/analytics/occupancy/${userId}`
+        );
+        setOccupancyRate(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     fetchMonthlyBookings();
     fetchMonthlyRevenue();
@@ -124,6 +135,7 @@ function DashboardCharts() {
     fetchpreviousDailyBooking();
     fetchPreviousMonthlyRevenue();
     fetchPreviousMonthlyAverageNightlyRate();
+    fetchOccupancyRate();
   }, []);
 
   const CardData = [
@@ -144,6 +156,12 @@ function DashboardCharts() {
       amount: monthlyAverageNightlyRate.averageNightlyRate || 0,
       percentage: monthlyAverageNightlyRate.percentageChangeNightlyRate || 0,
       caption: "revenue/booked nights",
+    },
+    {
+      title: "Occupancy Rate",
+      amount: occupancyRate.occupancy || 0,
+      percentage: occupancyRate.percentageChangeOccupancyRate || 0,
+      caption: "percentage of occupied nights",
     },
   ];
 
@@ -196,40 +214,42 @@ function DashboardCharts() {
 
   return (
     <div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 w-full gap-4">
-        {CardData.map((data, index) => (
-          <div
-            key={index}
-            className={`border shadow-sm rounded-xl space-y-6 p-4
-                  ${
-                    data.percentage > 0
-                      ? "bg-[linear-gradient(220deg,_#D5FFE7,_#FFFF_45%)]"
-                      : "bg-[linear-gradient(220deg,_#FFEEEE,_#FFFF_45%)]"
-                  }`}
-          >
-            <div className="w-full flex items-center justify-between">
-              <h4 className="text-[#808080] font-medium">{data.title}</h4>
-              <h6
-                className={`${
-                  data.percentage > 0 ? "text-[#219653]" : "text-[#E90000]"
-                } font-medium text-sm`}
-              >
-                {data.percentage > 0 ? "+" : ""}
-                {data?.percentage?.toFixed(2)}%
-              </h6>
+      <div className="w-full overflow-x-auto no-scrollbar">
+        <div className="flex space-x-4">
+          {CardData.map((data, index) => (
+            <div
+              key={index}
+              className={`border shadow-sm rounded-xl space-y-6 p-4 min-w-[300px] grow
+              ${
+                data.percentage > 0
+                  ? "bg-[linear-gradient(220deg,_#D5FFE7,_#FFFF_45%)]"
+                  : "bg-[linear-gradient(220deg,_#FFEEEE,_#FFFF_45%)]"
+              }`}
+            >
+              <div className="w-full flex items-center justify-between">
+                <h4 className="text-[#808080] font-medium">{data.title}</h4>
+                <h6
+                  className={`${
+                    data.percentage > 0 ? "text-[#219653]" : "text-[#E90000]"
+                  } font-medium text-sm`}
+                >
+                  {data.percentage > 0 ? "+" : ""}
+                  {data?.percentage?.toFixed(2)}%
+                </h6>
+              </div>
+              <div>
+                <h2 className="text-[#121212] text-2xl font-medium">
+                  {data.title === "Bookings" || data.title === "Occupancy Rate"
+                    ? data?.amount
+                    : `₦${data?.amount
+                        ?.toFixed(2)
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
+                </h2>
+                <p className="text-xs text-[#808080]">{data.caption}</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-[#121212] text-2xl font-medium">
-                {data.title === "Bookings"
-                  ? data?.amount
-                  : `₦${data?.amount
-                      ?.toFixed(2)
-                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
-              </h2>
-              <p className="text-xs text-[#808080]">{data.caption}</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className="flex justify-between items-center mt-6 mb-3">
