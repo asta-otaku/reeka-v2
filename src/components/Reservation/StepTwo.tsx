@@ -50,7 +50,7 @@ function StepTwo({
     guestFirstName: formDetails.firstName,
     guestLastName: formDetails.lastName,
     guestEmail: formDetails.email,
-    guestPhone: formDetails.phoneNumber,
+    guestPhone: `(${formDetails.countryCode}) ${formDetails.phoneNumber}`,
     totalBookingValue: 0,
     numberOfGuests: formDetails.noOfGuests,
     numberOfChildren: 0,
