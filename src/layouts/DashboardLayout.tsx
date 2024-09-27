@@ -43,11 +43,17 @@ function DashboardLayout({ children }: any) {
 
   useEffect(() => {
     const fetchPricing = async () => {
-      const res = await axios.get(
-        `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${CONSTANT.USER_ID}`
-      );
-      if (res.data.planType === "") {
-        window.location.href = "/pricing";
+      try {
+        const res = await axios.get(
+          `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${CONSTANT.USER_ID}`
+        );
+        if (res.data.planType === "") {
+          window.location.href = "/pricing";
+        }
+      } catch (err: any) {
+        if (err.response?.status === 404) {
+          window.location.href = "/pricing";
+        }
       }
     };
 
