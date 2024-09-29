@@ -67,7 +67,7 @@ function Dashboard() {
                 >
                   Overview
                 </button>
-                {/* <button
+                <button
                   onClick={() => setSelected(1)}
                   className={`text-sm p-2 ${
                     selected === 1
@@ -76,7 +76,7 @@ function Dashboard() {
                   }`}
                 >
                   Properties
-                </button> */}
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
