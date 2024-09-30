@@ -15,6 +15,7 @@ import ViewProperty from "./components/ViewProperty/index.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import SignUp from "./pages/SignUp.tsx";
 import Pricing from "./pages/Pricing.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

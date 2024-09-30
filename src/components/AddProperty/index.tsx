@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 import useStore from "../../store";
 import SuccessModal from "./SuccessModal";
@@ -11,26 +11,6 @@ import { CONSTANT } from "../../util";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
-const initialFormDetails = {
-  propertyName: "",
-  address: "",
-  city: "",
-  country: "",
-  baseCurrency: "NGN",
-  owner: CONSTANT.USER_ID || "",
-  employees: [],
-  price: {
-    basePrice: 0,
-    discountPercentage: 0,
-    boostPercentage: 0,
-  },
-  pricingState: "base",
-  bedroomCount: 0,
-  bathroomCount: 0,
-  amenities: {},
-  images: [],
-};
-
 function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const setModal = useStore((state: any) => state.setModal);
@@ -40,27 +20,25 @@ function AddProperty({ setStep }: { setStep: any }) {
     setOpenSection((prev) => (prev === section ? null : section));
   };
 
-  const [formDetails, setFormDetails] = useState<{
-    propertyName: string;
-    address: string;
-    city: string;
-    country: string;
-    baseCurrency: string;
-    owner: string;
-    employees: string[];
+  const [formDetails, setFormDetails] = useState({
+    propertyName: "",
+    address: "",
+    city: "",
+    country: "",
+    baseCurrency: "NGN",
+    owner: CONSTANT.USER_ID || "",
+    employees: [],
     price: {
-      basePrice: number;
-      discountPercentage: number;
-      boostPercentage: number;
-    };
-    pricingState: string;
-    bedroomCount: number;
-    bathroomCount: number;
-    amenities: {
-      [key: string]: number;
-    };
-    images: string[];
-  }>(initialFormDetails);
+      basePrice: 0,
+      discountPercentage: 0,
+      boostPercentage: 0,
+    },
+    pricingState: "base",
+    bedroomCount: 0,
+    bathroomCount: 0,
+    amenities: {},
+    images: [],
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -68,6 +46,15 @@ function AddProperty({ setStep }: { setStep: any }) {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    if (!formDetails.owner && CONSTANT.USER_ID) {
+      setFormDetails({
+        ...formDetails,
+        owner: CONSTANT.USER_ID,
+      });
+    }
+  }, [CONSTANT.USER_ID]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -106,7 +93,25 @@ function AddProperty({ setStep }: { setStep: any }) {
         })
         .then(() => {
           toast.success("Property added successfully");
-          setFormDetails(initialFormDetails);
+          setFormDetails({
+            propertyName: "",
+            address: "",
+            city: "",
+            country: "",
+            baseCurrency: "NGN",
+            owner: CONSTANT.USER_ID || "",
+            employees: [],
+            price: {
+              basePrice: 0,
+              discountPercentage: 0,
+              boostPercentage: 0,
+            },
+            pricingState: "base",
+            bedroomCount: 0,
+            bathroomCount: 0,
+            amenities: {},
+            images: [],
+          });
           setModal(<SuccessModal setModal={setModal} />);
         })
         .catch(() => {
