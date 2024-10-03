@@ -21,6 +21,7 @@ const initialFormDetails = {
   employees: [],
   price: {
     basePrice: 0,
+    airbnbPrice: 0,
     discountPercentage: 0,
     boostPercentage: 0,
   },
@@ -49,6 +50,7 @@ function AddProperty({ setStep }: { setStep: any }) {
     owner: string;
     employees: string[];
     price: {
+      airbnbPrice: number;
       basePrice: number;
       discountPercentage: number;
       boostPercentage: number;
@@ -77,8 +79,7 @@ function AddProperty({ setStep }: { setStep: any }) {
       !formDetails.city ||
       !formDetails.country ||
       !formDetails.bedroomCount ||
-      !formDetails.bathroomCount ||
-      !formDetails.price.basePrice
+      !formDetails.bathroomCount
     ) {
       return toast.error("Please fill all required fields");
     } else {

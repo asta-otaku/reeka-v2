@@ -13,6 +13,7 @@ function Pricing({
   setFormDetails: any;
 }) {
   const [price, setPrice] = useState({
+    airbnbPrice: 0,
     basePrice: 0,
     discountPercentage: -25,
     boostPercentage: 25,
@@ -49,6 +50,24 @@ function Pricing({
                   });
                 }}
                 value={price?.basePrice}
+                className="w-full outline-none bg-transparent"
+              />
+              <h4 className="text-[#808080]">/Night</h4>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 w-full">
+            <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>
+            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+              <input
+                name="airbnbPrice"
+                placeholder="$"
+                onChange={(e) => {
+                  setPrice({
+                    ...price,
+                    airbnbPrice: Number(e.target.value),
+                  });
+                }}
+                value={price?.airbnbPrice}
                 className="w-full outline-none bg-transparent"
               />
               <h4 className="text-[#808080]">/Night</h4>
