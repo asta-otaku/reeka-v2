@@ -33,7 +33,7 @@ function SignUp() {
         `${CONSTANT.BASE_URL}/auth/signup`,
         {
           ...formDetails,
-          phoneNumber: `(${formDetails.countryCode}) ${formDetails.phoneNumber}`,
+          phoneNumber: `+(${formDetails.countryCode})${formDetails.phoneNumber}`,
         },
         {
           headers: {
