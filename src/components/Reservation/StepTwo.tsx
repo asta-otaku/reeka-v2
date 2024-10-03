@@ -100,6 +100,9 @@ function StepTwo({
             property?.price?.basePrice
         ).toFixed(0);
 
+        case "airbnb":
+          return property?.price?.airbnbPrice;
+          
       default:
         return property.price.basePrice; // Default to basePrice if the price type is unrecognized
     }
