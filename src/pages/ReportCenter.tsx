@@ -1,7 +1,6 @@
 import { Calendar, ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
-// import deleteIcon from "../assets/delete-01.svg";
 import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import { useEffect, useState } from "react";
@@ -15,25 +14,42 @@ function ReportCenter() {
   const setModal = useStore((state: any) => state.setModal);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const userID = CONSTANT.USER_ID || "";
+        setUserId(userID);
+      } catch (error) {
+        console.error("Error fetching userId:", error);
+      }
+    };
+
     const fetchProperties = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
         );
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
+
+    fetchUserId();
     fetchProperties();
-  }, []);
+  }, [userId]);
 
   const handleSingleDownload = (propertyName: string) => {
+    if (!userId) {
+      toast.error("User ID not available, please try again later.");
+      return;
+    }
+
     axios
       .get(
-        `${CONSTANT.BASE_URL}/report/${CONSTANT.USER_ID}/pdf?startDate=&endDate=&propertyName=${propertyName}`,
+        `${CONSTANT.BASE_URL}/report/${userId}/pdf?startDate=&endDate=&propertyName=${propertyName}`,
         {
           responseType: "blob",
         }
@@ -49,7 +65,7 @@ function ReportCenter() {
         window.URL.revokeObjectURL(url);
       })
       .catch(() => {
-        toast.error("An error occurred while generating report");
+        toast.error("An error occurred while generating the report.");
       });
   };
 
@@ -97,7 +113,11 @@ function ReportCenter() {
               />
             </div>
             <button
-              onClick={() => setModal(<ReportModal properties={properties} />)}
+              onClick={() =>
+                setModal(
+                  <ReportModal properties={properties} userId={userId} />
+                )
+              }
               className="bg-primary p-2 rounded-xl text-white w-full md:w-fit md:absolute md:-top-20 z-10 right-6 font-medium text-sm border border-primary"
             >
               New Report
@@ -146,7 +166,6 @@ function ReportCenter() {
                       onClick={() => handleSingleDownload(dt.propertyName)}
                       className="cursor-pointer"
                     />
-                    {/* <img src={deleteIcon} className="w-4 cursor-pointer" /> */}
                   </div>
                 </div>
               </div>
@@ -159,7 +178,7 @@ function ReportCenter() {
 
 export default ReportCenter;
 
-function ReportModal({ properties }: any) {
+function ReportModal({ properties, userId }: any) {
   const [form, setForm] = useState({
     type: "",
     property: "",
@@ -169,13 +188,15 @@ function ReportModal({ properties }: any) {
 
   const handleDownload = (e: any) => {
     e.preventDefault();
-    if (!form.type) {
-      toast.error("Please select a report type");
+
+    if (!form.type || !userId) {
+      toast.error("Please select a report type and ensure User ID is loaded.");
       return;
     }
+
     axios
       .get(
-        `${CONSTANT.BASE_URL}/report/${CONSTANT.USER_ID}/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
+        `${CONSTANT.BASE_URL}/report/${userId}/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
         {
           responseType: "blob",
         }
@@ -187,16 +208,13 @@ function ReportModal({ properties }: any) {
         const filename = `${form.property ? `${form.property}-` : "report"}${
           form.from
         }-to-${form.to}.${form.type}`;
-        if (form.property && form.from && form.to && form.type) {
-          link.setAttribute("download", filename);
-        } else {
-          link.setAttribute("download", `report.${form.type}`);
-        }
+        link.setAttribute("download", filename || `report.${form.type}`);
         document.body.appendChild(link);
         link.click();
+        window.URL.revokeObjectURL(url);
       })
       .catch(() => {
-        toast.error("An error occurred while generating report");
+        toast.error("An error occurred while generating the report.");
       });
   };
 
