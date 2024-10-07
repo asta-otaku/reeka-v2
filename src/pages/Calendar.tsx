@@ -17,16 +17,16 @@ function Calendar() {
   function formatTimestamp(timestamp: string, isEndDate = false) {
     const date = new Date(timestamp);
 
-    // Extract date components
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+    // Extract UTC date components
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
 
     // Set hours and minutes based on whether it's a start or end date
     const hours = isEndDate ? "18" : "06";
-    const minutes = isEndDate ? "00" : "00";
+    const minutes = "00";
 
-    // Return the formatted string in 'YYYY-MM-DD HH:mm' format
+    // Return the formatted string in 'YYYY-MM-DD HH:mm' format (in UTC)
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   }
 

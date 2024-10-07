@@ -37,43 +37,43 @@ function BookingTable({ data }: { data: any[] }) {
                   <tr className="capitalize">
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[120px] whitespace-nowrap font-bold"
                     >
                       Date
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[160px] whitespace-nowrap font-bold"
                     >
                       Apartment
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[120px] whitespace-nowrap font-bold"
                     >
                       Name
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[140px] whitespace-nowrap font-bold"
                     >
                       Amount Paid
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[100px] whitespace-nowrap font-bold"
                     >
                       Status
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[120px] whitespace-nowrap font-bold"
                     >
                       Guest
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 whitespace-nowrap font-bold"
+                      className="px-6 py-4 w-[150px] whitespace-nowrap font-bold"
                     >
                       Check-out Date
                     </th>
@@ -81,7 +81,7 @@ function BookingTable({ data }: { data: any[] }) {
                 </thead>
                 <tbody className="bg-white">
                   <tr>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[120px]">
                       <div className="flex items-center gap-2">
                         <div className="px-0.5 py-4 rounded-2xl bg-[#34C759]" />
                         <div>
@@ -94,7 +94,7 @@ function BookingTable({ data }: { data: any[] }) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[160px]">
                       <div className="flex items-center gap-2">
                         <img
                           src={item?.propertyId?.images[0]}
@@ -110,12 +110,12 @@ function BookingTable({ data }: { data: any[] }) {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[120px]">
                       <div className="text-sm text-[#121212] font-medium max-w-24 truncate text-ellipsis">
                         {item?.guestFirstName} {item?.guestLastName}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[140px]">
                       <div className="text-sm text-[#121212] font-medium">
                         ₦{item?.totalBookingValue}
                       </div>
@@ -123,7 +123,7 @@ function BookingTable({ data }: { data: any[] }) {
                         For {item?.nightsBooked} days
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[100px]">
                       <div
                         style={{
                           color:
@@ -136,7 +136,7 @@ function BookingTable({ data }: { data: any[] }) {
                         <span>{item.status}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[120px]">
                       <div className="text-sm text-[#121212] font-medium">
                         {item.numberOfGuests}
                       </div>
@@ -144,7 +144,7 @@ function BookingTable({ data }: { data: any[] }) {
                         {item.numberOfChildren} Child
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="pl-2 py-4 whitespace-nowrap w-[150px]">
                       <div className="text-sm text-[#121212] font-medium">
                         {formatDate(item?.endDate?.toString())}
                       </div>
