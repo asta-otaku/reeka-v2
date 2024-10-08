@@ -30,6 +30,9 @@ function SignIn() {
 
   const handleSignIn = (e: any) => {
     e.preventDefault();
+    if (!formDetails.email || !formDetails.password) {
+      return toast.error("All fields are required");
+    }
     axios
       .post(
         `${CONSTANT.BASE_URL}/auth/login`,
