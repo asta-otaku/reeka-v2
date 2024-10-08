@@ -3,22 +3,17 @@ import graycancel from "../assets/graycancel.svg";
 import redcancel from "../assets/cancel-red.svg";
 import { CONSTANT } from "../util";
 import axios from "axios";
+import moment from "moment-timezone";
 
 function BookingTable({ data }: { data: any[] }) {
   const setModal = useStore((state: any) => state.setModal);
 
   function formatDate(date: string) {
-    const d = new Date(date);
-    return d.toLocaleDateString("en-US", { month: "short", day: "2-digit" });
+    return moment(date).tz("Africa/Lagos").format("MMM DD");
   }
 
   function formatTime(date: string) {
-    const d = new Date(date);
-    return d.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
+    return moment(date).tz("Africa/Lagos").format("hh:mm A");
   }
 
   return (

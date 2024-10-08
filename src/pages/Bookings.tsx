@@ -8,6 +8,7 @@ import axios from "axios";
 import { CONSTANT } from "../util";
 import ReactPaginate from "react-paginate";
 
+// Dynamically retrieve userId from CONSTANT
 const userId = CONSTANT.USER_ID;
 
 function Bookings() {
@@ -18,35 +19,40 @@ function Bookings() {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
-        );
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
+      if (userId) {
+        // Ensure userId is present
+        try {
+          const response = await axios.get(
+            `${CONSTANT.BASE_URL}/properties/owner/${userId}`
+          );
+          setProperties(response.data);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     fetchProperties();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
-    axios
-      .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
-      .then((response) => {
-        setBookings(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
+    if (userId) {
+      // Ensure userId is present before making the request
+      axios
+        .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
+        .then((response) => {
+          setBookings(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [userId]);
 
-  //pagination logic
-
+  // Pagination logic
   const itemsPerPage = 15;
-
   const [currentPage, setCurrentPage] = useState(0);
 
+  // Calculate page count based on filtered bookings
   const pageCount = Math.ceil(
     bookings.filter((booking: any) =>
       booking?.propertyId?.propertyName
@@ -59,17 +65,14 @@ function Bookings() {
     setCurrentPage(selected);
   };
 
+  // Filter and slice the data for the current page
   const displayedData = bookings
     .filter((booking: any) =>
       booking?.propertyId?.propertyName
         ?.toLowerCase()
         .includes(selectedProperty.toLowerCase())
     )
-    .slice(
-      currentPage * itemsPerPage,
-
-      (currentPage + 1) * itemsPerPage
-    );
+    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   return (
     <DashboardLayout>
