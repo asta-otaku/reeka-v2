@@ -4,6 +4,7 @@ import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
+import moment from "moment-timezone";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CONSTANT } from "../util";
@@ -15,19 +16,14 @@ function Calendar() {
   const [selectedProperty, setSelectedProperty] = useState("");
 
   function formatTimestamp(timestamp: string, isEndDate = false) {
-    const date = new Date(timestamp);
-
-    // Extract UTC date components
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(date.getUTCDate()).padStart(2, "0");
+    const date = moment(timestamp).tz("Africa/Lagos").format();
 
     // Set hours and minutes based on whether it's a start or end date
     const hours = isEndDate ? "18" : "06";
     const minutes = "00";
 
     // Return the formatted string in 'YYYY-MM-DD HH:mm' format (in UTC)
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
+    return `${date.split("T")[0]} ${hours}:${minutes}`;
   }
 
   useEffect(() => {
