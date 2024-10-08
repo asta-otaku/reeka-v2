@@ -28,12 +28,24 @@ function SignUp() {
 
   const handleSignUp = (e: any) => {
     e.preventDefault();
+    if (
+      !formDetails.lastName ||
+      !formDetails.firstName ||
+      !formDetails.email ||
+      !formDetails.address ||
+      !formDetails.countryCode ||
+      !formDetails.country ||
+      !formDetails.password ||
+      !formDetails.phoneNumber
+    ) {
+      return toast.error("All fields are required");
+    }
     axios
       .post(
         `${CONSTANT.BASE_URL}/auth/signup`,
         {
           ...formDetails,
-          phoneNumber: `+(${formDetails.countryCode})${formDetails.phoneNumber}`,
+          phoneNumber: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
         },
         {
           headers: {
