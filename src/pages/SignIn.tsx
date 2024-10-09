@@ -2,11 +2,20 @@ import { Link } from "react-router-dom";
 import authBg from "../assets/authBg.png";
 import axios from "axios";
 import { CONSTANT } from "../util";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function SignIn() {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  useEffect(() => {
+    if (user && Object.keys(user).length > 0) {
+      navigate("/dashboard");
+      console.log(user);
+    }
+  }, [user]);
+
   const navigate = useNavigate();
   const [formDetails, setFormDetails] = useState({
     email: "",

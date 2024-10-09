@@ -6,7 +6,7 @@ function App() {
 
   useEffect(() => {
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/signin");
     }, 2000);
   }, []);
 

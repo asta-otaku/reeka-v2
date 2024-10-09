@@ -1,30 +1,43 @@
 import toast, { Toaster } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CONSTANT } from "../util";
 
 function Pricing() {
   const [pricingPlan, setPricingPlan] = useState("");
+  const navigate = useNavigate();
+
+  const userId = CONSTANT.USER_ID;
 
   useEffect(() => {
     const fetchPricing = async () => {
-      const res = await axios.get(
-        `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${CONSTANT.USER_ID}`
-      );
-      if (res.data.planType) {
-        window.location.href = "/dashboard";
+      if (!userId) {
+        toast.error("User ID is missing. Please log in.");
+        navigate("/login");
+        return;
+      }
+
+      try {
+        const res = await axios.get(
+          `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${userId}`
+        );
+        if (res.data.planType) {
+          window.location.href = "/dashboard";
+        }
+      } catch (error) {
+        console.error("Error fetching subscription data:", error);
       }
     };
 
     fetchPricing();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
-    if (pricingPlan) {
+    if (pricingPlan && userId) {
       axios
         .post(`${CONSTANT.BASE_URL}/subscriptions/user-subscription`, {
-          userId: CONSTANT.USER_ID,
+          userId,
           planType: pricingPlan,
         })
         .then(() => {
@@ -39,7 +52,7 @@ function Pricing() {
           toast.error("Something went wrong!");
         });
     }
-  }, [pricingPlan]);
+  }, [pricingPlan, userId]);
 
   return (
     <div>
@@ -62,6 +75,8 @@ function Pricing() {
           </div>
 
           <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-2 w-full">
+            {/* Pricing Cards */}
+
             <div className="p-2 rounded-[32px] bg-primary">
               <div className="p-4 rounded-3xl bg-[#E9895F]">
                 <h6 className="text-white text-xs">Trial</h6>
