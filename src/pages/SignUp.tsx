@@ -63,7 +63,7 @@ function SignUp() {
       })
       .catch((err) => {
         console.log(err);
-        toast.error("An error occurred");
+        toast.error(err.response.data.error || "An error occurred");
       });
   };
 

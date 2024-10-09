@@ -56,7 +56,7 @@ function SignIn() {
         }
       })
       .catch((err) => {
-        toast.error("Invalid credentials");
+        toast.error(err.response.data.error || "Invalid credentials");
         console.log(err);
       });
   };
