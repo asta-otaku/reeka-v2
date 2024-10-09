@@ -21,6 +21,7 @@ function DashboardCharts() {
     previousMonthlyAverageNightlyRate,
     setPreviousMonthlyAverageNightlyRate,
   ] = useState<any>({});
+  const [activeMonth, setActiveMonth] = useState("current");
 
   const userId = CONSTANT.USER_ID;
 
@@ -176,9 +177,14 @@ function DashboardCharts() {
       previous: previousDailyBooking.length
         ? previousDailyBooking.map((item: any) => item.totalNights)
         : [],
-      labels: dailyBookings.length
-        ? dailyBookings.map((item: any) => item?.date)
-        : [],
+      labels:
+        activeMonth === "current"
+          ? dailyBookings.length
+            ? dailyBookings.map((item: any) => item?.date)
+            : []
+          : previousDailyBooking.length
+          ? previousDailyBooking.map((item: any) => item?.date)
+          : [],
     },
     {
       title: "Revenue",
@@ -190,9 +196,14 @@ function DashboardCharts() {
       previous: previousMonthlyRevenue.length
         ? previousMonthlyRevenue?.map((item: any) => item?.totalRevenue)
         : [],
-      labels: dailyRevenue?.length
-        ? dailyRevenue?.map((item: any) => item?.date)
-        : [],
+      labels:
+        activeMonth === "current"
+          ? dailyRevenue?.length
+            ? dailyRevenue?.map((item: any) => item?.date)
+            : []
+          : previousMonthlyRevenue.length
+          ? previousMonthlyRevenue?.map((item: any) => item?.date)
+          : [],
     },
     {
       title: "Average Nightly Rate",
@@ -206,9 +217,14 @@ function DashboardCharts() {
             (item: any) => item.averageNightlyRate
           )
         : [],
-      labels: dailyAverageNightlyRate.length
-        ? dailyAverageNightlyRate?.map((item: any) => item?.date)
-        : [],
+      labels:
+        activeMonth === "current"
+          ? dailyAverageNightlyRate.length
+            ? dailyAverageNightlyRate?.map((item: any) => item?.date)
+            : []
+          : previousMonthlyAverageNightlyRate.length
+          ? previousMonthlyAverageNightlyRate?.map((item: any) => item?.date)
+          : [],
     },
   ];
 
@@ -255,16 +271,26 @@ function DashboardCharts() {
       <div className="flex justify-between items-center mt-6 mb-3">
         <h4 className="text-xl font-medium">Reports</h4>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setActiveMonth("current")}
+            className={`flex items-center gap-1.5 ${
+              activeMonth === "current" ? "font-bold" : ""
+            }`}
+          >
             <span className="w-2.5 h-2.5 rounded-full bg-[#E36B37]" />
             <h5 className="text-[#808080] font-light text-sm">Current Month</h5>
-          </div>
-          <div className="flex items-center gap-1.5">
+          </button>
+          <button
+            onClick={() => setActiveMonth("previous")}
+            className={`flex items-center gap-1.5 ${
+              activeMonth === "previous" ? "font-bold" : ""
+            }`}
+          >
             <span className="w-2.5 h-2.5 rounded-full bg-[#F94144]" />
             <h5 className="text-[#808080] font-light text-sm">
               Previous Month
             </h5>
-          </div>
+          </button>
         </div>
       </div>
       <hr />
@@ -295,9 +321,9 @@ function DashboardCharts() {
             </h2>
             <div className="mt-4 border rounded-2xl p-3 bg-[#FAFAFA] w-full h-56">
               <LineChart
-                current={data.current}
-                previous={data.previous}
-                labels={data.labels}
+                labels={data.labels} // X-axis labels (dates)
+                data={activeMonth === "current" ? data.current : data.previous} // Show current or previous month data
+                activeMonth={activeMonth}
               />
             </div>
           </div>
