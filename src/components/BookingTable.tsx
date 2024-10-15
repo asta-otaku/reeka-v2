@@ -243,7 +243,7 @@ function Modal({ booking, setModal }: { booking: any; setModal: any }) {
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              ₦{booking?.propertyId?.price?.basePrice}
+              ₦{booking?.totalBookingValue}
             </h4>
           </div>
           <div>
