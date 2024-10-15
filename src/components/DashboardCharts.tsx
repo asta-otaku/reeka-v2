@@ -150,7 +150,7 @@ function DashboardCharts() {
       title: "Revenue",
       amount: monthlyRevenue.totalRevenue || 0,
       percentage: monthlyRevenue.percentageChangeRevenue || 0,
-      caption: "total revenue earned" || 0,
+      caption: "total revenue earned",
     },
     {
       title: "Average Nightly Rate",
@@ -161,7 +161,7 @@ function DashboardCharts() {
     {
       title: "Occupancy Rate",
       amount: occupancyRate.occupancy + "%" || 0,
-      percentage: occupancyRate.percentageChangeOccupancyRate || 0,
+      percentage: occupancyRate.percentageChange || 0,
       caption: "percentage of occupied nights",
     },
   ];

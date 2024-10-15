@@ -3,38 +3,58 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import { getDate, getDateRange } from "../helpers/getDate";
 import { useEffect, useState } from "react";
 import DashboardCharts from "../components/DashboardCharts";
-// import NotificationModal from "../components/NotificationModal";
 import { useNavigate } from "react-router-dom";
+import { CONSTANT } from "../util";
+import axios from "axios";
+import DashboardPropertyChart from "../components/DashboardPropertyChart";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const propertyCardData = [
-  {
-    title: "Booked",
-    amount: "21",
-    percentage: 200,
-  },
-  {
-    title: "Occupied",
-    amount: "33",
-    percentage: -200,
-  },
-  {
-    title: "Vacant",
-    amount: "24",
-    percentage: 200,
-  },
-];
+const userId = CONSTANT.USER_ID;
 
 function Dashboard() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const [openModal, setOpenModal] = useState(false);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [properties, setProperties] = useState<any[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState("");
+  const [activePropertyId, setActivePropertyId] = useState("");
+  const [filterType, setFilterType] = useState("last_30_days");
+
+  // States for custom date range
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
       navigate("/signin");
     }
   }, [user]);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      if (userId) {
+        try {
+          const response = await axios.get(
+            `${CONSTANT.BASE_URL}/properties/owner/${userId}`
+          );
+          setProperties(response.data);
+          setActivePropertyId(response.data[0]?._id);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+    fetchProperties();
+  }, [userId]);
+
+  useEffect(() => {
+    const property = properties.find(
+      (property) => property.propertyName === selectedProperty
+    );
+    setActivePropertyId(property?._id);
+  }, [selectedProperty]);
 
   return (
     <DashboardLayout>
@@ -50,8 +70,6 @@ function Dashboard() {
             onClick={() => setOpenModal(!openModal)}
             className="w-5 h-5 cursor-pointer"
           />
-
-          {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
         </div>
         <div className="p-4">
           <section>
@@ -78,18 +96,96 @@ function Dashboard() {
                   Properties
                 </button>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
+              <div className="flex flex-wrap items-center gap-2">
+                <div
+                  className={`flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit ${
+                    selected == 0 && "hidden"
+                  }`}
+                >
+                  <select
+                    onChange={(e) => {
+                      setSelectedProperty(e.target.value);
+                    }}
+                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+                  >
+                    {properties.length === 0 ? (
+                      <option value="">No properties available</option>
+                    ) : (
+                      properties.map((property) => (
+                        <option
+                          key={property._id}
+                          value={property.propertyName}
+                        >
+                          {property.propertyName}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  <ChevronDownIcon width={12} />
+                </div>
+                {/* <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
                   <select className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent">
                     <option>Monthly</option>
                   </select>
                   <ChevronDownIcon width={12} />
-                </div>
+                </div> */}
                 <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
                   <Calendar width={12} />
-                  <select className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent">
-                    <option>{getDateRange()}</option>
-                  </select>
+                  {filterType === "custom_date_range" ? (
+                    <div className="overflow-x-auto no-scrollbar max-w-xs md:max-w-full flex ">
+                      {/* Date Range Picker */}
+                      <div className="flex items-center gap-2">
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date: Date | null) =>
+                            setStartDate(date ?? undefined)
+                          }
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="Start Date"
+                          className="text-xs md:text-sm outline-none"
+                          dateFormatCalendar="yyyy-mm-dd"
+                        />
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date: Date | null) =>
+                            setEndDate(date ?? undefined)
+                          }
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          placeholderText="End Date"
+                          className="text-xs md:text-sm outline-none"
+                          dateFormatCalendar="yyyy-mm-dd"
+                        />
+                      </div>
+
+                      {/* Button to Switch Back to Predefined Options */}
+                      <button
+                        className="text-[10px] whitespace-nowrap text-primary hover:underline"
+                        onClick={() => setFilterType("last_30_days")}
+                      >
+                        Switch to Predefined Options
+                      </button>
+                    </div>
+                  ) : (
+                    <select
+                      onChange={(e) => setFilterType(e.target.value)}
+                      className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent"
+                    >
+                      <option value="last_30_days">{getDateRange()}</option>
+                      <option value="last_7_days">Last 7 days</option>
+                      <option value="last_14_days">Last 14 days</option>
+                      <option value="last_90_days">Last 90 days</option>
+                      <option value="this_month">This Month</option>
+                      <option value="all_time">All Time</option>
+                      <option value="year_to_dates">Year to Date (YTD)</option>
+                      <option value="custom_date_range">
+                        Custom Date Range
+                      </option>
+                    </select>
+                  )}
                 </div>
               </div>
             </div>
@@ -98,43 +194,12 @@ function Dashboard() {
               {
                 0: <DashboardCharts />,
                 1: (
-                  <div className="grid grid-cols-1 lg:grid-cols-3 w-full gap-4">
-                    {propertyCardData.map((data, index) => (
-                      <div
-                        key={index}
-                        className={`border shadow-sm rounded-xl space-y-6 p-4
-                  ${
-                    data.percentage > 0
-                      ? "bg-[linear-gradient(220deg,_#D5FFE7,_#FFFF_45%)]"
-                      : "bg-[linear-gradient(220deg,_#FFEEEE,_#FFFF_45%)]"
-                  }`}
-                      >
-                        <div className="w-full flex items-center justify-between">
-                          <h4 className="text-[#808080] font-medium">
-                            {data.title}
-                          </h4>
-                          <h6
-                            className={`${
-                              data.percentage > 0
-                                ? "text-[#219653]"
-                                : "text-[#E90000]"
-                            } font-medium text-sm`}
-                          >
-                            {data.percentage > 0 ? "+" : ""}
-                            {data.percentage}%
-                          </h6>
-                        </div>
-                        <div>
-                          <h2 className="text-[#121212] text-2xl font-medium">
-                            {data.amount}
-                          </h2>
-                          <p className="text-xs text-[#808080]">
-                            1,000 previous period
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <DashboardPropertyChart
+                    activePropertyId={activePropertyId}
+                    filterType={filterType}
+                    startDate={startDate}
+                    endDate={endDate}
+                  />
                 ),
               }[selected]
             }
