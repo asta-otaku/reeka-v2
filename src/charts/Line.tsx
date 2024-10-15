@@ -96,10 +96,10 @@ function LineChart({
         grid: {
           display: true, // Display gridlines on the X-axis
         },
-        // ticks: {
-        //   autoSkip: true, // Skip ticks if there are too many
-        //   maxTicksLimit: 7, // Limit the number of X-axis ticks
-        // },
+        ticks: {
+          autoSkip: true, // Skip ticks if there are too many
+          // maxTicksLimit: 7, // Limit the number of X-axis ticks
+        },
       },
     },
   };

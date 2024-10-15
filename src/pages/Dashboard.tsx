@@ -7,10 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { CONSTANT } from "../util";
 import axios from "axios";
 import DashboardPropertyChart from "../components/DashboardPropertyChart";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { DatePicker } from "antd";
 
 const userId = CONSTANT.USER_ID;
+
+const { RangePicker } = DatePicker;
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -135,29 +136,13 @@ function Dashboard() {
                     <div className="overflow-x-auto no-scrollbar max-w-xs md:max-w-full flex ">
                       {/* Date Range Picker */}
                       <div className="flex items-center gap-2">
-                        <DatePicker
-                          selected={startDate}
-                          onChange={(date: Date | null) =>
-                            setStartDate(date ?? undefined)
-                          }
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="Start Date"
-                          className="text-xs md:text-sm outline-none"
-                          dateFormatCalendar="yyyy-mm-dd"
-                        />
-                        <DatePicker
-                          selected={endDate}
-                          onChange={(date: Date | null) =>
-                            setEndDate(date ?? undefined)
-                          }
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          placeholderText="End Date"
-                          className="text-xs md:text-sm outline-none"
-                          dateFormatCalendar="yyyy-mm-dd"
+                        <RangePicker
+                          onChange={(dates, dateStrings) => {
+                            setStartDate(new Date(dateStrings[0]));
+                            setEndDate(new Date(dateStrings[1]));
+                            console.log(dates, dateStrings);
+                          }}
+                          className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent"
                         />
                       </div>
 
@@ -180,7 +165,7 @@ function Dashboard() {
                       <option value="last_90_days">Last 90 days</option>
                       <option value="this_month">This Month</option>
                       <option value="all_time">All Time</option>
-                      <option value="year_to_dates">Year to Date (YTD)</option>
+                      <option value="year_to_date">Year to Date (YTD)</option>
                       <option value="custom_date_range">
                         Custom Date Range
                       </option>
