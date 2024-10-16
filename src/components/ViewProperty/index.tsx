@@ -90,30 +90,29 @@ function ViewProperty() {
     property.images.forEach((image: any) => {
       formData.append("images", image);
     });
-    console.log(property);
 
-    // try {
-    //   const res = await axios.put(
-    //     `${CONSTANT.BASE_URL}/properties/${property._id}`,
-    //     formData,
-    //     {
-    //       headers: {
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   );
-    //   if (res.status === 200) {
-    //     toast.success("Property updated successfully");
-    //     setTimeout(() => {
-    //       navigate("/listing");
-    //     }, 2000);
-    //   } else {
-    //     toast.error("An error occurred");
-    //   }
-    // } catch (error) {
-    //   toast.error("Failed to update property");
-    //   console.error(error);
-    // }
+    try {
+      const res = await axios.put(
+        `${CONSTANT.BASE_URL}/properties/${property._id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (res.status === 200) {
+        toast.success("Property updated successfully");
+        setTimeout(() => {
+          navigate("/listing");
+        }, 2000);
+      } else {
+        toast.error("An error occurred");
+      }
+    } catch (error) {
+      toast.error("Failed to update property");
+      console.error(error);
+    }
   };
 
   // Pagination logic
