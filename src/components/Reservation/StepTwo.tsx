@@ -85,20 +85,20 @@ function StepTwo({
 
     switch (price) {
       case "base":
-        return property.price.basePrice;
+        return property.price.basePrice.toFixed(2);
 
       case "high":
         return (
           property?.price?.basePrice +
           (property?.price?.boostPercentage / 100) * property?.price?.basePrice
-        ).toFixed(0);
+        ).toFixed(2);
 
       case "low":
         return (
           property?.price?.basePrice -
           (Math.abs(property?.price?.discountPercentage) / 100) *
             property?.price?.basePrice
-        ).toFixed(0);
+        ).toFixed(2);
 
         case "airbnb":
           return property?.price?.airbnbPrice;
