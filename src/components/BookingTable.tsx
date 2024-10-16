@@ -95,10 +95,10 @@ function BookingTable({ data }: { data: any[] }) {
                       <div className="flex items-center gap-2">
                         <img
                           src={item?.propertyId?.images[0]}
-                          className={`w-10 h-10 ${
+                          className={`w-10 h-10 hidden lg:block ${
                             location.pathname.startsWith("/listing")
-                              ? "hidden"
-                              : ""
+                              ? "hidden lg:hidden"
+                              : "block"
                           }`}
                         />
                         <div>
@@ -120,6 +120,7 @@ function BookingTable({ data }: { data: any[] }) {
                       <div className="text-sm text-[#121212] font-medium">
                         ₦
                         {item?.totalBookingValue
+                          ?.toFixed(2)
                           ?.toString()
                           ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </div>
