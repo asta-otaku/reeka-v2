@@ -182,7 +182,9 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
-              {getPrice(formDetails.price)}
+              {getPrice(formDetails.price)
+                ?.toString()
+                ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </h4>
           </div>
           <div>
