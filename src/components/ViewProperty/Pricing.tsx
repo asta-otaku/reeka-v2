@@ -69,7 +69,7 @@ function Pricing({
                       ...prev,
                       price: {
                         ...prev.price,
-                        discountPercentage: Number(
+                        discountPercentage: -Number(
                           discountPercentage.toFixed(2)
                         ),
                       },
@@ -112,12 +112,14 @@ function Pricing({
                   value={property?.price?.discountPercentage || 0}
                   onChange={(e: any) => {
                     if (!edit) return;
-                    if (e.target.value > 100) return;
+                    let value = Number(e.target.value);
+                    if (value > 0) value = -value;
+                    if (value < -100) return;
                     setProperty({
                       ...property,
                       price: {
                         ...property.price,
-                        discountPercentage: -Number(e.target.value) || 0,
+                        discountPercentage: value || 0,
                       },
                     });
                   }}
@@ -128,7 +130,7 @@ function Pricing({
                 <button
                   onClick={() => {
                     if (!edit) return;
-                    if (property?.price?.discountPercentage > 100) return;
+                    if (property?.price?.discountPercentage <= -100) return;
                     setProperty({
                       ...property,
                       price: {

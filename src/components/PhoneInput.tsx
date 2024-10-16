@@ -17,6 +17,7 @@ function PhoneInput({
         value={formDetails.countryCode}
         className="w-10 outline-none bg-transparent text-[#667085]"
       >
+        <option value="">--</option>
         <option value="+1">🇺🇸 +1</option>
         <option value="+1CA">🇨🇦 +1</option>
         <option value="+44">🇬🇧 +44</option>

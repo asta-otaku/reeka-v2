@@ -4,9 +4,11 @@ import redcancel from "../assets/cancel-red.svg";
 import { CONSTANT } from "../util";
 import axios from "axios";
 import moment from "moment-timezone";
+import { useLocation } from "react-router-dom";
 
 function BookingTable({ data }: { data: any[] }) {
   const setModal = useStore((state: any) => state.setModal);
+  const location = useLocation();
 
   function formatDate(date: string) {
     return moment(date).tz("Africa/Lagos").format("MMM DD");
@@ -32,43 +34,43 @@ function BookingTable({ data }: { data: any[] }) {
                   <tr className="capitalize">
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[120px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[120px] whitespace-nowrap font-bold"
                     >
                       Date
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[160px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[160px] whitespace-nowrap font-bold"
                     >
                       Apartment
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[120px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[120px] whitespace-nowrap font-bold"
                     >
                       Name
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[140px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[140px] whitespace-nowrap font-bold"
                     >
                       Amount Paid
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[100px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[100px] whitespace-nowrap font-bold"
                     >
                       Status
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[120px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[120px] whitespace-nowrap font-bold"
                     >
                       Guest
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-4 w-[150px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[150px] whitespace-nowrap font-bold"
                     >
                       Check-out Date
                     </th>
@@ -76,7 +78,7 @@ function BookingTable({ data }: { data: any[] }) {
                 </thead>
                 <tbody className="bg-white">
                   <tr>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[120px]">
+                    <td className="px-4 py-4 whitespace-nowrap w-[120px]">
                       <div className="flex items-center gap-2">
                         <div className="px-0.5 py-4 rounded-2xl bg-[#34C759]" />
                         <div>
@@ -89,36 +91,43 @@ function BookingTable({ data }: { data: any[] }) {
                         </div>
                       </div>
                     </td>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[160px]">
+                    <td className="px-4 py-4 whitespace-nowrap w-[160px]">
                       <div className="flex items-center gap-2">
                         <img
                           src={item?.propertyId?.images[0]}
-                          className="w-10 h-10"
+                          className={`w-10 h-10 ${
+                            location.pathname.startsWith("/listing")
+                              ? "hidden"
+                              : ""
+                          }`}
                         />
                         <div>
-                          <div className="text-sm text-[#121212] font-medium max-w-24 truncate text-ellipsis">
+                          <div className="text-sm text-[#121212] font-medium max-w-[150px] truncate text-ellipsis">
                             {item?.propertyId?.propertyName}
                           </div>
-                          <div className="text-[10px] text-[#808080] font-light max-w-24 truncate text-ellipsis">
+                          <div className="text-[10px] text-[#808080] font-light max-w-[150px] truncate text-ellipsis">
                             {item?.propertyId?.address}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[120px]">
-                      <div className="text-sm text-[#121212] font-medium max-w-24 truncate text-ellipsis">
+                    <td className="px-4 py-4 whitespace-nowrap w-[120px]">
+                      <div className="text-sm text-[#121212] font-medium max-w-[110px] truncate text-ellipsis">
                         {item?.guestFirstName} {item?.guestLastName}
                       </div>
                     </td>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[140px]">
+                    <td className="px-4 py-4 whitespace-nowrap w-[140px]">
                       <div className="text-sm text-[#121212] font-medium">
-                        ₦{item?.totalBookingValue}
+                        ₦
+                        {item?.totalBookingValue
+                          ?.toString()
+                          ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </div>
                       <div className="text-[10px] text-[#808080] font-light">
                         For {item?.nightsBooked} days
                       </div>
                     </td>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[100px]">
+                    <td className="px-4 py-4 whitespace-nowrap w-[100px]">
                       <div
                         style={{
                           color:
@@ -131,7 +140,7 @@ function BookingTable({ data }: { data: any[] }) {
                         <span>{item.status}</span>
                       </div>
                     </td>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[120px]">
+                    <td className="px-4 py-4 whitespace-nowrap w-[120px]">
                       <div className="text-sm text-[#121212] font-medium">
                         {item.numberOfGuests}
                       </div>
@@ -139,7 +148,7 @@ function BookingTable({ data }: { data: any[] }) {
                         {item.numberOfChildren} Child
                       </div>
                     </td>
-                    <td className="pl-2 py-4 whitespace-nowrap w-[150px]">
+                    <td className="px-4 py-4 whitespace-nowrap w-[150px]">
                       <div className="text-sm text-[#121212] font-medium">
                         {formatDate(item?.endDate?.toString())}
                       </div>
@@ -243,7 +252,10 @@ function Modal({ booking, setModal }: { booking: any; setModal: any }) {
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              ₦{booking?.propertyId?.price?.basePrice}
+              ₦
+              {(booking?.totalBookingValue / booking?.nightsBooked)
+                ?.toFixed(2)
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             </h4>
           </div>
           <div>
