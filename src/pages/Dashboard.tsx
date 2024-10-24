@@ -9,8 +9,6 @@ import axios from "axios";
 import DashboardPropertyChart from "../components/DashboardPropertyChart";
 import { DatePicker } from "antd";
 
-const userId = CONSTANT.USER_ID;
-
 const { RangePicker } = DatePicker;
 
 function Dashboard() {
@@ -22,6 +20,7 @@ function Dashboard() {
   const [selectedProperty, setSelectedProperty] = useState("");
   const [activePropertyId, setActivePropertyId] = useState("");
   const [filterType, setFilterType] = useState("last_30_days");
+  const [userId] = useState(CONSTANT.USER_ID);
 
   // States for custom date range
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -177,7 +176,13 @@ function Dashboard() {
 
             {
               {
-                0: <DashboardCharts />,
+                0: (
+                  <DashboardCharts
+                    filterType={filterType}
+                    startDate={startDate}
+                    endDate={endDate}
+                  />
+                ),
                 1: (
                   <DashboardPropertyChart
                     activePropertyId={activePropertyId}
