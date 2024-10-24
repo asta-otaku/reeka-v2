@@ -32,7 +32,7 @@ function DashboardCharts({
   ] = useState<any>({});
   const [activeMonth, setActiveMonth] = useState("current");
 
-  const userId = CONSTANT.USER_ID;
+  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
@@ -153,7 +153,7 @@ function DashboardCharts({
     fetchPreviousMonthlyRevenue();
     fetchPreviousMonthlyAverageNightlyRate();
     fetchOccupancyRate();
-  }, [filterType, startDate, endDate]);
+  }, [filterType, startDate, endDate, userId]);
 
   const CardData = [
     {
@@ -294,7 +294,9 @@ function DashboardCharts({
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-[#E36B37]" />
-            <h5 className="text-[#808080] font-light text-sm">Current Month</h5>
+            <h5 className="text-[#808080] font-light text-sm">
+              Current Period
+            </h5>
           </button>
           <button
             onClick={() => setActiveMonth("previous")}
@@ -304,7 +306,7 @@ function DashboardCharts({
           >
             <span className="w-2.5 h-2.5 rounded-full bg-[#F94144]" />
             <h5 className="text-[#808080] font-light text-sm">
-              Previous Month
+              Previous Period
             </h5>
           </button>
         </div>

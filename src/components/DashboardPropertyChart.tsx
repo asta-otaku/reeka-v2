@@ -5,10 +5,6 @@ import info from "../assets/info.svg";
 import LineChart from "../charts/Line";
 import moment from "moment";
 
-const userId = CONSTANT.USER_ID;
-
-// console.log(moment(startDate).format("YYYY-MM-DD"));
-
 function DashboardPropertyChart({
   activePropertyId,
   filterType,
@@ -55,6 +51,8 @@ function DashboardPropertyChart({
       averageNightlyRate: number;
     }[]
   >([]);
+
+  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const fetchCardData = async () => {
@@ -103,7 +101,7 @@ function DashboardPropertyChart({
 
     fetchCardData();
     fetchGraphData();
-  }, [activePropertyId, filterType, startDate, endDate]);
+  }, [activePropertyId, filterType, startDate, endDate, userId]);
 
   const cards = [
     {
