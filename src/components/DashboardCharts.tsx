@@ -3,8 +3,17 @@ import info from "../assets/info.svg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { CONSTANT } from "../util";
+import moment from "moment";
 
-function DashboardCharts() {
+function DashboardCharts({
+  filterType,
+  startDate,
+  endDate,
+}: {
+  filterType: string;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+}) {
   const [monthlyBookings, setMonthlyBookings] = useState<any>({});
   const [monthlyRevenue, setMonthlyRevenue] = useState<any>({});
   const [monthlyAverageNightlyRate, setMonthlyAverageNightlyRate] =
@@ -23,13 +32,20 @@ function DashboardCharts() {
   ] = useState<any>({});
   const [activeMonth, setActiveMonth] = useState("current");
 
-  const userId = CONSTANT.USER_ID;
+  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
+    const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
+    const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
+    const filterQuery =
+      filterType !== "custom_date_range"
+        ? `filterType=${filterType}`
+        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
+
     const fetchMonthlyBookings = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/total-nights-booked/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/total-nights-booked/${userId}?${filterQuery}`
         );
         setMonthlyBookings(response.data);
       } catch (error) {
@@ -39,7 +55,7 @@ function DashboardCharts() {
     const fetchMonthlyRevenue = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/revenue/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/revenue/${userId}?${filterQuery}`
         );
         setMonthlyRevenue(response.data);
       } catch (error) {
@@ -49,7 +65,7 @@ function DashboardCharts() {
     const fetchMonthlyAverageNightlyRate = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/average-nightly-rate/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/average-nightly-rate/${userId}?${filterQuery}`
         );
         setMonthlyAverageNightlyRate(response.data);
       } catch (error) {
@@ -59,7 +75,7 @@ function DashboardCharts() {
     const fetchDailyBookings = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-nights-booked/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/daily-nights-booked/${userId}?${filterQuery}`
         );
         setDailyBookings(response.data);
       } catch (error) {
@@ -69,7 +85,7 @@ function DashboardCharts() {
     const fetchDailyRevenue = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-revenue/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/daily-revenue/${userId}?${filterQuery}`
         );
         setDailyRevenue(response.data);
       } catch (error) {
@@ -79,7 +95,7 @@ function DashboardCharts() {
     const fetchDailyAverageNightlyRate = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-average-nightly-rate/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/daily-average-nightly-rate/${userId}?${filterQuery}`
         );
         setdailyAverageNightlyRate(response.data);
       } catch (error) {
@@ -89,7 +105,7 @@ function DashboardCharts() {
     const fetchpreviousDailyBooking = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-nights-booked/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/previous/daily-nights-booked/${userId}?${filterQuery}`
         );
         setpreviousDailyBooking(response.data);
       } catch (error) {
@@ -99,7 +115,7 @@ function DashboardCharts() {
     const fetchPreviousMonthlyRevenue = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-revenue/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/previous/daily-revenue/${userId}?${filterQuery}`
         );
         setPreviousMonthlyRevenue(response.data);
       } catch (error) {
@@ -109,7 +125,7 @@ function DashboardCharts() {
     const fetchPreviousMonthlyAverageNightlyRate = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-average-nightly-rate/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/previous/daily-average-nightly-rate/${userId}?${filterQuery}`
         );
         setPreviousMonthlyAverageNightlyRate(response.data);
       } catch (error) {
@@ -119,7 +135,7 @@ function DashboardCharts() {
     const fetchOccupancyRate = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/occupancy/${userId}`
+          `${CONSTANT.BASE_URL}/analytics/occupancy/${userId}?${filterQuery}`
         );
         setOccupancyRate(response.data);
       } catch (error) {
@@ -137,7 +153,7 @@ function DashboardCharts() {
     fetchPreviousMonthlyRevenue();
     fetchPreviousMonthlyAverageNightlyRate();
     fetchOccupancyRate();
-  }, []);
+  }, [filterType, startDate, endDate, userId]);
 
   const CardData = [
     {
@@ -278,7 +294,9 @@ function DashboardCharts() {
             }`}
           >
             <span className="w-2.5 h-2.5 rounded-full bg-[#E36B37]" />
-            <h5 className="text-[#808080] font-light text-sm">Current Month</h5>
+            <h5 className="text-[#808080] font-light text-sm">
+              Current Period
+            </h5>
           </button>
           <button
             onClick={() => setActiveMonth("previous")}
@@ -288,7 +306,7 @@ function DashboardCharts() {
           >
             <span className="w-2.5 h-2.5 rounded-full bg-[#F94144]" />
             <h5 className="text-[#808080] font-light text-sm">
-              Previous Month
+              Previous Period
             </h5>
           </button>
         </div>
