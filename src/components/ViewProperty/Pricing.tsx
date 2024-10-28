@@ -16,21 +16,54 @@ function Pricing({
         <div className="flex flex-col gap-2 w-full">
           <h4 className="text-[#3A3A3A] text-sm font-medium">Base Price</h4>
           <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+            <span className={`${edit ? "text-black " : "text-[#808080]"}`}>
+              ₦
+            </span>
             <input
               name="basePrice"
-              placeholder="$"
               disabled={!edit}
               style={{ color: edit ? "#121212" : "#808080" }}
               onChange={(e) => {
-                setProperty({
-                  ...property,
-                  price: {
-                    ...property.price,
-                    basePrice: Number(e.target.value),
-                  },
-                });
+                const value = e.target.value.replace(/,/g, "");
+                if (!isNaN(Number(value))) {
+                  setProperty({
+                    ...property,
+                    price: {
+                      ...property.price,
+                      basePrice: Number(value),
+                    },
+                  });
+                }
               }}
-              value={property?.price?.basePrice}
+              value={property?.price?.basePrice?.toLocaleString()}
+              className="w-full outline-none bg-transparent"
+            />
+            <h4 className="text-[#808080]">/Night</h4>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>
+          <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+            <span className={`${edit ? "text-black " : "text-[#808080]"}`}>
+              $
+            </span>
+            <input
+              name="airbnbPrice"
+              disabled={!edit}
+              style={{ color: edit ? "#121212" : "#808080" }}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, "");
+                if (!isNaN(Number(value))) {
+                  setProperty({
+                    ...property,
+                    price: {
+                      ...property.price,
+                      airbnbPrice: Number(value),
+                    },
+                  });
+                }
+              }}
+              value={property?.price?.airbnbPrice?.toLocaleString()}
               className="w-full outline-none bg-transparent"
             />
             <h4 className="text-[#808080]">/Night</h4>

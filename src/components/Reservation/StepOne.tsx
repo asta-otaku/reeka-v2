@@ -127,7 +127,7 @@ function StepOne({
             <h4 className="text-[#121212] text-sm font-medium">
               Price per night*
             </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+            <div className="relative flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <select
                 name="price"
                 value={formDetails.price}
@@ -142,7 +142,10 @@ function StepOne({
                 <option value="high">High</option>
                 <option value="airbnb">AirBnB</option>
               </select>
-              <ChevronDownIcon width={12} />
+              <ChevronDownIcon
+                width={12}
+                className="absolute right-2 cursor-pointer pointer-events-none"
+              />
             </div>
           </div>
           <div className="flex flex-col gap-1 w-full">

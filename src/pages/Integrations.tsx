@@ -4,11 +4,11 @@ import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import airbnb from "../assets/airbnb.svg";
 import bookingsIcon from "../assets/Booking.com_logo 2.svg";
-import expedia from "../assets/expedia.svg";
+// import expedia from "../assets/expedia.svg";
 import finance from "../assets/finance.svg";
 import mpesa from "../assets/icons8-mpesa-48.png";
-import vrbo from "../assets/vrbo-removebg-preview 1.svg";
-import trivago from "../assets/trivago.svg";
+// import vrbo from "../assets/vrbo-removebg-preview 1.svg";
+// import trivago from "../assets/trivago.svg";
 
 const bookings: {
   name: string;
@@ -31,27 +31,27 @@ const bookings: {
     status: false,
     disabled: true,
   },
-  {
-    name: "Expedia",
-    description: "Manage your bookings with ease.",
-    logo: expedia,
-    status: false,
-    disabled: true,
-  },
-  {
-    name: "Vrbo",
-    description: "Manage your bookings with ease.",
-    logo: vrbo,
-    status: false,
-    disabled: true,
-  },
-  {
-    name: "Trivago",
-    description: "Manage your bookings with ease.",
-    logo: trivago,
-    status: false,
-    disabled: true,
-  },
+  // {
+  //   name: "Expedia",
+  //   description: "Manage your bookings with ease.",
+  //   logo: expedia,
+  //   status: false,
+  //   disabled: true,
+  // },
+  // {
+  //   name: "Vrbo",
+  //   description: "Manage your bookings with ease.",
+  //   logo: vrbo,
+  //   status: false,
+  //   disabled: true,
+  // },
+  // {
+  //   name: "Trivago",
+  //   description: "Manage your bookings with ease.",
+  //   logo: trivago,
+  //   status: false,
+  //   disabled: true,
+  // },
 ];
 
 const finances: {

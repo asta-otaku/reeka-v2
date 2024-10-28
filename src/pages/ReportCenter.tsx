@@ -8,6 +8,7 @@ import useStore from "../store";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import toast, { Toaster } from "react-hot-toast";
+import Spinner from "../components/Spinner";
 
 function ReportCenter() {
   const [search, setSearch] = useState("");
@@ -79,18 +80,21 @@ function ReportCenter() {
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 relative">
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
+            <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6">
                 <option>All Reports</option>
               </select>
-              <ChevronDownIcon width={12} />
+              <ChevronDownIcon
+                className="absolute cursor-pointer pointer-events-none right-2"
+                width={12}
+              />
             </div>
-            <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+            <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {
                   setSelectedProperty(e.target.value);
                 }}
-                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
               >
                 <option value="">All Properties</option>
                 {properties.map((property) => (
@@ -99,7 +103,10 @@ function ReportCenter() {
                   </option>
                 ))}
               </select>
-              <ChevronDownIcon width={12} />
+              <ChevronDownIcon
+                className="absolute cursor-pointer pointer-events-none right-2"
+                width={12}
+              />
             </div>
           </div>
           <div className="flex items-center gap-4 max-w-sm w-full">
@@ -179,6 +186,7 @@ function ReportCenter() {
 export default ReportCenter;
 
 function ReportModal({ properties, userId }: any) {
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     type: "",
     property: "",
@@ -193,7 +201,7 @@ function ReportModal({ properties, userId }: any) {
       toast.error("Please select a report type and ensure User ID is loaded.");
       return;
     }
-
+    setLoading(true);
     axios
       .get(
         `${CONSTANT.BASE_URL}/report/${userId}/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
@@ -202,6 +210,7 @@ function ReportModal({ properties, userId }: any) {
         }
       )
       .then((res) => {
+        setLoading(false);
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -214,6 +223,7 @@ function ReportModal({ properties, userId }: any) {
         window.URL.revokeObjectURL(url);
       })
       .catch(() => {
+        setLoading(false);
         toast.error("An error occurred while generating the report.");
       });
   };
@@ -289,10 +299,11 @@ function ReportModal({ properties, userId }: any) {
           </div>
         </div>
         <button
+          disabled={loading}
           onClick={handleDownload}
           className="bg-primary p-2 rounded-lg text-white mt-8 w-32 mx-auto font-semibold text-sm"
         >
-          Generate
+          {loading ? <Spinner /> : "Generate"}
         </button>
       </form>
     </div>
