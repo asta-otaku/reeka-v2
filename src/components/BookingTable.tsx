@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 function BookingTable({ data }: { data: any[] }) {
   const setModal = useStore((state: any) => state.setModal);
   const location = useLocation();
+  const currentDate = moment().tz("Africa/Lagos");
 
   function formatDate(date: string) {
     return moment(date).tz("Africa/Lagos").format("MMM DD");
@@ -16,6 +17,19 @@ function BookingTable({ data }: { data: any[] }) {
 
   function formatTime(date: string) {
     return moment(date).tz("Africa/Lagos").format("hh:mm A");
+  }
+
+  function getStatus(startDate: string, endDate: string) {
+    const start = moment(startDate).tz("Africa/Lagos");
+    const end = moment(endDate).tz("Africa/Lagos");
+
+    if (currentDate.isAfter(end)) {
+      return "Completed";
+    } else if (currentDate.isBefore(start)) {
+      return "Upcoming";
+    } else {
+      return "Ongoing";
+    }
   }
 
   return (
@@ -132,13 +146,25 @@ function BookingTable({ data }: { data: any[] }) {
                       <div
                         style={{
                           color:
-                            item.status === "Ongoing" ? "#34C759" : "#007AFF",
+                            getStatus(item.startDate, item.endDate) ===
+                            "Ongoing"
+                              ? "#FFD700"
+                              : getStatus(item.startDate, item.endDate) ===
+                                "Completed"
+                              ? "#34C759"
+                              : "#007BFF",
                           backgroundColor:
-                            item.status === "Ongoing" ? "#DBFFE4" : "#DFEEFF",
+                            getStatus(item.startDate, item.endDate) ===
+                            "Ongoing"
+                              ? "#FFFACD"
+                              : getStatus(item.startDate, item.endDate) ===
+                                "Completed"
+                              ? "#DBFFE4"
+                              : "#CCE5FF",
                         }}
                         className="text-xs p-1.5 rounded-lg font-medium w-full text-center"
                       >
-                        <span>{item.status}</span>
+                        <span>{getStatus(item.startDate, item.endDate)}</span>
                       </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap w-[120px]">
