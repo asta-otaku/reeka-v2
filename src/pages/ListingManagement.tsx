@@ -16,6 +16,7 @@ function ListingManagement() {
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
   const [properties, setProperties] = useState([]);
+  const [userId] = useState(CONSTANT.USER_ID);
 
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@ function ListingManagement() {
     const fetchProperties = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
         );
         setProperties(response.data);
       } catch (error) {
@@ -31,7 +32,7 @@ function ListingManagement() {
       }
     };
     fetchProperties();
-  }, []);
+  }, [userId]);
 
   return (
     <DashboardLayout>

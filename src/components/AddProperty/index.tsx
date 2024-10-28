@@ -8,6 +8,7 @@ import Pricing from "./Pricing";
 import ImageUpload from "./ImageUpload";
 // import NotificationModal from "../NotificationModal";
 import { CONSTANT } from "../../util";
+import Spinner from "../Spinner";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
@@ -15,6 +16,7 @@ function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const setModal = useStore((state: any) => state.setModal);
   const [openModal, setOpenModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleSection = (section: string) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -65,7 +67,8 @@ function AddProperty({ setStep }: { setStep: any }) {
       !formDetails.city ||
       !formDetails.country ||
       !formDetails.bedroomCount ||
-      !formDetails.bathroomCount
+      !formDetails.bathroomCount ||
+      !formDetails.price.basePrice
     ) {
       return toast.error("Please fill all required fields");
     } else {
@@ -84,7 +87,7 @@ function AddProperty({ setStep }: { setStep: any }) {
       formDetails.images.forEach((image) => {
         formData.append("images", image);
       });
-
+      setLoading(true);
       axios
         .post(`${CONSTANT.BASE_URL}/properties`, formData, {
           headers: {
@@ -93,6 +96,7 @@ function AddProperty({ setStep }: { setStep: any }) {
         })
         .then(() => {
           toast.success("Property added successfully");
+          setLoading(false);
           setFormDetails({
             propertyName: "",
             address: "",
@@ -117,6 +121,7 @@ function AddProperty({ setStep }: { setStep: any }) {
         })
         .catch(() => {
           toast.error("An error occurred");
+          setLoading(false);
         });
     }
   };
@@ -194,9 +199,10 @@ function AddProperty({ setStep }: { setStep: any }) {
             </button>
             <button
               onClick={handleSubmit}
+              disabled={loading}
               className="bg-primary border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 rounded-md"
             >
-              Add Property
+              {loading ? <Spinner /> : "Add Property"}
             </button>
           </div>
         </div>

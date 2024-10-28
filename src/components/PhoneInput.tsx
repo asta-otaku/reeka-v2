@@ -7,7 +7,9 @@ function PhoneInput({
 }) {
   return (
     <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-      <select
+      <input
+        type="text"
+        list="countryCodes"
         onChange={(e) =>
           setFormDetails({
             ...formDetails,
@@ -15,9 +17,11 @@ function PhoneInput({
           })
         }
         value={formDetails.countryCode}
-        className="w-10 outline-none bg-transparent text-[#667085]"
-      >
-        <option value="">--</option>
+        placeholder="--"
+        className="w-16 outline-none bg-transparent text-[#667085]"
+      />
+      <datalist id="countryCodes">
+        <option value="+234">🇳🇬 +234</option>
         <option value="+1">🇺🇸 +1</option>
         <option value="+1CA">🇨🇦 +1</option>
         <option value="+44">🇬🇧 +44</option>
@@ -167,7 +171,6 @@ function PhoneInput({
         <option value="+258">🇲🇿 +258</option>
         <option value="+264">🇳🇦 +264</option>
         <option value="+227">🇳🇪 +227</option>
-        <option value="+234">🇳🇬 +234</option>
         <option value="+242">🇨🇬 +242</option>
         <option value="+250">🇷🇼 +250</option>
         <option value="+239">🇸🇹 +239</option>
@@ -184,7 +187,7 @@ function PhoneInput({
         <option value="+256">🇺🇬 +256</option>
         <option value="+260">🇿🇲 +260</option>
         <option value="+263">🇿🇼 +263</option>
-      </select>
+      </datalist>
       <input
         type="text"
         value={formDetails.phoneNumber}

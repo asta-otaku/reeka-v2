@@ -8,14 +8,12 @@ import axios from "axios";
 import { CONSTANT } from "../util";
 import ReactPaginate from "react-paginate";
 
-// Dynamically retrieve userId from CONSTANT
-const userId = CONSTANT.USER_ID;
-
 function Bookings() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
+  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -84,18 +82,20 @@ function Bookings() {
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
           <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
+            <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent cursor-pointer pr-6">
                 <option>All Bookings</option>
               </select>
-              <ChevronDownIcon width={12} />
+              <div className="pointer-events-none absolute right-2">
+                <ChevronDownIcon width={12} />
+              </div>
             </div>
-            <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+            <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {
                   setSelectedProperty(e.target.value);
                 }}
-                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-5"
               >
                 <option value="">All Properties</option>
                 {properties.map((property) => (
@@ -104,7 +104,10 @@ function Bookings() {
                   </option>
                 ))}
               </select>
-              <ChevronDownIcon width={12} />
+              <ChevronDownIcon
+                className="pointer-events-none absolute right-2"
+                width={12}
+              />
             </div>
           </div>
           <button

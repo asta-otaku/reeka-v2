@@ -100,9 +100,9 @@ function StepTwo({
             property?.price?.basePrice
         ).toFixed(2);
 
-        case "airbnb":
-          return property?.price?.airbnbPrice;
-          
+      case "airbnb":
+        return property?.price?.airbnbPrice;
+
       default:
         return property.price.basePrice; // Default to basePrice if the price type is unrecognized
     }
@@ -182,9 +182,10 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
+              {formDetails.price === "airbnb" ? "$" : "₦"}
               {getPrice(formDetails.price)
                 ?.toString()
-                ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}
             </h4>
           </div>
           <div>

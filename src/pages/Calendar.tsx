@@ -14,6 +14,7 @@ function Calendar() {
   const [bookingsArray, setBookingsArray] = useState<any[]>([]);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
+  const [userId] = useState(CONSTANT.USER_ID);
 
   function formatTimestamp(timestamp: string, isEndDate = false) {
     const date = moment(timestamp).tz("Africa/Lagos").format();
@@ -30,7 +31,7 @@ function Calendar() {
     const fetchProperties = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
         );
         setProperties(response.data);
       } catch (error) {
@@ -38,11 +39,11 @@ function Calendar() {
       }
     };
     fetchProperties();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     axios
-      .get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`)
+      .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
       .then((response) => {
         const colorMap: { [key: string]: string } = {};
 
@@ -71,7 +72,7 @@ function Calendar() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [userId]);
 
   // Filter bookings based on the selected property and map them to events for the Scheduler
   const events = bookingsArray
@@ -102,12 +103,12 @@ function Calendar() {
               </select>
               <ChevronDownIcon width={12} />
             </div> */}
-            <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+            <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {
                   setSelectedProperty(e.target.value);
                 }}
-                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
               >
                 <option value="">All Properties</option>
                 {properties.map((property) => (
@@ -116,7 +117,10 @@ function Calendar() {
                   </option>
                 ))}
               </select>
-              <ChevronDownIcon width={12} />
+              <ChevronDownIcon
+                className="cursor-pointer pointer-events-none absolute right-2"
+                width={12}
+              />
             </div>
           </div>
           <div className="flex items-center gap-4">

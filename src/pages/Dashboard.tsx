@@ -98,7 +98,7 @@ function Dashboard() {
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <div
-                  className={`flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit ${
+                  className={`relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit ${
                     selected == 0 && "hidden"
                   }`}
                 >
@@ -106,7 +106,7 @@ function Dashboard() {
                     onChange={(e) => {
                       setSelectedProperty(e.target.value);
                     }}
-                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent"
+                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
                   >
                     {properties.length === 0 ? (
                       <option value="">No properties available</option>
@@ -121,7 +121,10 @@ function Dashboard() {
                       ))
                     )}
                   </select>
-                  <ChevronDownIcon width={12} />
+                  <ChevronDownIcon
+                    className="absolute pointer-events-none cursor-pointer right-2 "
+                    width={12}
+                  />
                 </div>
                 {/* <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
                   <select className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent">

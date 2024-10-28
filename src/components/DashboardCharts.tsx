@@ -157,12 +157,6 @@ function DashboardCharts({
 
   const CardData = [
     {
-      title: "Bookings",
-      amount: monthlyBookings.totalNightsBooked || 0,
-      percentage: monthlyBookings.percentageChangeNightsBooked || 0,
-      caption: "total nights booked",
-    },
-    {
       title: "Revenue",
       amount: monthlyRevenue.totalRevenue || 0,
       percentage: monthlyRevenue.percentageChangeRevenue || 0,
@@ -179,6 +173,12 @@ function DashboardCharts({
       amount: occupancyRate.occupancy + "%" || 0,
       percentage: occupancyRate.percentageChange || 0,
       caption: "percentage of occupied nights",
+    },
+    {
+      title: "Bookings",
+      amount: monthlyBookings.totalNightsBooked || 0,
+      percentage: monthlyBookings.percentageChangeNightsBooked || 0,
+      caption: "total nights booked",
     },
   ];
 
@@ -247,11 +247,11 @@ function DashboardCharts({
   return (
     <div>
       <div className="w-full overflow-x-auto no-scrollbar">
-        <div className="flex space-x-4">
+        <div className="flex space-x-3">
           {CardData.map((data, index) => (
             <div
               key={index}
-              className={`border shadow-sm rounded-xl space-y-6 p-4 min-w-[300px] grow
+              className={`border shadow-sm rounded-xl space-y-6 p-4 min-w-[250px] grow
               ${
                 data.percentage > 0
                   ? "bg-[linear-gradient(220deg,_#D5FFE7,_#FFFF_45%)]"

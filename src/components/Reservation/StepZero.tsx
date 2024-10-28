@@ -14,12 +14,13 @@ function StepZero({
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const [properties, setProperties] = useState<any>([]);
+  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${CONSTANT.USER_ID}`
+          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
         );
         setProperties(response.data);
       } catch (error) {
@@ -27,7 +28,7 @@ function StepZero({
       }
     };
     fetchProperties();
-  }, []);
+  }, [userId]);
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">

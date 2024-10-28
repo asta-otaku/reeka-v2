@@ -67,17 +67,20 @@ function NotificationModal({
       </div>
 
       <div className="flex w-full justify-between items-center my-4 px-4">
-        <div className="flex items-center justify-between gap-2 bg-white border border-solid rounded-lg p-2 min-w-[100px]">
+        <div className="relative flex items-center justify-between gap-2 bg-white border border-solid rounded-lg p-2 min-w-[100px]">
           <select
             onChange={handleSelect}
-            className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent"
+            className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           >
             <option>All</option>
             <option value="check-in">Check-in</option>
             <option value="check-out">Check-out</option>
             <option value="task">Tasks</option>
           </select>
-          <ChevronDownIcon width={12} />
+          <span className="pointer-events-none flex items-center">
+            <span className="text-secondary text-xs md:text-sm">All</span>
+            <ChevronDownIcon width={12} />
+          </span>
         </div>
         <button
           onClick={() => {

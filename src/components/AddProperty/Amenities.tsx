@@ -24,8 +24,8 @@ function Amenities({
     },
 
     amenities: {
-      "Swimming Pool": 1,
-      "Basket Court": 1,
+      // "Swimming Pool": 1,
+      // "Basket Court": 1,
     },
   });
 
@@ -80,16 +80,22 @@ function Amenities({
             <h3 className="text-[#3A3A3A] font-medium text-sm">Amenities</h3>
             <p className="text-[#808080] text-[10px]">Select or add</p>
             <div className="mt-4 flex flex-col gap-2">
-              {Object.keys(counterStates.amenities).map((amenity, index) => (
-                <CounterRender
-                  counterStates={counterStates}
-                  setCounterStates={setCounterStates}
-                  tag={amenity}
-                  title={amenity}
-                  cat="amenities"
-                  key={index}
-                />
-              ))}
+              {Object.keys(counterStates.amenities).length > 0 ? (
+                Object.keys(counterStates.amenities).map((amenity, index) => (
+                  <CounterRender
+                    counterStates={counterStates}
+                    setCounterStates={setCounterStates}
+                    tag={amenity}
+                    title={amenity}
+                    cat="amenities"
+                    key={index}
+                  />
+                ))
+              ) : (
+                <p className="text-[#808080] text-[10px]">
+                  No amenities selected
+                </p>
+              )}
             </div>
           </div>
           <button

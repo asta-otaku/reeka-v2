@@ -102,10 +102,10 @@ function BookingTable({ data }: { data: any[] }) {
                           }`}
                         />
                         <div>
-                          <div className="text-sm text-[#121212] font-medium max-w-[150px] truncate text-ellipsis">
+                          <div className="text-sm text-[#121212] font-medium max-w-[100px] truncate text-ellipsis">
                             {item?.propertyId?.propertyName}
                           </div>
-                          <div className="text-[10px] text-[#808080] font-light max-w-[150px] truncate text-ellipsis">
+                          <div className="text-[10px] text-[#808080] font-light max-w-[100px] truncate text-ellipsis">
                             {item?.propertyId?.address}
                           </div>
                         </div>
@@ -136,7 +136,7 @@ function BookingTable({ data }: { data: any[] }) {
                           backgroundColor:
                             item.status === "Ongoing" ? "#DBFFE4" : "#DFEEFF",
                         }}
-                        className="text-xs p-1.5 rounded-lg font-medium w-[80px] text-center"
+                        className="text-xs p-1.5 rounded-lg font-medium w-full text-center"
                       >
                         <span>{item.status}</span>
                       </div>
