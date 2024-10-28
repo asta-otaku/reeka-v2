@@ -4,6 +4,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { CONSTANT } from "../../util";
 import { useState } from "react";
+import Spinner from "../Spinner";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -58,22 +59,26 @@ function StepTwo({
     priceState: formDetails.price,
     color: "#" + Math.floor(Math.random() * 16777215).toString(16),
   });
+  const [loading, setLoading] = useState(false);
+
   const handleReserve = () => {
     setFormData({
       ...formData,
       startDate: formatTimestamp(formDetails.checkIn),
       endDate: formatTimestamp(formDetails.checkOut),
     });
-
+    setLoading(true);
     axios
       .post(`${CONSTANT.BASE_URL}/booking`, formData)
       .then((res) => {
+        setLoading(false);
         toast.success("Reservation successful");
         setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
         setStep(3);
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         toast.error(err.response.data.error || "An error occured");
       });
   };
@@ -214,10 +219,11 @@ function StepTwo({
         }`}
       >
         <button
+          disabled={loading}
           onClick={handleReserve}
           className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
         >
-          Reserve
+          {loading ? <Spinner /> : "Reserve"}
         </button>
       </div>
     </>
