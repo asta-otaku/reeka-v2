@@ -111,7 +111,7 @@ function DashboardPropertyChart({
       caption: "total revenue earned",
     },
     {
-      title: "Average Nightly Rate",
+      title: "Avg Nightly Rate",
       amount: cardData.propertyAnalytics.averageNightlyRate,
       percentage: cardData.percentageChange.averageNightlyRate,
       caption: "revenue/booked nights",

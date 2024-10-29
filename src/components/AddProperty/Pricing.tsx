@@ -35,7 +35,7 @@ function Pricing({
       {openSection === "pricing" && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="flex flex-col gap-2"
+          className="flex flex-col gap-3"
         >
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">Base Price</h4>
@@ -54,28 +54,6 @@ function Pricing({
                   }
                 }}
                 value={price?.basePrice.toLocaleString()}
-                className="w-full outline-none bg-transparent"
-              />
-              <h4 className="text-[#808080]">/Night</h4>
-            </div>
-          </div>
-          <div className="flex flex-col gap-2 w-full">
-            <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-              <span className="text-black">$</span>
-              <input
-                name="airbnbPrice"
-                placeholder="0"
-                onChange={(e) => {
-                  const value = e.target.value.replace(/,/g, "");
-                  if (!isNaN(Number(value))) {
-                    setPrice({
-                      ...price,
-                      airbnbPrice: Number(value),
-                    });
-                  }
-                }}
-                value={price?.airbnbPrice.toLocaleString()}
                 className="w-full outline-none bg-transparent"
               />
               <h4 className="text-[#808080]">/Night</h4>
@@ -243,6 +221,29 @@ function Pricing({
                   </button>
                 </span>
               </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 w-full">
+            <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>
+            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+              <span className="text-black">$</span>
+              <input
+                name="airbnbPrice"
+                placeholder="0"
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, "");
+                  if (!isNaN(Number(value))) {
+                    setPrice({
+                      ...price,
+                      airbnbPrice: Number(value),
+                    });
+                  }
+                }}
+                value={price?.airbnbPrice.toLocaleString()}
+                className="w-full outline-none bg-transparent"
+              />
+              <h4 className="text-[#808080]">/Night</h4>
             </div>
           </div>
         </div>

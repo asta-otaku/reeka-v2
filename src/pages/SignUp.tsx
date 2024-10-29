@@ -8,6 +8,7 @@ import axios from "axios";
 import { CONSTANT } from "../util";
 import toast, { Toaster } from "react-hot-toast";
 import PhoneInput from "../components/PhoneInput";
+import Spinner from "../components/Spinner";
 
 function SignUp() {
   const [step, setStep] = useState(0);
@@ -21,6 +22,7 @@ function SignUp() {
     password: "",
     phoneNumber: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: any) => {
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
@@ -40,6 +42,7 @@ function SignUp() {
     ) {
       return toast.error("All fields are required");
     }
+    setLoading(true);
     axios
       .post(
         `${CONSTANT.BASE_URL}/auth/signup`,
@@ -55,6 +58,7 @@ function SignUp() {
       )
       .then((res) => {
         if (res.status === 201) {
+          setLoading(false);
           toast.success("Account created successfully");
           setTimeout(() => {
             setStep(1);
@@ -62,6 +66,7 @@ function SignUp() {
         }
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
         toast.error(err.response.data.error || "An error occurred");
       });
@@ -184,10 +189,11 @@ function SignUp() {
                     />
                   </div>
                   <button
+                    disabled={loading}
                     onClick={handleSignUp}
                     className="bg-primary text-white rounded-lg p-2.5 font-semibold mt-3"
                   >
-                    Sign Up
+                    {loading ? <Spinner /> : "Sign Up"}
                   </button>
                   <p className="text-[#808080] text-center font-semibold">
                     Have an account?
