@@ -78,7 +78,7 @@ function BookingTable({
                     </th>
                     <th
                       scope="col"
-                      className="px-4 py-4 w-[120px] whitespace-nowrap font-bold"
+                      className="px-4 py-4 w-[140px] whitespace-nowrap font-bold"
                     >
                       Name
                     </th>
@@ -134,29 +134,29 @@ function BookingTable({
                           }`}
                         />
                         <div>
-                          <div className="text-sm text-[#121212] font-medium max-w-[100px] truncate text-ellipsis">
+                          <div className="text-sm text-[#121212] font-medium max-w-[100px] w-full truncate text-ellipsis">
                             {item?.propertyId?.propertyName}
                           </div>
-                          <div className="text-[10px] text-[#808080] font-light max-w-[100px] truncate text-ellipsis">
+                          <div className="text-[10px] text-[#808080] font-light max-w-[100px] w-full truncate text-ellipsis">
                             {item?.propertyId?.address}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap w-[120px]">
-                      <div className="text-sm text-[#121212] font-medium max-w-[110px] truncate text-ellipsis">
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <div className="text-sm text-[#121212] font-medium max-w-[120px] w-full truncate text-ellipsis">
                         {item?.guestFirstName} {item?.guestLastName}
                       </div>
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap w-[140px]">
-                      <div className="text-sm text-[#121212] font-medium">
+                      <div className="text-sm text-[#121212] max-w-[110px] w-full font-medium">
                         ₦
                         {item?.totalBookingValue
                           ?.toFixed(2)
                           ?.toString()
                           ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </div>
-                      <div className="text-[10px] text-[#808080] font-light">
+                      <div className="text-[10px] text-[#808080] max-w-[110px] w-full font-light">
                         For {item?.nightsBooked} days
                       </div>
                     </td>

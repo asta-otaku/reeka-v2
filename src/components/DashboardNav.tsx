@@ -16,10 +16,10 @@ function DashboardNav({
       <div className="py-4 px-6 relative">
         <div className="w-full flex justify-between items-center">
           <span
-            className="p-2 rounded-full border border-[#DCDCDC]"
+            className="p-2 rounded-full border border-[#DCDCDC] cursor-pointer"
             onClick={() => window.history.back()}
           >
-            <ArrowLongLeftIcon className="w-4 text-secondary cursor-pointer" />
+            <ArrowLongLeftIcon className="w-4 text-secondary" />
           </span>
 
           <NotificationIcon

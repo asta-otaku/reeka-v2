@@ -37,8 +37,9 @@ function ViewProperty() {
     amenities: [],
     price: {
       basePrice: 0,
-      discount: 0,
-      tax: 0,
+      airbnbPrice: 0,
+      discountPercentage: 0,
+      boostPercentage: 0,
     },
     images: [],
   });

@@ -5,9 +5,11 @@ import { CONSTANT } from "../util";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 function SignIn() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (user && Object.keys(user).length > 0) {
@@ -33,6 +35,7 @@ function SignIn() {
     if (!formDetails.email || !formDetails.password) {
       return toast.error("All fields are required");
     }
+    setLoading(true);
     axios
       .post(
         `${CONSTANT.BASE_URL}/auth/login`,
@@ -48,6 +51,7 @@ function SignIn() {
       )
       .then((res) => {
         if (res.status === 200) {
+          setLoading(false);
           toast.success("Logged in successfully");
           localStorage.setItem("user", JSON.stringify(res.data));
           setTimeout(() => {
@@ -56,6 +60,7 @@ function SignIn() {
         }
       })
       .catch((err) => {
+        setLoading(false);
         toast.error(err.response.data.error || "Invalid credentials");
         console.log(err);
       });
@@ -111,10 +116,11 @@ function SignIn() {
               Forgot Password?
             </p>
             <button
+              disabled={loading}
               onClick={handleSignIn}
               className="bg-primary text-white rounded-lg p-2.5 font-semibold mt-3"
             >
-              Sign In
+              {loading ? <Spinner /> : "Sign In"}
             </button>
             <p className="text-[#808080] text-center font-semibold">
               Don't have an account?

@@ -163,7 +163,7 @@ function DashboardCharts({
       caption: "total revenue earned",
     },
     {
-      title: "Average Nightly Rate",
+      title: "Avg Nightly Rate",
       amount: monthlyAverageNightlyRate?.averageNightlyRate ?? 0,
       percentage: monthlyAverageNightlyRate?.percentageChangeNightlyRate ?? 0,
       caption: "revenue/booked nights",
