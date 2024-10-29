@@ -158,26 +158,26 @@ function DashboardCharts({
   const CardData = [
     {
       title: "Revenue",
-      amount: monthlyRevenue.totalRevenue || 0,
-      percentage: monthlyRevenue.percentageChangeRevenue || 0,
+      amount: monthlyRevenue?.totalRevenue ?? 0,
+      percentage: monthlyRevenue?.percentageChangeRevenue ?? 0,
       caption: "total revenue earned",
     },
     {
       title: "Average Nightly Rate",
-      amount: monthlyAverageNightlyRate.averageNightlyRate || 0,
-      percentage: monthlyAverageNightlyRate.percentageChangeNightlyRate || 0,
+      amount: monthlyAverageNightlyRate?.averageNightlyRate ?? 0,
+      percentage: monthlyAverageNightlyRate?.percentageChangeNightlyRate ?? 0,
       caption: "revenue/booked nights",
     },
     {
       title: "Occupancy Rate",
-      amount: occupancyRate.occupancy + "%" || 0,
-      percentage: occupancyRate.percentageChange || 0,
+      amount: occupancyRate?.occupancy ? occupancyRate.occupancy + "%" : "0%",
+      percentage: occupancyRate?.percentageChange ?? 0,
       caption: "percentage of occupied nights",
     },
     {
       title: "Bookings",
-      amount: monthlyBookings.totalNightsBooked || 0,
-      percentage: monthlyBookings.percentageChangeNightsBooked || 0,
+      amount: monthlyBookings?.totalNightsBooked ?? 0,
+      percentage: monthlyBookings?.percentageChangeNightsBooked ?? 0,
       caption: "total nights booked",
     },
   ];

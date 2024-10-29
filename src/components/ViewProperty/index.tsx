@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 // import NotificationModal from "./NotificationModal";
-import { useLocation, useNavigate } from "react-router-dom";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import searchIcon from "../../assets/search-01.svg";
 import BookingTable from "../BookingTable";
@@ -17,24 +17,31 @@ import Spinner from "../Spinner";
 import useStore from "../../store";
 
 function ViewProperty() {
+  const { id } = useParams(); // Get property ID from the URL
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userId] = useState(CONSTANT.USER_ID);
-  const location = useLocation();
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
 
-  const prop = location?.state?.property || {};
-
-  // Check if prop is empty and redirect to listing page
-  useEffect(() => {
-    if (Object.keys(prop).length === 0) {
-      window.location.href = "/listing";
-    }
-  }, [prop]);
-
-  const [property, setProperty] = useState<any>(prop);
-
+  const [property, setProperty] = useState<any>({
+    propertyName: "",
+    address: "",
+    city: "",
+    country: "",
+    baseCurrency: "",
+    owner: "",
+    employees: [],
+    bedroomCount: 0,
+    bathroomCount: 0,
+    amenities: [],
+    price: {
+      basePrice: 0,
+      discount: 0,
+      tax: 0,
+    },
+    images: [],
+  });
   const [bookedStatus, setBookedStatus] = useState(false);
   const [edit, setEdit] = useState(false);
   const [selected, setSelected] = useState(0);
@@ -43,18 +50,28 @@ function ViewProperty() {
 
   useEffect(() => {
     axios
+      .get(`${CONSTANT.BASE_URL}/properties/${id}`)
+      .then((response) => {
+        setProperty(response.data);
+      })
+      .catch((error) => {
+        console.error("Property not found", error);
+        navigate("/listing");
+      });
+  }, [id]);
+
+  useEffect(() => {
+    axios
       .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
       .then((response) => {
         setBookings(
-          response.data.filter(
-            (bk: any) => bk?.propertyId?._id === property._id
-          )
+          response.data.filter((bk: any) => bk?.propertyId?._id === id)
         );
       })
       .catch((error) => {
         console.error(error);
       });
-  }, [property._id, userId]);
+  }, [id, userId]);
 
   useEffect(() => {
     setBookedStatus(bookings.length > 0);
@@ -62,9 +79,7 @@ function ViewProperty() {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(
-        `${CONSTANT.BASE_URL}/properties/${property._id}`
-      );
+      const res = await axios.delete(`${CONSTANT.BASE_URL}/properties/${id}`);
       if (res.status === 204) {
         toast.success("Property deleted successfully");
         setModal(null);
@@ -100,7 +115,7 @@ function ViewProperty() {
     try {
       setLoading(true);
       const res = await axios.put(
-        `${CONSTANT.BASE_URL}/properties/${property._id}`,
+        `${CONSTANT.BASE_URL}/properties/${id}`,
         formData,
         {
           headers: {
@@ -125,7 +140,6 @@ function ViewProperty() {
     }
   };
 
-  // Pagination logic
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(0);
   const pageCount = Math.ceil(bookings.length / itemsPerPage);

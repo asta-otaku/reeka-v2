@@ -1,7 +1,7 @@
 import blackcancel from "../../assets/blackcancel.svg";
 import success from "../../assets/success.svg";
 
-function SuccessModal({ setModal }: any) {
+function SuccessModal({ setModal, propertyId }: any) {
   return (
     <div className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl">
       <img
@@ -23,7 +23,7 @@ function SuccessModal({ setModal }: any) {
           </p>
         </div>
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => (window.location.href = `/listing/${propertyId}`)}
           className="bg-primary whitespace-nowrap border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 rounded-md"
         >
           View Property

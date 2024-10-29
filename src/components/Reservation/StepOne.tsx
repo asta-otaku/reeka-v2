@@ -140,7 +140,6 @@ function StepOne({
                 <option value="base">Base</option>
                 <option value="low">Low</option>
                 <option value="high">High</option>
-                <option value="airbnb">AirBnB</option>
               </select>
               <ChevronDownIcon
                 width={12}

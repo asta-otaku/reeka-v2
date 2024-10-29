@@ -111,11 +111,7 @@ function ListingManagement() {
                   .map((property: any, index) => (
                     <div
                       key={index}
-                      onClick={() =>
-                        navigate(`/listing/${index}`, {
-                          state: { property },
-                        })
-                      }
+                      onClick={() => navigate(`/listing/${property?._id}`)}
                       className="bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer"
                     >
                       <div className="flex items-center justify-between">

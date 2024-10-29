@@ -108,7 +108,7 @@ function SignIn() {
               />
             </div>
             <p className="text-right text-[#808080] font-medium">
-              Forget Password?
+              Forgot Password?
             </p>
             <button
               onClick={handleSignIn}
