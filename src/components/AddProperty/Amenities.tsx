@@ -19,8 +19,8 @@ function Amenities({
 }) {
   const [counterStates, setCounterStates] = useState<any>({
     rooms: {
-      bedroom: 1,
-      bathroom: 1,
+      bedroom: formDetails?.bedroomCount || 1,
+      bathroom: formDetails?.bathroomCount || 1,
     },
 
     amenities: {

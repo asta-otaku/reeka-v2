@@ -14,6 +14,7 @@ function Bookings() {
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
   const [userId] = useState(CONSTANT.USER_ID);
+  const [statusFilter, setStatusFilter] = useState("");
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -83,8 +84,15 @@ function Bookings() {
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
           <div className="flex items-center gap-4">
             <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent cursor-pointer pr-6">
-                <option>All Bookings</option>
+              <select
+                onChange={(e) => setStatusFilter(e.target.value)}
+                value={statusFilter}
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent cursor-pointer pr-6"
+              >
+                <option value="">All Bookings</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Completed">Completed</option>
+                <option value="Ongoing">Ongoing</option>
               </select>
               <div className="pointer-events-none absolute right-2">
                 <ChevronDownIcon width={12} />
@@ -119,7 +127,7 @@ function Bookings() {
         </div>
 
         <div className="overflow-x-auto px-6 no-scrollbar mt-6">
-          <BookingTable data={displayedData} />
+          <BookingTable data={displayedData} statusFilter={statusFilter} />
         </div>
         <ReactPaginate
           previousLabel={""}

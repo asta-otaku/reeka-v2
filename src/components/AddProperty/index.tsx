@@ -13,7 +13,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 
 function AddProperty({ setStep }: { setStep: any }) {
-  const [openSection, setOpenSection] = useState<string | null>(null);
+  const [openSection, setOpenSection] = useState<string | null>("property");
   const setModal = useStore((state: any) => state.setModal);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,8 +37,8 @@ function AddProperty({ setStep }: { setStep: any }) {
       boostPercentage: 0,
     },
     pricingState: "base",
-    bedroomCount: 0,
-    bathroomCount: 0,
+    bedroomCount: 1,
+    bathroomCount: 1,
     amenities: {},
     images: [],
   });
@@ -94,7 +94,7 @@ function AddProperty({ setStep }: { setStep: any }) {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then(() => {
+        .then((res) => {
           toast.success("Property added successfully");
           setLoading(false);
           setFormDetails({
@@ -117,10 +117,13 @@ function AddProperty({ setStep }: { setStep: any }) {
             amenities: {},
             images: [],
           });
-          setModal(<SuccessModal setModal={setModal} />);
+          setModal(
+            <SuccessModal setModal={setModal} propertyId={res.data._id} />
+          );
         })
-        .catch(() => {
-          toast.error("An error occurred");
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.response.data.error || "An error occurred");
           setLoading(false);
         });
     }

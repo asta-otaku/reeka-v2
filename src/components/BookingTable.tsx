@@ -6,7 +6,13 @@ import axios from "axios";
 import moment from "moment-timezone";
 import { useLocation } from "react-router-dom";
 
-function BookingTable({ data }: { data: any[] }) {
+function BookingTable({
+  data,
+  statusFilter,
+}: {
+  data: any[];
+  statusFilter?: string;
+}) {
   const setModal = useStore((state: any) => state.setModal);
   const location = useLocation();
   const currentDate = moment().tz("Africa/Lagos");
@@ -32,10 +38,22 @@ function BookingTable({ data }: { data: any[] }) {
     }
   }
 
+  // Filter data based on statusFilter if provided
+  const filteredData = statusFilter
+    ? data.filter(
+        (item) => getStatus(item.startDate, item.endDate) === statusFilter
+      )
+    : data;
+
+  // Sort filtered data by startDate in ascending order
+  const sortedData = filteredData.slice().sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
+
   return (
     <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar">
-      {data.length > 0 ? (
-        data.map((item, i) => (
+      {sortedData.length > 0 ? (
+        sortedData.map((item, i) => (
           <div key={i}>
             <div className="">
               <table
@@ -187,7 +205,7 @@ function BookingTable({ data }: { data: any[] }) {
                 </tbody>
               </table>
             </div>
-            {i !== data.length - 1 && (
+            {i !== sortedData.length - 1 && (
               <div className="border-b border-gray-200 mt-5" key={i} />
             )}
           </div>
