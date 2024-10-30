@@ -14,7 +14,6 @@ function SignIn() {
   useEffect(() => {
     if (user && Object.keys(user).length > 0) {
       navigate("/dashboard");
-      console.log(user);
     }
   }, [user]);
 
@@ -112,9 +111,12 @@ function SignIn() {
                 className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
               />
             </div>
-            <p className="text-right text-[#808080] font-medium">
+            <Link
+              to="/forgot-password"
+              className="text-right text-[#808080] font-medium"
+            >
               Forgot Password?
-            </p>
+            </Link>
             <button
               disabled={loading}
               onClick={handleSignIn}

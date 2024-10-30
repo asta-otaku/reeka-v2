@@ -18,20 +18,48 @@ function DashboardCharts({
   const [monthlyRevenue, setMonthlyRevenue] = useState<any>({});
   const [monthlyAverageNightlyRate, setMonthlyAverageNightlyRate] =
     useState<any>({});
-  const [dailyBookings, setDailyBookings] = useState<any>([]);
-  const [dailyRevenue, setDailyRevenue] = useState<any>([]);
-  const [dailyAverageNightlyRate, setdailyAverageNightlyRate] = useState<any>(
-    []
-  );
-  const [occupancyRate, setOccupancyRate] = useState<any>({});
-  const [previousDailyBooking, setpreviousDailyBooking] = useState<any>({});
-  const [previousMonthlyRevenue, setPreviousMonthlyRevenue] = useState<any>({});
+  const [previousMonthlyBookings, setPreviousMonthlyBookings] = useState<{
+    totalNightsBooked: number;
+    percentageChangeNightsBooked: number;
+  }>({
+    totalNightsBooked: 0,
+    percentageChangeNightsBooked: 0,
+  });
+  const [previousMonthlyRevenue, setPreviousMonthlyRevenue] = useState<{
+    totalRevenue: number;
+    percentageChangeRevenue: number;
+  }>({
+    totalRevenue: 0,
+    percentageChangeRevenue: 0,
+  });
   const [
     previousMonthlyAverageNightlyRate,
     setPreviousMonthlyAverageNightlyRate,
-  ] = useState<any>({});
+  ] = useState<{
+    averageNightlyRate: number;
+    percentageChangeNightlyRate: number;
+  }>({
+    averageNightlyRate: 0,
+    percentageChangeNightlyRate: 0,
+  });
+  const [occupancyRate, setOccupancyRate] = useState<any>({});
   const [activeMonth, setActiveMonth] = useState("current");
-
+  const [graphData, setGraphData] = useState<
+    {
+      totalRevenue: string;
+      totalNightsBooked: number;
+      date: string;
+      averageNightlyRate: number;
+    }[]
+  >([]);
+  const [previousGraphData, setPreviousGraphData] = useState<
+    {
+      totalRevenue: string;
+      totalNightsBooked: number;
+      date: string;
+      averageNightlyRate: number;
+    }[]
+  >([]);
   const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
@@ -42,6 +70,7 @@ function DashboardCharts({
         ? `filterType=${filterType}`
         : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
 
+    //Monthly Card Data
     const fetchMonthlyBookings = async () => {
       try {
         const response = await axios.get(
@@ -72,66 +101,6 @@ function DashboardCharts({
         console.error(error);
       }
     };
-    const fetchDailyBookings = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-nights-booked/${userId}?${filterQuery}`
-        );
-        setDailyBookings(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchDailyRevenue = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-revenue/${userId}?${filterQuery}`
-        );
-        setDailyRevenue(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchDailyAverageNightlyRate = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/daily-average-nightly-rate/${userId}?${filterQuery}`
-        );
-        setdailyAverageNightlyRate(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchpreviousDailyBooking = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-nights-booked/${userId}?${filterQuery}`
-        );
-        setpreviousDailyBooking(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchPreviousMonthlyRevenue = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-revenue/${userId}?${filterQuery}`
-        );
-        setPreviousMonthlyRevenue(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchPreviousMonthlyAverageNightlyRate = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/daily-average-nightly-rate/${userId}?${filterQuery}`
-        );
-        setPreviousMonthlyAverageNightlyRate(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     const fetchOccupancyRate = async () => {
       try {
         const response = await axios.get(
@@ -143,16 +112,69 @@ function DashboardCharts({
       }
     };
 
+    //Previous Monthly Card Data
+    const fetchPreviousMonthlyBookings = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/analytics/previous/total-nights-booked/${userId}?${filterQuery}`
+        );
+        setPreviousMonthlyBookings(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchPreviousMonthlyRevenue = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/analytics/previous/revenue/${userId}?${filterQuery}`
+        );
+        setPreviousMonthlyRevenue(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchPreviousMonthlyAverageNightlyRate = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/analytics/previous/average-nightly-rate/${userId}?${filterQuery}`
+        );
+        setPreviousMonthlyAverageNightlyRate(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    //Graph Data
+    const fetchGraphData = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/analytics/user/${userId}/daily?${filterQuery}`
+        );
+        setGraphData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    const fetchPreviousGraphData = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/analytics/previous/user/${userId}/daily?${filterQuery}`
+        );
+        setPreviousGraphData(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchMonthlyBookings();
     fetchMonthlyRevenue();
     fetchMonthlyAverageNightlyRate();
-    fetchDailyBookings();
-    fetchDailyRevenue();
-    fetchDailyAverageNightlyRate();
-    fetchpreviousDailyBooking();
+    fetchOccupancyRate();
+    fetchPreviousMonthlyBookings();
     fetchPreviousMonthlyRevenue();
     fetchPreviousMonthlyAverageNightlyRate();
-    fetchOccupancyRate();
+    fetchGraphData();
+    fetchPreviousGraphData();
   }, [filterType, startDate, endDate, userId]);
 
   const CardData = [
@@ -185,62 +207,55 @@ function DashboardCharts({
   const ChartData = [
     {
       title: "Bookings",
-      amount: monthlyBookings.totalNightsBooked || 0,
-      percentage: monthlyBookings.percentageChangeNightsBooked || 0,
-      current: dailyBookings.length
-        ? dailyBookings.map((item: any) => item.totalNights) || 0
-        : [],
-      previous: previousDailyBooking.length
-        ? previousDailyBooking.map((item: any) => item.totalNights)
-        : [],
+      amount:
+        activeMonth === "current"
+          ? monthlyBookings?.totalNightsBooked
+          : previousMonthlyBookings.totalNightsBooked,
+      percentage:
+        activeMonth === "current"
+          ? monthlyBookings?.percentageChangeNightsBooked
+          : previousMonthlyBookings.percentageChangeNightsBooked,
+      current: graphData.map((data) => data.totalNightsBooked) || [],
+      previous: previousGraphData.map((data) => data.totalNightsBooked) || [],
       labels:
         activeMonth === "current"
-          ? dailyBookings.length
-            ? dailyBookings.map((item: any) => item?.date)
-            : []
-          : previousDailyBooking.length
-          ? previousDailyBooking.map((item: any) => item?.date)
-          : [],
+          ? graphData.map((data) => data.date) || []
+          : previousGraphData.map((data) => data.date) || [],
     },
     {
       title: "Revenue",
-      amount: monthlyRevenue?.totalRevenue || 0,
-      percentage: monthlyRevenue?.percentageChangeRevenue || 0,
-      current: dailyRevenue.length
-        ? dailyRevenue?.map((item: any) => item?.totalRevenue)
-        : [],
-      previous: previousMonthlyRevenue.length
-        ? previousMonthlyRevenue?.map((item: any) => item?.totalRevenue)
-        : [],
+      amount:
+        activeMonth === "current"
+          ? monthlyRevenue?.totalRevenue
+          : previousMonthlyRevenue.totalRevenue,
+      percentage:
+        activeMonth === "current"
+          ? monthlyRevenue?.percentageChangeRevenue
+          : previousMonthlyRevenue.percentageChangeRevenue,
+      current: graphData.map((data) => parseFloat(data.totalRevenue)) || [],
+      previous:
+        previousGraphData.map((data) => parseFloat(data.totalRevenue)) || [],
       labels:
         activeMonth === "current"
-          ? dailyRevenue?.length
-            ? dailyRevenue?.map((item: any) => item?.date)
-            : []
-          : previousMonthlyRevenue.length
-          ? previousMonthlyRevenue?.map((item: any) => item?.date)
-          : [],
+          ? graphData.map((data) => data.date) || []
+          : previousGraphData.map((data) => data.date) || [],
     },
     {
       title: "Average Nightly Rate",
-      amount: monthlyAverageNightlyRate?.averageNightlyRate || 0,
-      percentage: monthlyAverageNightlyRate?.percentageChangeNightlyRate || 0,
-      current: dailyAverageNightlyRate.length
-        ? dailyAverageNightlyRate?.map((item: any) => item?.averageNightlyRate)
-        : [],
-      previous: previousMonthlyAverageNightlyRate.length
-        ? previousMonthlyAverageNightlyRate?.map(
-            (item: any) => item.averageNightlyRate
-          )
-        : [],
+      amount:
+        activeMonth === "current"
+          ? monthlyAverageNightlyRate?.averageNightlyRate
+          : previousMonthlyAverageNightlyRate.averageNightlyRate,
+      percentage:
+        activeMonth === "current"
+          ? monthlyAverageNightlyRate?.percentageChangeNightlyRate
+          : previousMonthlyAverageNightlyRate.percentageChangeNightlyRate,
+      current: graphData.map((data) => data.averageNightlyRate) || [],
+      previous: previousGraphData.map((data) => data.averageNightlyRate) || [],
       labels:
         activeMonth === "current"
-          ? dailyAverageNightlyRate.length
-            ? dailyAverageNightlyRate?.map((item: any) => item?.date)
-            : []
-          : previousMonthlyAverageNightlyRate.length
-          ? previousMonthlyAverageNightlyRate?.map((item: any) => item?.date)
-          : [],
+          ? graphData.map((data) => data.date) || []
+          : previousGraphData.map((data) => data.date) || [],
     },
   ];
 
@@ -334,7 +349,7 @@ function DashboardCharts({
                 }`}
               >
                 {data.percentage > 0 ? "+" : ""}
-                {data.percentage.toFixed(2)}%
+                {data?.percentage?.toFixed(2)}%
               </span>
             </h2>
             <div className="mt-4 border rounded-2xl p-3 bg-[#FAFAFA] w-full h-56">
