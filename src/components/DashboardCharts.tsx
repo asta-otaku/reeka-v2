@@ -14,10 +14,27 @@ function DashboardCharts({
   startDate: Date | undefined;
   endDate: Date | undefined;
 }) {
-  const [monthlyBookings, setMonthlyBookings] = useState<any>({});
-  const [monthlyRevenue, setMonthlyRevenue] = useState<any>({});
-  const [monthlyAverageNightlyRate, setMonthlyAverageNightlyRate] =
-    useState<any>({});
+  const [monthlyBookings, setMonthlyBookings] = useState<{
+    totalNightsBooked: number;
+    percentageChangeNightsBooked: number;
+  }>({
+    totalNightsBooked: 0,
+    percentageChangeNightsBooked: 0,
+  });
+  const [monthlyRevenue, setMonthlyRevenue] = useState<{
+    totalRevenue: number;
+    percentageChangeRevenue: number;
+  }>({
+    totalRevenue: 0,
+    percentageChangeRevenue: 0,
+  });
+  const [monthlyAverageNightlyRate, setMonthlyAverageNightlyRate] = useState<{
+    averageNightlyRate: number;
+    percentageChangeNightlyRate: number;
+  }>({
+    averageNightlyRate: 0,
+    percentageChangeNightlyRate: 0,
+  });
   const [previousMonthlyBookings, setPreviousMonthlyBookings] = useState<{
     totalNightsBooked: number;
     percentageChangeNightsBooked: number;
@@ -42,11 +59,17 @@ function DashboardCharts({
     averageNightlyRate: 0,
     percentageChangeNightlyRate: 0,
   });
-  const [occupancyRate, setOccupancyRate] = useState<any>({});
+  const [occupancyRate, setOccupancyRate] = useState<{
+    occupancy: number;
+    percentageChange: number;
+  }>({
+    occupancy: 0,
+    percentageChange: 0,
+  });
   const [activeMonth, setActiveMonth] = useState("current");
   const [graphData, setGraphData] = useState<
     {
-      totalRevenue: string;
+      totalRevenue: number;
       totalNightsBooked: number;
       date: string;
       averageNightlyRate: number;
@@ -54,7 +77,7 @@ function DashboardCharts({
   >([]);
   const [previousGraphData, setPreviousGraphData] = useState<
     {
-      totalRevenue: string;
+      totalRevenue: number;
       totalNightsBooked: number;
       date: string;
       averageNightlyRate: number;
@@ -232,9 +255,8 @@ function DashboardCharts({
         activeMonth === "current"
           ? monthlyRevenue?.percentageChangeRevenue
           : previousMonthlyRevenue.percentageChangeRevenue,
-      current: graphData.map((data) => parseFloat(data.totalRevenue)) || [],
-      previous:
-        previousGraphData.map((data) => parseFloat(data.totalRevenue)) || [],
+      current: graphData.map((data) => data.totalRevenue) || [],
+      previous: previousGraphData.map((data) => data.totalRevenue) || [],
       labels:
         activeMonth === "current"
           ? graphData.map((data) => data.date) || []
@@ -288,7 +310,7 @@ function DashboardCharts({
                 <h2 className="text-[#121212] text-2xl font-medium">
                   {data.title === "Bookings" || data.title === "Occupancy Rate"
                     ? data?.amount
-                    : `₦${data?.amount
+                    : `₦${Number(data?.amount)
                         ?.toFixed(2)
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
                 </h2>
