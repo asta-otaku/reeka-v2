@@ -43,9 +43,9 @@ function ResetPassword() {
         if (res.status === 200) {
           setLoading(false);
           toast.success("Password reset successful, you can now login");
-            setTimeout(() => {
-              window.location.href = "/signin";
-            }, 2000);
+          setTimeout(() => {
+            window.location.href = "/signin";
+          }, 2000);
         }
       })
       .catch((err) => {
@@ -76,7 +76,7 @@ function ResetPassword() {
                 className="text-[#3A3A3A] font-medium text-sm"
                 htmlFor="token"
               >
-                Token
+                Code
               </label>
               <input
                 name="token"
