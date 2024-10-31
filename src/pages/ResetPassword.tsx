@@ -43,9 +43,9 @@ function ResetPassword() {
         if (res.status === 200) {
           setLoading(false);
           toast.success("Password reset successful, you can now login");
-          //   setTimeout(() => {
-          //     window.location.href = "/signin";
-          //   }, 2000);
+            setTimeout(() => {
+              window.location.href = "/signin";
+            }, 2000);
         }
       })
       .catch((err) => {
