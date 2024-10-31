@@ -52,7 +52,7 @@ function ForgotPassword() {
             Reeka
           </Link>
           <h4 className="text-[#121212] text-2xl lg:text-4xl font-semibold mt-24">
-            Forget Password
+            Forgot Password
           </h4>
           <p className="mt-1 text-[#808080]">Enter the correct details</p>
           <form className="mt-4 flex flex-col gap-4 w-full">
