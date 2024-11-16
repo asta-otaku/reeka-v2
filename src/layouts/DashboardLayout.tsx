@@ -175,7 +175,7 @@ function ListItem({
           if (route === "#") {
             toast.success("Logged out successfully");
             setTimeout(() => {
-              localStorage.removeItem("user");
+              sessionStorage.removeItem("user");
               window.location.href = "/signin";
             }, 2000);
           }

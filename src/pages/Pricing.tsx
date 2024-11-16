@@ -31,7 +31,7 @@ function Pricing() {
           toast.success(`You have selected the ${pricingPlan} plan`);
           setTimeout(() => {
             window.location.href = "/dashboard";
-            localStorage.setItem("pricingPlan", pricingPlan);
+            sessionStorage.setItem("pricingPlan", pricingPlan);
           }, 2000);
         })
         .catch((err: any) => {
