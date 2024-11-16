@@ -4,48 +4,38 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import BookingTable from "../components/BookingTable";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { CONSTANT } from "../util";
 import ReactPaginate from "react-paginate";
+import apiClient from "../helpers/apiClient";
 
 function Bookings() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
-  const [userId] = useState(CONSTANT.USER_ID);
   const [statusFilter, setStatusFilter] = useState("");
 
   useEffect(() => {
     const fetchProperties = async () => {
-      if (userId) {
-        // Ensure userId is present
-        try {
-          const response = await axios.get(
-            `${CONSTANT.BASE_URL}/properties/owner/${userId}`
-          );
-          setProperties(response.data);
-        } catch (error) {
-          console.error(error);
-        }
+      try {
+        const response = await apiClient.get(`/properties`);
+        setProperties(response.data);
+      } catch (error) {
+        console.error(error);
       }
     };
     fetchProperties();
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
-    if (userId) {
-      // Ensure userId is present before making the request
-      axios
-        .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
-        .then((response) => {
-          setBookings(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [userId]);
+    apiClient
+      .get(`/booking`)
+      .then((response) => {
+        setBookings(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   // Pagination logic
   const itemsPerPage = 15;

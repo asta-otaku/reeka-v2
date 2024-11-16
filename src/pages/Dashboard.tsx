@@ -4,10 +4,9 @@ import { getDate, getDateRange } from "../helpers/getDate";
 import { useEffect, useState } from "react";
 import DashboardCharts from "../components/DashboardCharts";
 import { useNavigate } from "react-router-dom";
-import { CONSTANT } from "../util";
-import axios from "axios";
 import DashboardPropertyChart from "../components/DashboardPropertyChart";
 import { DatePicker } from "antd";
+import apiClient from "../helpers/apiClient";
 
 const { RangePicker } = DatePicker;
 
@@ -20,7 +19,6 @@ function Dashboard() {
   const [selectedProperty, setSelectedProperty] = useState("");
   const [activePropertyId, setActivePropertyId] = useState("");
   const [filterType, setFilterType] = useState("last_30_days");
-  const [userId] = useState(CONSTANT.USER_ID);
 
   // States for custom date range
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -34,20 +32,16 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchProperties = async () => {
-      if (userId) {
-        try {
-          const response = await axios.get(
-            `${CONSTANT.BASE_URL}/properties/owner/${userId}`
-          );
-          setProperties(response.data);
-          setActivePropertyId(response.data[0]?._id);
-        } catch (error) {
-          console.error(error);
-        }
+      try {
+        const response = await apiClient.get(`/properties`);
+        setProperties(response.data);
+        setActivePropertyId(response.data[0]?._id);
+      } catch (error) {
+        console.error(error);
       }
     };
     fetchProperties();
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     const property = properties.find(

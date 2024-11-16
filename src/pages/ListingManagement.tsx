@@ -8,31 +8,27 @@ import menuIcon from "../assets/menu-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
 import { useNavigate } from "react-router-dom";
-import { CONSTANT } from "../util";
-import axios from "axios";
+import apiClient from "../helpers/apiClient";
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
   const [properties, setProperties] = useState([]);
-  const [userId] = useState(CONSTANT.USER_ID);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
-        );
+        const response = await apiClient.get(`/properties`);
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchProperties();
-  }, [userId]);
+  }, []);
 
   return (
     <DashboardLayout>

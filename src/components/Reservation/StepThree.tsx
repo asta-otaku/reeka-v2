@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import StepTwo from "./StepTwo";
-import { CONSTANT } from "../../util";
-import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import apiClient from "../../helpers/apiClient";
 
 function StepThree({
   formDetails,
@@ -29,7 +28,7 @@ function StepThree({
 }) {
   const navigate = useNavigate();
   const handleCopy = async () => {
-    const res = await axios.get(`${CONSTANT.BASE_URL}/invoice/${invoiceId}`);
+    const res = await apiClient.get(`/invoice/${invoiceId}`);
     if (res.status === 200) {
       const link = res.data.invoice.paymentLink;
       navigator.clipboard.writeText(link);

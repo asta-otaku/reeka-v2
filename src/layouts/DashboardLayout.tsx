@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-// import updown from "../assets/updown.svg";
-// import avatar from "../assets/avatar.svg";
 import plus from "../assets/plus-sign-square.svg";
 
 import {
@@ -20,8 +18,7 @@ import {
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
-import { CONSTANT } from "../util";
+import apiClient from "../helpers/apiClient";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
@@ -43,9 +40,7 @@ function DashboardLayout({ children }: any) {
 
   useEffect(() => {
     const fetchPricing = async () => {
-      const res = await axios.get(
-        `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${CONSTANT.USER_ID}`
-      );
+      const res = await apiClient.get(`/subscriptions/user-subscription`);
       if (res.data.planType === "") {
         window.location.href = "/pricing";
       }

@@ -35,32 +35,30 @@ function SignIn() {
       return toast.error("All fields are required");
     }
     setLoading(true);
+
     axios
       .post(
         `${CONSTANT.BASE_URL}/auth/login`,
-        {
-          email: formDetails.email,
-          password: formDetails.password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { email: formDetails.email, password: formDetails.password },
+        { headers: { "Content-Type": "application/json" } }
       )
       .then((res) => {
         if (res.status === 200) {
           setLoading(false);
           toast.success("Logged in successfully");
-          localStorage.setItem("user", JSON.stringify(res.data));
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 2000);
+
+          // Store tokens and user info separately in localStorage
+          const { accessToken, refreshToken, firstName, lastName } = res.data;
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+          localStorage.setItem("user", JSON.stringify({ firstName, lastName }));
+
+          setTimeout(() => navigate("/dashboard"), 2000);
         }
       })
       .catch((err) => {
         setLoading(false);
-        toast.error(err.response.data.error || "Invalid credentials");
+        toast.error(err.response?.data.error || "Invalid credentials");
         console.log(err);
       });
   };

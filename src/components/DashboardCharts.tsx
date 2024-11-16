@@ -1,9 +1,8 @@
 import LineChart from "../charts/Line";
 import info from "../assets/info.svg";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { CONSTANT } from "../util";
 import moment from "moment";
+import apiClient from "../helpers/apiClient";
 
 function DashboardCharts({
   filterType,
@@ -85,7 +84,6 @@ function DashboardCharts({
       averageNightlyRate: number;
     }[]
   >([]);
-  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
@@ -98,9 +96,7 @@ function DashboardCharts({
     //  Card Data
     const fetchCardData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/user/${userId}?${filterQuery}`
-        );
+        const response = await apiClient.get(`/analytics/user?${filterQuery}`);
         setCardData(response.data);
       } catch (error) {
         console.error(error);
@@ -109,8 +105,8 @@ function DashboardCharts({
 
     const fetchPreviousCardData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/user/${userId}?${filterQuery}`
+        const response = await apiClient.get(
+          `/analytics/previous/user?${filterQuery}`
         );
         setPreviousCardData(response.data);
       } catch (error) {
@@ -121,8 +117,8 @@ function DashboardCharts({
     //Graph Data
     const fetchGraphData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/user/${userId}/daily?${filterQuery}`
+        const response = await apiClient.get(
+          `/analytics/user/daily?${filterQuery}`
         );
         setGraphData(response.data);
       } catch (error) {
@@ -131,8 +127,8 @@ function DashboardCharts({
     };
     const fetchPreviousGraphData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/user/${userId}/daily?${filterQuery}`
+        const response = await apiClient.get(
+          `/analytics/previous/user/daily?${filterQuery}`
         );
         setPreviousGraphData(response.data);
       } catch (error) {
@@ -144,7 +140,7 @@ function DashboardCharts({
     fetchPreviousCardData();
     fetchGraphData();
     fetchPreviousGraphData();
-  }, [filterType, startDate, endDate, userId]);
+  }, [filterType, startDate, endDate]);
 
   const cards = [
     {

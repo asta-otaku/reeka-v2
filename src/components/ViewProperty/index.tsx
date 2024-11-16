@@ -5,8 +5,6 @@ import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 import DashboardLayout from "../../layouts/DashboardLayout";
 import searchIcon from "../../assets/search-01.svg";
 import BookingTable from "../BookingTable";
-import axios from "axios";
-import { CONSTANT } from "../../util";
 import ReactPaginate from "react-paginate";
 import toast, { Toaster } from "react-hot-toast";
 import PropertyDetails from "./PropertyDetails";
@@ -15,12 +13,12 @@ import Amenities from "./Amenities";
 import Pricing from "./Pricing";
 import Spinner from "../Spinner";
 import useStore from "../../store";
+import apiClient from "../../helpers/apiClient";
 
 function ViewProperty() {
   const { id } = useParams(); // Get property ID from the URL
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [userId] = useState(CONSTANT.USER_ID);
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
 
@@ -50,8 +48,8 @@ function ViewProperty() {
   const [bookings, setBookings] = useState<any>([]);
 
   useEffect(() => {
-    axios
-      .get(`${CONSTANT.BASE_URL}/properties/${id}`)
+    apiClient
+      .get(`/properties/${id}`)
       .then((response) => {
         setProperty(response.data);
       })
@@ -62,8 +60,8 @@ function ViewProperty() {
   }, [id]);
 
   useEffect(() => {
-    axios
-      .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
+    apiClient
+      .get(`/booking`)
       .then((response) => {
         setBookings(
           response.data.filter((bk: any) => bk?.propertyId?._id === id)
@@ -72,7 +70,7 @@ function ViewProperty() {
       .catch((error) => {
         console.error(error);
       });
-  }, [id, userId]);
+  }, [id]);
 
   useEffect(() => {
     setBookedStatus(bookings.length > 0);
@@ -80,7 +78,7 @@ function ViewProperty() {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(`${CONSTANT.BASE_URL}/properties/${id}`);
+      const res = await apiClient.delete(`$/properties/${id}`);
       if (res.status === 204) {
         toast.success("Property deleted successfully");
         setModal(null);
@@ -115,15 +113,11 @@ function ViewProperty() {
 
     try {
       setLoading(true);
-      const res = await axios.put(
-        `${CONSTANT.BASE_URL}/properties/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const res = await apiClient.put(`/properties/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       if (res.status === 200) {
         toast.success("Property updated successfully");
         setLoading(false);

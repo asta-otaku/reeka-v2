@@ -1,27 +1,15 @@
 import toast, { Toaster } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { CONSTANT } from "../util";
+import apiClient from "../helpers/apiClient";
 
 function Pricing() {
   const [pricingPlan, setPricingPlan] = useState("");
-  const navigate = useNavigate();
-
-  const userId = CONSTANT.USER_ID;
 
   useEffect(() => {
     const fetchPricing = async () => {
-      if (!userId) {
-        toast.error("User ID is missing. Please log in.");
-        navigate("/login");
-        return;
-      }
-
       try {
-        const res = await axios.get(
-          `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${userId}`
-        );
+        const res = await apiClient.get(`/subscriptions/user-subscription`);
         if (res.data.planType) {
           window.location.href = "/dashboard";
         }
@@ -31,13 +19,12 @@ function Pricing() {
     };
 
     fetchPricing();
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
-    if (pricingPlan && userId) {
-      axios
-        .post(`${CONSTANT.BASE_URL}/subscriptions/user-subscription`, {
-          userId,
+    if (pricingPlan) {
+      apiClient
+        .post(`/subscriptions/user-subscription`, {
           planType: pricingPlan,
         })
         .then(() => {
@@ -52,7 +39,7 @@ function Pricing() {
           toast.error("Something went wrong!");
         });
     }
-  }, [pricingPlan, userId]);
+  }, [pricingPlan]);
 
   return (
     <div>

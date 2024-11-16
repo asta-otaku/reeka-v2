@@ -5,56 +5,34 @@ import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import { useEffect, useState } from "react";
 import useStore from "../store";
-import axios from "axios";
-import { CONSTANT } from "../util";
 import toast, { Toaster } from "react-hot-toast";
 import Spinner from "../components/Spinner";
+import apiClient from "../helpers/apiClient";
 
 function ReportCenter() {
   const [search, setSearch] = useState("");
   const setModal = useStore((state: any) => state.setModal);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
-  const [userId, setUserId] = useState("");
 
   useEffect(() => {
-    const fetchUserId = async () => {
-      try {
-        const userID = CONSTANT.USER_ID || "";
-        setUserId(userID);
-      } catch (error) {
-        console.error("Error fetching userId:", error);
-      }
-    };
-
     const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
-        );
+        const response = await apiClient.get(`/properties`);
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchUserId();
     fetchProperties();
-  }, [userId]);
+  }, []);
 
   const handleSingleDownload = (propertyName: string) => {
-    if (!userId) {
-      toast.error("User ID not available, please try again later.");
-      return;
-    }
-
-    axios
-      .get(
-        `${CONSTANT.BASE_URL}/report/${userId}/pdf?startDate=&endDate=&propertyName=${propertyName}`,
-        {
-          responseType: "blob",
-        }
-      )
+    apiClient
+      .get(`/report//pdf?startDate=&endDate=&propertyName=${propertyName}`, {
+        responseType: "blob",
+      })
       .then((res) => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
@@ -120,11 +98,7 @@ function ReportCenter() {
               />
             </div>
             <button
-              onClick={() =>
-                setModal(
-                  <ReportModal properties={properties} userId={userId} />
-                )
-              }
+              onClick={() => setModal(<ReportModal properties={properties} />)}
               className="bg-primary p-2 rounded-xl text-white w-full md:w-fit md:absolute md:-top-20 z-10 right-6 font-medium text-sm border border-primary"
             >
               New Report
@@ -185,7 +159,7 @@ function ReportCenter() {
 
 export default ReportCenter;
 
-function ReportModal({ properties, userId }: any) {
+function ReportModal({ properties }: any) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     type: "",
@@ -197,14 +171,14 @@ function ReportModal({ properties, userId }: any) {
   const handleDownload = (e: any) => {
     e.preventDefault();
 
-    if (!form.type || !userId) {
+    if (!form.type) {
       toast.error("Please select a report type and ensure User ID is loaded.");
       return;
     }
     setLoading(true);
-    axios
+    apiClient
       .get(
-        `${CONSTANT.BASE_URL}/report/${userId}/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
+        `/report//${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
         {
           responseType: "blob",
         }
