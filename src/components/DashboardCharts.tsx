@@ -22,7 +22,7 @@ function DashboardCharts({
       occupancyRate: number;
     };
     percentageChange: {
-      totalNghtsBooked: number;
+      totalNightsBooked: number;
       totalRevenue: number;
       averageNightlyRate: number;
       occupancyRate: number;
@@ -35,7 +35,7 @@ function DashboardCharts({
       occupancyRate: 0,
     },
     percentageChange: {
-      totalNghtsBooked: 0,
+      totalNightsBooked: 0,
       totalRevenue: 0,
       averageNightlyRate: 0,
       occupancyRate: 0,
@@ -49,7 +49,7 @@ function DashboardCharts({
       occupancyRate: number;
     };
     percentageChange: {
-      totalNghtsBooked: number;
+      totalNightsBooked: number;
       totalRevenue: number;
       averageNightlyRate: number;
       occupancyRate: number;
@@ -62,7 +62,7 @@ function DashboardCharts({
       occupancyRate: 0,
     },
     percentageChange: {
-      totalNghtsBooked: 0,
+      totalNightsBooked: 0,
       totalRevenue: 0,
       averageNightlyRate: 0,
       occupancyRate: 0,
@@ -187,8 +187,8 @@ function DashboardCharts({
           : previousCardData.userAnalytics.totalNightsBooked,
       percentage:
         activeMonth === "current"
-          ? cardData.percentageChange.totalNghtsBooked
-          : previousCardData.percentageChange.totalNghtsBooked,
+          ? cardData.percentageChange.totalNightsBooked
+          : previousCardData.percentageChange.totalNightsBooked,
       caption: "total nights booked",
     },
   ];
@@ -202,8 +202,8 @@ function DashboardCharts({
           : previousCardData.userAnalytics.totalNightsBooked,
       percentage:
         activeMonth === "current"
-          ? cardData.percentageChange.totalNghtsBooked
-          : previousCardData.percentageChange.totalNghtsBooked,
+          ? cardData.percentageChange.totalNightsBooked
+          : previousCardData.percentageChange.totalNightsBooked,
       current: graphData?.map((data) => data.totalNightsBooked) ?? [],
       previous: previousGraphData?.map((data) => data.totalNightsBooked) || [],
       labels:
