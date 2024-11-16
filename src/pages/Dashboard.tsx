@@ -14,7 +14,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
   const [activePropertyId, setActivePropertyId] = useState("");

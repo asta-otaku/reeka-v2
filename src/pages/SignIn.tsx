@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
 function SignIn() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user && Object.keys(user).length > 0) {
@@ -17,7 +18,6 @@ function SignIn() {
     }
   }, [user]);
 
-  const navigate = useNavigate();
   const [formDetails, setFormDetails] = useState({
     email: "",
     password: "",
@@ -47,11 +47,14 @@ function SignIn() {
           setLoading(false);
           toast.success("Logged in successfully");
 
-          // Store tokens and user info separately in localStorage
+          // Store tokens and user info in sessionStorage
           const { accessToken, refreshToken, firstName, lastName } = res.data;
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-          localStorage.setItem("user", JSON.stringify({ firstName, lastName }));
+          sessionStorage.setItem("accessToken", accessToken);
+          sessionStorage.setItem("refreshToken", refreshToken);
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify({ firstName, lastName })
+          );
 
           setTimeout(() => navigate("/dashboard"), 2000);
         }

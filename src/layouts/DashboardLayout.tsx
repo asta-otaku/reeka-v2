@@ -30,7 +30,7 @@ function DashboardLayout({ children }: any) {
   }, [currentModal]);
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {

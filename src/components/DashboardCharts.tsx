@@ -171,8 +171,8 @@ function DashboardCharts({
       title: "Occupancy Rate",
       amount:
         activeMonth === "current"
-          ? cardData.userAnalytics.occupancyRate
-          : previousCardData.userAnalytics.occupancyRate,
+          ? cardData.userAnalytics.occupancyRate + "%"
+          : previousCardData.userAnalytics.occupancyRate + "%",
       percentage:
         activeMonth === "current"
           ? cardData.percentageChange.occupancyRate
