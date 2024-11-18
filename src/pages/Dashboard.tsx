@@ -162,6 +162,7 @@ function Dashboard() {
                       <option value="this_month">This Month</option>
                       <option value="all_time">All Time</option>
                       <option value="year_to_date">Year to Date (YTD)</option>
+                      <option value="this_year">This Year</option>
                       <option value="custom_date_range">
                         Custom Date Range
                       </option>
