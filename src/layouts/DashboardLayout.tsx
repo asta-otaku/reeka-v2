@@ -6,14 +6,13 @@ import {
   AccountSettingIcon,
   CalendarIcon,
   CloseIcon,
+  Cog6ToothIcon,
   CodeSandBoxIcon,
   DashboardIcon,
   FileBookmarkIcon,
   Hamburger,
-  // ManagerIcon,
   PropertyIcon,
   ScaleIcon,
-  // UserCircleIcon,
 } from "../assets/icons";
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
@@ -82,8 +81,6 @@ function DashboardLayout({ children }: any) {
                   height={35}
                   className="rounded-full border-2 border-blue-1"
                 />
-                {/* <img src={avatar} alt="avatar" /> */}
-                {/* <img src={updown} alt="updown" /> */}
               </div>
             </div>
 
@@ -124,21 +121,16 @@ function DashboardLayout({ children }: any) {
                 Icon={FileBookmarkIcon}
                 title="Reservation Management"
               />
-              {/* <ListItem
-                route="/account"
-                Icon={UserCircleIcon}
-                title="Account"
-              /> */}
               <ListItem
                 route="/integration"
                 Icon={ScaleIcon}
                 title="Integration"
               />
-              {/* <ListItem
-                route="/personnel"
-                Icon={ManagerIcon}
-                title="Personnel Management"
-              /> */}
+              <ListItem
+                route="/settings"
+                Icon={Cog6ToothIcon}
+                title="Settings"
+              />
               <ListItem route="#" Icon={AccountSettingIcon} title="Logout" />
             </ul>
           </div>
