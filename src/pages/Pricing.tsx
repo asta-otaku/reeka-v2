@@ -14,7 +14,7 @@ function Pricing() {
     const fetchPricing = async () => {
       if (!userId) {
         toast.error("User ID is missing. Please log in.");
-        navigate("/login");
+        navigate("/signin");
         return;
       }
 
