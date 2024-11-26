@@ -29,41 +29,63 @@ function SignIn() {
       [e.target.name]: e.target.value,
     });
 
-  const handleSignIn = (e: any) => {
-    e.preventDefault();
-    if (!formDetails.email || !formDetails.password) {
-      return toast.error("All fields are required");
-    }
-    setLoading(true);
-    axios
-      .post(
-        `${CONSTANT.BASE_URL}/auth/login`,
-        {
-          email: formDetails.email,
-          password: formDetails.password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+    const handleSignIn = (e: any) => {
+      e.preventDefault();
+      if (!formDetails.email || !formDetails.password) {
+        return toast.error("All fields are required");
+      }
+      setLoading(true);
+    
+      axios
+        .post(
+          `${CONSTANT.BASE_URL}/auth/login`,
+          {
+            email: formDetails.email,
+            password: formDetails.password,
           },
-        }
-      )
-      .then((res) => {
-        if (res.status === 200) {
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success("Logged in successfully");
+            const user = res.data;
+            localStorage.setItem("user", JSON.stringify(user));
+    
+            // Retrieve user's subscription details using userId
+            axios
+              .get(`${CONSTANT.BASE_URL}/subscriptions/user-subscription/${user.userId}`, {
+                headers: {
+                  Authorization: `Bearer ${user.token}`, // Pass the token
+                },
+              })
+              .then((subRes) => {
+                if (subRes.status === 200) {
+                  setLoading(false);
+                  navigate("/dashboard"); // User has a subscription
+                }
+              })
+              .catch((subErr) => {
+                setLoading(false);
+                if (subErr.response && subErr.response.status === 404) {
+                  navigate("/pricing"); // No subscription found, redirect to pricing page
+                } else {
+                  toast.error("Failed to retrieve subscription details. Please try again.");
+                  console.error("Subscription Error:", subErr);
+                }
+              });
+          }
+        })
+        .catch((err) => {
           setLoading(false);
-          toast.success("Logged in successfully");
-          localStorage.setItem("user", JSON.stringify(res.data));
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 2000);
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        toast.error(err.response.data.error || "Invalid credentials");
-        console.log(err);
-      });
-  };
+          toast.error(err.response?.data?.error || "Invalid credentials");
+          console.error("Login Error:", err);
+        });
+    };
+    
 
   return (
     <div>
