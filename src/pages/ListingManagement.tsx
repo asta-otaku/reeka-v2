@@ -15,6 +15,7 @@ function ListingManagement() {
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
   const [properties, setProperties] = useState([]);
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   const navigate = useNavigate();
 
@@ -82,7 +83,9 @@ function ListingManagement() {
                   <img src={line} />
                   <button
                     onClick={() => setStep(2)}
-                    className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary"
+                    className={`bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary ${
+                      user && user.userRole !== "Owner" && "hidden"
+                    }`}
                   >
                     Add Property
                   </button>

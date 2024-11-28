@@ -35,6 +35,9 @@ function DashboardLayout({ children }: any) {
     if (Object.keys(user).length === 0) {
       navigate("/signin");
     }
+    if (user && user.userRole !== "Owner") {
+      navigate("/listing");
+    }
   }, [user]);
 
   useEffect(() => {
@@ -96,11 +99,16 @@ function DashboardLayout({ children }: any) {
                 nav ? "block" : "hidden"
               } md:block font-medium w-full`}
             >
-              <ListItem
-                route="/dashboard"
-                Icon={DashboardIcon}
-                title="Dashboard"
-              />
+              <div
+                className={`${user && user.userRole !== "Owner" && "hidden"}`}
+              >
+                <ListItem
+                  route="/dashboard"
+                  Icon={DashboardIcon}
+                  title="Dashboard"
+                />
+              </div>
+
               <ListItem
                 route="/listing"
                 Icon={CodeSandBoxIcon}

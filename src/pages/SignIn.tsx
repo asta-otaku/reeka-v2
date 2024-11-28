@@ -48,12 +48,13 @@ function SignIn() {
           toast.success("Logged in successfully");
 
           // Store tokens and user info in sessionStorage
-          const { accessToken, refreshToken, firstName, lastName } = res.data;
+          const { accessToken, refreshToken, firstName, lastName, userRole } =
+            res.data;
           sessionStorage.setItem("accessToken", accessToken);
           sessionStorage.setItem("refreshToken", refreshToken);
           sessionStorage.setItem(
             "user",
-            JSON.stringify({ firstName, lastName })
+            JSON.stringify({ firstName, lastName, userRole })
           );
 
           setTimeout(() => navigate("/dashboard"), 2000);

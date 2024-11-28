@@ -27,6 +27,8 @@ function PersonnelManagement() {
         return "bg-[#E9FFF2] text-[#219653]";
       case "Associate Manager":
         return "bg-[#F2F7FF] text-[#2F80ED]";
+      case "Front Desk":
+        return "bg-[#FFFAF0] text-[#FFA15F]";
       default:
         return "bg-[#FFFAF0] text-[#FFA15F]";
     }
@@ -39,6 +41,7 @@ function PersonnelManagement() {
     "Administrator",
     "Cleaning",
     "Associate Manager",
+    "Front Desk",
   ];
 
   const filteredData = data.filter((item: any) => {
@@ -90,7 +93,7 @@ function PersonnelManagement() {
                   onClick={() => setStep(2)}
                   className="bg-primary px-4 py-2 rounded-xl text-white text-sm border"
                 >
-                  Add Manager
+                  Add Staff
                 </button>
               </div>
 

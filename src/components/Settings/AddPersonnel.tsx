@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowLongLeftIcon, ChevronDownIcon } from "../../assets/icons";
-// import DropdownForm from "./DropdownForm";
+import DropdownForm from "./DropdownForm";
 import { getCurrentDate } from "../../helpers/getDate";
 
 function AddPersonnel({
@@ -110,7 +110,7 @@ function AddPersonnel({
                 <ChevronDownIcon width={12} />
               </div>
             </div>
-            {/* <DropdownForm /> */}
+            <DropdownForm />
           </form>
           <button
             onClick={handleFormSubmit}
