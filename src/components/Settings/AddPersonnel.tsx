@@ -160,6 +160,7 @@ function AddPersonnel({
                   </option>
                   <option value="Cleaning">Cleaning</option>
                   <option value="Associate Manager">Associate Manager</option>
+                  <option value="Front Desk">Front Desk</option>
                 </select>
                 <ChevronDownIcon width={12} />
               </div>
