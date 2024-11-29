@@ -41,15 +41,17 @@ function DashboardLayout({ children }: any) {
   }, [user]);
 
   useEffect(() => {
-    const fetchPricing = async () => {
-      const res = await apiClient.get(`/subscriptions/user-subscription`);
-      if (res.data.planType === "") {
-        window.location.href = "/pricing";
-      }
-    };
+    if (user && user.userRole === "Owner") {
+      const fetchPricing = async () => {
+        const res = await apiClient.get(`/subscriptions/user-subscription`);
+        if (res.data.planType === "") {
+          window.location.href = "/pricing";
+        }
+      };
 
-    fetchPricing();
-  }, []);
+      fetchPricing();
+    }
+  }, [user]);
 
   return (
     <div className="bg-[#FAFAFA]">

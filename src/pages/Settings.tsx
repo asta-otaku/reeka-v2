@@ -36,7 +36,7 @@ function Settings() {
                 } ${
                   tab.id === "team_management" && user.userRole !== "Owner"
                     ? "hidden"
-                    : ""
+                    : "block"
                 }`}
                 onClick={() => setActiveTab(tab.id)}
               >
