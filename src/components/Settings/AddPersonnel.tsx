@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ArrowLongLeftIcon, ChevronDownIcon } from "../../assets/icons";
 import DropdownForm from "./DropdownForm";
 import { getCurrentDate } from "../../helpers/getDate";
+import apiClient from "../../helpers/apiClient";
+import toast, { Toaster } from "react-hot-toast";
 
 function AddPersonnel({
   data,
@@ -12,7 +14,14 @@ function AddPersonnel({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setData: React.Dispatch<any>;
 }) {
-  const [formDetails, setFormDetails] = useState<any>({});
+  const [formDetails, setFormDetails] = useState({
+    email: "",
+    role: "Property Manager",
+    name: "",
+    phone: "",
+  });
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
       ...formDetails,
@@ -20,21 +29,63 @@ function AddPersonnel({
     });
   };
 
-  const handleFormSubmit = (e: any) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
-    if (!formDetails.name || !formDetails.email || !formDetails.phone) return;
-    setData([
-      ...data,
-      {
-        ...formDetails,
-        date: getCurrentDate(),
-      },
-    ]);
-    setStep(1);
+
+    const { email, role } = formDetails;
+
+    if (!role || !email) {
+      toast.error("All fields are required!");
+      return;
+    }
+
+    if (selectedProperties.length === 0) {
+      toast.error("Please select at least one property.");
+      return;
+    }
+
+    try {
+      if (selectedProperties.length === 1) {
+        // Single property API call
+        const propertyId = selectedProperties[0];
+        await apiClient.post(`/properties/${propertyId}/invite-employee`, {
+          email,
+          role,
+        });
+        toast.success("Personnel successfully added to the property!");
+      } else {
+        // Multiple properties API call
+        await apiClient.post(`/properties/invite-employees`, {
+          email,
+          role,
+          propertyIds: selectedProperties,
+        });
+        toast.success(
+          "Personnel successfully added to the selected properties!"
+        );
+      }
+
+      // Update local data and reset form
+      setData([
+        ...data,
+        {
+          ...formDetails,
+          date: getCurrentDate(),
+        },
+      ]);
+      setStep(1); // Navigate back to the previous step
+    } catch (error: any) {
+      console.error(error);
+      toast.error(
+        error.response.data.error ||
+          "Failed to add personnel. Please try again."
+      );
+    }
   };
 
   return (
     <div>
+      <Toaster />
       <div className="w-full flex justify-between items-center p-4">
         <div
           className="flex items-center gap-2 cursor-pointer"
@@ -50,7 +101,10 @@ function AddPersonnel({
       <div>
         <div className="max-w-lg mx-auto w-full bg-[#FAFAFA] px-1 py-4 rounded-xl flex flex-col gap-4">
           <h3 className="px-4 text-deepBlue font-medium">Personal Details</h3>
-          <form className="flex flex-col gap-2 bg-white rounded-3xl shadow-sm shadow-black/10 p-4">
+          <form
+            onSubmit={handleFormSubmit}
+            className="flex flex-col gap-2 bg-white rounded-3xl shadow-sm shadow-black/10 p-4"
+          >
             <div className="flex flex-col gap-2 w-full">
               <h4 className="text-[#344054] text-sm font-medium">Name*</h4>
               <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
@@ -64,7 +118,7 @@ function AddPersonnel({
               </div>
             </div>
             <div className="flex flex-col gap-2 w-full">
-              <h4 className="text-[#344054] text-sm font-medium">Email</h4>
+              <h4 className="text-[#344054] text-sm font-medium">Email*</h4>
               <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
                 <input
                   name="email"
@@ -76,7 +130,7 @@ function AddPersonnel({
               </div>
             </div>
             <div className="flex flex-col gap-2 w-full">
-              <h4 className="text-[#344054] text-sm font-medium">Phone No</h4>
+              <h4 className="text-[#344054] text-sm font-medium">Phone No*</h4>
               <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
                 <input
                   name="phone"
@@ -110,7 +164,10 @@ function AddPersonnel({
                 <ChevronDownIcon width={12} />
               </div>
             </div>
-            <DropdownForm />
+            <DropdownForm
+              selectedProperties={selectedProperties}
+              setSelectedProperties={setSelectedProperties}
+            />
           </form>
           <button
             onClick={handleFormSubmit}

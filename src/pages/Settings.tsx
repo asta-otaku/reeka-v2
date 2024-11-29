@@ -5,6 +5,8 @@ import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";
 
+const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+
 const tabs = [
   { name: "Password Reset", id: "change_password" },
   { name: "Edit Info", id: "edit_info" },
@@ -31,6 +33,10 @@ function Settings() {
                   activeTab === tab.id
                     ? "border-b-2 border-primary text-primary"
                     : "text-gray-500"
+                } ${
+                  tab.id === "team_management" && user.userRole !== "Owner"
+                    ? "hidden"
+                    : ""
                 }`}
                 onClick={() => setActiveTab(tab.id)}
               >
