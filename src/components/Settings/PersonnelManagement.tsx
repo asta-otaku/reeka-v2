@@ -54,10 +54,11 @@ function PersonnelManagement() {
 
   const filteredData = staffs?.filter((item: any) => {
     const matchesSearch =
-      item.name?.toLowerCase().includes(search?.toLowerCase()) ||
+      item.firstName?.toLowerCase().includes(search?.toLowerCase()) ||
+      item.lastName?.toLowerCase().includes(search?.toLowerCase()) ||
       item.role?.toLowerCase().includes(search?.toLowerCase()) ||
       item.email?.toLowerCase().includes(search?.toLowerCase()) ||
-      item.phone?.toLowerCase().includes(search?.toLowerCase());
+      item.phoneNumber?.toLowerCase().includes(search?.toLowerCase());
 
     const matchesRole =
       selectedRole === "All Roles" || item.role === selectedRole;
@@ -78,7 +79,7 @@ function PersonnelManagement() {
                     <input
                       type="search"
                       onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search manager"
+                      placeholder="Search staff"
                       className="outline-none text-secondary text-xs bg-transparent md:w-full"
                     />
                   </div>
