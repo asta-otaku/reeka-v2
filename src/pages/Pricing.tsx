@@ -24,19 +24,20 @@ function Pricing() {
   useEffect(() => {
     if (pricingPlan) {
       apiClient
-        .post(`/subscriptions/user-subscription`, {
+        .post(`/subscriptions/init-user-subscription`, {
           planType: pricingPlan,
         })
-        .then(() => {
+        .then((res) => {
           toast.success(`You have selected the ${pricingPlan} plan`);
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-            sessionStorage.setItem("pricingPlan", pricingPlan);
-          }, 2000);
+          if (res.data.authorizationUrl) {
+            setTimeout(() => {
+              window.location.href = res.data.authorizationUrl;
+            }, 2000);
+          }
         })
         .catch((err: any) => {
           console.log(err);
-          toast.error("Something went wrong!");
+          toast.error(err.response.data.error || "Something went wrong!");
         });
     }
   }, [pricingPlan]);

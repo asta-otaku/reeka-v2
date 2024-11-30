@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";
-
-const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
 const tabs = [
   { name: "Password Reset", id: "change_password" },
@@ -15,6 +13,12 @@ const tabs = [
 
 function Settings() {
   const [activeTab, setActiveTab] = useState("change_password");
+  const [user, setUser] = useState<{ userRole?: string }>({});
+
+  useEffect(() => {
+    const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+    setUser(storedUser);
+  }, []);
 
   return (
     <DashboardLayout>

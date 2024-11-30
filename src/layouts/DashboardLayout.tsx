@@ -43,9 +43,16 @@ function DashboardLayout({ children }: any) {
   useEffect(() => {
     if (user && user.userRole === "Owner") {
       const fetchPricing = async () => {
-        const res = await apiClient.get(`/subscriptions/user-subscription`);
-        if (res.data.planType === "") {
-          window.location.href = "/pricing";
+        try {
+          const res = await apiClient.get(`/subscriptions/user-subscription`);
+          if (res.data.planType === "") {
+            window.location.href = "/pricing";
+          }
+        } catch (error: any) {
+          if (error.response) {
+            toast.error(error.response.data.message);
+            setTimeout(() => navigate("/pricing"), 500);
+          }
         }
       };
 
