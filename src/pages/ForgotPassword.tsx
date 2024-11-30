@@ -25,6 +25,9 @@ function ForgotPassword() {
 
       if (res.status === 200) {
         toast.success("Password reset link sent to your email");
+        setTimeout(() => {
+          window.location.href = "/signin";
+        }, 2000);
       }
     } catch (err: any) {
       console.log(err);

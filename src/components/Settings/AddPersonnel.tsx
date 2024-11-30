@@ -1,18 +1,13 @@
 import { useState } from "react";
 import { ArrowLongLeftIcon, ChevronDownIcon } from "../../assets/icons";
 import DropdownForm from "./DropdownForm";
-import { getCurrentDate } from "../../helpers/getDate";
 import apiClient from "../../helpers/apiClient";
 import toast, { Toaster } from "react-hot-toast";
 
 function AddPersonnel({
-  data,
   setStep,
-  setData,
 }: {
-  data: {}[];
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  setData: React.Dispatch<any>;
 }) {
   const [formDetails, setFormDetails] = useState({
     email: "",
@@ -64,15 +59,6 @@ function AddPersonnel({
           "Personnel successfully added to the selected properties!"
         );
       }
-
-      // Update local data and reset form
-      setData([
-        ...data,
-        {
-          ...formDetails,
-          date: getCurrentDate(),
-        },
-      ]);
       setStep(1); // Navigate back to the previous step
     } catch (error: any) {
       console.error(error);

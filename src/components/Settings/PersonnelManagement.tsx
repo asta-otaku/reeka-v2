@@ -3,17 +3,25 @@ import { ChevronDownIcon } from "../../assets/icons";
 import deleted from "../../assets/delete-02.svg";
 import searchIcon from "../../assets/search.svg";
 import AddPersonnel from "./AddPersonnel";
+import apiClient from "../../helpers/apiClient";
 
 function PersonnelManagement() {
-  const tableData = localStorage.getItem("personnelData");
-  const [data, setData] = useState(tableData ? JSON.parse(tableData) : []);
+  const [staffs, setStaffs] = useState([]);
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedRole, setSelectedRole] = useState("All Roles");
 
   useEffect(() => {
-    localStorage.setItem("personnelData", JSON.stringify(data));
-  }, [data]);
+    const fetchStaffs = async () => {
+      try {
+        const response = await apiClient.get(`/staff`);
+        setStaffs(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchStaffs();
+  }, []);
 
   const getColor = (role: string) => {
     switch (role) {
@@ -44,12 +52,12 @@ function PersonnelManagement() {
     "Front Desk",
   ];
 
-  const filteredData = data.filter((item: any) => {
+  const filteredData = staffs?.filter((item: any) => {
     const matchesSearch =
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.role.toLowerCase().includes(search.toLowerCase()) ||
-      item.email.toLowerCase().includes(search.toLowerCase()) ||
-      item.phone.toLowerCase().includes(search.toLowerCase());
+      item.name?.toLowerCase().includes(search?.toLowerCase()) ||
+      item.role?.toLowerCase().includes(search?.toLowerCase()) ||
+      item.email?.toLowerCase().includes(search?.toLowerCase()) ||
+      item.phone?.toLowerCase().includes(search?.toLowerCase());
 
     const matchesRole =
       selectedRole === "All Roles" || item.role === selectedRole;
@@ -141,12 +149,12 @@ function PersonnelManagement() {
                     <tbody className="bg-white text-[#828282]">
                       {filteredData.length > 0 ? (
                         filteredData.map((item: any, index: number) => (
-                          <tr key={index} className="cursor-pointer text-sm">
+                          <tr key={item.id} className="cursor-pointer text-sm">
                             <td className="px-6 py-4 whitespace-nowrap font-semibold text-deepBlue">
-                              {item.name}
+                              {item.firstName} {item.lastName}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              {item.date}
+                              {item.joinedAt}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span
@@ -159,14 +167,14 @@ function PersonnelManagement() {
                               {item.email}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
-                              {item.phone}
+                              {item.phoneNumber}
                             </td>
                             <td>
                               <div className="flex items-center gap-4 py-4">
                                 <button
                                   onClick={() => {
-                                    setData(
-                                      data.filter(
+                                    setStaffs(
+                                      staffs.filter(
                                         (_: any, i: number) => i !== index
                                       )
                                     );
@@ -194,7 +202,7 @@ function PersonnelManagement() {
               </div>
             </div>
           ),
-          2: <AddPersonnel setStep={setStep} setData={setData} data={data} />,
+          2: <AddPersonnel setStep={setStep} />,
         }[step]
       }
     </>
