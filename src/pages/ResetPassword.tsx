@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import authBg from "../assets/authBg.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import toast, { Toaster } from "react-hot-toast";
@@ -9,19 +9,10 @@ import Spinner from "../components/Spinner";
 function ResetPassword() {
   const [formDetails, setFormDetails] = useState({
     userId: "",
-    token: "",
     newPassword: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  const userId = location?.state?.userId || "";
-
-  useEffect(() => {
-    if (!userId) {
-      window.location.href = "/forgot-password";
-    }
-    setFormDetails({ ...formDetails, userId });
-  }, [userId]);
 
   const handleChange = (e: any) => {
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
@@ -29,8 +20,11 @@ function ResetPassword() {
 
   const handleResetPassword = (e: any) => {
     e.preventDefault();
-    if (!formDetails.token || !formDetails.newPassword) {
+    if (!formDetails.newPassword || !formDetails.confirmPassword) {
       return toast.error("Please fill all fields");
+    }
+    if (formDetails.newPassword !== formDetails.confirmPassword) {
+      return toast.error("Passwords do not match");
     }
     setLoading(true);
     axios
@@ -73,21 +67,6 @@ function ResetPassword() {
           <form className="mt-4 flex flex-col gap-4 w-full">
             <div className="flex flex-col gap-1">
               <label
-                className="text-[#3A3A3A] font-medium text-sm"
-                htmlFor="token"
-              >
-                Code
-              </label>
-              <input
-                name="token"
-                onChange={handleChange}
-                placeholder="Token"
-                type="text"
-                className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label
                 className="text-[#3A3A3A] text-sm font-medium"
                 htmlFor="newPassword"
               >
@@ -97,7 +76,22 @@ function ResetPassword() {
                 name="newPassword"
                 onChange={handleChange}
                 placeholder="New Password"
-                type="text"
+                type="password"
+                className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label
+                className="text-[#3A3A3A] text-sm font-medium"
+                htmlFor="confirmPassword"
+              >
+                Confirm Password
+              </label>
+              <input
+                name="confirmPassword"
+                onChange={handleChange}
+                placeholder="Confirm Password"
+                type="password"
                 className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
               />
             </div>

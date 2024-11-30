@@ -27,11 +27,11 @@ function Pricing() {
         .post(`/subscriptions/init-user-subscription`, {
           planType: pricingPlan,
         })
-        .then((res) => {
+        .then((res: any) => {
           toast.success(`You have selected the ${pricingPlan} plan`);
-          if (res.data.authorizationUrl) {
+          if (res.data.data.authorizationUrl) {
             setTimeout(() => {
-              window.location.href = res.data.authorizationUrl;
+              window.location.href = res.data.data.authorizationUrl;
             }, 2000);
           }
         })
