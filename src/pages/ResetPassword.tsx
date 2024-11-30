@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import authBg from "../assets/authBg.png";
 import { useState } from "react";
 import axios from "axios";
@@ -14,6 +14,9 @@ function ResetPassword() {
   });
   const [loading, setLoading] = useState(false);
 
+  const location = useLocation();
+  const token = new URLSearchParams(location.search).get("token");
+
   const handleChange = (e: any) => {
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
   };
@@ -28,11 +31,15 @@ function ResetPassword() {
     }
     setLoading(true);
     axios
-      .post(`${CONSTANT.BASE_URL}/auth/reset-password-finish`, formDetails, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `${CONSTANT.BASE_URL}/auth/reset-password-finish?token=${token}`,
+        formDetails,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         if (res.status === 200) {
           setLoading(false);
@@ -45,7 +52,7 @@ function ResetPassword() {
       .catch((err) => {
         console.log(err);
         setLoading(false);
-        toast.error(err.response.data.error || "An error occurred");
+        toast.error(err.response?.data?.error || "An error occurred");
       });
   };
 
