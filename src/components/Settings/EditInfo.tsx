@@ -1,32 +1,47 @@
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import apiClient from "../../helpers/apiClient";
+import Spinner from "../Spinner";
 
 function EditInfo() {
   const [user, setUser] = useState({
-    name: "",
-    email: "",
-    phone: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    address: "",
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const userDetails = sessionStorage.getItem("user");
-    if (userDetails) {
-      const user = JSON.parse(userDetails);
-      console.log(user);
-      setUser({
-        name: user.firstName + " " + user.lastName,
-        email: user.email || "",
-        phone: user.phone || "",
-      });
-    }
+    const fetchUser = async () => {
+      try {
+        const response = await apiClient.get("/users");
+        setUser(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUser();
   }, []);
 
-  const handleInfoUpdate = (e: React.FormEvent) => {
+  const handleInfoUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (user.name === "" || user.email === "" || user.phone === "") {
-      return toast.error("Please fill in all fields.");
+    setLoading(true);
+    try {
+      await apiClient.put("/users", {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: user.phoneNumber,
+        address: user.address,
+      });
+      toast.success("Information updated successfully");
+    } catch (error: any) {
+      console.error(error);
+      toast.error(
+        error.response.data.error || "An error occurred. Please try again."
+      );
     }
-    toast.success("Information updated successfully.");
+    setLoading(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,12 +60,12 @@ function EditInfo() {
       <form onSubmit={handleInfoUpdate}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Full Name
+            First Name
           </label>
           <input
             type="text"
-            value={user.name}
-            name="name"
+            value={user.firstName}
+            name="firstName"
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             required
@@ -59,12 +74,26 @@ function EditInfo() {
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Email Address
+            Last Name
           </label>
           <input
-            type="email"
-            value={user.email}
-            name="email"
+            type="text"
+            value={user.lastName}
+            name="lastName"
+            onChange={handleChange}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Address
+          </label>
+          <input
+            type="text"
+            value={user.address}
+            name="address"
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             required
@@ -78,8 +107,8 @@ function EditInfo() {
           </label>
           <input
             type="tel"
-            value={user.phone}
-            name="phone"
+            value={user.phoneNumber}
+            name="phoneNumber"
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             required
@@ -91,7 +120,7 @@ function EditInfo() {
           type="submit"
           className="w-full px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/70 focus:outline-none"
         >
-          Save Changes
+          {loading ? <Spinner /> : "Save Changes"}
         </button>
       </form>
     </div>

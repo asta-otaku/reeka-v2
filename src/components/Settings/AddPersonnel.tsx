@@ -3,6 +3,7 @@ import { ArrowLongLeftIcon, ChevronDownIcon } from "../../assets/icons";
 import DropdownForm from "./DropdownForm";
 import apiClient from "../../helpers/apiClient";
 import toast, { Toaster } from "react-hot-toast";
+import Spinner from "../Spinner";
 
 function AddPersonnel({
   setStep,
@@ -15,6 +16,7 @@ function AddPersonnel({
     name: "",
     phone: "",
   });
+  const [loading, setLoading] = useState(false);
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +29,7 @@ function AddPersonnel({
   const handleFormSubmit = async (e: any) => {
     e.preventDefault();
 
-    const { email, role } = formDetails;
+    const { email, role, name } = formDetails;
 
     if (!role || !email) {
       toast.error("All fields are required!");
@@ -38,35 +40,26 @@ function AddPersonnel({
       toast.error("Please select at least one property.");
       return;
     }
-
+    setLoading(true);
     try {
-      if (selectedProperties.length === 1) {
-        // Single property API call
-        const propertyId = selectedProperties[0];
-        await apiClient.post(`/properties/${propertyId}/invite-employee`, {
-          email,
-          role,
-        });
-        toast.success("Personnel successfully added to the property!");
-      } else {
-        // Multiple properties API call
-        await apiClient.post(`/properties/invite-employees`, {
-          email,
-          role,
-          propertyIds: selectedProperties,
-        });
-        toast.success(
-          "Personnel successfully added to the selected properties!"
-        );
-      }
+      await apiClient.post(`/staff`, {
+        email,
+        role,
+        name,
+        propertyIds: selectedProperties,
+      });
+      toast.success("Invitation sent successfully!");
       setStep(1); // Navigate back to the previous step
+      setLoading(false);
     } catch (error: any) {
       console.error(error);
       toast.error(
         error.response.data.error ||
           "Failed to add personnel. Please try again."
       );
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
@@ -160,7 +153,7 @@ function AddPersonnel({
             onClick={handleFormSubmit}
             className="bg-primary border border-solid border-primary text-sm shadow-primary/40 font-semibold text-white px-4 py-2.5 rounded-md"
           >
-            Add Personnel
+            {loading ? <Spinner /> : "Add Personnel"}
           </button>
         </div>
       </div>

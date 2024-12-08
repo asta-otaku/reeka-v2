@@ -30,12 +30,24 @@ function DashboardLayout({ children }: any) {
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
   const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const location = useLocation();
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
       navigate("/signin");
     }
-    if (user && user.userRole !== "Owner") {
+    if (
+      user &&
+      user.userRole !== "Owner" &&
+      location.pathname === "/dashboard"
+    ) {
+      navigate("/listing");
+    }
+    if (
+      user &&
+      user.userRole !== "Owner" &&
+      location.pathname === "/integration"
+    ) {
       navigate("/listing");
     }
   }, [user]);
@@ -138,11 +150,16 @@ function DashboardLayout({ children }: any) {
                 Icon={FileBookmarkIcon}
                 title="Reservation Management"
               />
-              <ListItem
-                route="/integration"
-                Icon={ScaleIcon}
-                title="Integration"
-              />
+              <div
+                className={`${user && user.userRole !== "Owner" && "hidden"}`}
+              >
+                <ListItem
+                  route="/integration"
+                  Icon={ScaleIcon}
+                  title="Integration"
+                />
+              </div>
+
               <ListItem
                 route="/settings"
                 Icon={Cog6ToothIcon}

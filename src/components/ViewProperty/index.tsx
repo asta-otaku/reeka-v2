@@ -61,11 +61,9 @@ function ViewProperty() {
 
   useEffect(() => {
     apiClient
-      .get(`/booking`)
+      .get(`/booking/property/${id}`)
       .then((response) => {
-        setBookings(
-          response.data.filter((bk: any) => bk?.propertyId?._id === id)
-        );
+        setBookings(response.data);
       })
       .catch((error) => {
         console.error(error);

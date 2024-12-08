@@ -4,12 +4,14 @@ import deleted from "../../assets/delete-02.svg";
 import searchIcon from "../../assets/search.svg";
 import AddPersonnel from "./AddPersonnel";
 import apiClient from "../../helpers/apiClient";
+import useStore from "../../store";
 
 function PersonnelManagement() {
   const [staffs, setStaffs] = useState([]);
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedRole, setSelectedRole] = useState("All Roles");
+  const setModal = useStore((state: any) => state.setModal);
 
   useEffect(() => {
     const fetchStaffs = async () => {
@@ -65,6 +67,17 @@ function PersonnelManagement() {
 
     return matchesSearch && matchesRole;
   });
+
+  const handleDeleteStaff = async (id: string) => {
+    try {
+      await apiClient.delete(`/staff/${id}`);
+      const updatedStaffs = staffs.filter((staff: any) => staff.id !== id);
+      setStaffs(updatedStaffs);
+      setModal(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -149,7 +162,7 @@ function PersonnelManagement() {
                     </thead>
                     <tbody className="bg-white text-[#828282]">
                       {filteredData.length > 0 ? (
-                        filteredData.map((item: any, index: number) => (
+                        filteredData.map((item: any) => (
                           <tr key={item.id} className="cursor-pointer text-sm">
                             <td className="px-6 py-4 whitespace-nowrap font-semibold text-deepBlue">
                               {item.firstName} {item.lastName}
@@ -173,13 +186,16 @@ function PersonnelManagement() {
                             <td>
                               <div className="flex items-center gap-4 py-4">
                                 <button
-                                  onClick={() => {
-                                    setStaffs(
-                                      staffs.filter(
-                                        (_: any, i: number) => i !== index
-                                      )
-                                    );
-                                  }}
+                                  onClick={() =>
+                                    setModal(
+                                      <DeleteModal
+                                        handleDelete={() =>
+                                          handleDeleteStaff(item.id)
+                                        }
+                                        setModal={setModal}
+                                      />
+                                    )
+                                  }
                                 >
                                   <img src={deleted} alt="Delete" />
                                 </button>
@@ -211,3 +227,41 @@ function PersonnelManagement() {
 }
 
 export default PersonnelManagement;
+
+function DeleteModal({ handleDelete, setModal }: any) {
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xs w-full relative"
+    >
+      <div className="flex items-center justify-between px-4 py-2 border-b">
+        <h3 className="text-[#121212] font-medium text-sm">Delete Staff</h3>
+        <span
+          onClick={() => setModal(null)}
+          className="cursor-pointer text-[#808080]"
+        >
+          X
+        </span>
+      </div>
+      <div className="p-4">
+        <p className="text-[#808080] text-xs">
+          Are you sure you want to delete this staff?
+        </p>
+        <div className="flex items-center justify-center gap-4 mt-4">
+          <button
+            onClick={handleDelete}
+            className="px-3 py-1.5 text-white rounded-xl bg-[#FF3B30] text-sm font-medium"
+          >
+            Yes
+          </button>
+          <button
+            onClick={() => setModal(null)}
+            className="px-3 py-1.5 text-white rounded-xl bg-green-500 text-sm font-medium"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -30,7 +30,7 @@ function ReportCenter() {
 
   const handleSingleDownload = (propertyName: string) => {
     apiClient
-      .get(`/report//pdf?startDate=&endDate=&propertyName=${propertyName}`, {
+      .get(`/report/pdf?startDate=&endDate=&propertyName=${propertyName}`, {
         responseType: "blob",
       })
       .then((res) => {
@@ -178,7 +178,7 @@ function ReportModal({ properties }: any) {
     setLoading(true);
     apiClient
       .get(
-        `/report//${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
+        `/report/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
         {
           responseType: "blob",
         }
