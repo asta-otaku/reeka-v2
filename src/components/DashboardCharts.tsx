@@ -1,9 +1,8 @@
 import LineChart from "../charts/Line";
 import info from "../assets/info.svg";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { CONSTANT } from "../util";
 import moment from "moment";
+import apiClient from "../helpers/apiClient";
 
 function DashboardCharts({
   filterType,
@@ -14,59 +13,61 @@ function DashboardCharts({
   startDate: Date | undefined;
   endDate: Date | undefined;
 }) {
-  const [monthlyBookings, setMonthlyBookings] = useState<{
-    totalNightsBooked: number;
-    percentageChangeNightsBooked: number;
-  }>({
-    totalNightsBooked: 0,
-    percentageChangeNightsBooked: 0,
-  });
-  const [monthlyRevenue, setMonthlyRevenue] = useState<{
-    totalRevenue: number;
-    percentageChangeRevenue: number;
-  }>({
-    totalRevenue: 0,
-    percentageChangeRevenue: 0,
-  });
-  const [monthlyAverageNightlyRate, setMonthlyAverageNightlyRate] = useState<{
-    averageNightlyRate: number;
-    percentageChangeNightlyRate: number;
-  }>({
-    averageNightlyRate: 0,
-    percentageChangeNightlyRate: 0,
-  });
-  const [previousMonthlyBookings, setPreviousMonthlyBookings] = useState<{
-    totalNightsBooked: number;
-    percentageChangeNightsBooked: number;
-  }>({
-    totalNightsBooked: 0,
-    percentageChangeNightsBooked: 0,
-  });
-  const [previousMonthlyRevenue, setPreviousMonthlyRevenue] = useState<{
-    totalRevenue: number;
-    percentageChangeRevenue: number;
-  }>({
-    totalRevenue: 0,
-    percentageChangeRevenue: 0,
-  });
-  const [
-    previousMonthlyAverageNightlyRate,
-    setPreviousMonthlyAverageNightlyRate,
-  ] = useState<{
-    averageNightlyRate: number;
-    percentageChangeNightlyRate: number;
-  }>({
-    averageNightlyRate: 0,
-    percentageChangeNightlyRate: 0,
-  });
-  const [occupancyRate, setOccupancyRate] = useState<{
-    occupancy: number;
-    percentageChange: number;
-  }>({
-    occupancy: 0,
-    percentageChange: 0,
-  });
   const [activeMonth, setActiveMonth] = useState("current");
+  const [cardData, setCardData] = useState<{
+    userAnalytics: {
+      totalNightsBooked: number;
+      totalRevenue: number;
+      averageNightlyRate: number;
+      occupancyRate: number;
+    };
+    percentageChange: {
+      totalNightsBooked: number;
+      totalRevenue: number;
+      averageNightlyRate: number;
+      occupancyRate: number;
+    };
+  }>({
+    userAnalytics: {
+      totalNightsBooked: 0,
+      totalRevenue: 0,
+      averageNightlyRate: 0,
+      occupancyRate: 0,
+    },
+    percentageChange: {
+      totalNightsBooked: 0,
+      totalRevenue: 0,
+      averageNightlyRate: 0,
+      occupancyRate: 0,
+    },
+  });
+  const [previousCardData, setPreviousCardData] = useState<{
+    userAnalytics: {
+      totalNightsBooked: number;
+      totalRevenue: number;
+      averageNightlyRate: number;
+      occupancyRate: number;
+    };
+    percentageChange: {
+      totalNightsBooked: number;
+      totalRevenue: number;
+      averageNightlyRate: number;
+      occupancyRate: number;
+    };
+  }>({
+    userAnalytics: {
+      totalNightsBooked: 0,
+      totalRevenue: 0,
+      averageNightlyRate: 0,
+      occupancyRate: 0,
+    },
+    percentageChange: {
+      totalNightsBooked: 0,
+      totalRevenue: 0,
+      averageNightlyRate: 0,
+      occupancyRate: 0,
+    },
+  });
   const [graphData, setGraphData] = useState<
     {
       totalRevenue: number;
@@ -83,7 +84,6 @@ function DashboardCharts({
       averageNightlyRate: number;
     }[]
   >([]);
-  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
@@ -93,75 +93,22 @@ function DashboardCharts({
         ? `filterType=${filterType}`
         : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
 
-    //Monthly Card Data
-    const fetchMonthlyBookings = async () => {
+    //  Card Data
+    const fetchCardData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/total-nights-booked/${userId}?${filterQuery}`
-        );
-        setMonthlyBookings(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchMonthlyRevenue = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/revenue/${userId}?${filterQuery}`
-        );
-        setMonthlyRevenue(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchMonthlyAverageNightlyRate = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/average-nightly-rate/${userId}?${filterQuery}`
-        );
-        setMonthlyAverageNightlyRate(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchOccupancyRate = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/occupancy/${userId}?${filterQuery}`
-        );
-        setOccupancyRate(response.data);
+        const response = await apiClient.get(`/analytics/user?${filterQuery}`);
+        setCardData(response.data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    //Previous Monthly Card Data
-    const fetchPreviousMonthlyBookings = async () => {
+    const fetchPreviousCardData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/total-nights-booked/${userId}?${filterQuery}`
+        const response = await apiClient.get(
+          `/analytics/previous/user?${filterQuery}`
         );
-        setPreviousMonthlyBookings(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchPreviousMonthlyRevenue = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/revenue/${userId}?${filterQuery}`
-        );
-        setPreviousMonthlyRevenue(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchPreviousMonthlyAverageNightlyRate = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/average-nightly-rate/${userId}?${filterQuery}`
-        );
-        setPreviousMonthlyAverageNightlyRate(response.data);
+        setPreviousCardData(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -170,8 +117,8 @@ function DashboardCharts({
     //Graph Data
     const fetchGraphData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/user/${userId}/daily?${filterQuery}`
+        const response = await apiClient.get(
+          `/analytics/user/daily?${filterQuery}`
         );
         setGraphData(response.data);
       } catch (error) {
@@ -180,8 +127,8 @@ function DashboardCharts({
     };
     const fetchPreviousGraphData = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/analytics/previous/user/${userId}/daily?${filterQuery}`
+        const response = await apiClient.get(
+          `/analytics/previous/user/daily?${filterQuery}`
         );
         setPreviousGraphData(response.data);
       } catch (error) {
@@ -189,40 +136,59 @@ function DashboardCharts({
       }
     };
 
-    fetchMonthlyBookings();
-    fetchMonthlyRevenue();
-    fetchMonthlyAverageNightlyRate();
-    fetchOccupancyRate();
-    fetchPreviousMonthlyBookings();
-    fetchPreviousMonthlyRevenue();
-    fetchPreviousMonthlyAverageNightlyRate();
+    fetchCardData();
+    fetchPreviousCardData();
     fetchGraphData();
     fetchPreviousGraphData();
-  }, [filterType, startDate, endDate, userId]);
+  }, [filterType, startDate, endDate]);
 
-  const CardData = [
+  const cards = [
     {
       title: "Revenue",
-      amount: monthlyRevenue?.totalRevenue ?? 0,
-      percentage: monthlyRevenue?.percentageChangeRevenue ?? 0,
+      amount:
+        activeMonth === "current"
+          ? cardData.userAnalytics.totalRevenue
+          : previousCardData.userAnalytics.totalRevenue,
+      percentage:
+        activeMonth === "current"
+          ? cardData.percentageChange.totalRevenue
+          : previousCardData.percentageChange.totalRevenue,
       caption: "total revenue earned",
     },
     {
       title: "Avg Nightly Rate",
-      amount: monthlyAverageNightlyRate?.averageNightlyRate ?? 0,
-      percentage: monthlyAverageNightlyRate?.percentageChangeNightlyRate ?? 0,
+      amount:
+        activeMonth === "current"
+          ? cardData.userAnalytics.averageNightlyRate
+          : previousCardData.userAnalytics.averageNightlyRate,
+      percentage:
+        activeMonth === "current"
+          ? cardData.percentageChange.averageNightlyRate
+          : previousCardData.percentageChange.averageNightlyRate,
       caption: "revenue/booked nights",
     },
     {
       title: "Occupancy Rate",
-      amount: occupancyRate?.occupancy ? occupancyRate.occupancy + "%" : "0%",
-      percentage: occupancyRate?.percentageChange ?? 0,
+      amount:
+        activeMonth === "current"
+          ? `${cardData.userAnalytics.occupancyRate ?? 0}%`
+          : previousCardData.userAnalytics.occupancyRate + "%",
+      percentage:
+        activeMonth === "current"
+          ? cardData.percentageChange.occupancyRate
+          : previousCardData.percentageChange.occupancyRate,
       caption: "percentage of occupied nights",
     },
     {
       title: "Bookings",
-      amount: monthlyBookings?.totalNightsBooked ?? 0,
-      percentage: monthlyBookings?.percentageChangeNightsBooked ?? 0,
+      amount:
+        activeMonth === "current"
+          ? cardData.userAnalytics.totalNightsBooked
+          : previousCardData.userAnalytics.totalNightsBooked,
+      percentage:
+        activeMonth === "current"
+          ? cardData.percentageChange.totalNightsBooked
+          : previousCardData.percentageChange.totalNightsBooked,
       caption: "total nights booked",
     },
   ];
@@ -232,14 +198,14 @@ function DashboardCharts({
       title: "Bookings",
       amount:
         activeMonth === "current"
-          ? monthlyBookings?.totalNightsBooked
-          : previousMonthlyBookings.totalNightsBooked,
+          ? cardData.userAnalytics.totalNightsBooked
+          : previousCardData.userAnalytics.totalNightsBooked,
       percentage:
         activeMonth === "current"
-          ? monthlyBookings?.percentageChangeNightsBooked
-          : previousMonthlyBookings.percentageChangeNightsBooked,
-      current: graphData.map((data) => data.totalNightsBooked) || [],
-      previous: previousGraphData.map((data) => data.totalNightsBooked) || [],
+          ? cardData.percentageChange.totalNightsBooked
+          : previousCardData.percentageChange.totalNightsBooked,
+      current: graphData?.map((data) => data.totalNightsBooked) ?? [],
+      previous: previousGraphData?.map((data) => data.totalNightsBooked) || [],
       labels:
         activeMonth === "current"
           ? graphData.map((data) => data.date) || []
@@ -249,12 +215,12 @@ function DashboardCharts({
       title: "Revenue",
       amount:
         activeMonth === "current"
-          ? monthlyRevenue?.totalRevenue
-          : previousMonthlyRevenue.totalRevenue,
+          ? cardData.userAnalytics.totalRevenue
+          : previousCardData.userAnalytics.totalRevenue,
       percentage:
         activeMonth === "current"
-          ? monthlyRevenue?.percentageChangeRevenue
-          : previousMonthlyRevenue.percentageChangeRevenue,
+          ? cardData.percentageChange.totalRevenue
+          : previousCardData.percentageChange.totalRevenue,
       current: graphData.map((data) => data.totalRevenue) || [],
       previous: previousGraphData.map((data) => data.totalRevenue) || [],
       labels:
@@ -266,12 +232,12 @@ function DashboardCharts({
       title: "Average Nightly Rate",
       amount:
         activeMonth === "current"
-          ? monthlyAverageNightlyRate?.averageNightlyRate
-          : previousMonthlyAverageNightlyRate.averageNightlyRate,
+          ? cardData.userAnalytics.averageNightlyRate
+          : previousCardData.userAnalytics.averageNightlyRate,
       percentage:
         activeMonth === "current"
-          ? monthlyAverageNightlyRate?.percentageChangeNightlyRate
-          : previousMonthlyAverageNightlyRate.percentageChangeNightlyRate,
+          ? cardData.percentageChange.averageNightlyRate
+          : previousCardData.percentageChange.averageNightlyRate,
       current: graphData.map((data) => data.averageNightlyRate) || [],
       previous: previousGraphData.map((data) => data.averageNightlyRate) || [],
       labels:
@@ -285,7 +251,7 @@ function DashboardCharts({
     <div>
       <div className="w-full overflow-x-auto no-scrollbar">
         <div className="flex space-x-3">
-          {CardData.map((data, index) => (
+          {cards.map((data, index) => (
             <div
               key={index}
               className={`border shadow-sm rounded-xl space-y-6 p-4 min-w-[250px] grow

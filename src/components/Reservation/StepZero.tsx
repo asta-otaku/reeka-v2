@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
-import { CONSTANT } from "../../util";
+import apiClient from "../../helpers/apiClient";
 
 function StepZero({
   setStep,
@@ -14,21 +13,18 @@ function StepZero({
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const [properties, setProperties] = useState<any>([]);
-  const [userId] = useState(CONSTANT.USER_ID);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
-        );
+        const response = await apiClient.get(`/properties`);
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchProperties();
-  }, [userId]);
+  }, []);
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">

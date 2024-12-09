@@ -1,5 +1,4 @@
-import axios from "axios";
-import { CONSTANT } from "../util";
+import apiClient from "../helpers/apiClient";
 import { useEffect, useState } from "react";
 import info from "../assets/info.svg";
 import LineChart from "../charts/Line";
@@ -52,12 +51,10 @@ function DashboardPropertyChart({
     }[]
   >([]);
 
-  const [userId] = useState(CONSTANT.USER_ID);
-
   useEffect(() => {
     const fetchCardData = async () => {
       try {
-        let url = `${CONSTANT.BASE_URL}/analytics/user/${userId}/properties/${activePropertyId}?filterType=${filterType}`;
+        let url = `/analytics/user/properties/${activePropertyId}?filterType=${filterType}`;
 
         // Handle custom date range filter
         if (filterType === "custom_date_range") {
@@ -68,10 +65,10 @@ function DashboardPropertyChart({
           // Append date range to the URL
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-          url = `${CONSTANT.BASE_URL}/analytics/user/${userId}/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
+          url = `/analytics/user/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
         }
 
-        const response = await axios.get(url);
+        const response = await apiClient.get(url);
         setCardData(response.data);
       } catch (error) {
         console.error(error);
@@ -80,7 +77,7 @@ function DashboardPropertyChart({
 
     const fetchGraphData = async () => {
       try {
-        let url = `${CONSTANT.BASE_URL}/analytics/user/${userId}/properties/${activePropertyId}/daily?filterType=${filterType}`;
+        let url = `/analytics/user/properties/${activePropertyId}/daily?filterType=${filterType}`;
 
         if (filterType === "custom_date_range") {
           if (!startDate || !endDate) {
@@ -89,10 +86,10 @@ function DashboardPropertyChart({
 
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-          url = `${CONSTANT.BASE_URL}/analytics/user/${userId}/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
+          url = `/analytics/user/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
         }
 
-        const response = await axios.get(url);
+        const response = await apiClient.get(url);
         setGraphData(response.data);
       } catch (error) {
         console.error(error);
@@ -101,7 +98,7 @@ function DashboardPropertyChart({
 
     fetchCardData();
     fetchGraphData();
-  }, [activePropertyId, filterType, startDate, endDate, userId]);
+  }, [activePropertyId, filterType, startDate, endDate]);
 
   const cards = [
     {

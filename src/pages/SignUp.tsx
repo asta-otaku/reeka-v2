@@ -1,6 +1,6 @@
 import countryList from "react-select-country-list";
 import thunder from "../assets/thunder.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import authBg from "../assets/authBg.png";
 import { useState, useMemo } from "react";
 import Select from "react-select";
@@ -23,6 +23,8 @@ function SignUp() {
     phoneNumber: "",
   });
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const token = new URLSearchParams(location.search).get("invitationToken");
 
   const handleChange = (e: any) => {
     setFormDetails({ ...formDetails, [e.target.name]: e.target.value });
@@ -43,9 +45,13 @@ function SignUp() {
       return toast.error("All fields are required");
     }
     setLoading(true);
+    const url = token
+      ? `${CONSTANT.BASE_URL}/auth/signup?invitationToken=${token}`
+      : `${CONSTANT.BASE_URL}/auth/signup`;
+
     axios
       .post(
-        `${CONSTANT.BASE_URL}/auth/signup`,
+        url,
         {
           ...formDetails,
           phoneNumber: `(${formDetails.countryCode})${formDetails.phoneNumber}`,

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import authBg from "../assets/authBg.png";
 import { useState } from "react";
 import axios from "axios";
@@ -9,8 +9,6 @@ import Spinner from "../components/Spinner";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
   const handleResetPassword = async (e: any) => {
     e.preventDefault();
     if (!email) {
@@ -26,10 +24,9 @@ function ForgotPassword() {
       );
 
       if (res.status === 200) {
-        const userId = res.data.userId;
         toast.success("Password reset link sent to your email");
         setTimeout(() => {
-          navigate("/reset-password", { state: { userId } });
+          window.location.href = "/signin";
         }, 2000);
       }
     } catch (err: any) {

@@ -6,15 +6,13 @@ import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
 import moment from "moment-timezone";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { CONSTANT } from "../util";
+import apiClient from "../helpers/apiClient";
 
 function Calendar() {
   const navigate = useNavigate();
   const [bookingsArray, setBookingsArray] = useState<any[]>([]);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
-  const [userId] = useState(CONSTANT.USER_ID);
 
   function formatTimestamp(timestamp: string, isEndDate = false) {
     const date = moment(timestamp).tz("Africa/Lagos").format();
@@ -30,20 +28,18 @@ function Calendar() {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/owner/${userId}`
-        );
+        const response = await apiClient.get(`/properties`);
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchProperties();
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
-    axios
-      .get(`${CONSTANT.BASE_URL}/booking/user/${userId}`)
+    apiClient
+      .get(`/booking`)
       .then((response) => {
         const colorMap: { [key: string]: string } = {};
 
@@ -72,7 +68,7 @@ function Calendar() {
       .catch((error) => {
         console.error(error);
       });
-  }, [userId]);
+  }, []);
 
   // Filter bookings based on the selected property and map them to events for the Scheduler
   const events = bookingsArray

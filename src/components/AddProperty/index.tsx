@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 import useStore from "../../store";
 import SuccessModal from "./SuccessModal";
@@ -7,10 +7,9 @@ import Properties from "./Properties";
 import Pricing from "./Pricing";
 import ImageUpload from "./ImageUpload";
 // import NotificationModal from "../NotificationModal";
-import { CONSTANT } from "../../util";
 import Spinner from "../Spinner";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
+import apiClient from "../../helpers/apiClient";
 
 function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>("property");
@@ -28,7 +27,6 @@ function AddProperty({ setStep }: { setStep: any }) {
     city: "",
     country: "",
     baseCurrency: "NGN",
-    owner: CONSTANT.USER_ID || "",
     employees: [],
     price: {
       basePrice: 0,
@@ -50,15 +48,6 @@ function AddProperty({ setStep }: { setStep: any }) {
     });
   };
 
-  useEffect(() => {
-    if (!formDetails.owner && CONSTANT.USER_ID) {
-      setFormDetails({
-        ...formDetails,
-        owner: CONSTANT.USER_ID,
-      });
-    }
-  }, [CONSTANT.USER_ID]);
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (
@@ -78,7 +67,6 @@ function AddProperty({ setStep }: { setStep: any }) {
       formData.append("city", formDetails.city);
       formData.append("country", formDetails.country);
       formData.append("baseCurrency", formDetails.baseCurrency);
-      formData.append("owner", formDetails.owner);
       formData.append("employees", JSON.stringify(formDetails.employees));
       formData.append("bedroomCount", formDetails.bedroomCount.toString());
       formData.append("bathroomCount", formDetails.bathroomCount.toString());
@@ -88,8 +76,8 @@ function AddProperty({ setStep }: { setStep: any }) {
         formData.append("images", image);
       });
       setLoading(true);
-      axios
-        .post(`${CONSTANT.BASE_URL}/properties`, formData, {
+      apiClient
+        .post(`/properties`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -103,7 +91,6 @@ function AddProperty({ setStep }: { setStep: any }) {
             city: "",
             country: "",
             baseCurrency: "NGN",
-            owner: CONSTANT.USER_ID || "",
             employees: [],
             price: {
               basePrice: 0,

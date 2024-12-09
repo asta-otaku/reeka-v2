@@ -1,27 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-// import updown from "../assets/updown.svg";
-// import avatar from "../assets/avatar.svg";
 import plus from "../assets/plus-sign-square.svg";
 
 import {
   AccountSettingIcon,
   CalendarIcon,
   CloseIcon,
+  Cog6ToothIcon,
   CodeSandBoxIcon,
   DashboardIcon,
   FileBookmarkIcon,
   Hamburger,
-  // ManagerIcon,
   PropertyIcon,
   ScaleIcon,
-  // UserCircleIcon,
 } from "../assets/icons";
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
 import toast, { Toaster } from "react-hot-toast";
-import axios from "axios";
-import { CONSTANT } from "../util";
+import apiClient from "../helpers/apiClient";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
@@ -33,26 +29,48 @@ function DashboardLayout({ children }: any) {
   }, [currentModal]);
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const location = useLocation();
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
       navigate("/signin");
     }
+    if (
+      user &&
+      user.userRole !== "Owner" &&
+      location.pathname === "/dashboard"
+    ) {
+      navigate("/listing");
+    }
+    if (
+      user &&
+      user.userRole !== "Owner" &&
+      location.pathname === "/integration"
+    ) {
+      navigate("/listing");
+    }
   }, [user]);
 
   useEffect(() => {
-    const fetchPricing = async () => {
-      const res = await axios.get(
-        `${CONSTANT.BASE_URL}/subscriptions/user-subscription/${CONSTANT.USER_ID}`
-      );
-      if (res.data.planType === "") {
-        window.location.href = "/pricing";
-      }
-    };
+    if (user && user.userRole === "Owner") {
+      const fetchPricing = async () => {
+        try {
+          const res = await apiClient.get(`/subscriptions/user-subscription`);
+          if (res.data.planType === "") {
+            window.location.href = "/pricing";
+          }
+        } catch (error: any) {
+          if (error.response) {
+            toast.error(error.response.data.message);
+            setTimeout(() => navigate("/pricing"), 500);
+          }
+        }
+      };
 
-    fetchPricing();
-  }, []);
+      fetchPricing();
+    }
+  }, [user]);
 
   return (
     <div className="bg-[#FAFAFA]">
@@ -87,8 +105,6 @@ function DashboardLayout({ children }: any) {
                   height={35}
                   className="rounded-full border-2 border-blue-1"
                 />
-                {/* <img src={avatar} alt="avatar" /> */}
-                {/* <img src={updown} alt="updown" /> */}
               </div>
             </div>
 
@@ -104,11 +120,16 @@ function DashboardLayout({ children }: any) {
                 nav ? "block" : "hidden"
               } md:block font-medium w-full`}
             >
-              <ListItem
-                route="/dashboard"
-                Icon={DashboardIcon}
-                title="Dashboard"
-              />
+              <div
+                className={`${user && user.userRole !== "Owner" && "hidden"}`}
+              >
+                <ListItem
+                  route="/dashboard"
+                  Icon={DashboardIcon}
+                  title="Dashboard"
+                />
+              </div>
+
               <ListItem
                 route="/listing"
                 Icon={CodeSandBoxIcon}
@@ -129,21 +150,21 @@ function DashboardLayout({ children }: any) {
                 Icon={FileBookmarkIcon}
                 title="Reservation Management"
               />
-              {/* <ListItem
-                route="/account"
-                Icon={UserCircleIcon}
-                title="Account"
-              /> */}
+              <div
+                className={`${user && user.userRole !== "Owner" && "hidden"}`}
+              >
+                <ListItem
+                  route="/integration"
+                  Icon={ScaleIcon}
+                  title="Integration"
+                />
+              </div>
+
               <ListItem
-                route="/integration"
-                Icon={ScaleIcon}
-                title="Integration"
+                route="/settings"
+                Icon={Cog6ToothIcon}
+                title="Settings"
               />
-              {/* <ListItem
-                route="/personnel"
-                Icon={ManagerIcon}
-                title="Personnel Management"
-              /> */}
               <ListItem route="#" Icon={AccountSettingIcon} title="Logout" />
             </ul>
           </div>
@@ -180,7 +201,7 @@ function ListItem({
           if (route === "#") {
             toast.success("Logged out successfully");
             setTimeout(() => {
-              localStorage.removeItem("user");
+              sessionStorage.removeItem("user");
               window.location.href = "/signin";
             }, 2000);
           }

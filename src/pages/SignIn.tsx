@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
 function SignIn() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user && Object.keys(user).length > 0) {
@@ -17,7 +18,6 @@ function SignIn() {
     }
   }, [user]);
 
-  const navigate = useNavigate();
   const [formDetails, setFormDetails] = useState({
     email: "",
     password: "",
@@ -29,63 +29,43 @@ function SignIn() {
       [e.target.name]: e.target.value,
     });
 
-    const handleSignIn = (e: any) => {
-      e.preventDefault();
-      if (!formDetails.email || !formDetails.password) {
-        return toast.error("All fields are required");
-      }
-      setLoading(true);
-    
-      axios
-        .post(
-          `${CONSTANT.BASE_URL}/auth/login`,
-          {
-            email: formDetails.email,
-            password: formDetails.password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          if (res.status === 200) {
-            toast.success("Logged in successfully");
-            const user = res.data;
-            localStorage.setItem("user", JSON.stringify(user));
-    
-            // Retrieve user's subscription details using userId
-            axios
-              .get(`${CONSTANT.BASE_URL}/subscriptions/user-subscription/${user.userId}`, {
-                headers: {
-                  Authorization: `Bearer ${user.token}`, // Pass the token
-                },
-              })
-              .then((subRes) => {
-                if (subRes.status === 200) {
-                  setLoading(false);
-                  navigate("/dashboard"); // User has a subscription
-                }
-              })
-              .catch((subErr) => {
-                setLoading(false);
-                if (subErr.response && subErr.response.status === 404) {
-                  navigate("/pricing"); // No subscription found, redirect to pricing page
-                } else {
-                  toast.error("Failed to retrieve subscription details. Please try again.");
-                  console.error("Subscription Error:", subErr);
-                }
-              });
-          }
-        })
-        .catch((err) => {
+  const handleSignIn = (e: any) => {
+    e.preventDefault();
+    if (!formDetails.email || !formDetails.password) {
+      return toast.error("All fields are required");
+    }
+    setLoading(true);
+
+    axios
+      .post(
+        `${CONSTANT.BASE_URL}/auth/login`,
+        { email: formDetails.email, password: formDetails.password },
+        { headers: { "Content-Type": "application/json" } }
+      )
+      .then((res) => {
+        if (res.status === 200) {
           setLoading(false);
-          toast.error(err.response?.data?.error || "Invalid credentials");
-          console.error("Login Error:", err);
-        });
-    };
-    
+          toast.success("Logged in successfully");
+
+          // Store tokens and user info in sessionStorage
+          const { accessToken, refreshToken, firstName, lastName, userRole } =
+            res.data;
+          sessionStorage.setItem("accessToken", accessToken);
+          sessionStorage.setItem("refreshToken", refreshToken);
+          sessionStorage.setItem(
+            "user",
+            JSON.stringify({ firstName, lastName, userRole })
+          );
+
+          setTimeout(() => navigate("/dashboard"), 2000);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        toast.error(err.response?.data.error || "Invalid credentials");
+        console.log(err);
+      });
+  };
 
   return (
     <div>
