@@ -5,6 +5,7 @@ import { CONSTANT } from "../util";
 import axios from "axios";
 import moment from "moment-timezone";
 import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function BookingTable({
   data,
@@ -225,12 +226,13 @@ function Modal({ booking, setModal }: { booking: any; setModal: any }) {
   const handleDelete = async () => {
     axios
       .delete(`${CONSTANT.BASE_URL}/booking/${booking._id}`)
-      .then((res) => {
-        console.log(res.data);
+      .then(() => {
+        toast.success("Booking deleted successfully");
         setModal(null);
         window.location.reload();
       })
       .catch((err) => {
+        toast.error(err.response.data.error || "An error occurred");
         console.log(err);
       });
   };
