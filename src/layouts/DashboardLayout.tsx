@@ -62,7 +62,6 @@ function DashboardLayout({ children }: any) {
           }
         } catch (error: any) {
           if (error.response) {
-            toast.error(error.response.data.message);
             setTimeout(() => navigate("/pricing"), 500);
           }
         }
