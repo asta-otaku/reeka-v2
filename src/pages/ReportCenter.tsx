@@ -14,6 +14,7 @@ function ReportCenter() {
   const setModal = useStore((state: any) => state.setModal);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
+  const [reportFilter, setReportFilter] = useState("bookings");
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -29,19 +30,24 @@ function ReportCenter() {
   }, []);
 
   const handleSingleDownload = (propertyName: string) => {
+    const url =
+      reportFilter === "occupancy"
+        ? `/report/occupancy/pdf?startDate=&endDate=&propertyName=${propertyName}`
+        : `/report/pdf?startDate=&endDate=&propertyName=${propertyName}`;
+
     apiClient
-      .get(`/report/pdf?startDate=&endDate=&propertyName=${propertyName}`, {
+      .get(url, {
         responseType: "blob",
       })
       .then((res) => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
-        link.href = url;
+        link.href = downloadUrl;
         link.setAttribute("download", `${propertyName}.pdf`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(downloadUrl);
       })
       .catch(() => {
         toast.error("An error occurred while generating the report.");
@@ -59,8 +65,14 @@ function ReportCenter() {
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 relative">
           <div className="flex items-center gap-4">
             <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-              <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6">
-                <option>All Reports</option>
+              <select
+                onChange={(e) => {
+                  setReportFilter(e.target.value);
+                }}
+                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
+              >
+                <option value="bookings">Bookings</option>
+                <option value="occupancy">Occupancy</option>
               </select>
               <ChevronDownIcon
                 className="absolute cursor-pointer pointer-events-none right-2"
@@ -162,10 +174,11 @@ export default ReportCenter;
 function ReportModal({ properties }: any) {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    type: "",
+    type: "bookings",
     property: "",
     from: "",
     to: "",
+    format: "pdf",
   });
 
   const handleDownload = (e: any) => {
@@ -176,25 +189,26 @@ function ReportModal({ properties }: any) {
       return;
     }
     setLoading(true);
+    const url =
+      form.type === "occupancy"
+        ? `/report/occupancy/${form.format}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`
+        : `/report/${form.format}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`;
     apiClient
-      .get(
-        `/report/${form.type}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`,
-        {
-          responseType: "blob",
-        }
-      )
+      .get(url, {
+        responseType: "blob",
+      })
       .then((res) => {
         setLoading(false);
-        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
-        link.href = url;
+        link.href = downloadUrl;
         const filename = `${form.property ? `${form.property}-` : "report"}${
           form.from
-        }-to-${form.to}.${form.type}`;
-        link.setAttribute("download", filename || `report.${form.type}`);
+        }-to-${form.to}.${form.format}`;
+        link.setAttribute("download", filename || `report.${form.format}`);
         document.body.appendChild(link);
         link.click();
-        window.URL.revokeObjectURL(url);
+        window.URL.revokeObjectURL(downloadUrl);
       })
       .catch(() => {
         setLoading(false);
@@ -212,18 +226,36 @@ function ReportModal({ properties }: any) {
       <form className="flex flex-col gap-2 mt-4">
         <div className="flex flex-col gap-2 w-full">
           <h4 className="text-[#3A3A3A] text-sm font-medium">Report Type*</h4>
-          <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+          <div className="relative flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
             <select
               onChange={(e) => {
                 setForm({ ...form, type: e.target.value });
               }}
-              className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
+              className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent cursor-pointer pr-6"
             >
-              <option value="">Report Type</option>
+              <option value="bookings">Bookings</option>
+              <option value="occupancy">Occupancy</option>
+            </select>
+            <div className="pointer-events-none absolute right-2">
+              <ChevronDownIcon width={12} />
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <h4 className="text-[#3A3A3A] text-sm font-medium">Report Format*</h4>
+          <div className="relative flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+            <select
+              onChange={(e) => {
+                setForm({ ...form, format: e.target.value });
+              }}
+              className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent cursor-pointer pr-6"
+            >
               <option value="pdf">PDF</option>
               <option value="csv">CSV</option>
             </select>
-            <ChevronDownIcon width={16} />
+            <div className="pointer-events-none absolute right-2">
+              <ChevronDownIcon width={12} />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
