@@ -6,6 +6,7 @@ import axios from "axios";
 import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { format, parseISO, addDays } from 'date-fns';
 
 function StepOne({
   handleChange,
@@ -77,6 +78,14 @@ function StepOne({
     ) {
       return toast.error("Please fill all fields");
     }
+
+    const checkInDate = new Date(formDetails.checkIn);
+    const checkOutDate = new Date(formDetails.checkOut);
+
+    if (checkOutDate < checkInDate) {
+      return toast.error("Check-out date cannot be before check-in date");
+    }
+
     setStep(2);
   };
 
@@ -179,12 +188,14 @@ function StepOne({
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <Calendar className="w-6" />
               <DatePicker
-                selected={formDetails.checkIn ? new Date(formDetails.checkIn) : null}
-                onChange={(date: Date | null) => setFormDetails({ ...formDetails, checkIn: date ? date.toISOString().split("T")[0] : "" })}
-                minDate={new Date()}
-                filterDate={(date) => !isDateBooked(date)}
-                placeholderText="Check In Date"
-                className="w-full text-[#667085]"
+                 selected={formDetails.checkIn ? parseISO(formDetails.checkIn) : null}
+                 onChange={(date: Date | null) => 
+                   setFormDetails({ ...formDetails, checkIn: date ? format(date, 'yyyy-MM-dd') : "" })
+                 }
+                 minDate={new Date()} // Today or future dates
+                 filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
+                 placeholderText="Check In Date"
+                 className="w-full text-[#667085]"
               />
             </div>
           </div>
@@ -195,10 +206,16 @@ function StepOne({
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <Calendar className="w-6" />
               <DatePicker
-                selected={formDetails.checkOut ? new Date(formDetails.checkOut) : null}
-                onChange={(date: Date | null) => setFormDetails({ ...formDetails, checkOut: date ? date.toISOString().split("T")[0] : "" })}
-                minDate={formDetails.checkIn ? new Date(formDetails.checkIn) : new Date()}
-                filterDate={(date) => !isDateBooked(date)}
+                selected={formDetails.checkOut ? parseISO(formDetails.checkOut) : null}
+                onChange={(date: Date | null) => 
+                  setFormDetails({ ...formDetails, checkOut: date ? format(date, 'yyyy-MM-dd') : "" })
+                }
+                minDate={
+                  formDetails.checkIn 
+                    ? addDays(parseISO(formDetails.checkIn), 1) // At least one day after check-in
+                    : new Date()
+                }
+                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
                 placeholderText="Check Out Date"
                 className="w-full text-[#667085]"
               />
