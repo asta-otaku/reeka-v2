@@ -62,7 +62,6 @@ function DashboardLayout({ children }: any) {
           }
         } catch (error: any) {
           if (error.response) {
-            toast.error(error.response.data.message);
             setTimeout(() => navigate("/pricing"), 500);
           }
         }
@@ -70,7 +69,7 @@ function DashboardLayout({ children }: any) {
 
       fetchPricing();
     }
-  }, [user]);
+  }, []);
 
   return (
     <div className="bg-[#FAFAFA]">

@@ -76,7 +76,7 @@ function ViewProperty() {
 
   const handleDelete = async () => {
     try {
-      const res = await apiClient.delete(`$/properties/${id}`);
+      const res = await apiClient.delete(`/properties/${id}`);
       if (res.status === 204) {
         toast.success("Property deleted successfully");
         setModal(null);

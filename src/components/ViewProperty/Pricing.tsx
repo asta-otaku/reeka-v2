@@ -7,6 +7,72 @@ function Pricing({
   property: any;
   setProperty: any;
 }) {
+  // Helper function to ensure number input is valid
+  const parseNumberInput = (value: string) => {
+    return Number(value.replace(/[^0-9]/g, ""));
+  };
+
+  // Handler for base price
+  const handleBasePrice = (value: string) => {
+    const numericValue = parseNumberInput(value);
+    setProperty({
+      ...property,
+      price: {
+        ...property.price,
+        basePrice: numericValue,
+      },
+    });
+  };
+
+  // Modify handleDiscountedPrice to handle existing values
+  const handleDiscountedPrice = (value: string) => {
+    // Remove commas and parse the input directly
+    const rawValue = value.replace(/,/g, "");
+    const numericValue = parseNumberInput(rawValue);
+
+    // Prevent discounted price from exceeding base price
+    if (numericValue > property.price.basePrice) return;
+
+    const discountPercentage =
+      property.price.basePrice > 0
+        ? ((property.price.basePrice - numericValue) /
+            property.price.basePrice) *
+          100
+        : 0;
+
+    setProperty((prev: any) => ({
+      ...prev,
+      price: {
+        ...prev.price,
+        discountedPrice: numericValue,
+        discountPercentage: -Math.abs(Number(discountPercentage.toFixed(2))),
+      },
+    }));
+  };
+
+  // Handler for boosted price
+  const handleBoostedPrice = (value: string) => {
+    // Remove commas and parse the input directly
+    const rawValue = value.replace(/,/g, "");
+    const numericValue = parseNumberInput(rawValue);
+
+    const boostPercentage =
+      property.price.basePrice > 0
+        ? ((numericValue - property.price.basePrice) /
+            property.price.basePrice) *
+          100
+        : 0;
+
+    setProperty((prev: any) => ({
+      ...prev,
+      price: {
+        ...prev.price,
+        boostedPrice: numericValue,
+        boostPercentage: Math.abs(Number(boostPercentage.toFixed(2))),
+      },
+    }));
+  };
+
   return (
     <div className="my-4">
       <div className="flex items-center justify-between mb-2">
@@ -23,18 +89,7 @@ function Pricing({
               name="basePrice"
               disabled={!edit}
               style={{ color: edit ? "#121212" : "#808080" }}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, "");
-                if (!isNaN(Number(value))) {
-                  setProperty({
-                    ...property,
-                    price: {
-                      ...property.price,
-                      basePrice: Number(value),
-                    },
-                  });
-                }
-              }}
+              onChange={(e) => handleBasePrice(e.target.value)}
               value={property?.price?.basePrice?.toLocaleString()}
               className="w-full outline-none bg-transparent"
             />
@@ -51,35 +106,22 @@ function Pricing({
               >
                 ₦
                 <input
-                  className="outline-none w-fit bg-transparent"
+                  className="outline-none w-fit bg-transparent overflow-hidden text-ellipsis whitespace-nowrap"
                   disabled={!edit}
-                  value={(
-                    property?.price?.basePrice -
-                    (Math.abs(property?.price?.discountPercentage) / 100) *
-                      property?.price?.basePrice
-                  ).toFixed(0)}
-                  onChange={(e) => {
-                    if (!edit) return;
-                    const newDiscountedPrice = Number(e.target.value);
-                    if (newDiscountedPrice < 0) return;
-                    if (newDiscountedPrice > property.price.basePrice) return;
-                    const discountPercentage =
-                      property.price.basePrice !== 0
-                        ? ((property.price.basePrice - newDiscountedPrice) /
-                            property.price.basePrice) *
-                            100 || 0
-                        : 0;
-
-                    setProperty((prev: any) => ({
-                      ...prev,
-                      price: {
-                        ...prev.price,
-                        discountPercentage: -Number(
-                          discountPercentage.toFixed(2)
-                        ),
-                      },
-                    }));
-                  }}
+                  style={{ maxWidth: "80%" }}
+                  value={
+                    property.price.discountedPrice
+                      ? Number(property.price.discountedPrice).toLocaleString()
+                      : (
+                          property.price.basePrice -
+                          (Math.abs(property?.price?.discountPercentage || 0) /
+                            100) *
+                            property.price.basePrice
+                        )
+                          .toFixed(0)
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  onChange={(e) => handleDiscountedPrice(e.target.value)}
                 />
               </span>
             </div>
@@ -165,31 +207,21 @@ function Pricing({
               >
                 ₦
                 <input
-                  className="outline-none w-fit bg-transparent"
+                  className="outline-none w-fit bg-transparent overflow-hidden text-ellipsis whitespace-nowrap"
                   disabled={!edit}
-                  value={(
-                    property?.price?.basePrice +
-                    (property?.price?.boostPercentage / 100) *
-                      property?.price?.basePrice
-                  ).toFixed(0)}
-                  onChange={(e) => {
-                    if (!edit) return;
-                    const newBoostedPrice = Number(e.target.value);
-                    if (newBoostedPrice < 0) return;
-                    const boostPercentage =
-                      property.price.basePrice !== 0
-                        ? ((newBoostedPrice - property.price.basePrice) /
-                            property.price.basePrice) *
-                            100 || 0
-                        : 0;
-                    setProperty((prev: any) => ({
-                      ...prev,
-                      price: {
-                        ...prev.price,
-                        boostPercentage: Number(boostPercentage.toFixed(2)),
-                      },
-                    }));
-                  }}
+                  style={{ maxWidth: "80%" }}
+                  value={
+                    property.price.boostedPrice
+                      ? Number(property.price.boostedPrice).toLocaleString()
+                      : (
+                          property.price.basePrice +
+                          ((property?.price?.boostPercentage || 0) / 100) *
+                            property.price.basePrice
+                        )
+                          .toFixed(0)
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  onChange={(e) => handleBoostedPrice(e.target.value)}
                 />
               </span>
             </div>
@@ -248,10 +280,7 @@ function Pricing({
                       ...prev,
                       price: {
                         ...prev.price,
-                        boostPercentage: Math.min(
-                          prev.price.boostPercentage + 1,
-                          100
-                        ),
+                        boostPercentage: prev.price.boostPercentage + 1,
                       },
                     }));
                   }}

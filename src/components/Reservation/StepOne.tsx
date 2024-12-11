@@ -1,6 +1,12 @@
+import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast, { Toaster } from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
+import axios from "axios";
+import { CONSTANT } from "../../util";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format, parseISO, addDays } from 'date-fns';
 
 function StepOne({
   handleChange,
@@ -35,6 +41,28 @@ function StepOne({
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
+  const [bookings, setBookings] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get(`${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`);
+        setBookings(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchBookings();
+  }, []);
+
+  const isDateBooked = (date: Date) => {
+    return bookings.some((booking) => {
+      const startDate = new Date(booking.startDate);
+      const endDate = new Date(booking.endDate);
+      return date >= startDate && date <= endDate;
+    });
+  };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (
@@ -50,8 +78,17 @@ function StepOne({
     ) {
       return toast.error("Please fill all fields");
     }
+
+    const checkInDate = new Date(formDetails.checkIn);
+    const checkOutDate = new Date(formDetails.checkOut);
+
+    if (checkOutDate < checkInDate) {
+      return toast.error("Check-out date cannot be before check-in date");
+    }
+
     setStep(2);
   };
+
   return (
     <>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
@@ -127,7 +164,7 @@ function StepOne({
             <h4 className="text-[#121212] text-sm font-medium">
               Price per night*
             </h4>
-            <div className="relative flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <select
                 name="price"
                 value={formDetails.price}
@@ -141,10 +178,7 @@ function StepOne({
                 <option value="low">Low</option>
                 <option value="high">High</option>
               </select>
-              <ChevronDownIcon
-                width={12}
-                className="absolute right-2 cursor-pointer pointer-events-none"
-              />
+              <ChevronDownIcon width={12} />
             </div>
           </div>
           <div className="flex flex-col gap-1 w-full">
@@ -153,14 +187,15 @@ function StepOne({
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <Calendar className="w-6" />
-              <input
-                name="checkIn"
-                value={formDetails.checkIn}
-                min={new Date().toISOString().split("T")[0]}
-                type="date"
-                placeholder="Check In Date"
-                className="w-full text-[#667085]"
-                onChange={handleChange}
+              <DatePicker
+                 selected={formDetails.checkIn ? parseISO(formDetails.checkIn) : null}
+                 onChange={(date: Date | null) => 
+                   setFormDetails({ ...formDetails, checkIn: date ? format(date, 'yyyy-MM-dd') : "" })
+                 }
+                 minDate={new Date()} // Today or future dates
+                 filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
+                 placeholderText="Check In Date"
+                 className="w-full text-[#667085]"
               />
             </div>
           </div>
@@ -170,16 +205,19 @@ function StepOne({
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <Calendar className="w-6" />
-              <input
-                name="checkOut"
-                value={formDetails.checkOut}
-                type="date"
-                min={
-                  formDetails.checkIn || new Date().toISOString().split("T")[0]
+              <DatePicker
+                selected={formDetails.checkOut ? parseISO(formDetails.checkOut) : null}
+                onChange={(date: Date | null) => 
+                  setFormDetails({ ...formDetails, checkOut: date ? format(date, 'yyyy-MM-dd') : "" })
                 }
-                placeholder="Price per night"
+                minDate={
+                  formDetails.checkIn 
+                    ? addDays(parseISO(formDetails.checkIn), 1) // At least one day after check-in
+                    : new Date()
+                }
+                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
+                placeholderText="Check Out Date"
                 className="w-full text-[#667085]"
-                onChange={handleChange}
               />
             </div>
           </div>

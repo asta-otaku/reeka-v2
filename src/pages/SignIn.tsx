@@ -9,14 +9,39 @@ import Spinner from "../components/Spinner";
 
 function SignIn() {
   const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const accessToken = sessionStorage.getItem("accessToken");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Function to check if the token is expired
+  const isTokenExpired = (token: string | null) => {
+    if (!token) return true;
+    try {
+      // Decode the JWT token to get expiration
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace("-", "+").replace("_", "/");
+      const payload = JSON.parse(window.atob(base64));
+
+      // Check if the token is expired
+      return payload.exp * 1000 < Date.now();
+    } catch (error) {
+      // If decoding fails, consider the token invalid
+      console.error("Error checking token expiration:", error);
+      return true;
+    }
+  };
+
   useEffect(() => {
-    if (user && Object.keys(user).length > 0) {
+    // Check if user exists, access token exists, and is not expired
+    if (
+      user &&
+      Object.keys(user).length > 0 &&
+      accessToken &&
+      !isTokenExpired(accessToken)
+    ) {
       navigate("/dashboard");
     }
-  }, [user]);
+  }, [user, accessToken]);
 
   const [formDetails, setFormDetails] = useState({
     email: "",

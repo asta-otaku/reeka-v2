@@ -1,11 +1,10 @@
 import useStore from "../store";
 import graycancel from "../assets/graycancel.svg";
 import redcancel from "../assets/cancel-red.svg";
-import { CONSTANT } from "../util";
-import axios from "axios";
 import moment from "moment-timezone";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import apiClient from "../helpers/apiClient";
 
 function BookingTable({
   data,
@@ -221,20 +220,17 @@ function BookingTable({
 export default BookingTable;
 
 function Modal({ booking, setModal }: { booking: any; setModal: any }) {
-  console.log(booking);
-
   const handleDelete = async () => {
-    axios
-      .delete(`${CONSTANT.BASE_URL}/booking/${booking._id}`)
-      .then(() => {
-        toast.success("Booking deleted successfully");
-        setModal(null);
-        window.location.reload();
-      })
-      .catch((err) => {
-        toast.error(err.response.data.error || "An error occurred");
-        console.log(err);
-      });
+    try {
+      await apiClient.delete(`/booking/${booking._id}`);
+      toast.success("Booking deleted successfully");
+      setModal(null);
+      window.location.reload();
+    } catch (error: any) {
+      if (error.response) {
+        toast.error(error.response.data.error || "An error occurred");
+      }
+    }
   };
   return (
     <div
