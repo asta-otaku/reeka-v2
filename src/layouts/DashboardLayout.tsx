@@ -69,7 +69,7 @@ function DashboardLayout({ children }: any) {
 
       fetchPricing();
     }
-  }, [user]);
+  }, []);
 
   return (
     <div className="bg-[#FAFAFA]">

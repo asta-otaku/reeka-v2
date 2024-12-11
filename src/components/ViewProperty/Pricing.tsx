@@ -24,11 +24,13 @@ function Pricing({
     });
   };
 
-  // Handler for discounted price
+  // Modify handleDiscountedPrice to handle existing values
   const handleDiscountedPrice = (value: string) => {
-    const numericValue = parseNumberInput(value);
+    // Remove commas and parse the input directly
+    const rawValue = value.replace(/,/g, "");
+    const numericValue = parseNumberInput(rawValue);
 
-    // Ensure discounted price is not higher than base price
+    // Prevent discounted price from exceeding base price
     if (numericValue > property.price.basePrice) return;
 
     const discountPercentage =
@@ -42,14 +44,17 @@ function Pricing({
       ...prev,
       price: {
         ...prev.price,
-        discountPercentage: -Number(discountPercentage.toFixed(2)),
+        discountedPrice: numericValue,
+        discountPercentage: -Math.abs(Number(discountPercentage.toFixed(2))),
       },
     }));
   };
 
   // Handler for boosted price
   const handleBoostedPrice = (value: string) => {
-    const numericValue = parseNumberInput(value);
+    // Remove commas and parse the input directly
+    const rawValue = value.replace(/,/g, "");
+    const numericValue = parseNumberInput(rawValue);
 
     const boostPercentage =
       property.price.basePrice > 0
@@ -62,7 +67,8 @@ function Pricing({
       ...prev,
       price: {
         ...prev.price,
-        boostPercentage: Number(boostPercentage.toFixed(2)),
+        boostedPrice: numericValue,
+        boostPercentage: Math.abs(Number(boostPercentage.toFixed(2))),
       },
     }));
   };
@@ -102,14 +108,19 @@ function Pricing({
                 <input
                   className="outline-none w-fit bg-transparent overflow-hidden text-ellipsis whitespace-nowrap"
                   disabled={!edit}
-                  style={{ maxWidth: "90%" }}
-                  value={(
-                    property.price.basePrice -
-                    (Math.abs(property?.price?.discountPercentage) / 100) *
-                      property.price.basePrice
-                  )
-                    .toFixed(0)
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  style={{ maxWidth: "80%" }}
+                  value={
+                    property.price.discountedPrice
+                      ? Number(property.price.discountedPrice).toLocaleString()
+                      : (
+                          property.price.basePrice -
+                          (Math.abs(property?.price?.discountPercentage || 0) /
+                            100) *
+                            property.price.basePrice
+                        )
+                          .toFixed(0)
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
                   onChange={(e) => handleDiscountedPrice(e.target.value)}
                 />
               </span>
@@ -198,14 +209,18 @@ function Pricing({
                 <input
                   className="outline-none w-fit bg-transparent overflow-hidden text-ellipsis whitespace-nowrap"
                   disabled={!edit}
-                  style={{ maxWidth: "90%" }}
-                  value={(
-                    property.price.basePrice +
-                    (property?.price?.boostPercentage / 100) *
-                      property.price.basePrice
-                  )
-                    .toFixed(0)
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                  style={{ maxWidth: "80%" }}
+                  value={
+                    property.price.boostedPrice
+                      ? Number(property.price.boostedPrice).toLocaleString()
+                      : (
+                          property.price.basePrice +
+                          ((property?.price?.boostPercentage || 0) / 100) *
+                            property.price.basePrice
+                        )
+                          .toFixed(0)
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
                   onChange={(e) => handleBoostedPrice(e.target.value)}
                 />
               </span>
@@ -265,10 +280,7 @@ function Pricing({
                       ...prev,
                       price: {
                         ...prev.price,
-                        boostPercentage: Math.min(
-                          prev.price.boostPercentage + 1,
-                          100
-                        ),
+                        boostPercentage: prev.price.boostPercentage + 1,
                       },
                     }));
                   }}
