@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import toast from "react-hot-toast";
 
 function Pricing({
   edit,
@@ -61,11 +62,16 @@ function Pricing({
       const rawValue = value.replace(/,/g, "");
       const numericValue = parseNumberInput(rawValue);
       const basePrice = property.price.basePrice;
+      let validDiscountedPrice = numericValue;
 
       if (basePrice <= 0) return;
 
       // Ensure discounted price doesn't exceed base price
-      const validDiscountedPrice = Math.min(numericValue, basePrice);
+      if (numericValue > basePrice) {
+        toast.error("Discounted price cannot exceed base price");
+        validDiscountedPrice = Math.min(numericValue, basePrice);
+      }
+
       const discountPercentage =
         ((basePrice - validDiscountedPrice) / basePrice) * 100;
 
@@ -157,7 +163,6 @@ function Pricing({
     }
   }, []);
 
-  // Rest of the component remains the same...
   return (
     <div className="my-4">
       <div className="flex items-center justify-between mb-2">
