@@ -3,7 +3,8 @@ import prop from "../../assets/prop1.svg";
 import toast, { Toaster } from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
-import apiClient from "../../helpers/apiClient";
+import { CONSTANT } from "../../util";
+import axios from "axios";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -23,6 +24,7 @@ function StepTwo({
   setStep,
   property,
   setInvoiceId,
+  setBookingId,
 }: {
   formDetails: {
     firstName: string;
@@ -39,21 +41,20 @@ function StepTwo({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
   setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
+  setBookingId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [formData, setFormData] = useState({
-    countryCode: formDetails.countryCode,
+    propertyId: property._id,
+    startDate: formDetails.checkIn,
     endDate: formDetails.checkOut,
-    guestEmail: formDetails.email,
     guestFirstName: formDetails.firstName,
     guestLastName: formDetails.lastName,
+    guestEmail: formDetails.email,
     guestPhone: formDetails.phoneNumber,
+    countryCode: formDetails.countryCode,
     numberOfChildren: 0,
     numberOfGuests: formDetails.noOfGuests,
     priceState: formDetails.price,
-    propertyId: property._id,
-    startDate: formDetails.checkIn,
-    status: "Upcoming",
-    totalBookingValue: 0,
   });
   const [loading, setLoading] = useState(false);
 
@@ -64,12 +65,13 @@ function StepTwo({
       endDate: formatTimestamp(formDetails.checkOut),
     });
     setLoading(true);
-    apiClient
-      .post(`/booking`, formData)
+    axios
+      .post(`${CONSTANT.BASE_URL}/public/booking`, formData)
       .then((res) => {
         setLoading(false);
         toast.success("Reservation successful");
         setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
+        setBookingId(res.data.id);
         setStep(3);
       })
       .catch((err) => {

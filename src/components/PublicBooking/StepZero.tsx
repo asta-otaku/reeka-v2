@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
 import toast, { Toaster } from "react-hot-toast";
-import apiClient from "../../helpers/apiClient";
+import axios from "axios";
+import { CONSTANT } from "../../util";
+import { useParams } from "react-router-dom";
 
 function StepZero({
   setStep,
@@ -13,11 +15,20 @@ function StepZero({
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const [properties, setProperties] = useState<any>([]);
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await apiClient.get(`/properties`);
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/public/property`,
+          {
+            params: {
+              token: id,
+            },
+          }
+        );
+        console.log(response);
         setProperties(response.data);
       } catch (error) {
         console.error(error);
@@ -30,7 +41,7 @@ function StepZero({
     <div className="flex flex-col gap-5 items-center w-full">
       <Toaster />
       <h3 className="text-xl font-medium text-center">Choose Apartment</h3>
-      <div className="flex items-center gap-2 p-2 rounded-3xl bg-[#FAFAFA] w-4/5 lg:w-3/5">
+      <div className="flex items-center gap-2 p-2 rounded-3xl bg-[#FAFAFA] w-full md:w-4/5 lg:w-3/5">
         <img src={searchIcon} alt="search" />
         <input
           type="text"
@@ -41,9 +52,9 @@ function StepZero({
         />
       </div>
 
-      <div className="grid gap-6 px-6 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-6 px-6 grid-cols-1 lg:grid-cols-2 w-full">
         {properties
-          .filter(
+          ?.filter(
             (property: any) =>
               property?.propertyName
                 ?.toLowerCase()
@@ -66,13 +77,20 @@ function StepZero({
                   alt="property"
                   className="h-48 w-full object-cover rounded-xl"
                 />
-                <div className="mt-2">
-                  <h3 className="text-[#808080] font-medium text-xs">
-                    {property?.propertyName}
-                  </h3>
-                  <p className="text-secondary text-[10px]">
-                    {property?.address}
-                  </p>
+                <div className="mt-2 flex flex-wrap justify-between items-center gap-2">
+                  <div>
+                    <h3 className="text-[#808080] font-medium text-xs">
+                      {property?.propertyName}
+                    </h3>
+                    <p className="text-secondary text-[10px]">
+                      {property?.address}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-secondary text-[10px] font-medium">
+                      ₦{property?.price?.basePrice?.toLocaleString()}/ night
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

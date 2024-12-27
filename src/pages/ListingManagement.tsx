@@ -9,6 +9,7 @@ import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../helpers/apiClient";
+import toast from "react-hot-toast";
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
@@ -30,6 +31,16 @@ function ListingManagement() {
     };
     fetchProperties();
   }, []);
+
+  const generatePublicUrl = async () => {
+    try {
+      const response = await apiClient.get(`/public/url`);
+      navigator.clipboard.writeText(response.data);
+      toast.success("Public URL copied to clipboard");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -58,7 +69,7 @@ function ListingManagement() {
                   </div>
                 </div> */}
 
-                <div className="flex w-full flex-wrap md:flex-nowrap justify-between items-center gap-4">
+                <div className="flex w-full flex-wrap lg:flex-nowrap justify-between items-center gap-4">
                   <div className="max-w-2xl w-full flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
                     <img src={searchIcon} className="w-5" />
                     <input
@@ -88,6 +99,14 @@ function ListingManagement() {
                     }`}
                   >
                     Add Property
+                  </button>
+                  <button
+                    onClick={generatePublicUrl}
+                    className={`bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none ${
+                      user && user.userRole !== "Owner" && "hidden"
+                    }`}
+                  >
+                    Generate Public Url
                   </button>
                 </div>
               </div>
