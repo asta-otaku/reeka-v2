@@ -8,7 +8,7 @@ import Pricing from "./Pricing";
 import ImageUpload from "./ImageUpload";
 // import NotificationModal from "../NotificationModal";
 import Spinner from "../Spinner";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import apiClient from "../../helpers/apiClient";
 
 function AddProperty({ setStep }: { setStep: any }) {
@@ -118,7 +118,6 @@ function AddProperty({ setStep }: { setStep: any }) {
 
   return (
     <div>
-      <Toaster />
       <div className="w-full flex justify-between items-center py-4 px-6">
         <div className="flex items-center gap-5">
           <span className="p-2 rounded-full border border-[#DCDCDC]">

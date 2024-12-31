@@ -16,7 +16,7 @@ import {
 } from "../assets/icons";
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import apiClient from "../helpers/apiClient";
 
 function DashboardLayout({ children }: any) {
@@ -73,7 +73,6 @@ function DashboardLayout({ children }: any) {
 
   return (
     <div className="bg-[#FAFAFA]">
-      <Toaster />
       {/* General Modal */}
       {currentModal && <ModalLayout />}
       <div

@@ -1,4 +1,4 @@
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../helpers/apiClient";
@@ -44,7 +44,6 @@ function Pricing() {
 
   return (
     <div>
-      <Toaster />
       <div className="max-w-screen-2xl w-full min-h-screen mx-auto flex flex-col md:flex-row items-center justify-center gap-8 relative px-8 pb-12">
         <Link
           to="/"

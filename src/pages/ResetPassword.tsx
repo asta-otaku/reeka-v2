@@ -3,7 +3,7 @@ import authBg from "../assets/authBg.png";
 import { useState } from "react";
 import axios from "axios";
 import { CONSTANT } from "../util";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 
 function ResetPassword() {
@@ -58,7 +58,6 @@ function ResetPassword() {
 
   return (
     <div>
-      <Toaster />
       <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-stretch justify-between gap-8 px-8">
         <div className="w-full md:w-[30%] relative pb-6 flex flex-col justify-center">
           <Link

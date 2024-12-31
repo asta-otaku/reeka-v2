@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
-import axios from "axios";
-import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, addDays } from "date-fns";
@@ -41,30 +38,6 @@ function StepOne({
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  const [bookings, setBookings] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`
-        );
-        setBookings(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchBookings();
-  }, []);
-
-  const isDateBooked = (date: Date) => {
-    return bookings.some((booking) => {
-      const startDate = new Date(booking.startDate);
-      const endDate = new Date(booking.endDate);
-      return date >= startDate && date <= endDate;
-    });
-  };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (
@@ -94,7 +67,6 @@ function StepOne({
   return (
     <>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
-        <Toaster />
         <h4 className="font-light text-center">
           Enter the correct details required
         </h4>
@@ -200,7 +172,6 @@ function StepOne({
                   })
                 }
                 minDate={new Date()} // Today or future dates
-                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
                 placeholderText="Check In Date"
                 className="w-full text-[#667085]"
               />
@@ -227,7 +198,6 @@ function StepOne({
                     ? addDays(parseISO(formDetails.checkIn), 1) // At least one day after check-in
                     : new Date()
                 }
-                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
                 placeholderText="Check Out Date"
                 className="w-full text-[#667085]"
               />

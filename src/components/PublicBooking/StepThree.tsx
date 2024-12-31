@@ -1,16 +1,12 @@
 import StepTwo from "./StepTwo";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import axios from "axios";
 import { CONSTANT } from "../../util";
 
 function StepThree({
   formDetails,
-  setStep,
-  property,
   invoiceId,
-  setInvoiceId,
   bookingId,
-  setBookingId,
 }: {
   formDetails: {
     firstName: string;
@@ -22,13 +18,13 @@ function StepThree({
     checkOut: string;
     price: string;
     countryCode: string;
+    propertyName: string;
+    propertyAddress: string;
+    property: string;
+    paymentStatus: string;
   };
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  property: any;
   invoiceId: string;
-  setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
   bookingId: string;
-  setBookingId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const handlePay = async () => {
     const res = await axios.get(`${CONSTANT.BASE_URL}/invoice/${invoiceId}`);
@@ -59,8 +55,7 @@ function StepThree({
   };
 
   return (
-    <div className="border border-[#C0C0C0] rounded-2xl py-5 bg-[#E6FFF1] max-w-xl w-full">
-      <Toaster />
+    <div className="border border-[#C0C0C0] rounded-2xl py-5 bg-[#E6FFF1] max-w-xl mx-auto w-full">
       <h4 className="font-medium text-center text-[#219653] text-xl">
         Reservation successful!
       </h4>
@@ -68,14 +63,7 @@ function StepThree({
         Email containing payment link sent to the provided email
       </p>
 
-      <StepTwo
-        setStep={setStep}
-        formDetails={formDetails}
-        hideFeatures
-        property={property}
-        setInvoiceId={setInvoiceId}
-        setBookingId={setBookingId}
-      />
+      <StepTwo formDetails={formDetails} hideFeatures />
 
       <div className="my-3 w-full flex gap-4 justify-center">
         <button
@@ -86,7 +74,9 @@ function StepThree({
         </button>
         <button
           onClick={handlePay}
-          className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2"
+          className={`w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2 ${
+            formDetails.paymentStatus === "paid" ? "hidden" : ""
+          }`}
         >
           Pay Now
         </button>

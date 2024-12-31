@@ -5,7 +5,7 @@ import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import { useEffect, useState } from "react";
 import useStore from "../store";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 import apiClient from "../helpers/apiClient";
 
@@ -221,7 +221,6 @@ function ReportModal({ properties }: any) {
       onClick={(e) => e.stopPropagation()}
       className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl p-4"
     >
-      <Toaster />
       <h2 className="text-secondary font-semibold text-lg">Report</h2>
       <form className="flex flex-col gap-2 mt-4">
         <div className="flex flex-col gap-2 w-full">

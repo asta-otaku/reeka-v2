@@ -1,5 +1,5 @@
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Spinner from "../Spinner";
 import apiClient from "../../helpers/apiClient";
 
@@ -53,7 +53,6 @@ function ChangePassword() {
 
   return (
     <div className="max-w-lg mx-auto bg-white border rounded-lg p-6 mt-12">
-      <Toaster />
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
         Change Your Password
       </h2>

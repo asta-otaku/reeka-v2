@@ -1,6 +1,6 @@
 import editIcon from "../../assets/edit-01.svg";
 import prop from "../../assets/prop1.svg";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import apiClient from "../../helpers/apiClient";
@@ -116,7 +116,6 @@ function StepTwo({
           hideFeatures && "border-x-0 shadow"
         }`}
       >
-        <Toaster />
         <h5 className="text-[#808080] font-light text-xs">Apartment</h5>
         <div className="flex w-full justify-between items-center my-3">
           <div>

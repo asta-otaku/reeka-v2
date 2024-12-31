@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import axios from "axios";
 import { CONSTANT } from "../../util";
 import { useParams } from "react-router-dom";
@@ -39,7 +39,6 @@ function StepZero({
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">
-      <Toaster />
       <h3 className="text-xl font-medium text-center">Choose Apartment</h3>
       <div className="flex items-center gap-2 p-2 rounded-3xl bg-[#FAFAFA] w-full md:w-4/5 lg:w-3/5">
         <img src={searchIcon} alt="search" />

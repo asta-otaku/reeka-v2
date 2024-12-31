@@ -1,10 +1,11 @@
 import editIcon from "../../assets/edit-01.svg";
 import prop from "../../assets/prop1.svg";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import { CONSTANT } from "../../util";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -21,10 +22,7 @@ function formatTimestamp(timestamp: string) {
 function StepTwo({
   formDetails,
   hideFeatures,
-  setStep,
   property,
-  setInvoiceId,
-  setBookingId,
 }: {
   formDetails: {
     firstName: string;
@@ -36,15 +34,15 @@ function StepTwo({
     checkOut: string;
     price: string;
     countryCode: string;
+    propertyName?: string;
+    propertyAddress?: string;
+    property?: string;
   };
   hideFeatures?: boolean;
-  setStep: React.Dispatch<React.SetStateAction<number>>;
-  property: any;
-  setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
-  setBookingId: React.Dispatch<React.SetStateAction<string>>;
+  property?: any;
 }) {
   const [formData, setFormData] = useState({
-    propertyId: property._id,
+    propertyId: property?._id || formDetails.property,
     startDate: formDetails.checkIn,
     endDate: formDetails.checkOut,
     guestFirstName: formDetails.firstName,
@@ -57,6 +55,7 @@ function StepTwo({
     priceState: formDetails.price,
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleReserve = () => {
     setFormData({
@@ -70,9 +69,7 @@ function StepTwo({
       .then((res) => {
         setLoading(false);
         toast.success("Reservation successful");
-        setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
-        setBookingId(res.data.id);
-        setStep(3);
+        navigate(`/invoice/${res.data.invoices[res.data.invoices.length - 1]}`);
       })
       .catch((err) => {
         console.log(err);
@@ -83,7 +80,7 @@ function StepTwo({
 
   function getPrice(price: string) {
     if (!property || !property.price) {
-      return 0;
+      return formDetails.price;
     }
 
     switch (price) {
@@ -118,15 +115,14 @@ function StepTwo({
           hideFeatures && "border-x-0 shadow"
         }`}
       >
-        <Toaster />
         <h5 className="text-[#808080] font-light text-xs">Apartment</h5>
         <div className="flex w-full justify-between items-center my-3">
           <div>
             <h2 className="text-[#121212] font-semibold text-xs">
-              {property?.propertyName}
+              {property?.propertyName || formDetails.propertyName}
             </h2>
             <p className="text-[#3A3A3A] font-light text-[10px]">
-              {property?.address}
+              {property?.address || formDetails.propertyAddress}
             </p>
           </div>
           <img
@@ -173,7 +169,8 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Phone no</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              ({formDetails.countryCode}) {formDetails.phoneNumber}
+              {formDetails.countryCode ? `(${formDetails.countryCode}) ` : ""}
+              {formDetails.phoneNumber}
             </h4>
           </div>
           <div>

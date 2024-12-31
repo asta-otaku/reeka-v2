@@ -6,7 +6,7 @@ import DashboardLayout from "../../layouts/DashboardLayout";
 import searchIcon from "../../assets/search-01.svg";
 import BookingTable from "../BookingTable";
 import ReactPaginate from "react-paginate";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PropertyDetails from "./PropertyDetails";
 import ImageSection from "./ImageSection";
 import Amenities from "./Amenities";
@@ -153,7 +153,6 @@ function ViewProperty() {
 
   return (
     <DashboardLayout>
-      <Toaster />
       <div>
         <div className="w-full flex justify-between items-center py-4 px-6">
           <div className="flex items-center gap-5">

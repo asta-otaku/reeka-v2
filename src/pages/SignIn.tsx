@@ -3,7 +3,7 @@ import authBg from "../assets/authBg.png";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
@@ -94,7 +94,6 @@ function SignIn() {
 
   return (
     <div>
-      <Toaster />
       <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 relative px-8">
         <Link
           to="/"

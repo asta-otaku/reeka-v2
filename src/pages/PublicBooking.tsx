@@ -1,7 +1,6 @@
 import { useState } from "react";
 import StepOne from "../components/PublicBooking/StepOne";
 import StepTwo from "../components/PublicBooking/StepTwo";
-import StepThree from "../components/PublicBooking/StepThree";
 import StepZero from "../components/PublicBooking/StepZero";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -22,8 +21,6 @@ function PublicBooking() {
     countryCode: "",
   });
   const [property, setProperty] = useState<any>(null);
-  const [invoiceId, setInvoiceId] = useState("");
-  const [bookingId, setBookingId] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -116,32 +113,13 @@ function PublicBooking() {
                   setStep={setCurrentStep}
                 />
               ),
-              2: (
-                <StepTwo
-                  formDetails={formDetails}
-                  setStep={setCurrentStep}
-                  property={property}
-                  setInvoiceId={setInvoiceId}
-                  setBookingId={setBookingId}
-                />
-              ),
+              2: <StepTwo formDetails={formDetails} property={property} />,
             }[currentStep]
           }
         </div>
 
         {currentStep === 0 && (
           <StepZero setStep={setCurrentStep} setProperty={setProperty} />
-        )}
-        {currentStep === 3 && (
-          <StepThree
-            setStep={setCurrentStep}
-            formDetails={formDetails}
-            property={property}
-            invoiceId={invoiceId}
-            setInvoiceId={setInvoiceId}
-            bookingId={bookingId}
-            setBookingId={setBookingId}
-          />
         )}
       </div>
     </div>

@@ -6,7 +6,7 @@ import { useState, useMemo } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { CONSTANT } from "../util";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "../components/PhoneInput";
 import Spinner from "../components/Spinner";
 
@@ -86,7 +86,6 @@ function SignUp() {
 
   return (
     <div>
-      <Toaster />
       {
         {
           0: (

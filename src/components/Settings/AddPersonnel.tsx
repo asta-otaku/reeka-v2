@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowLongLeftIcon, ChevronDownIcon } from "../../assets/icons";
 import DropdownForm from "./DropdownForm";
 import apiClient from "../../helpers/apiClient";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Spinner from "../Spinner";
 
 function AddPersonnel({
@@ -64,7 +64,6 @@ function AddPersonnel({
 
   return (
     <div>
-      <Toaster />
       <div className="w-full flex justify-between items-center p-4">
         <div
           className="flex items-center gap-2 cursor-pointer"

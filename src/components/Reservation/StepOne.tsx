@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
 import axios from "axios";
 import { CONSTANT } from "../../util";
@@ -94,7 +94,6 @@ function StepOne({
   return (
     <>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
-        <Toaster />
         <h4 className="font-light text-center">
           Enter the correct details required
         </h4>

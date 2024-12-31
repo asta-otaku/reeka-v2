@@ -20,9 +20,12 @@ import ForgotPassword from "./pages/ForgotPassword.tsx";
 import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
+import PublicInvoice from "./pages/PublicInvoice.tsx";
+import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
+    <Toaster />
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
@@ -37,7 +40,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/public/property/:id" element={<PublicBooking />} />
+        <Route path="/property/:id" element={<PublicBooking />} />
+        <Route path="/invoice/:id" element={<PublicInvoice />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />

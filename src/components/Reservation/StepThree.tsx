@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import StepTwo from "./StepTwo";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import apiClient from "../../helpers/apiClient";
 
 function StepThree({
@@ -40,7 +40,6 @@ function StepThree({
 
   return (
     <div className="border border-[#C0C0C0] rounded-2xl py-5 bg-[#E6FFF1] max-w-xl w-full">
-      <Toaster />
       <h4 className="font-medium text-center text-[#219653] text-xl">
         Reservation successful!
       </h4>
