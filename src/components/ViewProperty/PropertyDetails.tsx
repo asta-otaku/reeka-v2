@@ -14,6 +14,7 @@ function PropertyDetails({
   setProperty: any;
 }) {
   const options = useMemo(() => countryList().getData(), []);
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   const changeHandler = (value: any) => {
     setProperty({ ...property, country: value.label });
@@ -26,7 +27,9 @@ function PropertyDetails({
         <button
           type="button"
           onClick={() => setEdit(!edit)}
-          className="text-[#808080] text-xs font-medium"
+          className={`text-[#808080] text-xs font-medium ${
+            user && user.userRole !== "Owner" && "hidden"
+          }`}
         >
           {edit ? "Cancel" : "Edit"}
         </button>
