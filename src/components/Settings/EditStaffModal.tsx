@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import apiClient from "../../helpers/apiClient";
+import toast from "react-hot-toast";
+import Spinner from "../Spinner";
 
 function EditStaffModal({ staff, setModal, onUpdate }: any) {
   const [activeTab, setActiveTab] = useState("details");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     role: staff.role,
     phoneNumber: staff.phoneNumber,
@@ -33,29 +36,36 @@ function EditStaffModal({ staff, setModal, onUpdate }: any) {
     "Associate Manager",
     "Front Desk",
   ];
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await apiClient.put(`/staff/${staff.id}`, formData);
       onUpdate(staff.id, formData);
       setModal(null);
+      toast.success("Staff details updated successfully!");
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      toast.error("Failed to update staff details.");
+      setLoading(false);
     }
   };
 
-  console.log(assignedPropertyIds);
-
   const handlePropertyUpdate = async () => {
+    setLoading(true);
     try {
       await apiClient.post(`/staff/${staff.id}/properties`, {
         propertyId: assignedPropertyIds,
       });
       onUpdate(staff.id, { properties: assignedPropertyIds });
       setModal(null);
+      setLoading(false);
+      toast.success("Properties updated successfully!");
     } catch (error) {
       console.error(error);
+      toast.error("Failed to update properties.");
+      setLoading(false);
     }
   };
 
@@ -151,9 +161,10 @@ function EditStaffModal({ staff, setModal, onUpdate }: any) {
             </button>
             <button
               type="submit"
+              disabled={loading}
               className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
             >
-              Save Changes
+              {loading ? <Spinner /> : "Save Changes"}
             </button>
           </div>
         </form>
@@ -200,7 +211,7 @@ function EditStaffModal({ staff, setModal, onUpdate }: any) {
               onClick={handlePropertyUpdate}
               className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
             >
-              Save Changes
+              {loading ? <Spinner /> : "Save Changes"}
             </button>
           </div>
         </div>

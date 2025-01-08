@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
-import axios from "axios";
-import { CONSTANT } from "../../util";
+import apiClient from "../../helpers/apiClient";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, addDays } from "date-fns";
@@ -13,6 +12,7 @@ function StepOne({
   formDetails,
   setFormDetails,
   setStep,
+  property,
 }: {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formDetails: {
@@ -40,29 +40,41 @@ function StepOne({
     }>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  property: any;
 }) {
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/booking/user/${CONSTANT.USER_ID}`
+        const response = await apiClient.get(
+          `/booking/property/${property._id}`
         );
-        setBookings(response.data);
+
+        const dates = new Set<string>();
+
+        response.data.forEach(
+          (booking: { startDate: string; endDate: string }) => {
+            let currentDate = parseISO(booking.startDate);
+            const lastDate = parseISO(booking.endDate);
+
+            while (currentDate <= lastDate) {
+              dates.add(format(currentDate, "yyyy-MM-dd"));
+              currentDate = addDays(currentDate, 1);
+            }
+          }
+        );
+        setBookedDates(dates);
       } catch (error) {
         console.error(error);
+        toast.error("Failed to fetch bookings");
       }
     };
     fetchBookings();
-  }, []);
+  }, [property._id]);
 
   const isDateBooked = (date: Date) => {
-    return bookings.some((booking) => {
-      const startDate = new Date(booking.startDate);
-      const endDate = new Date(booking.endDate);
-      return date >= startDate && date <= endDate;
-    });
+    return bookedDates.has(format(date, "yyyy-MM-dd"));
   };
 
   const handleSubmit = (e: any) => {
@@ -98,6 +110,7 @@ function StepOne({
           Enter the correct details required
         </h4>
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+          {/* First Name */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">First Name*</h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
@@ -110,6 +123,8 @@ function StepOne({
               />
             </div>
           </div>
+
+          {/* Last Name */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
@@ -122,9 +137,11 @@ function StepOne({
               />
             </div>
           </div>
+
+          {/* No. of Guests */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Number of guest*
+              Number of Guests*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <input
@@ -136,9 +153,11 @@ function StepOne({
               />
             </div>
           </div>
+
+          {/* Email */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Email address*
+              Email Address*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <input
@@ -151,6 +170,8 @@ function StepOne({
               />
             </div>
           </div>
+
+          {/* Phone Number */}
           <div>
             <h4 className="text-[#121212] text-sm font-medium">
               Phone Number*
@@ -161,9 +182,10 @@ function StepOne({
             />
           </div>
 
+          {/* Price */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Price per night*
+              Price per Night*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <select
@@ -182,6 +204,8 @@ function StepOne({
               <ChevronDownIcon width={12} />
             </div>
           </div>
+
+          {/* Check In Date */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
               Check In Date
@@ -205,6 +229,8 @@ function StepOne({
               />
             </div>
           </div>
+
+          {/* Check Out Date */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
               Check Out Date
@@ -223,7 +249,7 @@ function StepOne({
                 }
                 minDate={
                   formDetails.checkIn
-                    ? addDays(parseISO(formDetails.checkIn), 1) // At least one day after check-in
+                    ? addDays(parseISO(formDetails.checkIn), 1)
                     : new Date()
                 }
                 filterDate={(date) => !isDateBooked(date)} // Exclude booked dates

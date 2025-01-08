@@ -114,6 +114,7 @@ function Reservation() {
                     formDetails={formDetails}
                     setFormDetails={setFormDetails}
                     setStep={setCurrentStep}
+                    property={property}
                   />
                 ),
                 2: (
