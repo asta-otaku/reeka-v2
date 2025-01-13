@@ -1,15 +1,19 @@
+import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parseISO, addDays } from "date-fns";
+import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
+import axios from "axios";
+import { CONSTANT } from "../../util";
 
 function StepOne({
   handleChange,
   formDetails,
   setFormDetails,
   setStep,
+  property,
 }: {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formDetails: {
@@ -37,7 +41,36 @@ function StepOne({
     }>
   >;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  property: any;
 }) {
+  const [bookedDates, setBookedDates] = useState<
+    { start: string; end: string }[]
+  >([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/${property._id}/booked-dates`
+        );
+        setBookedDates(response.data);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch bookings");
+      }
+    };
+    fetchBookings();
+  }, [property._id]);
+
+  const isDateBooked = (date: Date) => {
+    return bookedDates.some(({ start, end }) =>
+      isWithinInterval(date, {
+        start: parse(start, "yyyy-MM-dd", new Date()),
+        end: parse(end, "yyyy-MM-dd", new Date()),
+      })
+    );
+  };
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (
@@ -171,7 +204,8 @@ function StepOne({
                     checkIn: date ? format(date, "yyyy-MM-dd") : "",
                   })
                 }
-                minDate={new Date()} // Today or future dates
+                minDate={new Date()}
+                filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
                 className="w-full text-[#667085]"
               />
@@ -195,9 +229,10 @@ function StepOne({
                 }
                 minDate={
                   formDetails.checkIn
-                    ? addDays(parseISO(formDetails.checkIn), 1) // At least one day after check-in
+                    ? addDays(parseISO(formDetails.checkIn), 1)
                     : new Date()
                 }
+                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
                 placeholderText="Check Out Date"
                 className="w-full text-[#667085]"
               />

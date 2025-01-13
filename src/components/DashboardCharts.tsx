@@ -3,6 +3,7 @@ import info from "../assets/info.svg";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import apiClient from "../helpers/apiClient";
+import { useCurrency } from "../helpers/getCurrency";
 
 function DashboardCharts({
   filterType,
@@ -276,7 +277,7 @@ function DashboardCharts({
                 <h2 className="text-[#121212] text-2xl font-medium">
                   {data.title === "Bookings" || data.title === "Occupancy Rate"
                     ? data?.amount
-                    : `₦${Number(data?.amount)
+                    : `${useCurrency()}${Number(data?.amount)
                         ?.toFixed(2)
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
                 </h2>
@@ -326,7 +327,7 @@ function DashboardCharts({
             <h2 className="flex items-baseline gap-2 text-[#121212] text-2xl font-semibold">
               {data.title === "Bookings"
                 ? data?.amount
-                : `₦${data?.amount
+                : `${useCurrency()}${data?.amount
                     ?.toFixed(2)
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               <span

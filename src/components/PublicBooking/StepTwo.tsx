@@ -6,6 +6,7 @@ import Spinner from "../Spinner";
 import { CONSTANT } from "../../util";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -56,6 +57,7 @@ function StepTwo({
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const currency = useCurrency();
 
   const handleReserve = () => {
     setFormData({
@@ -182,7 +184,7 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
-              {formDetails.price === "airbnb" ? "$" : "₦"}
+              {formDetails.price === "airbnb" ? "$" : currency}
               {getPrice(formDetails.price)
                 ?.toString()
                 ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}

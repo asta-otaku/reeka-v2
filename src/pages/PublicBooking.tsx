@@ -111,6 +111,7 @@ function PublicBooking() {
                   formDetails={formDetails}
                   setFormDetails={setFormDetails}
                   setStep={setCurrentStep}
+                  property={property}
                 />
               ),
               2: <StepTwo formDetails={formDetails} property={property} />,

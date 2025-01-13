@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import info from "../assets/info.svg";
 import LineChart from "../charts/Line";
 import moment from "moment";
+import { useCurrency } from "../helpers/getCurrency";
 
 function DashboardPropertyChart({
   activePropertyId,
@@ -179,7 +180,7 @@ function DashboardPropertyChart({
               <h2 className="text-[#121212] text-2xl font-medium">
                 {data.title === "Bookings" || data.title === "Occupancy Rate"
                   ? data?.amount
-                  : `₦${
+                  : `${useCurrency()}${
                       typeof data.amount === "number"
                         ? data.amount
                             .toFixed(2)
@@ -208,7 +209,7 @@ function DashboardPropertyChart({
             <h2 className="flex items-baseline gap-2 text-[#121212] text-2xl font-semibold">
               {data.title === "Bookings"
                 ? data?.amount
-                : `₦${data?.amount
+                : `${useCurrency()}${data?.amount
                     ?.toFixed(2)
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               <span

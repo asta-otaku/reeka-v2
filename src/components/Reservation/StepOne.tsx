@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
-import apiClient from "../../helpers/apiClient";
+import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parseISO, addDays } from "date-fns";
+import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
+import axios from "axios";
 
 function StepOne({
   handleChange,
@@ -42,29 +43,17 @@ function StepOne({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
-  const [bookedDates, setBookedDates] = useState<Set<string>>(new Set());
+  const [bookedDates, setBookedDates] = useState<
+    { start: string; end: string }[]
+  >([]);
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await apiClient.get(
-          `/booking/property/${property._id}`
+        const response = await axios.get(
+          `${CONSTANT.BASE_URL}/properties/${property._id}/booked-dates`
         );
-
-        const dates = new Set<string>();
-
-        response.data.forEach(
-          (booking: { startDate: string; endDate: string }) => {
-            let currentDate = parseISO(booking.startDate);
-            const lastDate = parseISO(booking.endDate);
-
-            while (currentDate <= lastDate) {
-              dates.add(format(currentDate, "yyyy-MM-dd"));
-              currentDate = addDays(currentDate, 1);
-            }
-          }
-        );
-        setBookedDates(dates);
+        setBookedDates(response.data);
       } catch (error) {
         console.error(error);
         toast.error("Failed to fetch bookings");
@@ -74,7 +63,12 @@ function StepOne({
   }, [property._id]);
 
   const isDateBooked = (date: Date) => {
-    return bookedDates.has(format(date, "yyyy-MM-dd"));
+    return bookedDates.some(({ start, end }) =>
+      isWithinInterval(date, {
+        start: parse(start, "yyyy-MM-dd", new Date()),
+        end: parse(end, "yyyy-MM-dd", new Date()),
+      })
+    );
   };
 
   const handleSubmit = (e: any) => {
@@ -222,8 +216,8 @@ function StepOne({
                     checkIn: date ? format(date, "yyyy-MM-dd") : "",
                   })
                 }
-                minDate={new Date()} // Today or future dates
-                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
+                minDate={new Date()}
+                filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
                 className="w-full text-[#667085]"
               />

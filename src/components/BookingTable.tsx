@@ -5,6 +5,7 @@ import moment from "moment-timezone";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import apiClient from "../helpers/apiClient";
+import { useCurrency } from "../helpers/getCurrency";
 
 function BookingTable({
   data,
@@ -16,6 +17,7 @@ function BookingTable({
   const setModal = useStore((state: any) => state.setModal);
   const location = useLocation();
   const currentDate = moment().tz("Africa/Lagos");
+  const currency = useCurrency();
 
   function formatDate(date: string) {
     return moment(date).tz("Africa/Lagos").format("MMM DD");
@@ -58,7 +60,13 @@ function BookingTable({
             <div className="">
               <table
                 onClick={() =>
-                  setModal(<Modal setModal={setModal} booking={item} />)
+                  setModal(
+                    <Modal
+                      setModal={setModal}
+                      booking={item}
+                      currency={currency}
+                    />
+                  )
                 }
                 className="min-w-full text-left text-xs border-collapse cursor-pointer bg-[#F2F2F2] rounded-xl shadow"
               >
@@ -150,7 +158,7 @@ function BookingTable({
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap w-[140px]">
                       <div className="text-sm text-[#121212] max-w-[110px] w-full font-medium">
-                        ₦
+                        {currency}
                         {item?.totalBookingValue
                           ?.toFixed(2)
                           ?.toString()
@@ -219,7 +227,15 @@ function BookingTable({
 
 export default BookingTable;
 
-function Modal({ booking, setModal }: { booking: any; setModal: any }) {
+function Modal({
+  booking,
+  setModal,
+  currency,
+}: {
+  booking: any;
+  setModal: any;
+  currency: string;
+}) {
   const handleDelete = async () => {
     try {
       await apiClient.delete(`/booking/${booking._id}`);
@@ -295,7 +311,7 @@ function Modal({ booking, setModal }: { booking: any; setModal: any }) {
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5">
-              ₦
+              {currency}
               {(booking?.totalBookingValue / booking?.nightsBooked)
                 ?.toFixed(2)
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}

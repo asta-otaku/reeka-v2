@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function Pricing({
   edit,
@@ -37,6 +38,8 @@ function Pricing({
     property.price.discountPercentage,
     property.price.boostPercentage,
   ]);
+
+  const currency = useCurrency();
 
   // Handler for base price
   const handleBasePrice = useCallback(
@@ -173,7 +176,7 @@ function Pricing({
           <h4 className="text-[#3A3A3A] text-sm font-medium">Base Price</h4>
           <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
             <span className={`${edit ? "text-black " : "text-[#808080]"}`}>
-              ₦
+              {currency}
             </span>
             <input
               name="basePrice"
@@ -194,7 +197,7 @@ function Pricing({
                 className="text-[#121212] flex gap-2 py-2 text-2xl"
                 style={{ color: edit ? "#121212" : "#808080" }}
               >
-                ₦
+                {currency}
                 <input
                   className="outline-none w-fit bg-transparent overflow-hidden text-ellipsis whitespace-nowrap"
                   disabled={!edit}
@@ -265,7 +268,7 @@ function Pricing({
                 className="text-[#121212] flex gap-2 py-2 text-2xl"
                 style={{ color: edit ? "#121212" : "#808080" }}
               >
-                ₦
+                {currency}
                 <input
                   className="outline-none w-fit bg-transparent overflow-hidden text-ellipsis whitespace-nowrap"
                   disabled={!edit}

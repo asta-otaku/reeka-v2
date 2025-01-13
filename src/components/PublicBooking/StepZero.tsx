@@ -87,7 +87,7 @@ function StepZero({
                   </div>
                   <div>
                     <p className="text-secondary text-[10px] font-medium">
-                      ₦{property?.price?.basePrice?.toLocaleString()}/ night
+                      {property?.price?.basePrice?.toLocaleString()}/ night
                     </p>
                   </div>
                 </div>

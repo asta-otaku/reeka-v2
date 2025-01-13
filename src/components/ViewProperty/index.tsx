@@ -14,6 +14,7 @@ import Pricing from "./Pricing";
 import Spinner from "../Spinner";
 import useStore from "../../store";
 import apiClient from "../../helpers/apiClient";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function ViewProperty() {
   const { id } = useParams(); // Get property ID from the URL
@@ -21,6 +22,7 @@ function ViewProperty() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
+  const currency = useCurrency();
 
   const [property, setProperty] = useState<any>({
     propertyName: "",
@@ -202,7 +204,10 @@ function ViewProperty() {
               <div className="flex items-center gap-2 text-sm text-[#808080]">
                 <span>Apartment</span>
                 <span className="w-2 h-2 rounded-full bg-[#808080]" />
-                <span>₦{property?.price?.basePrice} per night</span>
+                <span>
+                  {currency}
+                  {property?.price?.basePrice} per night
+                </span>
               </div>
             </div>
           </div>

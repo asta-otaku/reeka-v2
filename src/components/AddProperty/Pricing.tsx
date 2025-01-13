@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import pricetag from "../../assets/pricetag.svg";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function Pricing({
   toggleSection,
@@ -18,6 +19,7 @@ function Pricing({
     discountPercentage: -25,
     boostPercentage: 25,
   });
+  const currency = useCurrency();
 
   useEffect(() => {
     setFormDetails({ ...formDetails, price: price });
@@ -40,7 +42,7 @@ function Pricing({
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">Base Price</h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-              <span className="text-black">₦</span>
+              <span className="text-black">{currency}</span>
               <input
                 name="basePrice"
                 placeholder="0"
@@ -65,7 +67,7 @@ function Pricing({
               <div className="bg-white rounded-2xl p-2">
                 <h4 className="text-[#808080] text-xs">Discounted Price</h4>
                 <span className="text-[#121212] flex gap-2 py-2 text-2xl">
-                  ₦
+                  {currency}
                   <input
                     className="outline-none w-fit bg-transparent"
                     value={(
@@ -148,7 +150,7 @@ function Pricing({
               <div className="bg-white rounded-2xl p-2">
                 <h4 className="text-[#808080] text-xs">Boosted Price</h4>
                 <span className="text-[#121212] flex gap-2 py-2 text-2xl">
-                  ₦
+                  {currency}
                   <input
                     className="outline-none w-fit bg-transparent"
                     value={(

@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import apiClient from "../../helpers/apiClient";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -56,6 +57,7 @@ function StepTwo({
     totalBookingValue: 0,
   });
   const [loading, setLoading] = useState(false);
+  const currency = useCurrency();
 
   const handleReserve = () => {
     setFormData({
@@ -182,7 +184,7 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Price per night</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
-              {formDetails.price === "airbnb" ? "$" : "₦"}
+              {formDetails.price === "airbnb" ? "$" : currency}
               {getPrice(formDetails.price)
                 ?.toString()
                 ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}
