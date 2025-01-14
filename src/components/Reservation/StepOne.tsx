@@ -7,6 +7,11 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
 import axios from "axios";
+import prop from "../../assets/prop1.svg";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import { Autoplay } from "swiper/modules";
 
 function StepOne({
   handleChange,
@@ -99,6 +104,42 @@ function StepOne({
 
   return (
     <>
+      <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
+        <Swiper
+          spaceBetween={30}
+          centeredSlides={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Autoplay]}
+          className="h-[120px]"
+        >
+          {property.images.length ? (
+            property.images.map((image: any, index: number) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={image}
+                  alt=""
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </SwiperSlide>
+            ))
+          ) : (
+            <SwiperSlide>
+              <img
+                src={prop}
+                alt=""
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </SwiperSlide>
+          )}
+        </Swiper>
+      </div>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
         <h4 className="font-light text-center">
           Enter the correct details required

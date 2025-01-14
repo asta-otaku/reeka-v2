@@ -70,7 +70,7 @@ function ListingManagement() {
                 </div> */}
 
                 <div className="flex w-full flex-wrap lg:flex-nowrap justify-between items-center gap-4">
-                  <div className="max-w-2xl w-full flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
+                  <div className="max-w-5xl w-full flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
                     <img src={searchIcon} className="w-5" />
                     <input
                       type="search"
@@ -106,7 +106,7 @@ function ListingManagement() {
                       user && user.userRole !== "Owner" && "hidden"
                     }`}
                   >
-                    Generate Public Url
+                    Generate Portfolio Link
                   </button>
                 </div>
               </div>

@@ -7,6 +7,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
 import axios from "axios";
 import { CONSTANT } from "../../util";
+import prop from "../../assets/prop1.svg";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import { Autoplay } from "swiper/modules";
 
 function StepOne({
   handleChange,
@@ -46,6 +51,8 @@ function StepOne({
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
+
+  console.log(property);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -99,6 +106,46 @@ function StepOne({
 
   return (
     <>
+      <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
+        <h3 className="text-[#808080] font-medium text-sm">
+          {property?.propertyName}
+        </h3>
+        <h3 className="text-[#808080] text-xs my-2">{property?.city}</h3>
+        <Swiper
+          spaceBetween={30}
+          centeredSlides={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Autoplay]}
+          className="h-[120px]"
+        >
+          {property.images.length ? (
+            property.images.map((image: any, index: number) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={image}
+                  alt=""
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              </SwiperSlide>
+            ))
+          ) : (
+            <SwiperSlide>
+              <img
+                src={prop}
+                alt=""
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </SwiperSlide>
+          )}
+        </Swiper>
+      </div>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
         <h4 className="font-light text-center">
           Enter the correct details required

@@ -47,7 +47,7 @@ function StepTwo({
     guestEmail: formDetails.email,
     guestFirstName: formDetails.firstName,
     guestLastName: formDetails.lastName,
-    guestPhone: formDetails.phoneNumber,
+    guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
     numberOfChildren: 0,
     numberOfGuests: formDetails.noOfGuests,
     priceState: formDetails.price,
@@ -59,14 +59,14 @@ function StepTwo({
   const [loading, setLoading] = useState(false);
   const currency = useCurrency();
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     setFormData({
       ...formData,
       startDate: formatTimestamp(formDetails.checkIn),
       endDate: formatTimestamp(formDetails.checkOut),
     });
     setLoading(true);
-    apiClient
+    await apiClient
       .post(`/booking`, formData)
       .then((res) => {
         setLoading(false);

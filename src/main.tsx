@@ -40,7 +40,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/property/:id" element={<PublicBooking />} />
+        <Route path="/property/:id/:propId?" element={<PublicBooking />} />
         <Route path="/invoice/:id" element={<PublicInvoice />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/signin" element={<SignIn />} />

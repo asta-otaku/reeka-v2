@@ -248,6 +248,25 @@ function Modal({
       }
     }
   };
+  const handleShareInvoice = async () => {
+    await apiClient
+      .get(`/invoice/${booking._id}/pdf`, { responseType: "blob" })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `invoice-${booking._id}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        toast.success("Invoice sent successfully");
+        setModal(null);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.error || "An error occurred");
+      });
+  };
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -337,7 +356,13 @@ function Modal({
           </div>
         </div>
       </div>
-      <div className="flex justify-center mt-4">
+      <div className="flex justify-center gap-4 mt-4">
+        <button
+          onClick={handleShareInvoice}
+          className="text-white bg-primary/90 px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2"
+        >
+          Share invoice
+        </button>
         <button
           onClick={handleDelete}
           className="text-[#F94144] font-medium text-sm flex items-center gap-2"

@@ -153,6 +153,18 @@ function ViewProperty() {
     )
     .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
+  const generatePublicUrl = async () => {
+    try {
+      const response = await apiClient.get(`/public/url`, {
+        params: { propertyId: id },
+      });
+      navigator.clipboard.writeText(response.data);
+      toast.success("Public URL copied to clipboard");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div>
@@ -215,6 +227,12 @@ function ViewProperty() {
             {/* <button className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium">
               De-List Property
             </button> */}
+            <button
+              onClick={generatePublicUrl}
+              className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none"
+            >
+              Generate Portfolio Link
+            </button>
             <button
               onClick={() =>
                 setModal(

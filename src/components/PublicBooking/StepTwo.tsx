@@ -49,7 +49,7 @@ function StepTwo({
     guestFirstName: formDetails.firstName,
     guestLastName: formDetails.lastName,
     guestEmail: formDetails.email,
-    guestPhone: formDetails.phoneNumber,
+    guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
     countryCode: formDetails.countryCode,
     numberOfChildren: 0,
     numberOfGuests: formDetails.noOfGuests,
@@ -59,14 +59,14 @@ function StepTwo({
   const navigate = useNavigate();
   const currency = useCurrency();
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     setFormData({
       ...formData,
       startDate: formatTimestamp(formDetails.checkIn),
       endDate: formatTimestamp(formDetails.checkOut),
     });
     setLoading(true);
-    axios
+    await axios
       .post(`${CONSTANT.BASE_URL}/public/booking`, formData)
       .then((res) => {
         setLoading(false);

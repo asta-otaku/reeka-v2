@@ -17,7 +17,6 @@ function ImageSection({
       </div>
       <div className="flex overflow-x-auto w-full no-scrollbar py-4 relative">
         {property?.images.map((image: any, index: number) => {
-          // If the image is a file, display it using a temporary URL, but it will remain a file object
           const imageSrc =
             typeof image === "string" ? image : URL.createObjectURL(image);
 
@@ -77,11 +76,14 @@ function ImageSection({
               type="file"
               id="file"
               className="hidden"
+              multiple
               onChange={(e: any) => {
-                const newImage = e.target.files[0];
+                const newImages = Array.from(e.target.files);
                 setProperty((prev: any) => {
-                  const newImages = [...prev.images.slice(-2), newImage];
-                  return { ...prev, images: newImages };
+                  const updatedImages = [...prev.images, ...newImages].slice(
+                    -10
+                  );
+                  return { ...prev, images: updatedImages };
                 });
               }}
             />

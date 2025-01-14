@@ -15,7 +15,7 @@ function StepZero({
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const [properties, setProperties] = useState<any>([]);
-  const { id } = useParams<{ id: string }>();
+  const { id, propId } = useParams<{ id: string; propId: string }>();
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -28,7 +28,6 @@ function StepZero({
             },
           }
         );
-        console.log(response);
         setProperties(response.data);
       } catch (error) {
         console.error(error);
@@ -36,6 +35,22 @@ function StepZero({
     };
     fetchProperties();
   }, []);
+
+  useEffect(() => {
+    if (propId && properties.length > 0) {
+      const matchingProperty = properties.find(
+        (property: any) => property._id === propId
+      );
+
+      if (matchingProperty) {
+        setSelectedApartment(propId);
+        setProperty(matchingProperty);
+        setStep(1);
+      } else {
+        console.error("Property with propId not found");
+      }
+    }
+  }, [propId, properties]);
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">
