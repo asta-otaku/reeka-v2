@@ -51,6 +51,9 @@ function StepOne({
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
+  const emailRegex = new RegExp(
+    `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
+  );
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -90,6 +93,9 @@ function StepOne({
       !formDetails.countryCode
     ) {
       return toast.error("Please fill all fields");
+    }
+    if (formDetails.email && !emailRegex.test(formDetails.email)) {
+      return toast.error("Invalid email address");
     }
 
     const checkInDate = new Date(formDetails.checkIn);
