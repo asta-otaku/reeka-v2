@@ -6,7 +6,7 @@ import apiClient from "../../helpers/apiClient";
 import useStore from "../../store";
 import StaffTable from "./StaffTable";
 
-function PersonnelManagement() {
+function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
   interface Staff {
     id: string;
     firstName: string;
@@ -34,7 +34,7 @@ function PersonnelManagement() {
   useEffect(() => {
     const fetchStaffs = async () => {
       try {
-        const response = await apiClient.get(`/staff`);
+        const response = await apiClient.get(isAgent ? "/agents" : "/staff");
         setStaffs(response.data);
       } catch (error) {
         console.error(error);
@@ -78,6 +78,32 @@ function PersonnelManagement() {
     }
   };
 
+  const handleAgent = async (item: any) => {
+    try {
+      if (item.isActive === true) {
+        await apiClient.patch(`/agents/${item._id}/revoke`);
+        const updatedStaffs = staffs.map((staff: any) => {
+          if (staff.id === item.id) {
+            return { ...staff, isActive: false };
+          }
+          return staff;
+        });
+        setStaffs(updatedStaffs);
+      } else {
+        await apiClient.patch(`/agents/${item._id}/restore`);
+        const updatedStaffs = staffs.map((staff: any) => {
+          if (staff.id === item.id) {
+            return { ...staff, isActive: true };
+          }
+          return staff;
+        });
+        setStaffs(updatedStaffs);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {
@@ -91,12 +117,16 @@ function PersonnelManagement() {
                     <input
                       type="search"
                       onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Search staff"
+                      placeholder={isAgent ? "Search Agents" : "Search Staff"}
                       className="outline-none text-secondary text-xs bg-transparent md:w-full"
                     />
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 bg-white border border-solid shadow-sm shadow-gray-400 rounded-md p-2 w-fit">
+                  <div
+                    className={`flex items-center justify-center gap-2 bg-white border border-solid shadow-sm shadow-gray-400 rounded-md p-2 w-fit ${
+                      isAgent && "hidden"
+                    }`}
+                  >
                     <select
                       className="outline-none text-secondary text-xs md:text-sm font-medium appearance-none border-none bg-transparent"
                       onChange={(e) => setSelectedRole(e.target.value)}
@@ -114,7 +144,7 @@ function PersonnelManagement() {
                   onClick={() => setStep(2)}
                   className="bg-primary px-4 py-2 rounded-xl text-white text-sm border whitespace-nowrap"
                 >
-                  Add Staff
+                  {isAgent ? "Add Agent" : "Add Staff"}
                 </button>
               </div>
 
@@ -123,10 +153,12 @@ function PersonnelManagement() {
                 setModal={setModal}
                 handleUpdateStaff={handleUpdateStaff}
                 handleDeleteStaff={handleDeleteStaff}
+                isAgent={isAgent}
+                handleAgent={handleAgent}
               />
             </div>
           ),
-          2: <AddPersonnel setStep={setStep} />,
+          2: <AddPersonnel setStep={setStep} isAgent={isAgent} />,
         }[step]
       }
     </>

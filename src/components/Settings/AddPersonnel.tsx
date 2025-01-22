@@ -7,8 +7,10 @@ import Spinner from "../Spinner";
 
 function AddPersonnel({
   setStep,
+  isAgent,
 }: {
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  isAgent?: boolean;
 }) {
   const [formDetails, setFormDetails] = useState({
     email: "",
@@ -42,12 +44,20 @@ function AddPersonnel({
     }
     setLoading(true);
     try {
-      await apiClient.post(`/staff`, {
-        email,
-        role,
-        name,
-        propertyIds: selectedProperties,
-      });
+      if (isAgent) {
+        await apiClient.post("/agents", {
+          email,
+          name,
+          propertIds: selectedProperties,
+        });
+      } else {
+        await apiClient.post(`/staff`, {
+          email,
+          role,
+          name,
+          propertyIds: selectedProperties,
+        });
+      }
       toast.success("Invitation sent successfully!");
       setStep(1); // Navigate back to the previous step
       setLoading(false);
@@ -88,7 +98,7 @@ function AddPersonnel({
               <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
                 <input
                   name="name"
-                  placeholder="Name"
+                  placeholder="FirstName LastName"
                   className="w-full outline-none bg-transparent"
                   onChange={handleChange}
                 />
@@ -119,7 +129,9 @@ function AddPersonnel({
                 <ChevronDownIcon width={16} />
               </div>
             </div>
-            <div className="flex flex-col gap-2 w-full">
+            <div
+              className={`flex flex-col gap-2 w-full ${isAgent && "hidden"}`}
+            >
               <h4 className="text-[#344054] text-sm font-medium">Role</h4>
               <div className="flex items-center justify-between bg-white border border-solid rounded-md p-2 w-full">
                 <select

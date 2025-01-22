@@ -26,6 +26,8 @@ function StaffTable({
   setModal,
   handleUpdateStaff,
   handleDeleteStaff,
+  handleAgent,
+  isAgent,
 }: any) {
   return (
     <div className="overflow-x-auto no-scrollbar">
@@ -39,7 +41,12 @@ function StaffTable({
               <th scope="col" className="px-6 py-4 whitespace-nowrap font-bold">
                 date added
               </th>
-              <th scope="col" className="px-6 py-4 whitespace-nowrap font-bold">
+              <th
+                scope="col"
+                className={`px-6 py-4 whitespace-nowrap font-bold ${
+                  isAgent && "hidden"
+                }`}
+              >
                 role
               </th>
               <th scope="col" className="px-6 py-4 whitespace-nowrap font-bold">
@@ -66,6 +73,7 @@ function StaffTable({
                         staff={item}
                         setModal={setModal}
                         onUpdate={handleUpdateStaff}
+                        isAgent={isAgent}
                       />
                     )
                   }
@@ -76,7 +84,11 @@ function StaffTable({
                   <td className="px-6 py-4 whitespace-nowrap">
                     {item.joinedAt}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td
+                    className={`px-6 py-4 whitespace-nowrap ${
+                      isAgent && "hidden"
+                    }`}
+                  >
                     <span className={`p-1 rounded ${getColor(item.role)}`}>
                       {item.role}
                     </span>
@@ -90,18 +102,30 @@ function StaffTable({
                       className="flex items-center gap-4 py-4"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <button
-                        onClick={() =>
-                          setModal(
-                            <DeleteStaffModal
-                              handleDelete={() => handleDeleteStaff(item.id)}
-                              setModal={setModal}
-                            />
-                          )
-                        }
-                      >
-                        <img src={deleted} alt="Delete" />
-                      </button>
+                      {isAgent ? (
+                        <button onClick={() => handleAgent(item)}>
+                          <span
+                            className={`${
+                              item.isActive ? "text-red-500" : "text-green-500"
+                            } whitespace-nowrap`}
+                          >
+                            {item.isActive ? "Revoke" : "Restore"}
+                          </span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            setModal(
+                              <DeleteStaffModal
+                                handleDelete={() => handleDeleteStaff(item.id)}
+                                setModal={setModal}
+                              />
+                            )
+                          }
+                        >
+                          <img src={deleted} alt="delete" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

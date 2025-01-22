@@ -3,7 +3,7 @@ import apiClient from "../../helpers/apiClient";
 import toast from "react-hot-toast";
 import Spinner from "../Spinner";
 
-function EditStaffModal({ staff, setModal, onUpdate }: any) {
+function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
   const [activeTab, setActiveTab] = useState("details");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -55,9 +55,15 @@ function EditStaffModal({ staff, setModal, onUpdate }: any) {
   const handlePropertyUpdate = async () => {
     setLoading(true);
     try {
-      await apiClient.post(`/staff/${staff.id}/properties`, {
-        propertyId: assignedPropertyIds,
-      });
+      if (isAgent) {
+        await apiClient.patch(`/agents/${staff._id}/properties`, {
+          properties: assignedPropertyIds,
+        });
+      } else {
+        await apiClient.post(`/staff/${staff.id}/properties`, {
+          propertyId: assignedPropertyIds,
+        });
+      }
       onUpdate(staff.id, { properties: assignedPropertyIds });
       setModal(null);
       setLoading(false);
@@ -119,7 +125,7 @@ function EditStaffModal({ staff, setModal, onUpdate }: any) {
       {activeTab === "details" && (
         <form onSubmit={handleSubmit} className="p-4">
           <div className="space-y-4">
-            <div>
+            <div className={`${isAgent && "hidden"}`}>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Role
               </label>

@@ -8,7 +8,8 @@ import PersonnelManagement from "../components/Settings/PersonnelManagement";
 const tabs = [
   { name: "Password Reset", id: "change_password" },
   { name: "Edit Info", id: "edit_info" },
-  { name: "Team Management", id: "team_management" },
+  { name: "Staff Management", id: "staff_management" },
+  { name: "Agent Management", id: "agent_management" },
 ];
 
 function Settings() {
@@ -38,7 +39,9 @@ function Settings() {
                     ? "border-b-2 border-primary text-primary"
                     : "text-gray-500"
                 } ${
-                  tab.id === "team_management" && user.userRole !== "Owner"
+                  (tab.id === "staff_management" ||
+                    tab.id === "agent_management") &&
+                  user.userRole !== "Owner"
                     ? "hidden"
                     : "block"
                 }`}
@@ -53,7 +56,10 @@ function Settings() {
           <div className="mt-6">
             {activeTab === "change_password" && <ChangePassword />}
             {activeTab === "edit_info" && <EditInfo />}
-            {activeTab === "team_management" && <PersonnelManagement />}
+            {activeTab === "staff_management" && <PersonnelManagement />}
+            {activeTab === "agent_management" && (
+              <PersonnelManagement isAgent={true} />
+            )}
           </div>
         </div>
       </div>
