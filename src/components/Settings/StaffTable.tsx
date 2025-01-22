@@ -109,7 +109,7 @@ function StaffTable({
                               item.isActive ? "text-red-500" : "text-green-500"
                             } whitespace-nowrap`}
                           >
-                            {item.isActive ? "Revoke" : "Restore"}
+                            {item.isActive == true ? "Revoke" : "Restore"}
                           </span>
                         </button>
                       ) : (
