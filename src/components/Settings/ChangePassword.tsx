@@ -9,6 +9,12 @@ function ChangePassword() {
     newPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const { staffId } = userSessionDetails;
+
+  const url = staffId
+    ? `/auth/change-password/${staffId}`
+    : "/auth/change-password";
 
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -23,7 +29,7 @@ function ChangePassword() {
       return toast.error("Passwords do not match");
     }
     try {
-      const response = await apiClient.post("/auth/change-password", {
+      const response = await apiClient.post(url, {
         oldPassword: formDetails.oldPassword,
         newPassword: formDetails.newPassword,
       });

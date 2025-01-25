@@ -11,24 +11,28 @@ function EditInfo() {
     address: "",
   });
   const [loading, setLoading] = useState(false);
+  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const { staffId } = userSessionDetails;
+
+  const url = staffId ? `/users/${staffId}` : "/users";
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await apiClient.get("/users");
+        const response = await apiClient.get(url);
         setUser(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchUser();
-  }, []);
+  }, [staffId]);
 
   const handleInfoUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await apiClient.put("/users", {
+      await apiClient.put(url, {
         firstName: user.firstName,
         lastName: user.lastName,
         phoneNumber: user.phoneNumber,

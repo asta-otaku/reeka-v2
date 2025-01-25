@@ -80,12 +80,13 @@ function SignIn() {
             lastName,
             userRole,
             country,
+            staffId,
           } = res.data;
           sessionStorage.setItem("accessToken", accessToken);
           sessionStorage.setItem("refreshToken", refreshToken);
           sessionStorage.setItem(
             "user",
-            JSON.stringify({ firstName, lastName, userRole, country })
+            JSON.stringify({ firstName, lastName, userRole, country, staffId })
           );
 
           setTimeout(() => navigate("/dashboard"), 2000);
