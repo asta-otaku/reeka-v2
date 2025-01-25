@@ -180,10 +180,11 @@ function Pricing({
             </span>
             <input
               name="basePrice"
+              type="number"
               disabled={!edit}
               style={{ color: edit ? "#121212" : "#808080" }}
               onChange={(e) => handleBasePrice(e.target.value)}
-              value={property?.price?.basePrice?.toLocaleString()}
+              value={property?.price?.basePrice}
               className="w-full outline-none bg-transparent"
             />
             <h4 className="text-[#808080]">/Night</h4>
@@ -342,6 +343,7 @@ function Pricing({
             <input
               name="airbnbPrice"
               disabled={!edit}
+              type="number"
               style={{ color: edit ? "#121212" : "#808080" }}
               onChange={(e) => handleAirbnbPrice(e.target.value)}
               value={property?.price?.airbnbPrice?.toLocaleString()}
