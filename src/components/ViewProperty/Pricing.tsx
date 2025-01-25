@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import toast from "react-hot-toast";
-import { useCurrency } from "@/hooks/use-get-currency";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function Pricing({
   edit,
