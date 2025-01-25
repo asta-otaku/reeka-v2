@@ -13,7 +13,7 @@ function Pricing({
 }) {
   // Helper function to ensure number input is valid
   const parseNumberInput = useCallback((value: string) => {
-    return Number(value.replace(/[^0-9]/g, ""));
+    return value.replace(/[^0-9.]/g, ""); // Allow only numbers and a single decimal
   }, []);
 
   // Calculate prices based on percentages
@@ -22,7 +22,7 @@ function Pricing({
     const discountPercentage = property.price.discountPercentage || 0;
     const boostPercentage = property.price.boostPercentage || 0;
 
-    // Ensure discounted price doesn't exceed base price
+    // Calculate discounted and boosted prices
     const calculatedDiscountedPrice = Math.min(
       basePrice,
       basePrice * (1 + discountPercentage / 100)
@@ -30,8 +30,11 @@ function Pricing({
     const calculatedBoostedPrice = basePrice * (1 + boostPercentage / 100);
 
     return {
-      discountedPrice: Math.max(0, Math.round(calculatedDiscountedPrice)),
-      boostedPrice: Math.round(calculatedBoostedPrice),
+      discountedPrice: Math.max(
+        0,
+        Number(calculatedDiscountedPrice.toFixed(2))
+      ),
+      boostedPrice: Number(calculatedBoostedPrice.toFixed(2)),
     };
   }, [
     property.price.basePrice,
@@ -49,8 +52,7 @@ function Pricing({
         ...prev,
         price: {
           ...prev.price,
-          basePrice: numericValue,
-          // Clear manual inputs when base price changes
+          basePrice: Number(numericValue),
           discountedPrice: undefined,
           boostedPrice: undefined,
         },
@@ -62,17 +64,15 @@ function Pricing({
   // Handler for discounted price
   const handleDiscountedPrice = useCallback(
     (value: string) => {
-      const rawValue = value.replace(/,/g, "");
-      const numericValue = parseNumberInput(rawValue);
+      const numericValue = parseNumberInput(value);
       const basePrice = property.price.basePrice;
-      let validDiscountedPrice = numericValue;
+      let validDiscountedPrice = Number(numericValue);
 
       if (basePrice <= 0) return;
 
-      // Ensure discounted price doesn't exceed base price
-      if (numericValue > basePrice) {
+      if (validDiscountedPrice > basePrice) {
         toast.error("Discounted price cannot exceed base price");
-        validDiscountedPrice = Math.min(numericValue, basePrice);
+        validDiscountedPrice = Math.min(validDiscountedPrice, basePrice);
       }
 
       const discountPercentage =
@@ -96,19 +96,19 @@ function Pricing({
   // Handler for boosted price
   const handleBoostedPrice = useCallback(
     (value: string) => {
-      const rawValue = value.replace(/,/g, "");
-      const numericValue = parseNumberInput(rawValue);
+      const numericValue = parseNumberInput(value);
       const basePrice = property.price.basePrice;
 
       if (basePrice <= 0) return;
 
-      const boostPercentage = ((numericValue - basePrice) / basePrice) * 100;
+      const boostPercentage =
+        ((Number(numericValue) - basePrice) / basePrice) * 100;
 
       setProperty((prev: any) => ({
         ...prev,
         price: {
           ...prev.price,
-          boostedPrice: numericValue,
+          boostedPrice: Number(numericValue),
           boostPercentage: Math.max(Number(boostPercentage.toFixed(2)), 0),
         },
       }));
