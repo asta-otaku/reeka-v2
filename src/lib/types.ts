@@ -78,3 +78,25 @@ export interface Property {
   updatedAt: string;
   __v: number;
 }
+
+export interface dahsboardCardData {
+  userAnalytics: {
+    totalNightsBooked: number;
+    totalRevenue: number;
+    averageNightlyRate: number;
+    occupancyRate: number;
+  };
+  percentageChange: {
+    totalNightsBooked: number;
+    totalRevenue: number;
+    averageNightlyRate: number;
+    occupancyRate: number;
+  };
+}
+
+export interface dashboardGraphData {
+  totalRevenue: number;
+  totalNightsBooked: number;
+  date: string;
+  averageNightlyRate: number;
+}

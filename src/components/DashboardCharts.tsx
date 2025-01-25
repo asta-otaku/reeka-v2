@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import apiClient from "../helpers/apiClient";
 import { useCurrency } from "@/hooks/use-get-currency";
+import { dahsboardCardData, dashboardGraphData } from "@/lib/types";
 
 function DashboardCharts({
   filterType,
@@ -15,20 +16,7 @@ function DashboardCharts({
   endDate: Date | undefined;
 }) {
   const [activeMonth, setActiveMonth] = useState("current");
-  const [cardData, setCardData] = useState<{
-    userAnalytics: {
-      totalNightsBooked: number;
-      totalRevenue: number;
-      averageNightlyRate: number;
-      occupancyRate: number;
-    };
-    percentageChange: {
-      totalNightsBooked: number;
-      totalRevenue: number;
-      averageNightlyRate: number;
-      occupancyRate: number;
-    };
-  }>({
+  const [cardData, setCardData] = useState<dahsboardCardData>({
     userAnalytics: {
       totalNightsBooked: 0,
       totalRevenue: 0,
@@ -42,20 +30,7 @@ function DashboardCharts({
       occupancyRate: 0,
     },
   });
-  const [previousCardData, setPreviousCardData] = useState<{
-    userAnalytics: {
-      totalNightsBooked: number;
-      totalRevenue: number;
-      averageNightlyRate: number;
-      occupancyRate: number;
-    };
-    percentageChange: {
-      totalNightsBooked: number;
-      totalRevenue: number;
-      averageNightlyRate: number;
-      occupancyRate: number;
-    };
-  }>({
+  const [previousCardData, setPreviousCardData] = useState<dahsboardCardData>({
     userAnalytics: {
       totalNightsBooked: 0,
       totalRevenue: 0,
@@ -63,27 +38,15 @@ function DashboardCharts({
       occupancyRate: 0,
     },
     percentageChange: {
-      totalNightsBooked: 0,
       totalRevenue: 0,
+      totalNightsBooked: 0,
       averageNightlyRate: 0,
       occupancyRate: 0,
     },
   });
-  const [graphData, setGraphData] = useState<
-    {
-      totalRevenue: number;
-      totalNightsBooked: number;
-      date: string;
-      averageNightlyRate: number;
-    }[]
-  >([]);
+  const [graphData, setGraphData] = useState<dashboardGraphData[]>([]);
   const [previousGraphData, setPreviousGraphData] = useState<
-    {
-      totalRevenue: number;
-      totalNightsBooked: number;
-      date: string;
-      averageNightlyRate: number;
-    }[]
+    dashboardGraphData[]
   >([]);
 
   useEffect(() => {
@@ -94,159 +57,150 @@ function DashboardCharts({
         ? `filterType=${filterType}`
         : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
 
-    //  Card Data
-    const fetchCardData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await apiClient.get(`/analytics/user?${filterQuery}`);
-        setCardData(response.data);
+        const [
+          cardResponse,
+          previousCardResponse,
+          graphResponse,
+          previousGraphResponse,
+        ] = await Promise.all([
+          apiClient.get(`/analytics/user?${filterQuery}`),
+          apiClient.get(`/analytics/previous/user?${filterQuery}`),
+          apiClient.get(`/analytics/user/daily?${filterQuery}`),
+          apiClient.get(`/analytics/previous/user/daily?${filterQuery}`),
+        ]);
+
+        setCardData(cardResponse.data);
+        setPreviousCardData(previousCardResponse.data);
+        setGraphData(graphResponse.data);
+        setPreviousGraphData(previousGraphResponse.data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    const fetchPreviousCardData = async () => {
-      try {
-        const response = await apiClient.get(
-          `/analytics/previous/user?${filterQuery}`
-        );
-        setPreviousCardData(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    //Graph Data
-    const fetchGraphData = async () => {
-      try {
-        const response = await apiClient.get(
-          `/analytics/user/daily?${filterQuery}`
-        );
-        setGraphData(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchPreviousGraphData = async () => {
-      try {
-        const response = await apiClient.get(
-          `/analytics/previous/user/daily?${filterQuery}`
-        );
-        setPreviousGraphData(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchCardData();
-    fetchPreviousCardData();
-    fetchGraphData();
-    fetchPreviousGraphData();
+    fetchData();
   }, [filterType, startDate, endDate]);
 
-  const cards = [
-    {
-      title: "Revenue",
-      amount:
-        activeMonth === "current"
-          ? cardData.userAnalytics.totalRevenue
-          : previousCardData.userAnalytics.totalRevenue,
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.totalRevenue
-          : previousCardData.percentageChange.totalRevenue,
-      caption: "total revenue earned",
-    },
-    {
-      title: "Avg Nightly Rate",
-      amount:
-        activeMonth === "current"
-          ? cardData.userAnalytics.averageNightlyRate
-          : previousCardData.userAnalytics.averageNightlyRate,
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.averageNightlyRate
-          : previousCardData.percentageChange.averageNightlyRate,
-      caption: "revenue/booked nights",
-    },
-    {
-      title: "Occupancy Rate",
-      amount:
-        activeMonth === "current"
-          ? `${cardData.userAnalytics.occupancyRate ?? 0}%`
-          : previousCardData.userAnalytics.occupancyRate + "%",
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.occupancyRate
-          : previousCardData.percentageChange.occupancyRate,
-      caption: "percentage of occupied nights",
-    },
-    {
-      title: "Bookings",
-      amount:
-        activeMonth === "current"
-          ? cardData.userAnalytics.totalNightsBooked
-          : previousCardData.userAnalytics.totalNightsBooked,
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.totalNightsBooked
-          : previousCardData.percentageChange.totalNightsBooked,
-      caption: "total nights booked",
-    },
-  ];
+  const generateCardData = () => {
+    const cardMetrics = [
+      {
+        key: "totalRevenue",
+        title: "Revenue",
+        caption: "total revenue earned",
+        formatValue: (val: number) =>
+          useCurrency() +
+          Number(val)
+            .toFixed(2)
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      },
+      {
+        key: "averageNightlyRate",
+        title: "Avg Nightly Rate",
+        caption: "revenue/booked nights",
+        formatValue: (val: number) =>
+          useCurrency() +
+          Number(val)
+            .toFixed(2)
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      },
+      {
+        key: "occupancyRate",
+        title: "Occupancy Rate",
+        caption: "percentage of occupied nights",
+        formatValue: (val: number) => `${val ?? 0}%`,
+      },
+      {
+        key: "totalNightsBooked",
+        title: "Bookings",
+        caption: "total nights booked",
+        formatValue: (val: number) => val,
+      },
+    ];
 
-  const ChartData = [
-    {
-      title: "Bookings",
-      amount:
-        activeMonth === "current"
-          ? cardData.userAnalytics.totalNightsBooked
-          : previousCardData.userAnalytics.totalNightsBooked,
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.totalNightsBooked
-          : previousCardData.percentageChange.totalNightsBooked,
-      current: graphData?.map((data) => data.totalNightsBooked) ?? [],
-      previous: previousGraphData?.map((data) => data.totalNightsBooked) || [],
-      labels:
-        activeMonth === "current"
-          ? graphData.map((data) => data.date) || []
-          : previousGraphData.map((data) => data.date) || [],
-    },
-    {
-      title: "Revenue",
-      amount:
-        activeMonth === "current"
-          ? cardData.userAnalytics.totalRevenue
-          : previousCardData.userAnalytics.totalRevenue,
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.totalRevenue
-          : previousCardData.percentageChange.totalRevenue,
-      current: graphData.map((data) => data.totalRevenue) || [],
-      previous: previousGraphData.map((data) => data.totalRevenue) || [],
-      labels:
-        activeMonth === "current"
-          ? graphData.map((data) => data.date) || []
-          : previousGraphData.map((data) => data.date) || [],
-    },
-    {
-      title: "Average Nightly Rate",
-      amount:
-        activeMonth === "current"
-          ? cardData.userAnalytics.averageNightlyRate
-          : previousCardData.userAnalytics.averageNightlyRate,
-      percentage:
-        activeMonth === "current"
-          ? cardData.percentageChange.averageNightlyRate
-          : previousCardData.percentageChange.averageNightlyRate,
-      current: graphData.map((data) => data.averageNightlyRate) || [],
-      previous: previousGraphData.map((data) => data.averageNightlyRate) || [],
-      labels:
-        activeMonth === "current"
-          ? graphData.map((data) => data.date) || []
-          : previousGraphData.map((data) => data.date) || [],
-    },
-  ];
+    type UserAnalyticsKeys = keyof typeof cardData.userAnalytics;
+
+    return cardMetrics.map((metric) => {
+      const currentData =
+        cardData.userAnalytics[metric.key as UserAnalyticsKeys];
+      const previousData =
+        previousCardData.userAnalytics[metric.key as UserAnalyticsKeys];
+      const currentPercentage =
+        cardData.percentageChange[metric.key as UserAnalyticsKeys];
+      const previousPercentage =
+        previousCardData.percentageChange[metric.key as UserAnalyticsKeys];
+
+      return {
+        title: metric.title,
+        amount: activeMonth === "current" ? currentData : previousData,
+        percentage:
+          activeMonth === "current" ? currentPercentage : previousPercentage,
+        caption: metric.caption,
+        formatValue: metric.formatValue,
+      };
+    });
+  };
+
+  const generateChartData = () => {
+    const chartMetrics = [
+      {
+        key: "totalNightsBooked",
+        title: "Bookings",
+      },
+      {
+        key: "totalRevenue",
+        title: "Revenue",
+      },
+      {
+        key: "averageNightlyRate",
+        title: "Average Nightly Rate",
+      },
+    ];
+
+    return chartMetrics.map((metric) => {
+      const currentData =
+        graphData.map((data) => data[metric.key as keyof dashboardGraphData]) ??
+        [];
+      const previousData =
+        previousGraphData.map(
+          (data) => data[metric.key as keyof dashboardGraphData]
+        ) ?? [];
+      const currentLabels = graphData.map((data) => data.date) ?? [];
+      const previousLabels = previousGraphData.map((data) => data.date) ?? [];
+
+      const currentAnalytics =
+        cardData.userAnalytics[
+          metric.key as keyof typeof cardData.userAnalytics
+        ];
+      const previousAnalytics =
+        previousCardData.userAnalytics[
+          metric.key as keyof typeof cardData.userAnalytics
+        ];
+      const currentPercentage =
+        cardData.percentageChange[
+          metric.key as keyof typeof cardData.percentageChange
+        ];
+      const previousPercentage =
+        previousCardData.percentageChange[
+          metric.key as keyof typeof previousCardData.percentageChange
+        ];
+
+      return {
+        title: metric.title,
+        amount:
+          activeMonth === "current" ? currentAnalytics : previousAnalytics,
+        percentage:
+          activeMonth === "current" ? currentPercentage : previousPercentage,
+        current: currentData,
+        previous: previousData,
+        labels: activeMonth === "current" ? currentLabels : previousLabels,
+      };
+    });
+  };
+
+  const cards = generateCardData();
+  const ChartData = generateChartData();
 
   return (
     <div>
@@ -275,11 +229,7 @@ function DashboardCharts({
               </div>
               <div>
                 <h2 className="text-[#121212] text-2xl font-medium">
-                  {data.title === "Bookings" || data.title === "Occupancy Rate"
-                    ? data?.amount
-                    : `${useCurrency()}${Number(data?.amount)
-                        ?.toFixed(2)
-                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
+                  {data.formatValue(data.amount)}
                 </h2>
                 <p className="text-xs text-[#808080]">{data.caption}</p>
               </div>
@@ -288,6 +238,7 @@ function DashboardCharts({
         </div>
       </div>
 
+      {/* Rest of the component remains the same */}
       <div className="flex justify-between items-center mt-6 mb-3">
         <h4 className="text-xl font-medium">Reports</h4>
         <div className="flex items-center gap-3">
@@ -343,8 +294,11 @@ function DashboardCharts({
             </h2>
             <div className="mt-4 border rounded-2xl p-3 bg-[#FAFAFA] w-full h-56">
               <LineChart
-                labels={data.labels} // X-axis labels (dates)
-                data={activeMonth === "current" ? data.current : data.previous} // Show current or previous month data
+                labels={data.labels}
+                data={(activeMonth === "current"
+                  ? data.current
+                  : data.previous
+                ).filter((item): item is number => typeof item === "number")}
                 activeMonth={activeMonth}
               />
             </div>
