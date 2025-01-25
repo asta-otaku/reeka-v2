@@ -9,6 +9,7 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
   const [formData, setFormData] = useState({
     role: staff.role,
     phoneNumber: staff.phoneNumber,
+    name: staff.firstName + " " + staff.lastName,
   });
 
   const [properties, setProperties] = useState<any[]>([]);
@@ -40,8 +41,26 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
     e.preventDefault();
     setLoading(true);
     try {
-      await apiClient.put(`/staff/${staff.id}`, formData);
-      onUpdate(staff.id, formData);
+      if (isAgent) {
+        await apiClient.patch(`/agents/${staff.id}`, {
+          name: formData.name,
+          phoneNumber: formData.phoneNumber,
+        });
+        onUpdate(staff.id, {
+          firstName: formData.name.split(" ")[0],
+          lastName: formData.name.split(" ").slice(1).join(" "),
+          phoneNumber: formData.phoneNumber,
+        });
+      } else {
+        await apiClient.put(`/staff/${staff.id}`, {
+          role: formData.role,
+          phoneNumber: formData.phoneNumber,
+        });
+        onUpdate(staff.id, {
+          role: formData.role,
+          phoneNumber: formData.phoneNumber,
+        });
+      }
       setModal(null);
       toast.success("Staff details updated successfully!");
       setLoading(false);
@@ -52,19 +71,35 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
     }
   };
 
+  const handleGenerateAgentLink = async (id: string) => {
+    try {
+      const response = await apiClient.get(`/agents/${id}/url`);
+      navigator.clipboard.writeText(response.data.agentLink);
+      toast.success("Public URL copied to clipboard");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handlePropertyUpdate = async () => {
     setLoading(true);
     try {
       if (isAgent) {
-        await apiClient.patch(`/agents/${staff._id}/properties`, {
+        await apiClient.patch(`/agents/${staff.id}/properties`, {
           properties: assignedPropertyIds,
+        });
+        onUpdate(staff.id, {
+          properties: assignedPropertyIds,
+          propertyNames: properties
+            .filter((property) => assignedPropertyIds.includes(property._id))
+            .map((property) => property.propertyName),
         });
       } else {
         await apiClient.post(`/staff/${staff.id}/properties`, {
           propertyId: assignedPropertyIds,
         });
+        onUpdate(staff.id, { properties: assignedPropertyIds });
       }
-      onUpdate(staff.id, { properties: assignedPropertyIds });
       setModal(null);
       setLoading(false);
       toast.success("Properties updated successfully!");
@@ -143,6 +178,19 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
                 ))}
               </select>
             </div>
+            <div className={`${!isAgent && "hidden"}`}>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone Number
@@ -157,21 +205,33 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
               />
             </div>
           </div>
-          <div className="flex items-center justify-end gap-4 mt-6">
+          <div className="flex items-center justify-between gap-4 mt-6">
             <button
               type="button"
-              onClick={() => setModal(null)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+              onClick={() => handleGenerateAgentLink(staff.id)}
+              className={`px-4 py-2 text-sm font-medium text-white whitespace-nowrap bg-secondary rounded-xl hover:bg-secondary/90 ${
+                !isAgent && "hidden"
+              }`}
             >
-              {loading ? <Spinner /> : "Save Changes"}
+              {loading ? <Spinner /> : "Generate agent link"}
             </button>
+            <div className="flex gap-4 w-full justify-end">
+              <button
+                type="button"
+                onClick={() => setModal(null)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+              >
+                {loading ? <Spinner /> : "Save Changes"}
+              </button>
+            </div>
           </div>
         </form>
       )}

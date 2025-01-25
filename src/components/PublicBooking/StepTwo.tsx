@@ -3,10 +3,9 @@ import prop from "../../assets/prop1.svg";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
-import { CONSTANT } from "../../util";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCurrency } from "../../helpers/getCurrency";
+import apiClient from "../../helpers/apiClient";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -58,6 +57,8 @@ function StepTwo({
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const currency = useCurrency();
+  const { id } = useParams();
+  const location = useLocation();
 
   const handleReserve = async () => {
     setFormData({
@@ -65,19 +66,23 @@ function StepTwo({
       startDate: formatTimestamp(formDetails.checkIn),
       endDate: formatTimestamp(formDetails.checkOut),
     });
+
     setLoading(true);
-    await axios
-      .post(`${CONSTANT.BASE_URL}/public/booking`, formData)
-      .then((res) => {
-        setLoading(false);
-        toast.success("Reservation successful");
-        navigate(`/invoice/${res.data.invoices[res.data.invoices.length - 1]}`);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        toast.error(err.response.data.error || "An error occured");
-      });
+    const apiEndpoint = location.pathname.includes("/agent")
+      ? `/agents/${id}/booking`
+      : `/public/booking`;
+
+    try {
+      const res = await apiClient.post(apiEndpoint, formData);
+      setLoading(false);
+      toast.success("Reservation successful");
+
+      navigate(`/invoice/${res.data.invoices[res.data.invoices.length - 1]}`);
+    } catch (err: any) {
+      console.error(err);
+      setLoading(false);
+      toast.error(err.response?.data?.error || "An error occurred");
+    }
   };
 
   function getPrice(price: string) {

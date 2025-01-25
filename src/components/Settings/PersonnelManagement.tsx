@@ -5,6 +5,7 @@ import AddPersonnel from "./AddPersonnel";
 import apiClient from "../../helpers/apiClient";
 import useStore from "../../store";
 import StaffTable from "./StaffTable";
+import toast from "react-hot-toast";
 
 function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
   interface Staff {
@@ -81,7 +82,7 @@ function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
   const handleAgent = async (item: any) => {
     try {
       if (item.isActive === true) {
-        await apiClient.patch(`/agents/${item._id}/revoke`);
+        await apiClient.patch(`/agents/${item.id}/revoke`);
         const updatedStaffs = staffs.map((staff: any) => {
           if (staff.id === item.id) {
             return { ...staff, isActive: false };
@@ -89,8 +90,9 @@ function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
           return staff;
         });
         setStaffs(updatedStaffs);
+        toast.success("Agent has been revoked successfully");
       } else {
-        await apiClient.patch(`/agents/${item._id}/restore`);
+        await apiClient.patch(`/agents/${item.id}/restore`);
         const updatedStaffs = staffs.map((staff: any) => {
           if (staff.id === item.id) {
             return { ...staff, isActive: true };
@@ -98,6 +100,7 @@ function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
           return staff;
         });
         setStaffs(updatedStaffs);
+        toast.success("Agent has been restored successfully");
       }
     } catch (error) {
       console.error(error);

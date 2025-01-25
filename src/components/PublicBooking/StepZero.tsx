@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { CONSTANT } from "../../util";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import apiClient from "../../helpers/apiClient";
 
 function StepZero({
   setStep,
@@ -14,27 +13,31 @@ function StepZero({
 }) {
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
-  const [properties, setProperties] = useState<any>([]);
-  const { id, propId } = useParams<{ id: string; propId: string }>();
+  const { id, propId } = useParams();
+  const location = useLocation();
+  const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/public/property`,
-          {
-            params: {
-              token: id,
-            },
-          }
-        );
+        const apiEndpoint = location.pathname.includes("/agent")
+          ? `/agents/property`
+          : `/public/property`;
+
+        const params = location.pathname.includes("/agent")
+          ? { publicKey: id }
+          : { token: id };
+
+        // Make the API request
+        const response = await apiClient.get(apiEndpoint, { params });
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
+
     fetchProperties();
-  }, []);
+  }, [id, location.pathname]);
 
   useEffect(() => {
     if (propId && properties.length > 0) {
