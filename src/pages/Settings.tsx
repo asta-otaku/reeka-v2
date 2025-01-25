@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";

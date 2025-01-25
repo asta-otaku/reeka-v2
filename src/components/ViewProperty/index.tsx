@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 // import NotificationModal from "./NotificationModal";
-import DashboardLayout from "../../layouts/DashboardLayout";
+import DashboardLayout from "../layouts/DashboardLayout";
 import searchIcon from "../../assets/search-01.svg";
 import BookingTable from "../BookingTable";
 import ReactPaginate from "react-paginate";
@@ -14,7 +14,7 @@ import Pricing from "./Pricing";
 import Spinner from "../Spinner";
 import useStore from "../../store";
 import apiClient from "../../helpers/apiClient";
-import { useCurrency } from "../../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function ViewProperty() {
   const { id } = useParams(); // Get property ID from the URL

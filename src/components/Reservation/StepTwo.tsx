@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import apiClient from "../../helpers/apiClient";
-import { useCurrency } from "../../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);

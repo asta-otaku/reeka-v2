@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import gridIcon from "../assets/grid-view.svg";
 import line from "../assets/line.svg";
 import menuIcon from "../assets/menu-01.svg";

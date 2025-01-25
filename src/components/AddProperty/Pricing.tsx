@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import pricetag from "../../assets/pricetag.svg";
-import { useCurrency } from "../../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function Pricing({
   toggleSection,

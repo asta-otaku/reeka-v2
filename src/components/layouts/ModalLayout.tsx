@@ -1,4 +1,4 @@
-import useStore from "../store";
+import useStore from "@/store";
 
 function ModalLayout() {
   const { currentModal, setModal } = useStore();

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import info from "../assets/info.svg";
 import LineChart from "../charts/Line";
 import moment from "moment";
-import { useCurrency } from "../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function DashboardPropertyChart({
   activePropertyId,

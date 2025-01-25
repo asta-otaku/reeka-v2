@@ -3,7 +3,7 @@ import info from "../assets/info.svg";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import apiClient from "../helpers/apiClient";
-import { useCurrency } from "../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function DashboardCharts({
   filterType,

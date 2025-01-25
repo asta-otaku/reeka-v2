@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import plus from "../assets/plus-sign-square.svg";
+import plus from "@/assets/plus-sign-square.svg";
 
 import {
   AccountSettingIcon,
@@ -13,11 +13,11 @@ import {
   Hamburger,
   PropertyIcon,
   ScaleIcon,
-} from "../assets/icons";
+} from "@/assets/icons";
 import ModalLayout from "./ModalLayout";
-import useStore from "../store";
+import useStore from "@/store";
 import toast from "react-hot-toast";
-import apiClient from "../helpers/apiClient";
+import apiClient from "@/helpers/apiClient";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import StepOne from "../components/Reservation/StepOne";
 import StepTwo from "../components/Reservation/StepTwo";
 import StepThree from "../components/Reservation/StepThree";

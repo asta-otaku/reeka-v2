@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
 import moment from "moment-timezone";

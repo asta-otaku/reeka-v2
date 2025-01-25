@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Cards from "../components/IntegrationCards";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import airbnb from "../assets/airbnb.svg";
 import bookingsIcon from "../assets/Booking.com_logo 2.svg";
 // import expedia from "../assets/expedia.svg";

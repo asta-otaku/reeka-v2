@@ -5,7 +5,7 @@ import moment from "moment-timezone";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import apiClient from "../helpers/apiClient";
-import { useCurrency } from "../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function BookingTable({
   data,

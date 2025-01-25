@@ -1,6 +1,6 @@
 import { Calendar, ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import downloadIcon from "../assets/download-circle-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import { useEffect, useState } from "react";

@@ -1,52 +1,57 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 import "./index.css";
 
-import App from "./pages/App.tsx";
+import App from "./pages/index.tsx";
 import Bookings from "./pages/Bookings.tsx";
 import Calendar from "./pages/Calendar.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
+import Dashboard from "./pages/dashboard/index.tsx";
 import Integrations from "./pages/Integrations.tsx";
 import ListingManagement from "./pages/ListingManagement.tsx";
 import ReportCenter from "./pages/ReportCenter.tsx";
 import Reservation from "./pages/Reservation.tsx";
 import ViewProperty from "./components/ViewProperty/index.tsx";
-import SignIn from "./pages/SignIn.tsx";
-import SignUp from "./pages/SignUp.tsx";
+import SignIn from "./pages/auth/signIn.tsx";
+import SignUp from "./pages/auth/signUp.tsx";
 import Pricing from "./pages/Pricing.tsx";
-import ResetPassword from "./pages/ResetPassword.tsx";
-import ForgotPassword from "./pages/ForgotPassword.tsx";
+import ResetPassword from "./pages/auth/reset-password.tsx";
+import ForgotPassword from "./pages/auth/forgot-password.tsx";
 import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import PublicInvoice from "./pages/PublicInvoice.tsx";
-import { Toaster } from "react-hot-toast";
+
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Toaster />
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/booking" element={<Bookings />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/integration" element={<Integrations />} />
-        <Route path="/listing" element={<ListingManagement />} />
-        <Route path="/listing/:id" element={<ViewProperty />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/report" element={<ReportCenter />} />
-        <Route path="/reservation" element={<Reservation />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/property/:id/:propId?" element={<PublicBooking />} />
-        <Route path="/invoice/:id" element={<PublicInvoice />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/booking" element={<Bookings />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/integration" element={<Integrations />} />
+          <Route path="/listing" element={<ListingManagement />} />
+          <Route path="/listing/:id" element={<ViewProperty />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/report" element={<ReportCenter />} />
+          <Route path="/reservation" element={<Reservation />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/property/:id/:propId?" element={<PublicBooking />} />
+          <Route path="/invoice/:id" element={<PublicInvoice />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   </React.StrictMode>
 );

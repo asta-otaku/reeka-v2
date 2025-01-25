@@ -6,7 +6,7 @@ import Spinner from "../Spinner";
 import { CONSTANT } from "../../util";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useCurrency } from "../../helpers/getCurrency";
+import { useCurrency } from "@/hooks/use-get-currency";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);

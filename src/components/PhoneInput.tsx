@@ -1,28 +1,40 @@
-function PhoneInput({
-  setFormDetails,
-  formDetails,
-}: {
-  formDetails: any;
-  setFormDetails: any;
-}) {
-  const handleCountryCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
+import { useState } from "react";
 
-    if (input.includes("+")) {
+function PhoneInput({
+  countryCode,
+  phoneNumber,
+  onCountryCodeChange,
+  onPhoneNumberChange,
+}: {
+  countryCode: string;
+  phoneNumber: string;
+  onCountryCodeChange: (value: string) => void;
+  onPhoneNumberChange: (value: string) => void;
+}) {
+  const [internalCountryCode, setInternalCountryCode] = useState(countryCode);
+  const [internalPhoneNumber, setInternalPhoneNumber] = useState(phoneNumber);
+
+  const handleCountryCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value.trim();
+
+    if (input.startsWith("+")) {
       const codeMatch = input.match(/\+\d+/);
       if (codeMatch) {
         const code = codeMatch[0];
-        setFormDetails({ ...formDetails, countryCode: code });
+        setInternalCountryCode(code);
+        onCountryCodeChange(code);
       }
     } else {
-      const validCode = "+" + input.replace(/[^\d]/g, "");
-      setFormDetails({ ...formDetails, countryCode: validCode });
+      const sanitizedCode = "+" + input.replace(/[^\d]/g, "");
+      setInternalCountryCode(sanitizedCode);
+      onCountryCodeChange(sanitizedCode);
     }
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const validPhone = e.target.value.replace(/[^\d]/g, "");
-    setFormDetails({ ...formDetails, phoneNumber: validPhone });
+    const sanitizedPhone = e.target.value.replace(/[^\d]/g, "");
+    setInternalPhoneNumber(sanitizedPhone);
+    onPhoneNumberChange(sanitizedPhone);
   };
 
   return (
@@ -35,8 +47,9 @@ function PhoneInput({
           type="text"
           list="countryCodes"
           autoComplete="off"
+          value={internalCountryCode}
           onChange={handleCountryCodeChange}
-          value={formDetails.countryCode || ""}
+          onBlur={() => onCountryCodeChange(internalCountryCode)}
           placeholder="+1"
           className="w-16 outline-none bg-transparent text-[#667085]"
         />
@@ -211,10 +224,9 @@ function PhoneInput({
       </div>
       <input
         type="text"
-        value={formDetails.phoneNumber || ""}
+        value={internalPhoneNumber}
         onChange={handlePhoneNumberChange}
         placeholder="Phone Number"
-        name="phone"
         className="w-full outline-none bg-transparent text-[#667085]"
       />
     </form>

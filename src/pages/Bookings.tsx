@@ -1,6 +1,6 @@
 import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardLayout from "../components/layouts/DashboardLayout";
 import BookingTable from "../components/BookingTable";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
