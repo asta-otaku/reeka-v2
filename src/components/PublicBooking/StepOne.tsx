@@ -5,13 +5,12 @@ import PhoneInput from "../PhoneInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
-import axios from "axios";
-import { CONSTANT } from "../../util";
 import prop from "../../assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
+import apiClient from "@/helpers/apiClient";
 
 function StepOne({
   handleChange,
@@ -58,8 +57,8 @@ function StepOne({
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/properties/${property._id}/booked-dates`
+        const response = await apiClient.get(
+          `/properties/${property._id}/booked-dates`
         );
         setBookedDates(response.data);
       } catch (error) {

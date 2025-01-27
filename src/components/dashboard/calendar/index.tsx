@@ -1,83 +1,52 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronDownIcon } from "../assets/icons";
-import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../components/layouts/DashboardLayout";
+import { ChevronDownIcon } from "@/assets/icons";
+import DashboardNav from "@/components/DashboardNav";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 import Scheduler from "@mormat/react-scheduler";
 import "@mormat/react-scheduler/dist/mormat_react_scheduler.css";
-import moment from "moment-timezone";
 import { useEffect, useState } from "react";
-import apiClient from "../helpers/apiClient";
+import { formatTimestamp } from "@/lib/utils";
+import { useGetBookings, useGetProperties } from "@/lib/api/queries";
+import { Bookings } from "@/lib/types";
 
 function Calendar() {
   const navigate = useNavigate();
-  const [bookingsArray, setBookingsArray] = useState<any[]>([]);
-  const [properties, setProperties] = useState<any[]>([]);
+  const [bookingsArray, setBookingsArray] = useState<Bookings[]>([]);
+  const { data: properties = [] } = useGetProperties();
+  const { data: bookings } = useGetBookings();
   const [selectedProperty, setSelectedProperty] = useState("");
 
-  function formatTimestamp(timestamp: string, isEndDate = false) {
-    const date = moment(timestamp).tz("Africa/Lagos").format();
-
-    // Set hours and minutes based on whether it's a start or end date
-    const hours = isEndDate ? "18" : "06";
-    const minutes = "00";
-
-    // Return the formatted string in 'YYYY-MM-DD HH:mm' format (in UTC)
-    return `${date.split("T")[0]} ${hours}:${minutes}`;
-  }
-
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
+    if (bookings) {
+      const colorMap: { [key: string]: string } = {};
 
-  useEffect(() => {
-    apiClient
-      .get(`/booking`)
-      .then((response) => {
-        const colorMap: { [key: string]: string } = {};
+      const formattedBookings = bookings.map((booking: Bookings) => {
+        const propertyName = booking?.propertyId?.propertyName;
 
-        const formattedBookings = response.data.map((booking: any) => {
-          const propertyName = booking?.propertyId?.propertyName;
+        if (!colorMap[propertyName]) {
+          colorMap[propertyName] =
+            "#" + Math.floor(Math.random() * 16777215).toString(16);
+        }
 
-          if (!colorMap[propertyName]) {
-            colorMap[propertyName] =
-              "#" + Math.floor(Math.random() * 16777215).toString(16);
-          }
-
-          return {
-            _id: booking.id,
-            propertyName: propertyName,
-            guestFirstName: booking.guestFirstName,
-            guestLastName: booking.guestLastName,
-            startDate: booking.startDate,
-            endDate: booking.endDate,
-            color: colorMap[propertyName],
-            ...booking,
-          };
-        });
-
-        setBookingsArray(formattedBookings);
-      })
-      .catch((error) => {
-        console.error(error);
+        return {
+          color: colorMap[propertyName],
+          ...booking,
+        };
       });
-  }, []);
 
-  // Filter bookings based on the selected property and map them to events for the Scheduler
+      setBookingsArray(formattedBookings);
+    }
+  }, [bookings]);
+
   const events = bookingsArray
-    .filter((bk: any) =>
-      bk?.propertyName?.toLowerCase().includes(selectedProperty.toLowerCase())
+    .filter((bk) =>
+      bk.propertyId.propertyName
+        .toLowerCase()
+        .includes(selectedProperty.toLowerCase())
     )
     .map((booking) => ({
       id: booking._id,
-      label: `${booking.guestFirstName} ${booking.guestLastName} - [${booking.propertyName}]`,
+      label: `${booking.guestFirstName} ${booking.guestLastName} - [${booking.propertyId.propertyName}]`,
       start: formatTimestamp(booking.startDate),
       end: formatTimestamp(booking.endDate, true),
       bgColor: booking.color,
@@ -131,7 +100,7 @@ function Calendar() {
 
         <div className="flex items-center justify-center px-6 my-6">
           <Scheduler
-            events={events} // Events array with formatted timestamps
+            events={events}
             initialDate={new Date()}
             draggable={false}
             onEventDelete={(event: any) => {

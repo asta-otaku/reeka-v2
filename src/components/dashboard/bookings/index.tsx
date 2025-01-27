@@ -1,67 +1,39 @@
-import { ChevronDownIcon } from "../assets/icons";
-import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../components/layouts/DashboardLayout";
-import BookingTable from "../components/BookingTable";
+import { ChevronDownIcon } from "@/assets/icons";
+import DashboardNav from "@/components/DashboardNav";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import BookingTable from "./BookingTable";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactPaginate from "react-paginate";
-import apiClient from "../helpers/apiClient";
+import { useGetBookings, useGetProperties } from "@/lib/api/queries";
+import { usePagination } from "@/hooks/use-pagination";
+import { getStatus } from "@/lib/utils";
 
 function Bookings() {
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState([]);
-  const [properties, setProperties] = useState<any[]>([]);
+  const { data: bookings = [] } = useGetBookings();
+  const { data: properties = [] } = useGetProperties();
   const [selectedProperty, setSelectedProperty] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
-
-  useEffect(() => {
-    apiClient
-      .get(`/booking`)
-      .then((response) => {
-        setBookings(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
-  // Pagination logic
-  const itemsPerPage = 15;
-  const [currentPage, setCurrentPage] = useState(0);
-
-  // Calculate page count based on filtered bookings
-  const pageCount = Math.ceil(
-    bookings.filter((booking: any) =>
-      booking?.propertyId?.propertyName
-        ?.toLowerCase()
-        .includes(selectedProperty.toLowerCase())
-    ).length / itemsPerPage
-  );
-
-  const handlePageChange = ({ selected }: { selected: any }) => {
-    setCurrentPage(selected);
-  };
-
-  // Filter and slice the data for the current page
-  const displayedData = bookings
-    .filter((booking: any) =>
-      booking?.propertyId?.propertyName
-        ?.toLowerCase()
-        .includes(selectedProperty.toLowerCase())
+  const filteredBookings = bookings
+    .filter((item) =>
+      statusFilter
+        ? getStatus(item.startDate, item.endDate) === statusFilter
+        : true
     )
-    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+    .filter((booking) =>
+      selectedProperty
+        ? booking?.propertyId?.propertyName
+            ?.toLowerCase()
+            .includes(selectedProperty.toLowerCase())
+        : true
+    );
+
+  const { currentPageData, pageCount, handlePageChange } = usePagination(
+    filteredBookings,
+    15
+  );
 
   return (
     <DashboardLayout>
@@ -117,7 +89,7 @@ function Bookings() {
         </div>
 
         <div className="overflow-x-auto px-6 no-scrollbar mt-6">
-          <BookingTable data={displayedData} statusFilter={statusFilter} />
+          <BookingTable data={currentPageData} />
         </div>
         <ReactPaginate
           previousLabel={""}

@@ -3,10 +3,9 @@ import prop from "../../assets/prop1.svg";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
-import { CONSTANT } from "../../util";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "@/hooks/use-get-currency";
+import apiClient from "@/helpers/apiClient";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -66,8 +65,8 @@ function StepTwo({
       endDate: formatTimestamp(formDetails.checkOut),
     });
     setLoading(true);
-    await axios
-      .post(`${CONSTANT.BASE_URL}/public/booking`, formData)
+    await apiClient
+      .post(`/public/booking`, formData)
       .then((res) => {
         setLoading(false);
         toast.success("Reservation successful");

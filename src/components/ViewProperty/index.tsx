@@ -4,7 +4,7 @@ import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 // import NotificationModal from "./NotificationModal";
 import DashboardLayout from "../layouts/DashboardLayout";
 import searchIcon from "../../assets/search-01.svg";
-import BookingTable from "../BookingTable";
+import BookingTable from "../dashboard/bookings/BookingTable";
 import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import PropertyDetails from "./PropertyDetails";

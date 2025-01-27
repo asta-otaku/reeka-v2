@@ -98,3 +98,17 @@ export const usePostUserSubscription = () => {
     },
   });
 };
+// Cancel booking mutation
+export const usePostCancelBooking = () => {
+  return useMutation({
+    mutationFn: async (bookingId: string) => await axiosInstance.delete(`/booking/${bookingId}`),
+    onSuccess: () => {
+      toast.success("Booking cancelled successfully");
+      window.location.reload();
+    },
+    onError: (error: AxiosError) => {
+      // @ts-expect-error this is an error from axios
+      toast.error(error.response?.data?.error || "An error occurred");
+    },
+  });
+};

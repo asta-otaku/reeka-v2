@@ -1,7 +1,6 @@
 import StepTwo from "./StepTwo";
 import toast from "react-hot-toast";
 import axios from "axios";
-import { CONSTANT } from "../../util";
 
 function StepThree({
   formDetails,
@@ -26,8 +25,9 @@ function StepThree({
   invoiceId: string;
   bookingId: string;
 }) {
+  const baseURL = import.meta.env.VITE_BASE_URL;
   const handlePay = async () => {
-    const res = await axios.get(`${CONSTANT.BASE_URL}/invoice/${invoiceId}`);
+    const res = await axios.get(`${baseURL}/invoice/${invoiceId}`);
     if (res.status === 200) {
       const link = res.data.invoice.paymentLink;
       window.open(link, "_blank");
@@ -38,7 +38,7 @@ function StepThree({
 
   const handleInvoiceDownload = async () => {
     axios
-      .get(`${CONSTANT.BASE_URL}/invoice/${bookingId}/pdf`, {
+      .get(`${baseURL}/invoice/${bookingId}/pdf`, {
         responseType: "blob",
       })
       .then((response) => {

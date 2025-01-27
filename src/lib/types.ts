@@ -80,18 +80,10 @@ export interface Property {
 }
 
 export interface dahsboardCardData {
-  userAnalytics: {
-    totalNightsBooked: number;
-    totalRevenue: number;
-    averageNightlyRate: number;
-    occupancyRate: number;
-  };
-  percentageChange: {
-    totalNightsBooked: number;
-    totalRevenue: number;
-    averageNightlyRate: number;
-    occupancyRate: number;
-  };
+  totalNightsBooked: number;
+  totalRevenue: number;
+  averageNightlyRate: number;
+  occupancyRate: number;
 }
 
 export interface dashboardGraphData {
@@ -99,4 +91,45 @@ export interface dashboardGraphData {
   totalNightsBooked: number;
   date: string;
   averageNightlyRate: number;
+}
+
+export interface dashboardPropertyCardData {
+  totalBookings: number;
+  revenue: number;
+  averageNightlyRate: number;
+  occupancyRate: number;
+}
+
+export interface dashboardPropertyGraphData {
+  date: string;
+  bookings: number;
+  revenue: number;
+  averageNightlyRate: number;
+}
+
+export interface Bookings {
+  agentId: string | null;
+  _id: string;
+  propertyId: Property;
+  userId: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  sourcePlatform: string;
+  guestFirstName: string;
+  guestLastName: string;
+  guestEmail: string;
+  guestPhone: string;
+  invoices: string[];
+  totalBookingValue: number;
+  paymentStatus: string;
+  numberOfGuests: number;
+  numberOfChildren: number;
+  priceState: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  nightsBooked: number;
+  id: string;
+  color?: string;
 }

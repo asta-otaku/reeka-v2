@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 const getUser = () => JSON.parse(sessionStorage.getItem("user") || "{}");
 
 export const useCurrency = () => {
-    const [currency, setCurrency] = useState<string>("");
+  const [currency, setCurrency] = useState<string>("");
 
-    useEffect(() => {
-        const user = getUser();
-        setCurrency(user.country?.toLowerCase() !== "nigeria" ? "$" : "₦");
-    }, []);
+  useEffect(() => {
+    const user = getUser();
+    setCurrency(user.country?.toLowerCase() !== "nigeria" ? "$" : "₦");
+  }, []);
 
-    return currency;
+  return currency;
 };

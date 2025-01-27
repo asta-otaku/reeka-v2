@@ -1,15 +1,15 @@
 // apiClient.js
 import axios from 'axios';
-import { CONSTANT } from '../util';
 import { toast } from "react-hot-toast";
 
 // Function to get tokens from local storage
 const getAccessToken = () => sessionStorage.getItem("accessToken");
 const getRefreshToken = () => sessionStorage.getItem("refreshToken");
+const baseURL = import.meta.env.VITE_BASE_URL;
 
 // Create the Axios instance
 const apiClient = axios.create({
-  baseURL: CONSTANT.BASE_URL,
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,7 +18,7 @@ const apiClient = axios.create({
 // Function to refresh the access token
 const refreshAccessToken = async () => {
   try {
-    const response = await axios.post(`${CONSTANT.BASE_URL}/auth/refresh-token`, {
+    const response = await axios.post(`${baseURL}/auth/refresh-token`, {
       refreshToken: getRefreshToken(),
     });
 

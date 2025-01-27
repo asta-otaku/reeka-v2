@@ -18,6 +18,7 @@ import ModalLayout from "./ModalLayout";
 import useStore from "@/store";
 import toast from "react-hot-toast";
 import apiClient from "@/helpers/apiClient";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
@@ -81,7 +82,7 @@ function DashboardLayout({ children }: any) {
         }`}
       >
         {/* Nav section */}
-        <nav className="w-full grow md:w-[200px] lg:w-[280px] md:fixed z-[100] flex shrink-0 justify-between">
+        <nav className="w-full grow md:w-[200px] lg:w-[280px] md:fixed flex shrink-0 justify-between">
           <div className="w-full flex flex-col">
             <div className="flex items-center justify-between border rounded-2xl p-3">
               <Link
@@ -90,20 +91,13 @@ function DashboardLayout({ children }: any) {
               >
                 Reeka
               </Link>
-              <div className="flex gap-2">
-                <img
-                  alt="profile"
-                  src={
-                    user?.image ??
-                    `https://ui-avatars.com/api/?name=${encodeURI(
-                      user.firstName + " " + user.lastName
-                    )}`
-                  }
-                  width={35}
-                  height={35}
-                  className="rounded-full border-2 border-blue-1"
-                />
-              </div>
+              <Avatar>
+                {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
+                <AvatarFallback>
+                  {user.firstName?.charAt(0)}
+                  {user.lastName?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
             </div>
 
             <button

@@ -1,5 +1,13 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import airbnb from "@/assets/airbnb.svg";
+import bookingsIcon from "@/assets/Booking.com_logo 2.svg";
+// import expedia from "@/assets/expedia.svg";
+import finance from "@/assets/finance.svg";
+import mpesa from "@/assets/icons8-mpesa-48.png";
+import moment from "moment";
+// import vrbo from "@/assets/vrbo-removebg-preview 1.svg";
+// import trivago from "@/assets/trivago.svg";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -172,9 +180,110 @@ export function getDateRange() {
   return dateRange;
 }
 
+export  function formatTimestamp(timestamp: string, isEndDate = false) {
+    const date = moment(timestamp).tz("Africa/Lagos").format();
+
+    // Set hours and minutes based on whether it's a start or end date
+    const hours = isEndDate ? "18" : "06";
+    const minutes = "00";
+
+    // Return the formatted string in 'YYYY-MM-DD HH:mm' format (in UTC)
+    return `${date.split("T")[0]} ${hours}:${minutes}`;
+  }
+
 export const defaultAnalytics = {
   totalNightsBooked: 0,
   totalRevenue: 0,
   averageNightlyRate: 0,
   occupancyRate: 0,
 };
+
+export const defaultPropertyAnalytics = {
+  totalBookings: 0,
+  revenue: 0,
+  averageNightlyRate: 0,
+  occupancyRate: 0,
+};
+
+export const formatNumber = (num: number): string => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+export const bookings: {
+  name: string;
+  description: string;
+  logo: string;
+  status: boolean;
+  disabled?: boolean;
+}[] = [
+  {
+    name: "Airbnb",
+    description: "Manage your bookings with ease.",
+    logo: airbnb,
+    status: false,
+    disabled: true,
+  },
+  {
+    name: "Booking.com",
+    description: "Manage your bookings with ease.",
+    logo: bookingsIcon,
+    status: false,
+    disabled: true,
+  },
+  // {
+  //   name: "Expedia",
+  //   description: "Manage your bookings with ease.",
+  //   logo: expedia,
+  //   status: false,
+  //   disabled: true,
+  // },
+  // {
+  //   name: "Vrbo",
+  //   description: "Manage your bookings with ease.",
+  //   logo: vrbo,
+  //   status: false,
+  //   disabled: true,
+  // },
+  // {
+  //   name: "Trivago",
+  //   description: "Manage your bookings with ease.",
+  //   logo: trivago,
+  //   status: false,
+  //   disabled: true,
+  // },
+];
+
+export const finances: {
+  name: string;
+  description: string;
+  logo: string;
+  status: boolean;
+  disabled?: boolean;
+}[] = [
+  {
+    name: "Paystack",
+    description: "Manage your payments with ease.",
+    logo: finance,
+    status: false,
+    disabled: true,
+  },
+  {
+    name: "Mpesa",
+    description: "Manage your payments with ease.",
+    logo: mpesa,
+    status: false,
+    disabled: true,
+  },
+];
+
+ export function getStatus(startDate: string, endDate: string) {
+    const start = moment(startDate).tz("Africa/Lagos");
+    const end = moment(endDate).tz("Africa/Lagos");
+    const currentDate = moment().tz("Africa/Lagos");
+
+    if (currentDate.isAfter(end)) {
+      return "Completed";
+    } else if (currentDate.isBefore(start)) {
+      return "Upcoming";
+    } else {
+      return "Ongoing";
+    }
+  }

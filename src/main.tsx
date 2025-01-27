@@ -6,12 +6,12 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 
 import App from "./pages/index.tsx";
-import Bookings from "./pages/Bookings.tsx";
-import Calendar from "./pages/Calendar.tsx";
+import Bookings from "./pages/dashboard/bookings.tsx";
+import Calendar from "./pages/dashboard/calendar.tsx";
 import Dashboard from "./pages/dashboard/index.tsx";
-import Integrations from "./pages/Integrations.tsx";
+import Integrations from "./pages/dashboard/integrations.tsx";
 import ListingManagement from "./pages/ListingManagement.tsx";
-import ReportCenter from "./pages/ReportCenter.tsx";
+import ReportCenter from "./pages/dashboard/reportCenter.tsx";
 import Reservation from "./pages/Reservation.tsx";
 import ViewProperty from "./components/ViewProperty/index.tsx";
 import SignIn from "./pages/auth/signIn.tsx";

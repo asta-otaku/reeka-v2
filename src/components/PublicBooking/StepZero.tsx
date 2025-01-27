@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
 import toast from "react-hot-toast";
-import axios from "axios";
-import { CONSTANT } from "../../util";
 import { useParams } from "react-router-dom";
+import apiClient from "@/helpers/apiClient";
 
 function StepZero({
   setStep,
@@ -20,14 +19,11 @@ function StepZero({
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const response = await axios.get(
-          `${CONSTANT.BASE_URL}/public/property`,
-          {
-            params: {
-              token: id,
-            },
-          }
-        );
+        const response = await apiClient.get(`/public/property`, {
+          params: {
+            token: id,
+          },
+        });
         setProperties(response.data);
       } catch (error) {
         console.error(error);

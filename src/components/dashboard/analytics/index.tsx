@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { DatePicker } from "antd";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
-import DashboardCharts from "@/components/DashboardCharts";
-import DashboardPropertyChart from "@/components/DashboardPropertyChart";
+import DashboardCharts from "./DashboardCharts";
+import DashboardPropertyChart from "./DashboardPropertyChart";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Calendar, ChevronDownIcon, NotificationIcon } from "@/assets/icons";
 import { getDate, getDateRange } from "@/lib/utils";
