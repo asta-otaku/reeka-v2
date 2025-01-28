@@ -2,11 +2,9 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../helpers/apiClient";
-import { useCurrency } from "../helpers/getCurrency";
 
 function Pricing() {
   const [pricingPlan, setPricingPlan] = useState("");
-  const currency = useCurrency();
 
   useEffect(() => {
     const fetchPricing = async () => {
@@ -77,8 +75,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-white text-xs">
-                    {currency} <span className="text-xl font-bold">0</span>{" "}
-                    /Month
+                    ₦ <span className="text-xl font-bold">0</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("trial")}
@@ -124,8 +121,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-[#121212] text-xs">
-                    {currency} <span className="text-xl font-bold">10,000</span>{" "}
-                    /Month
+                    ₦ <span className="text-xl font-bold">10,000</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("reeka_light")}
@@ -172,8 +168,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-white text-xs">
-                    {currency} <span className="text-xl font-bold">20,000</span>{" "}
-                    /Month
+                    ₦ <span className="text-xl font-bold">20,000</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("reeka_premier")}
@@ -218,8 +213,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-[#121212] text-xs">
-                    {currency} <span className="text-xl font-bold">50,000</span>{" "}
-                    /Month
+                    ₦ <span className="text-xl font-bold">50,000</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("reeka_pro")}
