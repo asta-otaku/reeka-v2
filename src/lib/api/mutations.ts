@@ -112,3 +112,19 @@ export const usePostCancelBooking = () => {
     },
   });
 };
+// Change password mutation
+export const useChangePassword = () => {
+  return useMutation({
+    mutationKey: ["change-password"],
+    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
+      const response = await axiosInstance.post("/auth/change-password", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Password changed successfully");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data.error || "An error occurred. Please try again.");
+    },
+  });
+};

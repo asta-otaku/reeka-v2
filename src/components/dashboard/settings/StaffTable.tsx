@@ -1,6 +1,6 @@
 import EditStaffModal from "./EditStaffModal";
 import DeleteStaffModal from "./DeleteStaffModal";
-import deleted from "../../assets/delete-02.svg";
+import deleted from "@/assets/delete-02.svg";
 
 const getColor = (role: string) => {
   switch (role) {

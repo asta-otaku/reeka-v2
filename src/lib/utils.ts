@@ -180,16 +180,16 @@ export function getDateRange() {
   return dateRange;
 }
 
-export  function formatTimestamp(timestamp: string, isEndDate = false) {
-    const date = moment(timestamp).tz("Africa/Lagos").format();
+export function formatTimestamp(timestamp: string, isEndDate = false) {
+  const date = moment(timestamp).tz("Africa/Lagos").format();
 
-    // Set hours and minutes based on whether it's a start or end date
-    const hours = isEndDate ? "18" : "06";
-    const minutes = "00";
+  // Set hours and minutes based on whether it's a start or end date
+  const hours = isEndDate ? "18" : "06";
+  const minutes = "00";
 
-    // Return the formatted string in 'YYYY-MM-DD HH:mm' format (in UTC)
-    return `${date.split("T")[0]} ${hours}:${minutes}`;
-  }
+  // Return the formatted string in 'YYYY-MM-DD HH:mm' format (in UTC)
+  return `${date.split("T")[0]} ${hours}:${minutes}`;
+}
 
 export const defaultAnalytics = {
   totalNightsBooked: 0,
@@ -205,7 +205,8 @@ export const defaultPropertyAnalytics = {
   occupancyRate: 0,
 };
 
-export const formatNumber = (num: number): string => num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export const formatNumber = (num: number): string =>
+  num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 export const bookings: {
   name: string;
@@ -274,16 +275,23 @@ export const finances: {
   },
 ];
 
- export function getStatus(startDate: string, endDate: string) {
-    const start = moment(startDate).tz("Africa/Lagos");
-    const end = moment(endDate).tz("Africa/Lagos");
-    const currentDate = moment().tz("Africa/Lagos");
+export function getStatus(startDate: string, endDate: string) {
+  const start = moment(startDate).tz("Africa/Lagos");
+  const end = moment(endDate).tz("Africa/Lagos");
+  const currentDate = moment().tz("Africa/Lagos");
 
-    if (currentDate.isAfter(end)) {
-      return "Completed";
-    } else if (currentDate.isBefore(start)) {
-      return "Upcoming";
-    } else {
-      return "Ongoing";
-    }
+  if (currentDate.isAfter(end)) {
+    return "Completed";
+  } else if (currentDate.isBefore(start)) {
+    return "Upcoming";
+  } else {
+    return "Ongoing";
   }
+}
+
+export const settingsTabs = [
+  { name: "Password Reset", id: "change_password" },
+  { name: "Edit Info", id: "edit_info" },
+  { name: "Staff Management", id: "staff_management" },
+  { name: "Agent Management", id: "agent_management" },
+];

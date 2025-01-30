@@ -41,7 +41,7 @@ export function Modal({
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full relative"
+      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] w-full relative"
     >
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
         <h5 className="text-[#808080] font-light text-xs">Apartment</h5>

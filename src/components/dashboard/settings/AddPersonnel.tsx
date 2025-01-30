@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ArrowLongLeftIcon, ChevronDownIcon } from "../../assets/icons";
+import { ArrowLongLeftIcon, ChevronDownIcon } from "@/assets/icons";
 import DropdownForm from "./DropdownForm";
-import apiClient from "../../helpers/apiClient";
+import apiClient from "@/helpers/apiClient";
 import toast from "react-hot-toast";
-import Spinner from "../Spinner";
+import Spinner from "../../Spinner";
 
 function AddPersonnel({
   setStep,

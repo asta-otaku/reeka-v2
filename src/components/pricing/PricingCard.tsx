@@ -1,4 +1,3 @@
-import { useCurrency } from "@/hooks/use-get-currency";
 import { PricingCardProps } from "@/lib/types";
 
 const PricingCard = ({
@@ -14,7 +13,6 @@ const PricingCard = ({
   btnTextColor,
   onSelectPlan,
 }: PricingCardProps) => {
-  const currency = useCurrency();
   return (
     <div
       style={{
@@ -32,7 +30,7 @@ const PricingCard = ({
         <p className="text-xs max-w-[280px]">{description}</p>
         <div className="mt-6 flex w-full justify-between items-center">
           <h2 className="text-xs">
-            {currency} <span className="text-xl font-bold">{price}</span> /Month
+            ₦ <span className="text-xl font-bold">{price}</span> /Month
           </h2>
           <button
             onClick={() =>

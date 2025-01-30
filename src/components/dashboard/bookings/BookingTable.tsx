@@ -31,7 +31,7 @@ function BookingTable({ data }: { data: Bookings[] }) {
               )}
             </div>
           </DialogTrigger>
-          <DialogContent className="p-0 max-w-xl w-full bg-transparent border-none">
+          <DialogContent className="p-0 max-w-2xl w-full bg-transparent border-none">
             <Modal booking={item} currency={currency} />
           </DialogContent>
         </Dialog>

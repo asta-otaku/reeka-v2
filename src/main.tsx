@@ -16,11 +16,11 @@ import Reservation from "./pages/Reservation.tsx";
 import ViewProperty from "./components/ViewProperty/index.tsx";
 import SignIn from "./pages/auth/signIn.tsx";
 import SignUp from "./pages/auth/signUp.tsx";
-import Pricing from "./pages/Pricing.tsx";
+import Pricing from "./pages/pricing.tsx";
 import ResetPassword from "./pages/auth/reset-password.tsx";
 import ForgotPassword from "./pages/auth/forgot-password.tsx";
-import Settings from "./pages/Settings.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import Settings from "./pages/dashboard/settings.tsx";
+import NotFound from "./pages/notFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import PublicInvoice from "./pages/PublicInvoice.tsx";
 

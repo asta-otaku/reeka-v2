@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import apiClient from "../../helpers/apiClient";
+import apiClient from "../../../helpers/apiClient";
 import toast from "react-hot-toast";
-import Spinner from "../Spinner";
+import Spinner from "../../Spinner";
 
 function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
   const [activeTab, setActiveTab] = useState("details");

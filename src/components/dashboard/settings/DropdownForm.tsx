@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import info from "../../assets/alert-circle.svg";
-import apiClient from "../../helpers/apiClient";
+import info from "@/assets/alert-circle.svg";
+import apiClient from "@/helpers/apiClient";
 
 function DropdownForm({
   selectedProperties,

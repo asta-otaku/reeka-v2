@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import apiClient from "../../helpers/apiClient";
-import Spinner from "../Spinner";
+import apiClient from "../../../helpers/apiClient";
+import Spinner from "../../Spinner";
 
 function EditInfo() {
   const [user, setUser] = useState({

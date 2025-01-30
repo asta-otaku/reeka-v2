@@ -1,16 +1,10 @@
 import { useState, useEffect } from "react";
-import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../components/layouts/DashboardLayout";
-import ChangePassword from "../components/Settings/ChangePassword";
-import EditInfo from "../components/Settings/EditInfo";
-import PersonnelManagement from "../components/Settings/PersonnelManagement";
-
-const tabs = [
-  { name: "Password Reset", id: "change_password" },
-  { name: "Edit Info", id: "edit_info" },
-  { name: "Staff Management", id: "staff_management" },
-  { name: "Agent Management", id: "agent_management" },
-];
+import DashboardNav from "@/components/DashboardNav";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import ChangePassword from "./ChangePassword";
+import EditInfo from "./EditInfo";
+import PersonnelManagement from "./PersonnelManagement";
+import { settingsTabs as tabs } from "@/lib/utils";
 
 function Settings() {
   const [activeTab, setActiveTab] = useState("change_password");

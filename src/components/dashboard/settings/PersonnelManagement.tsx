@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { ChevronDownIcon } from "../../assets/icons";
-import searchIcon from "../../assets/search.svg";
+import { ChevronDownIcon } from "@/assets/icons";
+import searchIcon from "@/assets/search.svg";
 import AddPersonnel from "./AddPersonnel";
-import apiClient from "../../helpers/apiClient";
-import useStore from "../../store";
+import apiClient from "@/helpers/apiClient";
+import useStore from "@/store";
 import StaffTable from "./StaffTable";
 
 function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
