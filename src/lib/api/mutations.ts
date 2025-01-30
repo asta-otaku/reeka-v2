@@ -18,12 +18,12 @@ export const usePostSignIn = () => {
         lastName: string;
         userRole: string;
         country: string;
-      }
+      };
     }> => axiosInstance.post("/auth/login", loginDetails),
     onSuccess: () => toast.success("Logged in successfully"),
     onError: (error: AxiosError) => {
       // @ts-expect-error this is an error from axios
-     toast.error(error.response?.data.error || "Invalid credentials");
+      toast.error(error.response?.data.error || "Invalid credentials");
     },
   });
 };
@@ -63,11 +63,19 @@ export const usePostForgotPassword = () => {
 export const usePostResetPassword = () => {
   return useMutation({
     mutationKey: ["reset-password"],
-    mutationFn: ({ token, formDetails }: { token: string; formDetails: {
-      newPassword: string;
-      confirmPassword: string;
-    } }) =>
-      axiosInstance.post(`/auth/reset-password-finish?token=${token}`, { newPassword: formDetails.newPassword}),
+    mutationFn: ({
+      token,
+      formDetails,
+    }: {
+      token: string;
+      formDetails: {
+        newPassword: string;
+        confirmPassword: string;
+      };
+    }) =>
+      axiosInstance.post(`/auth/reset-password-finish?token=${token}`, {
+        newPassword: formDetails.newPassword,
+      }),
     onSuccess: () => {
       toast.success("Password reset successful, you can now login");
     },
@@ -81,7 +89,10 @@ export const usePostResetPassword = () => {
 export const usePostUserSubscription = () => {
   return useMutation({
     mutationFn: async (planType: string) => {
-      const response = await axiosInstance.post("/subscriptions/init-user-subscription", { planType });
+      const response = await axiosInstance.post(
+        "/subscriptions/init-user-subscription",
+        { planType }
+      );
       return response.data;
     },
     onSuccess: (data, variables) => {
@@ -101,7 +112,8 @@ export const usePostUserSubscription = () => {
 // Cancel booking mutation
 export const usePostCancelBooking = () => {
   return useMutation({
-    mutationFn: async (bookingId: string) => await axiosInstance.delete(`/booking/${bookingId}`),
+    mutationFn: async (bookingId: string) =>
+      await axiosInstance.delete(`/booking/${bookingId}`),
     onSuccess: () => {
       toast.success("Booking cancelled successfully");
       window.location.reload();
@@ -116,15 +128,57 @@ export const usePostCancelBooking = () => {
 export const useChangePassword = () => {
   return useMutation({
     mutationKey: ["change-password"],
-    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
-      const response = await axiosInstance.post("/auth/change-password", data);
+    mutationFn: async (data: {
+      oldPassword: string;
+      newPassword: string;
+      staffId?: string;
+    }) => {
+      const url = data.staffId
+        ? `/auth/change-password/${data.staffId}`
+        : "/auth/change-password";
+      const response = await axiosInstance.post(url, {
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword,
+      });
       return response.data;
     },
     onSuccess: () => {
       toast.success("Password changed successfully");
     },
     onError: (error: any) => {
-      toast.error(error.response?.data.error || "An error occurred. Please try again.");
+      toast.error(
+        error.response?.data.error || "An error occurred. Please try again."
+      );
+    },
+  });
+};
+// Update user info mutation
+export const useUpdateUserInfo = () => {
+  return useMutation({
+    mutationKey: ["update-user-info"],
+    mutationFn: async (data: {
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+      address: string;
+      staffId?: string;
+    }) => {
+      const url = data.staffId ? `/users/${data.staffId}` : "/users";
+      const response = await axiosInstance.put(url, {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phoneNumber: data.phoneNumber,
+        address: data.address,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Information updated successfully");
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data.error || "An error occurred. Please try again."
+      );
     },
   });
 };

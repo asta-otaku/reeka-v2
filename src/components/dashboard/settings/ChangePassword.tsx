@@ -7,6 +7,8 @@ import Spinner from "@/components/Spinner";
 
 function ChangePassword() {
   const { mutateAsync: changePassword, isPending } = useChangePassword();
+  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const { staffId } = userSessionDetails;
 
   const {
     register,
@@ -26,6 +28,7 @@ function ChangePassword() {
     await changePassword({
       oldPassword: data.oldPassword,
       newPassword: data.newPassword,
+      staffId,
     });
     reset();
   };

@@ -1,54 +1,55 @@
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import apiClient from "../../../helpers/apiClient";
-import Spinner from "../../Spinner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EditInfoSchema } from "@/lib/schema";
+import { z } from "zod";
+import { useUpdateUserInfo } from "@/lib/api/mutations";
+import Spinner from "@/components/Spinner";
+import { useEffect } from "react";
+import apiClient from "@/helpers/apiClient";
 
 function EditInfo() {
-  const [user, setUser] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    address: "",
+  const { mutateAsync: updateUserInfo, isPending } = useUpdateUserInfo();
+  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const { staffId } = userSessionDetails;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<z.infer<typeof EditInfoSchema>>({
+    resolver: zodResolver(EditInfoSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      address: "",
+    },
   });
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await apiClient.get("/users");
-        setUser(response.data);
+        const url = staffId ? `/users/${staffId}` : `/users`;
+        const response = await apiClient.get(url);
+        setValue("firstName", response.data.firstName);
+        setValue("lastName", response.data.lastName);
+        setValue("phoneNumber", response.data.phoneNumber);
+        setValue("address", response.data.address);
       } catch (error) {
         console.error(error);
       }
     };
     fetchUser();
-  }, []);
+  }, [staffId]);
 
-  const handleInfoUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await apiClient.put("/users", {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phoneNumber: user.phoneNumber,
-        address: user.address,
-      });
-      toast.success("Information updated successfully");
-    } catch (error: any) {
-      console.error(error);
-      toast.error(
-        error.response.data.error || "An error occurred. Please try again."
-      );
-    }
-    setLoading(false);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser({
-      ...user,
-      [e.target.name]: e.target.value,
+  const onSubmit = async (data: z.infer<typeof EditInfoSchema>) => {
+    await updateUserInfo({
+      ...data,
+      staffId,
     });
+    reset();
   };
 
   return (
@@ -56,19 +57,21 @@ function EditInfo() {
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
         Edit Your Information
       </h2>
-      <form onSubmit={handleInfoUpdate}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
             First Name
           </label>
           <input
             type="text"
-            value={user.firstName}
-            name="firstName"
-            onChange={handleChange}
+            {...register("firstName")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-            required
           />
+          {errors.firstName && (
+            <div className="text-red-500 text-sm font-normal pt-1">
+              {errors.firstName.message}
+            </div>
+          )}
         </div>
 
         <div className="mb-4">
@@ -77,12 +80,14 @@ function EditInfo() {
           </label>
           <input
             type="text"
-            value={user.lastName}
-            name="lastName"
-            onChange={handleChange}
+            {...register("lastName")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-            required
           />
+          {errors.lastName && (
+            <div className="text-red-500 text-sm font-normal pt-1">
+              {errors.lastName.message}
+            </div>
+          )}
         </div>
 
         <div className="mb-4">
@@ -91,13 +96,15 @@ function EditInfo() {
           </label>
           <input
             type="text"
-            value={user.address}
-            name="address"
-            onChange={handleChange}
+            {...register("address")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-            required
             autoComplete="email"
           />
+          {errors.address && (
+            <div className="text-red-500 text-sm font-normal pt-1">
+              {errors.address.message}
+            </div>
+          )}
         </div>
 
         <div className="mb-4">
@@ -106,20 +113,23 @@ function EditInfo() {
           </label>
           <input
             type="tel"
-            value={user.phoneNumber}
-            name="phoneNumber"
-            onChange={handleChange}
+            {...register("phoneNumber")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-            required
             autoComplete="tel"
           />
+          {errors.phoneNumber && (
+            <div className="text-red-500 text-sm font-normal pt-1">
+              {errors.phoneNumber.message}
+            </div>
+          )}
         </div>
 
         <button
           type="submit"
           className="w-full px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/70 focus:outline-none"
+          disabled={isPending}
         >
-          {loading ? <Spinner /> : "Save Changes"}
+          {isPending ? <Spinner /> : "Save Changes"}
         </button>
       </form>
     </div>

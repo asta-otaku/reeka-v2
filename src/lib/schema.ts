@@ -48,3 +48,10 @@ export const ChangePasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+export const EditInfoSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
+  address: z.string().min(1, "Address is required"),
+});
