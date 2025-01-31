@@ -1,6 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../services/axiosInstance";
-import { Bookings, dahsboardCardData, dashboardGraphData, dashboardPropertyCardData, dashboardPropertyGraphData, PricingPlan, Property } from "../types";
+import {
+  Bookings,
+  dahsboardCardData,
+  dashboardGraphData,
+  dashboardPropertyCardData,
+  dashboardPropertyGraphData,
+  EditUser,
+  PricingPlan,
+  Property,
+  Staff,
+} from "../types";
 import moment from "moment";
 import toast from "react-hot-toast";
 
@@ -32,10 +42,12 @@ export const useGetUserAnalytics = (filterQuery: string) => {
   return useQuery({
     queryKey: ["user-analytics", filterQuery],
     queryFn: async (): Promise<{
-    userAnalytics: dahsboardCardData;
-    percentageChange: dahsboardCardData;
-  }> => {
-      const { data } = await axiosInstance.get(`/analytics/user?${filterQuery}`);
+      userAnalytics: dahsboardCardData;
+      percentageChange: dahsboardCardData;
+    }> => {
+      const { data } = await axiosInstance.get(
+        `/analytics/user?${filterQuery}`
+      );
       return data;
     },
   });
@@ -44,11 +56,13 @@ export const useGetUserAnalytics = (filterQuery: string) => {
 export const useGetPreviousUserAnalytics = (filterQuery: string) => {
   return useQuery({
     queryKey: ["previous-user-analytics", filterQuery],
-    queryFn: async () : Promise<{
-    userAnalytics: dahsboardCardData;
-    percentageChange: dahsboardCardData;
-  }> => {
-      const { data } = await axiosInstance.get(`/analytics/previous/user?${filterQuery}`);
+    queryFn: async (): Promise<{
+      userAnalytics: dahsboardCardData;
+      percentageChange: dahsboardCardData;
+    }> => {
+      const { data } = await axiosInstance.get(
+        `/analytics/previous/user?${filterQuery}`
+      );
       return data;
     },
   });
@@ -58,7 +72,9 @@ export const useGetUserDailyAnalytics = (filterQuery: string) => {
   return useQuery({
     queryKey: ["user-daily-analytics", filterQuery],
     queryFn: async (): Promise<dashboardGraphData[]> => {
-      const { data } = await axiosInstance.get(`/analytics/user/daily?${filterQuery}`);
+      const { data } = await axiosInstance.get(
+        `/analytics/user/daily?${filterQuery}`
+      );
       return data;
     },
   });
@@ -68,7 +84,9 @@ export const useGetPreviousUserDailyAnalytics = (filterQuery: string) => {
   return useQuery({
     queryKey: ["previous-user-daily-analytics", filterQuery],
     queryFn: async (): Promise<dashboardGraphData[]> => {
-      const { data } = await axiosInstance.get(`/analytics/previous/user/daily?${filterQuery}`);
+      const { data } = await axiosInstance.get(
+        `/analytics/previous/user/daily?${filterQuery}`
+      );
       return data;
     },
   });
@@ -82,9 +100,11 @@ export const useGetPropertyAnalytics = (
 ) => {
   const filterParams =
     filterType === "custom_date_range" && startDate && endDate
-      ? `?filterType=custom_date_range&customStartDate=${moment(startDate).format(
+      ? `?filterType=custom_date_range&customStartDate=${moment(
+          startDate
+        ).format("YYYY-MM-DD")}&customEndDate=${moment(endDate).format(
           "YYYY-MM-DD"
-        )}&customEndDate=${moment(endDate).format("YYYY-MM-DD")}`
+        )}`
       : `?filterType=${filterType}`;
 
   return useQuery({
@@ -96,7 +116,7 @@ export const useGetPropertyAnalytics = (
       const { data } = await axiosInstance.get(
         `/analytics/user/properties/${activePropertyId}${filterParams}`
       );
-      return data
+      return data;
     },
   });
 };
@@ -109,9 +129,11 @@ export const useGetPropertyGraphData = (
 ) => {
   const filterParams =
     filterType === "custom_date_range" && startDate && endDate
-      ? `?filterType=custom_date_range&customStartDate=${moment(startDate).format(
+      ? `?filterType=custom_date_range&customStartDate=${moment(
+          startDate
+        ).format("YYYY-MM-DD")}&customEndDate=${moment(endDate).format(
           "YYYY-MM-DD"
-        )}&customEndDate=${moment(endDate).format("YYYY-MM-DD")}`
+        )}`
       : `?filterType=${filterType}`;
 
   return useQuery({
@@ -154,5 +176,27 @@ export const useGetReport = (url: string, title: string) => {
       }
     },
     enabled: false,
+  });
+};
+
+export const useGetUser = (staffId?: string) => {
+  return useQuery({
+    queryKey: ["user", staffId],
+    queryFn: async (): Promise<EditUser> => {
+      const url = staffId ? `/users/${staffId}` : "/users";
+      const response = await axiosInstance.get(url);
+      return response.data;
+    },
+    enabled: !!staffId,
+  });
+};
+
+export const useGetStaffs = (isAgent?: boolean) => {
+  return useQuery({
+    queryKey: ["staffs", isAgent],
+    queryFn: async (): Promise<Staff[]> => {
+      const response = await axiosInstance.get(isAgent ? "/agents" : "/staff");
+      return response.data;
+    },
   });
 };

@@ -133,3 +133,35 @@ export interface Bookings {
   id: string;
   color?: string;
 }
+
+export interface EditUser {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  address: string;
+}
+
+export interface Staff {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  joinedAt: string;
+  properties: string[];
+  propertyNames: string[];
+  role?: string;
+  isActive?: boolean;
+}
+
+export type EditFormState = {
+  name: string;
+  role?: string;
+  phoneNumber: string;
+};
+
+export type EditStaffModalProps = {
+  staff: Staff;
+  onUpdate: (id: string, updatedData: Partial<Staff>) => void;
+  isAgent?: boolean;
+};

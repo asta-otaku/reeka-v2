@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { ArrowLongLeftIcon, ChevronDownIcon } from "@/assets/icons";
 import DropdownForm from "./DropdownForm";
-import apiClient from "@/helpers/apiClient";
+import axiosInstance from "@/lib/services/axiosInstance";
 import toast from "react-hot-toast";
 import Spinner from "../../Spinner";
+import { roleTypes } from "@/lib/utils";
 
 function AddPersonnel({
   setStep,
@@ -28,7 +29,7 @@ function AddPersonnel({
     });
   };
 
-  const handleFormSubmit = async (e: any) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
     const { email, role, name } = formDetails;
@@ -45,13 +46,13 @@ function AddPersonnel({
     setLoading(true);
     try {
       if (isAgent) {
-        await apiClient.post("/agents", {
+        await axiosInstance.post("/agents", {
           email,
           name,
           propertIds: selectedProperties,
         });
       } else {
-        await apiClient.post(`/staff`, {
+        await axiosInstance.post(`/staff`, {
           email,
           role,
           name,
@@ -135,22 +136,19 @@ function AddPersonnel({
               <h4 className="text-[#344054] text-sm font-medium">Role</h4>
               <div className="flex items-center justify-between bg-white border border-solid rounded-md p-2 w-full">
                 <select
+                  className="outline-none text-secondary text-xs md:text-sm font-medium appearance-none border-none bg-transparent w-full"
                   onChange={(e) => {
                     setFormDetails({
                       ...formDetails,
                       role: e.target.value,
                     });
                   }}
-                  className="outline-none text-secondary text-xs md:text-sm w-full font-medium appearance-none border-none bg-transparent"
                 >
-                  <option value="Property Manager">Property Manager</option>
-                  <option value="Administrator">Administrator</option>
-                  <option value="Building and Maintenance">
-                    Building and Maintenance
-                  </option>
-                  <option value="Cleaning">Cleaning</option>
-                  <option value="Associate Manager">Associate Manager</option>
-                  <option value="Front Desk">Front Desk</option>
+                  {roleTypes.slice(1, roleTypes.length).map((role, index) => (
+                    <option key={index} value={role}>
+                      {role}
+                    </option>
+                  ))}
                 </select>
                 <ChevronDownIcon width={12} />
               </div>

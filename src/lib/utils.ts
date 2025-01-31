@@ -295,3 +295,32 @@ export const settingsTabs = [
   { name: "Staff Management", id: "staff_management" },
   { name: "Agent Management", id: "agent_management" },
 ];
+
+export const roleTypes = [
+  "All Roles",
+  "Property Manager",
+  "Building and Maintenance",
+  "Administrator",
+  "Cleaning",
+  "Associate Manager",
+  "Front Desk",
+];
+
+export const getRoleColor = (role: string) => {
+  switch (role) {
+    case "Property Manager":
+      return "bg-[#FAF5FF] text-[#9B51E0]";
+    case "Building and Maintenance":
+      return "bg-[#FFFCF2] text-[#F2C94C]";
+    case "Administrator":
+      return "bg-[#FFEFE8] text-[#E36B37]";
+    case "Cleaning":
+      return "bg-[#E9FFF2] text-[#219653]";
+    case "Associate Manager":
+      return "bg-[#F2F7FF] text-[#2F80ED]";
+    case "Front Desk":
+      return "bg-[#FFFAF0] text-[#FFA15F]";
+    default:
+      return "bg-[#FFFAF0] text-[#FFA15F]";
+  }
+};

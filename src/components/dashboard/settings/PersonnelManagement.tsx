@@ -2,64 +2,42 @@ import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@/assets/icons";
 import searchIcon from "@/assets/search.svg";
 import AddPersonnel from "./AddPersonnel";
-import apiClient from "@/helpers/apiClient";
-import useStore from "@/store";
 import StaffTable from "./StaffTable";
+import { Staff } from "@/lib/types";
+import { useDeleteStaff, useUpdateAgentAccess } from "@/lib/api/mutations";
+import { roleTypes } from "@/lib/utils";
+import { useGetStaffs } from "@/lib/api/queries";
 
 function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
-  interface Staff {
-    id: string;
-    firstName: string;
-    lastName: string;
-    role: string;
-    email: string;
-    phoneNumber: string;
-    joinedAt: string;
-  }
-
   const [staffs, setStaffs] = useState<Staff[]>([]);
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedRole, setSelectedRole] = useState("All Roles");
-  const setModal = useStore((state: any) => state.setModal);
+  const { data } = useGetStaffs(isAgent);
+  const { mutateAsync: updateAgentAccess } = useUpdateAgentAccess();
+  const { mutateAsync: deleteStaff } = useDeleteStaff();
 
   const handleUpdateStaff = (id: string, updatedData: Partial<Staff>) => {
     setStaffs(
-      staffs.map((staff: any) =>
+      staffs.map((staff) =>
         staff.id === id ? { ...staff, ...updatedData } : staff
       )
     );
   };
 
   useEffect(() => {
-    const fetchStaffs = async () => {
-      try {
-        const response = await apiClient.get(isAgent ? "/agents" : "/staff");
-        setStaffs(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchStaffs();
-  }, []);
+    if (data) {
+      setStaffs(data);
+    }
+  }, [data]);
 
-  const roleTypes = [
-    "All Roles",
-    "Property Manager",
-    "Building and Maintenance",
-    "Administrator",
-    "Cleaning",
-    "Associate Manager",
-    "Front Desk",
-  ];
-
-  const filteredData = staffs?.filter((item: any) => {
+  const filteredData = staffs.filter((item) => {
     const matchesSearch =
-      item.firstName?.toLowerCase().includes(search?.toLowerCase()) ||
-      item.lastName?.toLowerCase().includes(search?.toLowerCase()) ||
-      item.role?.toLowerCase().includes(search?.toLowerCase()) ||
-      item.email?.toLowerCase().includes(search?.toLowerCase()) ||
-      item.phoneNumber?.toLowerCase().includes(search?.toLowerCase());
+      item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      item.role?.toLowerCase().includes(search.toLowerCase()) ||
+      item.email.toLowerCase().includes(search.toLowerCase()) ||
+      item.phoneNumber.toLowerCase().includes(search.toLowerCase());
 
     const matchesRole =
       selectedRole === "All Roles" || item.role === selectedRole;
@@ -69,36 +47,24 @@ function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
 
   const handleDeleteStaff = async (id: string) => {
     try {
-      await apiClient.delete(`/staff/${id}`);
-      const updatedStaffs = staffs.filter((staff: any) => staff.id !== id);
+      await deleteStaff(id);
+      const updatedStaffs = staffs.filter((staff) => staff.id !== id);
       setStaffs(updatedStaffs);
-      setModal(null);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleAgent = async (item: any) => {
+  const handleAgent = async (item: Staff) => {
     try {
-      if (item.isActive === true) {
-        await apiClient.patch(`/agents/${item._id}/revoke`);
-        const updatedStaffs = staffs.map((staff: any) => {
-          if (staff.id === item.id) {
-            return { ...staff, isActive: false };
-          }
-          return staff;
-        });
-        setStaffs(updatedStaffs);
-      } else {
-        await apiClient.patch(`/agents/${item._id}/restore`);
-        const updatedStaffs = staffs.map((staff: any) => {
-          if (staff.id === item.id) {
-            return { ...staff, isActive: true };
-          }
-          return staff;
-        });
-        setStaffs(updatedStaffs);
-      }
+      await updateAgentAccess({
+        id: item.id,
+        isActive: item.isActive ?? false,
+      });
+      const updatedStaffs = staffs.map((staff) =>
+        staff.id === item.id ? { ...staff, isActive: !staff.isActive } : staff
+      );
+      setStaffs(updatedStaffs);
     } catch (error) {
       console.error(error);
     }
@@ -150,7 +116,6 @@ function PersonnelManagement({ isAgent }: { isAgent?: boolean }) {
 
               <StaffTable
                 filteredData={filteredData}
-                setModal={setModal}
                 handleUpdateStaff={handleUpdateStaff}
                 handleDeleteStaff={handleDeleteStaff}
                 isAgent={isAgent}

@@ -5,18 +5,18 @@ import { z } from "zod";
 import { useUpdateUserInfo } from "@/lib/api/mutations";
 import Spinner from "@/components/Spinner";
 import { useEffect } from "react";
-import apiClient from "@/helpers/apiClient";
+import { useGetUser } from "@/lib/api/queries";
 
 function EditInfo() {
-  const { mutateAsync: updateUserInfo, isPending } = useUpdateUserInfo();
   const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
   const { staffId } = userSessionDetails;
+  const { mutateAsync: updateUserInfo, isPending } = useUpdateUserInfo();
+  const { data: user } = useGetUser(staffId);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     setValue,
   } = useForm<z.infer<typeof EditInfoSchema>>({
     resolver: zodResolver(EditInfoSchema),
@@ -29,27 +29,19 @@ function EditInfo() {
   });
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const url = staffId ? `/users/${staffId}` : `/users`;
-        const response = await apiClient.get(url);
-        setValue("firstName", response.data.firstName);
-        setValue("lastName", response.data.lastName);
-        setValue("phoneNumber", response.data.phoneNumber);
-        setValue("address", response.data.address);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchUser();
-  }, [staffId]);
+    if (user) {
+      setValue("firstName", user.firstName);
+      setValue("lastName", user.lastName);
+      setValue("phoneNumber", user.phoneNumber);
+      setValue("address", user.address);
+    }
+  }, [user]);
 
   const onSubmit = async (data: z.infer<typeof EditInfoSchema>) => {
     await updateUserInfo({
       ...data,
       staffId,
     });
-    reset();
   };
 
   return (

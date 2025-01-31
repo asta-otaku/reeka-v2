@@ -1,77 +1,70 @@
-import { useEffect, useState } from "react";
-import apiClient from "../../../helpers/apiClient";
-import toast from "react-hot-toast";
+import { useState } from "react";
+import { EditFormState, EditStaffModalProps, Property } from "@/lib/types";
+import { roleTypes } from "@/lib/utils";
+import { useGetProperties } from "@/lib/api/queries";
+import {
+  useUpdateStaffInfo,
+  useUpdateStaffProperties,
+} from "@/lib/api/mutations";
+import { DialogClose } from "@/components/ui/dialog";
 import Spinner from "../../Spinner";
 
-function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
-  const [activeTab, setActiveTab] = useState("details");
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+const EditStaffModal = ({ staff, onUpdate, isAgent }: EditStaffModalProps) => {
+  const [activeTab, setActiveTab] = useState<"details" | "properties">(
+    "details"
+  );
+  const [formData, setFormData] = useState<EditFormState>({
+    name: `${staff.firstName} ${staff.lastName}`,
     role: staff.role,
     phoneNumber: staff.phoneNumber,
   });
 
-  const [properties, setProperties] = useState<any[]>([]);
   const [assignedPropertyIds, setAssignedPropertyIds] = useState<string[]>(
     staff.properties || []
   );
 
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
+  const { data: properties = [] } = useGetProperties();
+  const { mutateAsync: updateInfo, isPending: isUpdatingInfo } =
+    useUpdateStaffInfo();
+  const { mutateAsync: updateProperties, isPending: isUpdatingProperties } =
+    useUpdateStaffProperties();
 
-  const roleTypes = [
-    "Property Manager",
-    "Building and Maintenance",
-    "Administrator",
-    "Cleaning",
-    "Associate Manager",
-    "Front Desk",
-  ];
-  const handleSubmit = async (e: any) => {
+  const handleFormChange = (field: keyof EditFormState, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
     try {
-      await apiClient.put(`/staff/${staff.id}`, formData);
-      onUpdate(staff.id, formData);
-      setModal(null);
-      toast.success("Staff details updated successfully!");
-      setLoading(false);
+      await updateInfo({
+        id: staff.id,
+        name: formData.name,
+        role: formData.role || "",
+        phoneNumber: formData.phoneNumber,
+        isAgent,
+      });
+
+      onUpdate(staff.id, {
+        firstName: formData.name.split(" ")[0],
+        lastName: formData.name.split(" ").slice(1).join(" "),
+        role: formData.role || "",
+        phoneNumber: formData.phoneNumber,
+      });
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to update staff details.");
-      setLoading(false);
+      console.error("Failed to update staff info:", error);
     }
   };
 
   const handlePropertyUpdate = async () => {
-    setLoading(true);
     try {
-      if (isAgent) {
-        await apiClient.patch(`/agents/${staff._id}/properties`, {
-          properties: assignedPropertyIds,
-        });
-      } else {
-        await apiClient.post(`/staff/${staff.id}/properties`, {
-          propertyId: assignedPropertyIds,
-        });
-      }
+      await updateProperties({
+        id: staff.id,
+        assignedPropertyIds,
+        isAgent,
+      });
       onUpdate(staff.id, { properties: assignedPropertyIds });
-      setModal(null);
-      setLoading(false);
-      toast.success("Properties updated successfully!");
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to update properties.");
-      setLoading(false);
+      console.error("Failed to update properties:", error);
     }
   };
 
@@ -92,57 +85,59 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
         <h3 className="text-[#121212] font-medium text-sm">
           Edit Staff Details
         </h3>
-        <span
-          onClick={() => setModal(null)}
-          className="cursor-pointer text-[#808080]"
-        >
-          X
-        </span>
       </div>
+
       <div className="flex border-b">
-        <button
-          className={`p-2 flex-1 ${
-            activeTab === "details"
-              ? "border-b-2 border-primary"
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("details")}
-        >
-          Details
-        </button>
-        <button
-          className={`p-2 flex-1 ${
-            activeTab === "properties"
-              ? "border-b-2 border-primary"
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("properties")}
-        >
-          Properties
-        </button>
+        {(["details", "properties"] as const).map((tab) => (
+          <button
+            key={tab}
+            className={`p-2 flex-1 ${
+              activeTab === tab ? "border-b-2 border-primary" : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
       </div>
 
       {activeTab === "details" && (
         <form onSubmit={handleSubmit} className="p-4">
           <div className="space-y-4">
-            <div className={`${isAgent && "hidden"}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Role
-              </label>
-              <select
-                value={formData.role}
-                onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                {roleTypes.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {!isAgent && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  value={formData.role}
+                  onChange={(e) => handleFormChange("role", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {roleTypes.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {isAgent && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  placeholder="Enter name"
+                  onChange={(e) => handleFormChange("name", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Phone Number
@@ -150,29 +145,19 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
               <input
                 type="tel"
                 value={formData.phoneNumber}
+                placeholder="Phone Number"
                 onChange={(e) =>
-                  setFormData({ ...formData, phoneNumber: e.target.value })
+                  handleFormChange("phoneNumber", e.target.value)
                 }
                 className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
           </div>
-          <div className="flex items-center justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={() => setModal(null)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
-            >
-              {loading ? <Spinner /> : "Save Changes"}
-            </button>
-          </div>
+
+          <FormActions
+            isLoading={isUpdatingInfo}
+            onCancel={() => setActiveTab("details")}
+          />
         </form>
       )}
 
@@ -181,49 +166,96 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
           <h4 className="text-sm font-medium text-gray-700 mb-2">
             Assign Properties
           </h4>
+
           <div className="mt-5 text-secondary">
             <div className="flex flex-col gap-4">
-              {properties.map((property: any) => (
-                <div
+              {properties.map((property) => (
+                <PropertyItem
                   key={property._id}
-                  className="py-2 px-4 border-b border-solid border-gray-300 flex items-center gap-4"
-                >
-                  <input
-                    type="checkbox"
-                    checked={assignedPropertyIds.includes(property._id)}
-                    onChange={() => togglePropertyAssignment(property._id)}
-                    id={`property-${property._id}`}
-                    className="accent-primary"
-                  />
-                  <label
-                    htmlFor={`property-${property._id}`}
-                    className="text-sm text-gray-600 cursor-pointer"
-                  >
-                    {property.propertyName}
-                  </label>
-                </div>
+                  property={property}
+                  isChecked={assignedPropertyIds.includes(property._id)}
+                  onToggle={togglePropertyAssignment}
+                />
               ))}
             </div>
           </div>
-          <div className="flex items-center justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={() => setModal(null)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handlePropertyUpdate}
-              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
-            >
-              {loading ? <Spinner /> : "Save Changes"}
-            </button>
-          </div>
+
+          <FormActions
+            isLoading={isUpdatingProperties}
+            onCancel={() => setActiveTab("properties")}
+            onSave={handlePropertyUpdate}
+          />
         </div>
       )}
     </div>
   );
-}
+};
+
+const PropertyItem = ({
+  property,
+  isChecked,
+  onToggle,
+}: {
+  property: Property;
+  isChecked: boolean;
+  onToggle: (id: string) => void;
+}) => (
+  <div className="py-2 px-4 border-b border-solid border-gray-300 flex items-center gap-4">
+    <input
+      type="checkbox"
+      checked={isChecked}
+      onChange={() => onToggle(property._id)}
+      id={`property-${property._id}`}
+      className="accent-primary"
+    />
+    <label
+      htmlFor={`property-${property._id}`}
+      className="text-sm text-gray-600 cursor-pointer w-full"
+    >
+      {property.propertyName}
+    </label>
+  </div>
+);
+
+const FormActions = ({
+  isLoading,
+  onSave,
+  onCancel,
+}: {
+  isLoading: boolean;
+  onSave?: () => void;
+  onCancel?: () => void;
+}) => (
+  <div className="flex items-center justify-end gap-4 mt-6">
+    <DialogClose asChild>
+      <button
+        type="button"
+        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
+        onClick={onCancel}
+      >
+        Cancel
+      </button>
+    </DialogClose>
+
+    {onSave ? (
+      <button
+        type="button"
+        onClick={onSave}
+        disabled={isLoading}
+        className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+      >
+        {isLoading ? <Spinner /> : "Save Changes"}
+      </button>
+    ) : (
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+      >
+        {isLoading ? <Spinner /> : "Save Changes"}
+      </button>
+    )}
+  </div>
+);
 
 export default EditStaffModal;

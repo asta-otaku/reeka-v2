@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
 import info from "@/assets/alert-circle.svg";
-import apiClient from "@/helpers/apiClient";
+import { useGetProperties } from "@/lib/api/queries";
 
 function DropdownForm({
   selectedProperties,
@@ -9,28 +8,14 @@ function DropdownForm({
   selectedProperties: string[];
   setSelectedProperties: React.Dispatch<React.SetStateAction<string[]>>;
 }) {
-  const [properties, setProperties] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
+  const { data: properties = [] } = useGetProperties();
 
   const handlePropertySelect = (propertyId: string) => {
     if (selectedProperties.includes(propertyId)) {
-      // Deselect the property
       setSelectedProperties(
         selectedProperties.filter((id) => id !== propertyId)
       );
     } else {
-      // Select the property
       setSelectedProperties([...selectedProperties, propertyId]);
     }
   };

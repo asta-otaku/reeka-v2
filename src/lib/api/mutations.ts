@@ -18,6 +18,7 @@ export const usePostSignIn = () => {
         lastName: string;
         userRole: string;
         country: string;
+        staffId?: string;
       };
     }> => axiosInstance.post("/auth/login", loginDetails),
     onSuccess: () => toast.success("Logged in successfully"),
@@ -179,6 +180,102 @@ export const useUpdateUserInfo = () => {
       toast.error(
         error.response?.data.error || "An error occurred. Please try again."
       );
+    },
+  });
+};
+// Update agent access
+export const useUpdateAgentAccess = () => {
+  return useMutation({
+    mutationKey: ["update-agent-access"],
+    mutationFn: async (data: { id: string; isActive: boolean }) => {
+      const url = data.isActive
+        ? `/agents/${data.id}/revoke`
+        : `/agents/${data.id}/restore`;
+      const response = await axiosInstance.patch(url);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Agent access updated successfully");
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data.error || "An error occurred. Please try again."
+      );
+    },
+  });
+};
+// Delete staff mutation
+export const useDeleteStaff = () => {
+  return useMutation({
+    mutationKey: ["delete-staff"],
+    mutationFn: async (id: string) => {
+      await axiosInstance.delete(`/staff/${id}`);
+    },
+    onSuccess: () => {
+      toast.success("Staff deleted successfully");
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data.error || "Failed to delete staff details."
+      );
+    },
+  });
+};
+// Update staff mutation
+export const useUpdateStaffInfo = () => {
+  return useMutation({
+    mutationKey: ["update-staff-info"],
+    mutationFn: async (data: {
+      id: string;
+      name: string;
+      role: string;
+      phoneNumber: string;
+      isAgent?: boolean;
+    }) => {
+      const url = data.isAgent ? `/agents/${data.id}` : `/staff/${data.id}`;
+      const payload = data.isAgent
+        ? { phoneNumber: data.phoneNumber, name: data.name }
+        : { phoneNumber: data.phoneNumber, role: data.role };
+      const response = await axiosInstance[data.isAgent ? "patch" : "put"](
+        url,
+        payload
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Staff details updated successfully");
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data.error || "Failed to update staff details."
+      );
+    },
+  });
+};
+// Update staff properties mutation
+export const useUpdateStaffProperties = () => {
+  return useMutation({
+    mutationKey: ["update-staff-properties"],
+    mutationFn: async (data: {
+      id: string;
+      assignedPropertyIds: string[];
+      isAgent?: boolean;
+    }) => {
+      if (data.isAgent) {
+        await axiosInstance.patch(`/agents/${data.id}/properties`, {
+          properties: data.assignedPropertyIds,
+        });
+      } else {
+        await axiosInstance.post(`/staff/${data.id}/properties`, {
+          propertyId: data.assignedPropertyIds,
+        });
+      }
+    },
+    onSuccess: () => {
+      toast.success("Properties updated successfully");
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data.error || "Failed to update properties.");
     },
   });
 };

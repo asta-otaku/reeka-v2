@@ -1,17 +1,13 @@
-function DeleteStaffModal({ handleDelete, setModal }: any) {
+import { DialogClose } from "@/components/ui/dialog";
+
+function DeleteStaffModal({ handleDelete }: any) {
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xs w-full relative"
+      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] w-full relative"
     >
       <div className="flex items-center justify-between px-4 py-2 border-b">
         <h3 className="text-[#121212] font-medium text-sm">Delete Staff</h3>
-        <span
-          onClick={() => setModal(null)}
-          className="cursor-pointer text-[#808080]"
-        >
-          X
-        </span>
       </div>
       <div className="p-4">
         <p className="text-[#808080] text-xs">
@@ -24,12 +20,11 @@ function DeleteStaffModal({ handleDelete, setModal }: any) {
           >
             Yes
           </button>
-          <button
-            onClick={() => setModal(null)}
-            className="px-3 py-1.5 text-white rounded-xl bg-green-500 text-sm font-medium"
-          >
-            No
-          </button>
+          <DialogClose>
+            <button className="px-3 py-1.5 text-white rounded-xl bg-green-500 text-sm font-medium">
+              No
+            </button>
+          </DialogClose>
         </div>
       </div>
     </div>
