@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import success from "../assets/success.svg";
 
 export default function StripeSuccessPage() {
@@ -12,12 +11,6 @@ export default function StripeSuccessPage() {
         <p className="mb-6 text-secondary">
           Thank you for your payment. Your transaction was successful.
         </p>
-        <Link
-          to="/dashboard"
-          className="px-6 py-2.5 rounded-xl text-sm font-medium transition-colors duration-300 bg-primary text-white"
-        >
-          Return Home
-        </Link>
       </div>
     </div>
   );
