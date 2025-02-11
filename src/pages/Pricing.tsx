@@ -29,9 +29,9 @@ function Pricing() {
         })
         .then((res: any) => {
           toast.success(`You have selected the ${pricingPlan} plan`);
-          if (res.data.data.authorizationUrl) {
+          if (res.data.data.authorizationUrl || res.data.data) {
             setTimeout(() => {
-              window.location.href = res.data.data.authorizationUrl;
+              window.location.href = res.data.data.authorizationUrl ?? res.data.data;
             }, 2000);
           }
         })
