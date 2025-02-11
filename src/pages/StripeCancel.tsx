@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 export default function StripeCancelPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-deepBlue/20">
@@ -11,12 +9,6 @@ export default function StripeCancelPage() {
           Your payment has been cancelled. Please try again or contact support
           if needed.
         </p>
-        <Link
-          to="/dashboard"
-          className="px-6 py-2.5 rounded-xl text-sm font-medium transition-colors duration-300 bg-primary text-white"
-        >
-          Return Home
-        </Link>
       </div>
     </div>
   );
