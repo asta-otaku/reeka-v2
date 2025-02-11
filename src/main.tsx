@@ -20,11 +20,11 @@ import Pricing from "./pages/Pricing.tsx";
 import ResetPassword from "./pages/auth/reset-password.tsx";
 import ForgotPassword from "./pages/auth/forgot-password.tsx";
 import Settings from "./pages/dashboard/settings.tsx";
-import NotFound from "./pages/notFound.tsx";
+import NotFound from "./pages/NotFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import PublicInvoice from "./pages/PublicInvoice.tsx";
-// import StripeSuccessPage from "./pages/StripeSuccess.tsx";
-// import StripeCancelPage from "./pages/StripeCancel.tsx";
+import StripeSuccessPage from "./pages/StripeSuccess.tsx";
+import StripeCancelPage from "./pages/StripeCancel.tsx";
 
 const queryClient = new QueryClient();
 
@@ -51,8 +51,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/settings" element={<Settings />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          {/* <Route path="/stripe-cancel" element={<StripeCancelPage />} />
-          <Route path="/stripe-success" element={<StripeSuccessPage />} /> */}
+          <Route path="/stripe-cancel" element={<StripeCancelPage />} />
+          <Route path="/stripe-success" element={<StripeSuccessPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
