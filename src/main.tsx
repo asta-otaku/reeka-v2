@@ -18,7 +18,7 @@ import Pricing from "./pages/Pricing.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import ForgotPassword from "./pages/ForgotPassword.tsx";
 import Settings from "./pages/Settings.tsx";
-import NotFound from "./pages/notFound.tsx";
+import NotFound from "./pages/NotFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import PublicInvoice from "./pages/PublicInvoice.tsx";
 import { Toaster } from "react-hot-toast";
