@@ -324,3 +324,23 @@ export const getRoleColor = (role: string) => {
       return "bg-[#FFFAF0] text-[#FFA15F]";
   }
 };
+
+export const defaultProperty = {
+  propertyName: "",
+  address: "",
+  city: "",
+  country: "",
+  baseCurrency: "",
+  owner: "",
+  employees: [],
+  bedroomCount: 0,
+  bathroomCount: 0,
+  amenities: [],
+  price: {
+    basePrice: 0,
+    airbnbPrice: 0,
+    discountPercentage: 0,
+    boostPercentage: 0,
+  },
+  images: [],
+};

@@ -1,5 +1,5 @@
-import cloud from "../../assets/cloud-upload-white.svg";
-import graycancel from "../../assets/graycancel.svg";
+import cloud from "@/assets/cloud-upload-white.svg";
+import graycancel from "@/assets/graycancel.svg";
 
 function ImageSection({
   property,

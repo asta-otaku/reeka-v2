@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { EditFormState, EditStaffModalProps, Property } from "@/lib/types";
 import { roleTypes } from "@/lib/utils";
-import { useGetProperties } from "@/lib/api/queries";
+import { useGetAgentLink, useGetProperties } from "@/lib/api/queries";
 import {
   useUpdateStaffInfo,
   useUpdateStaffProperties,
@@ -157,6 +157,8 @@ const EditStaffModal = ({ staff, onUpdate, isAgent }: EditStaffModalProps) => {
           <FormActions
             isLoading={isUpdatingInfo}
             onCancel={() => setActiveTab("details")}
+            isAgent={isAgent}
+            staffId={staff.id}
           />
         </form>
       )}
@@ -184,6 +186,8 @@ const EditStaffModal = ({ staff, onUpdate, isAgent }: EditStaffModalProps) => {
             isLoading={isUpdatingProperties}
             onCancel={() => setActiveTab("properties")}
             onSave={handlePropertyUpdate}
+            isAgent={isAgent}
+            staffId={staff.id}
           />
         </div>
       )}
@@ -221,41 +225,63 @@ const FormActions = ({
   isLoading,
   onSave,
   onCancel,
+  isAgent,
+  staffId,
 }: {
   isLoading: boolean;
   onSave?: () => void;
   onCancel?: () => void;
-}) => (
-  <div className="flex items-center justify-end gap-4 mt-6">
-    <DialogClose asChild>
-      <button
-        type="button"
-        className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
-        onClick={onCancel}
-      >
-        Cancel
-      </button>
-    </DialogClose>
+  isAgent?: boolean;
+  staffId: string;
+}) => {
+  const { refetch, isLoading: isGeneratingLink } = useGetAgentLink(staffId);
 
-    {onSave ? (
+  const handleGenerateAgentLink = () => {
+    refetch();
+  };
+
+  return (
+    <div className="flex items-center justify-between gap-4 mt-6">
       <button
         type="button"
-        onClick={onSave}
-        disabled={isLoading}
-        className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+        disabled={isGeneratingLink}
+        onClick={handleGenerateAgentLink}
+        className={`px-4 py-2 text-sm font-medium text-white whitespace-nowrap bg-secondary rounded-xl hover:bg-secondary/90 ${
+          !isAgent && "hidden"
+        }`}
       >
-        {isLoading ? <Spinner /> : "Save Changes"}
+        {isGeneratingLink ? <Spinner /> : "Generate agent link"}
       </button>
-    ) : (
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
-      >
-        {isLoading ? <Spinner /> : "Save Changes"}
-      </button>
-    )}
-  </div>
-);
+      <div className="flex gap-4 w-full justify-end">
+        <DialogClose
+          type="button"
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
+          onClick={onCancel}
+        >
+          Cancel
+        </DialogClose>
+
+        {onSave ? (
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={isLoading}
+            className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+          >
+            {isLoading ? <Spinner /> : "Save Changes"}
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+          >
+            {isLoading ? <Spinner /> : "Save Changes"}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default EditStaffModal;

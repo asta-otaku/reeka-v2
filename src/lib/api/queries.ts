@@ -28,13 +28,22 @@ export const useGetUserSubscription = () => {
   });
 };
 
-export const useGetProperties = (id?: string) => {
+export const useGetProperties = () => {
+  return useQuery({
+    queryKey: ["properties"],
+    queryFn: async (): Promise<Property[]> => {
+      return axiosInstance.get("/properties").then((res) => res.data);
+    },
+  });
+};
+
+export const useGetProperty = (id: string) => {
   return useQuery({
     queryKey: ["properties", id],
-    queryFn: async (): Promise<Property[]> => {
-      const url = id ? `/properties/${id}` : "/properties";
-      return axiosInstance.get(url).then((res) => res.data);
+    queryFn: async (): Promise<Property> => {
+      return axiosInstance.get(`/properties/${id}`).then((res) => res.data);
     },
+    enabled: !!id,
   });
 };
 
@@ -151,7 +160,7 @@ export const useGetBookings = (id?: string) => {
   return useQuery({
     queryKey: ["booking", id],
     queryFn: async (): Promise<Bookings[]> => {
-      const url = id ? `/booking/${id}` : "/booking";
+      const url = id ? `/booking/property/${id}` : "/booking";
       return axiosInstance.get(url).then((res) => res.data);
     },
   });
@@ -198,5 +207,31 @@ export const useGetStaffs = (isAgent?: boolean) => {
       const response = await axiosInstance.get(isAgent ? "/agents" : "/staff");
       return response.data;
     },
+  });
+};
+
+export const useGetAgentLink = (id: string) => {
+  return useQuery({
+    queryKey: ["agent-link", id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/agents/${id}/url`);
+      navigator.clipboard.writeText(response.data.agentLink);
+      toast.success("Public URL copied to clipboard");
+    },
+    enabled: false,
+  });
+};
+
+export const useGetPortfolioLink = (id?: string) => {
+  return useQuery({
+    queryKey: ["portfolio-link", id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`/public/url`, {
+        params: { propertyId: id },
+      });
+      navigator.clipboard.writeText(response.data);
+      toast.success("Public URL copied to clipboard");
+    },
+    enabled: false,
   });
 };

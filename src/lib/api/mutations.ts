@@ -1,8 +1,9 @@
 import axiosInstance from "../services/axiosInstance";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { SignIn, SignUp } from "../types";
+import { Property, SignIn, SignUp } from "../types";
+import { useNavigate } from "react-router-dom";
 
 // Signin mutation
 export const usePostSignIn = () => {
@@ -276,6 +277,65 @@ export const useUpdateStaffProperties = () => {
     },
     onError: (error: any) => {
       toast.error(error.response?.data.error || "Failed to update properties.");
+    },
+  });
+};
+// Update property mutation
+export const usePropertyMutation = () => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationKey: ["property-mutation"],
+    mutationFn: async ({
+      id,
+      method,
+      data,
+    }: {
+      id: string;
+      method: "delete" | "put";
+      data: Property;
+    }) => {
+      if (method === "delete") {
+        return axiosInstance.delete(`/properties/${id}`);
+      } else if (method === "put" && data) {
+        const formData = new FormData();
+        formData.append("propertyName", data.propertyName);
+        formData.append("address", data.address);
+        formData.append("city", data.city);
+        formData.append("country", data.country);
+        formData.append("baseCurrency", data.baseCurrency);
+        formData.append("owner", data.owner);
+        formData.append("employees", JSON.stringify([]));
+        formData.append("bedroomCount", data.bedroomCount.toString());
+        formData.append("bathroomCount", data.bathroomCount.toString());
+        formData.append("amenities", JSON.stringify(data.amenities));
+        formData.append("price", JSON.stringify(data.price));
+        data.images.forEach((image) => {
+          formData.append("images", image);
+        });
+
+        return axiosInstance.put(`/properties/${id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+      throw new Error("Invalid method or missing data");
+    },
+    onSuccess: (_, variables) => {
+      const action = variables.method === "delete" ? "deleted" : "updated";
+      toast.success(`Property ${action} successfully`);
+      queryClient.invalidateQueries({ queryKey: ["properties"] });
+
+      setTimeout(() => {
+        navigate("/listing");
+      }, 2000);
+    },
+    onError: (error) => {
+      const action = error.message.includes("delete") ? "delete" : "update";
+      toast.error(`Failed to ${action} property`);
+      console.error(error);
     },
   });
 };

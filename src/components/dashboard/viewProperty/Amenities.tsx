@@ -1,6 +1,6 @@
-import buy from "../../assets/Buy.svg";
-import useStore from "../../store";
-import AddNewFacility from "../AddProperty/AddNewFacility";
+import buy from "@/assets/Buy.svg";
+import useStore from "@/store";
+import AddNewFacility from "@/components/AddProperty/AddNewFacility";
 
 function Amenities({
   edit,

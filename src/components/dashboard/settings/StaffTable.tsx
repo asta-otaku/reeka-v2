@@ -47,6 +47,14 @@ function StaffTable({
               </th>
               <th
                 scope="col"
+                className={`px-6 py-4 whitespace-nowrap font-bold ${
+                  !isAgent && "hidden"
+                }`}
+              >
+                properties
+              </th>
+              <th
+                scope="col"
                 className="px-6 py-4 whitespace-nowrap font-bold"
               />
             </tr>
@@ -81,6 +89,22 @@ function StaffTable({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {item.phoneNumber}
+                      </td>
+                      <td
+                        className={`px-6 py-4 whitespace-nowrap ${
+                          !isAgent && "hidden"
+                        }`}
+                      >
+                        {item.propertyNames.map(
+                          (value: string, index: number) => (
+                            <span
+                              className="flex flex-col bg-offwhite py-1 px-2 mb-1 w-fit rounded-3xl"
+                              key={index}
+                            >
+                              {value}
+                            </span>
+                          )
+                        )}
                       </td>
                       <td>
                         <div

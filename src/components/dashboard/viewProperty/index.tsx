@@ -1,150 +1,72 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
-// import NotificationModal from "./NotificationModal";
-import DashboardLayout from "../layouts/DashboardLayout";
-import searchIcon from "../../assets/search-01.svg";
-import BookingTable from "../dashboard/bookings/BookingTable";
+import { ArrowLongLeftIcon, NotificationIcon } from "@/assets/icons";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import searchIcon from "@/assets/search-01.svg";
+import BookingTable from "../bookings/BookingTable";
 import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import PropertyDetails from "./PropertyDetails";
 import ImageSection from "./ImageSection";
 import Amenities from "./Amenities";
 import Pricing from "./Pricing";
-import Spinner from "../Spinner";
-import useStore from "../../store";
-import apiClient from "../../helpers/apiClient";
+import Spinner from "@/components/Spinner";
 import { useCurrency } from "@/hooks/use-get-currency";
+import {
+  useGetBookings,
+  useGetPortfolioLink,
+  useGetProperty,
+} from "@/lib/api/queries";
+import { defaultProperty } from "@/lib/utils";
+import { usePropertyMutation } from "@/lib/api/mutations";
+import DeleteModal from "./DeleteModal";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 function ViewProperty() {
-  const { id } = useParams(); // Get property ID from the URL
+  const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const setModal = useStore((state: any) => state.setModal);
   const currency = useCurrency();
-
-  const [property, setProperty] = useState<any>({
-    propertyName: "",
-    address: "",
-    city: "",
-    country: "",
-    baseCurrency: "",
-    owner: "",
-    employees: [],
-    bedroomCount: 0,
-    bathroomCount: 0,
-    amenities: [],
-    price: {
-      basePrice: 0,
-      airbnbPrice: 0,
-      discountPercentage: 0,
-      boostPercentage: 0,
-    },
-    images: [],
-  });
-  const [bookedStatus, setBookedStatus] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [bookedStatus, setBookedStatus] = useState(false);
   const [selected, setSelected] = useState(0);
   const [search, setSearch] = useState("");
-  const [bookings, setBookings] = useState<any>([]);
+  const [property, setProperty] = useState<any>(defaultProperty);
+
+  const { refetch, isLoading } = useGetPortfolioLink(id);
+  const { data: bookings } = useGetBookings(id);
+  const { data } = useGetProperty(id || "");
+  const { mutateAsync: updateProperty, isPending: loading } =
+    usePropertyMutation();
 
   useEffect(() => {
-    apiClient
-      .get(`/properties/${id}`)
-      .then((response) => {
-        setProperty(response.data);
-      })
-      .catch((error) => {
-        console.error("Property not found", error);
-        navigate("/listing");
-      });
-  }, [id]);
+    if (data) {
+      setProperty(data);
+    }
+  }, [data]);
 
   useEffect(() => {
-    apiClient
-      .get(`/booking/property/${id}`)
-      .then((response) => {
-        setBookings(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, [id]);
-
-  useEffect(() => {
-    setBookedStatus(bookings.length > 0);
+    setBookedStatus((bookings?.length ?? 0) > 0);
   }, [bookings]);
 
-  const handleDelete = async () => {
-    try {
-      const res = await apiClient.delete(`/properties/${id}`);
-      if (res.status === 204) {
-        toast.success("Property deleted successfully");
-        setModal(null);
-        setTimeout(() => {
-          navigate("/listing");
-        }, 2000);
-      } else {
-        toast.error("An error occurred");
-      }
-    } catch (error) {
-      toast.error("Failed to delete property");
-      console.error(error);
-    }
-  };
-
-  const handleUpdate = async () => {
-    const formData = new FormData();
-    formData.append("propertyName", property.propertyName);
-    formData.append("address", property.address);
-    formData.append("city", property.city);
-    formData.append("country", property.country);
-    formData.append("baseCurrency", property.baseCurrency);
-    formData.append("owner", property.owner);
-    formData.append("employees", JSON.stringify([]));
-    formData.append("bedroomCount", property.bedroomCount.toString());
-    formData.append("bathroomCount", property.bathroomCount.toString());
-    formData.append("amenities", JSON.stringify(property.amenities));
-    formData.append("price", JSON.stringify(property.price));
-    property.images.forEach((image: any) => {
-      formData.append("images", image);
-    });
-
-    try {
-      setLoading(true);
-      const res = await apiClient.put(`/properties/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.status === 200) {
-        toast.success("Property updated successfully");
-        setLoading(false);
-        setTimeout(() => {
-          navigate("/listing");
-        }, 2000);
-      } else {
-        toast.error("An error occurred");
-        setLoading(false);
-      }
-    } catch (error) {
-      toast.error("Failed to update property");
-      setLoading(false);
-      console.error(error);
+  const handleUpdate = async (method: "put" | "delete") => {
+    if (id) {
+      await updateProperty({ id, method, data: property });
+    } else {
+      toast.error("Property ID is missing");
     }
   };
 
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(0);
-  const pageCount = Math.ceil(bookings.length / itemsPerPage);
+  const pageCount = Math.ceil((bookings?.length ?? 0) / itemsPerPage);
 
   const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
 
   const displayedData = bookings
-    .filter(
+    ?.filter(
       (bk: any) =>
         bk?.properyName?.toLowerCase().includes(search.toLowerCase()) ||
         bk?.address?.toLowerCase().includes(search.toLowerCase()) ||
@@ -154,15 +76,7 @@ function ViewProperty() {
     .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   const generatePublicUrl = async () => {
-    try {
-      const response = await apiClient.get(`/public/url`, {
-        params: { propertyId: id },
-      });
-      navigator.clipboard.writeText(response.data);
-      toast.success("Public URL copied to clipboard");
-    } catch (error) {
-      console.error(error);
-    }
+    refetch();
   };
 
   return (
@@ -185,8 +99,6 @@ function ViewProperty() {
             onClick={() => setOpenModal(!openModal)}
             className="w-5 h-5 cursor-pointer"
           />
-
-          {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
         </div>
 
         <div className="my-4 px-6">
@@ -224,28 +136,23 @@ function ViewProperty() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* <button className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium">
-              De-List Property
-            </button> */}
             <button
               onClick={generatePublicUrl}
+              disabled={isLoading}
               className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none"
             >
-              Generate Portfolio Link
+              {isLoading ? <Spinner /> : "Generate Portfolio Link"}
             </button>
-            <button
-              onClick={() =>
-                setModal(
-                  <DeleteModal
-                    handleDelete={handleDelete}
-                    setModal={setModal}
-                  />
-                )
-              }
-              className="px-3 py-2 text-white rounded-lg bg-[#FF3B30] text-sm font-medium"
-            >
-              Delete Property
-            </button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="px-3 py-2 text-white rounded-lg bg-[#FF3B30] text-sm font-medium">
+                  Delete Property
+                </button>
+              </DialogTrigger>
+              <DialogContent className="p-0 bg-transparent border-none">
+                <DeleteModal handleDelete={() => handleUpdate("delete")} />
+              </DialogContent>
+            </Dialog>
           </div>
 
           <hr className="w-full mt-2" />
@@ -278,7 +185,7 @@ function ViewProperty() {
             <div className="flex items-center gap-4 mt-6">
               <button
                 disabled={loading}
-                onClick={handleUpdate}
+                onClick={() => handleUpdate("put")}
                 className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium"
               >
                 {loading ? <Spinner /> : "Save Changes"}
@@ -307,19 +214,9 @@ function ViewProperty() {
               >
                 Booking
               </button>
-              {/* <button
-                onClick={() => setSelected(1)}
-                className={`text-sm pb-2 ${
-                  selected === 1
-                    ? " text-primary border-b border-primary"
-                    : "text-[#808080]"
-                }`}
-              >
-                Finance
-              </button> */}
             </div>
             <div className="px-4 overflow-auto max-h-[400px] no-scrollbar">
-              <BookingTable data={displayedData} />
+              <BookingTable data={displayedData || []} />
               <ReactPaginate
                 previousLabel={""}
                 nextLabel={""}
@@ -341,41 +238,3 @@ function ViewProperty() {
 }
 
 export default ViewProperty;
-
-function DeleteModal({ handleDelete, setModal }: any) {
-  return (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xs w-full relative"
-    >
-      <div className="flex items-center justify-between px-4 py-2 border-b">
-        <h3 className="text-[#121212] font-medium text-sm">Delete Property</h3>
-        <span
-          onClick={() => setModal(null)}
-          className="cursor-pointer text-[#808080]"
-        >
-          X
-        </span>
-      </div>
-      <div className="p-4">
-        <p className="text-[#808080] text-xs">
-          Are you sure you want to delete this property?
-        </p>
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <button
-            onClick={handleDelete}
-            className="px-3 py-1.5 text-white rounded-xl bg-[#FF3B30] text-sm font-medium"
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => setModal(null)}
-            className="px-3 py-1.5 text-white rounded-xl bg-green-500 text-sm font-medium"
-          >
-            No
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}

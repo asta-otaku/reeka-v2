@@ -1,45 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import { ChevronDownIcon } from "../assets/icons";
-import DashboardNav from "../components/DashboardNav";
-import DashboardLayout from "../components/layouts/DashboardLayout";
-import gridIcon from "../assets/grid-view.svg";
-import line from "../assets/line.svg";
-import menuIcon from "../assets/menu-01.svg";
-import searchIcon from "../assets/search-01.svg";
-import AddProperty from "../components/AddProperty";
+import DashboardNav from "@/components/DashboardNav";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+import gridIcon from "@/assets/grid-view.svg";
+import line from "@/assets/line.svg";
+import menuIcon from "@/assets/menu-01.svg";
+import searchIcon from "@/assets/search-01.svg";
+import AddProperty from "@/components/AddProperty";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../helpers/apiClient";
-import toast from "react-hot-toast";
+import { useGetPortfolioLink, useGetProperties } from "@/lib/api/queries";
+import Spinner from "@/components/Spinner";
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
-  const [properties, setProperties] = useState([]);
+  const { data: properties = [] } = useGetProperties();
+  const { refetch, isLoading } = useGetPortfolioLink();
   const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
-
   const generatePublicUrl = async () => {
-    try {
-      const response = await apiClient.get(`/public/url`);
-      navigator.clipboard.writeText(response.data);
-      toast.success("Public URL copied to clipboard");
-    } catch (error) {
-      console.error(error);
-    }
+    refetch();
   };
 
   return (
@@ -54,21 +37,6 @@ function ListingManagement() {
               />
 
               <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 px-6">
-                {/* <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-                    <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                      <option>All Locations</option>
-                    </select>
-                    <ChevronDownIcon width={12} />
-                  </div>
-                  <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-                    <select className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent">
-                      <option>Listed</option>
-                    </select>
-                    <ChevronDownIcon width={12} />
-                  </div>
-                </div> */}
-
                 <div className="flex w-full flex-wrap lg:flex-nowrap justify-between items-center gap-4">
                   <div className="max-w-5xl w-full flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
                     <img src={searchIcon} className="w-5" />
@@ -102,11 +70,12 @@ function ListingManagement() {
                   </button>
                   <button
                     onClick={generatePublicUrl}
+                    disabled={isLoading}
                     className={`bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none ${
                       user && user.userRole !== "Owner" && "hidden"
                     }`}
                   >
-                    Generate Portfolio Link
+                    {isLoading ? <Spinner /> : "Generate Portfolio Link"}
                   </button>
                 </div>
               </div>
