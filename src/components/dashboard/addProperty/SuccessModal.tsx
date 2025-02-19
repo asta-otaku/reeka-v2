@@ -1,13 +1,19 @@
-import blackcancel from "../../assets/blackcancel.svg";
-import success from "../../assets/success.svg";
+import blackcancel from "@/assets/blackcancel.svg";
+import success from "@/assets/success.svg";
 
-function SuccessModal({ setModal, propertyId }: any) {
+function SuccessModal({
+  setOpen,
+  propertyId,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  propertyId: string;
+}) {
   return (
     <div className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl">
       <img
         src={blackcancel}
         className="absolute -top-2 z-10 right-0 cursor-pointer"
-        onClick={() => setModal(null)}
+        onClick={() => setOpen(false)}
       />
 
       <div className="w-full">

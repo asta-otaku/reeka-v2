@@ -6,7 +6,7 @@ import gridIcon from "@/assets/grid-view.svg";
 import line from "@/assets/line.svg";
 import menuIcon from "@/assets/menu-01.svg";
 import searchIcon from "@/assets/search-01.svg";
-import AddProperty from "@/components/AddProperty";
+import AddProperty from "@/components/dashboard/addProperty";
 import { useNavigate } from "react-router-dom";
 import { useGetPortfolioLink, useGetProperties } from "@/lib/api/queries";
 import Spinner from "@/components/Spinner";

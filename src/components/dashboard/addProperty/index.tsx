@@ -1,44 +1,33 @@
 import { useState } from "react";
-import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
-import useStore from "../../store";
+import { ArrowLongLeftIcon, NotificationIcon } from "../../../assets/icons";
 import SuccessModal from "./SuccessModal";
 import Amenities from "./Amenities";
 import Properties from "./Properties";
-import Pricing from "./Pricing";
+import Pricing from "./PricingInputs";
 import ImageUpload from "./ImageUpload";
 // import NotificationModal from "../NotificationModal";
-import Spinner from "../Spinner";
+import Spinner from "../../Spinner";
 import toast from "react-hot-toast";
-import apiClient from "../../helpers/apiClient";
+import { usePropertyMutation } from "@/lib/api/mutations";
+import { defaultProperty } from "@/lib/utils";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 function AddProperty({ setStep }: { setStep: any }) {
   const [openSection, setOpenSection] = useState<string | null>("property");
-  const setModal = useStore((state: any) => state.setModal);
   const [openModal, setOpenModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const { mutateAsync: postProperty, isPending: loading } =
+    usePropertyMutation();
 
   const toggleSection = (section: string) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
 
   const [formDetails, setFormDetails] = useState({
-    propertyName: "",
-    address: "",
-    city: "",
-    country: "",
-    baseCurrency: "NGN",
-    employees: [],
-    price: {
-      basePrice: 0,
-      airbnbPrice: 0,
-      discountPercentage: 0,
-      boostPercentage: 0,
-    },
-    pricingState: "base",
-    bedroomCount: 1,
+    ...defaultProperty,
     bathroomCount: 1,
-    amenities: {},
-    images: [],
+    bedroomCount: 1,
+    baseCurrency: "NGN",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +37,7 @@ function AddProperty({ setStep }: { setStep: any }) {
     });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (
       !formDetails.propertyName ||
@@ -61,58 +50,11 @@ function AddProperty({ setStep }: { setStep: any }) {
     ) {
       return toast.error("Please fill all required fields");
     } else {
-      const formData = new FormData();
-      formData.append("propertyName", formDetails.propertyName);
-      formData.append("address", formDetails.address);
-      formData.append("city", formDetails.city);
-      formData.append("country", formDetails.country);
-      formData.append("baseCurrency", formDetails.baseCurrency);
-      formData.append("employees", JSON.stringify(formDetails.employees));
-      formData.append("bedroomCount", formDetails.bedroomCount.toString());
-      formData.append("bathroomCount", formDetails.bathroomCount.toString());
-      formData.append("amenities", JSON.stringify(formDetails.amenities));
-      formData.append("price", JSON.stringify(formDetails.price));
-      formDetails.images.forEach((image) => {
-        formData.append("images", image);
-      });
-      setLoading(true);
-      apiClient
-        .post(`/properties`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          toast.success("Property added successfully");
-          setLoading(false);
-          setFormDetails({
-            propertyName: "",
-            address: "",
-            city: "",
-            country: "",
-            baseCurrency: "NGN",
-            employees: [],
-            price: {
-              basePrice: 0,
-              airbnbPrice: 0,
-              discountPercentage: 0,
-              boostPercentage: 0,
-            },
-            pricingState: "base",
-            bedroomCount: 0,
-            bathroomCount: 0,
-            amenities: {},
-            images: [],
-          });
-          setModal(
-            <SuccessModal setModal={setModal} propertyId={res.data._id} />
-          );
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.response.data.error || "An error occurred");
-          setLoading(false);
-        });
+      const res = await postProperty({ method: "post", data: formDetails });
+      if (res) {
+        setOpen(true);
+        setFormDetails(defaultProperty);
+      }
     }
   };
 
@@ -161,7 +103,6 @@ function AddProperty({ setStep }: { setStep: any }) {
           <Amenities
             toggleSection={toggleSection}
             openSection={openSection}
-            setModal={setModal}
             formDetails={formDetails}
             setFormDetails={setFormDetails}
           />
@@ -196,6 +137,11 @@ function AddProperty({ setStep }: { setStep: any }) {
           </div>
         </div>
       </div>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-[744px]">
+          <SuccessModal setOpen={setOpen} propertyId="" />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

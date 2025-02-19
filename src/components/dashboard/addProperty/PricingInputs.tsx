@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import pricetag from "../../assets/pricetag.svg";
+import pricetag from "@/assets/pricetag.svg";
 import { useCurrency } from "@/hooks/use-get-currency";
 
 function Pricing({
@@ -8,8 +8,8 @@ function Pricing({
   formDetails,
   setFormDetails,
 }: {
-  toggleSection: any;
-  openSection: any;
+  toggleSection: (section: string) => void;
+  openSection: string | null;
   formDetails: any;
   setFormDetails: any;
 }) {

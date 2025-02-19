@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
-import { Calendar, ChevronDownIcon } from "../../assets/icons";
+import { Calendar, ChevronDownIcon } from "@/assets/icons";
 import toast from "react-hot-toast";
-import PhoneInput from "../PhoneInput";
+import PhoneInput from "@/components/PhoneInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
-import prop from "../../assets/prop1.svg";
+import prop from "@/assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
-import apiClient from "@/helpers/apiClient";
+import { ReservationForm } from "@/lib/types";
+import { emailRegex } from "@/lib/utils";
+import { useGetBookedDates } from "@/lib/api/queries";
 
 function StepOne({
   handleChange,
@@ -20,54 +21,12 @@ function StepOne({
   property,
 }: {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    countryCode: string;
-  };
-  setFormDetails: React.Dispatch<
-    React.SetStateAction<{
-      firstName: string;
-      lastName: string;
-      noOfGuests: string;
-      email: string;
-      phoneNumber: string;
-      checkIn: string;
-      checkOut: string;
-      price: string;
-      countryCode: string;
-    }>
-  >;
+  formDetails: ReservationForm;
+  setFormDetails: React.Dispatch<React.SetStateAction<ReservationForm>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
-  const [bookedDates, setBookedDates] = useState<
-    { start: string; end: string }[]
-  >([]);
-  const emailRegex = new RegExp(
-    `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
-  );
-
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const response = await apiClient.get(
-          `/properties/${property._id}/booked-dates`
-        );
-        setBookedDates(response.data);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to fetch bookings");
-      }
-    };
-    fetchBookings();
-  }, [property._id]);
+  const { data: bookedDates = [] } = useGetBookedDates(property._id);
 
   const isDateBooked = (date: Date) => {
     return bookedDates.some(({ start, end }) =>
@@ -217,8 +176,14 @@ function StepOne({
               Phone Number*
             </h4>
             <PhoneInput
-              formDetails={formDetails}
-              setFormDetails={setFormDetails}
+              countryCode={formDetails.countryCode}
+              phoneNumber={formDetails.phoneNumber}
+              onCountryCodeChange={(code) =>
+                setFormDetails({ ...formDetails, countryCode: code })
+              }
+              onPhoneNumberChange={(number) =>
+                setFormDetails({ ...formDetails, phoneNumber: number })
+              }
             />
           </div>
 
@@ -292,7 +257,7 @@ function StepOne({
                     ? addDays(parseISO(formDetails.checkIn), 1)
                     : new Date()
                 }
-                filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
+                filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check Out Date"
                 className="w-full text-[#667085]"
               />

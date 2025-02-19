@@ -1,35 +1,26 @@
 import { useState } from "react";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../components/layouts/DashboardLayout";
-import StepOne from "../components/Reservation/StepOne";
-import StepTwo from "../components/Reservation/StepTwo";
-import StepThree from "../components/Reservation/StepThree";
-import StepZero from "../components/Reservation/StepZero";
+import StepOne from "@/components/dashboard/reservation/StepOne";
+import StepTwo from "@/components/dashboard/reservation/StepTwo";
+import StepThree from "@/components/dashboard/reservation/StepThree";
+import StepZero from "@/components/dashboard/reservation/StepZero";
 import toast from "react-hot-toast";
+import { defaultReservationForm } from "@/lib/utils";
+import { Property } from "@/lib/types";
 
 const steps = ["Apartment", "Details", "Confirmation"];
 
 function Reservation() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formDetails, setFormDetails] = useState({
-    firstName: "",
-    lastName: "",
-    noOfGuests: "",
-    email: "",
-    phoneNumber: "",
-    checkIn: "",
-    checkOut: "",
-    price: "",
-    countryCode: "",
-  });
-  const [property, setProperty] = useState<any>(null);
+  const [formDetails, setFormDetails] = useState(defaultReservationForm);
+  const [property, setProperty] = useState<Property | undefined>(undefined);
   const [invoiceId, setInvoiceId] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "checkIn") {
-      // Compare checkIn date with current date
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       if (new Date(value) < yesterday) {
@@ -37,10 +28,7 @@ function Reservation() {
         return;
       }
     }
-
-    // Check if it's the Check-Out Date field
     if (name === "checkOut") {
-      // Compare checkOut date with checkIn date or current date
       const checkInDate =
         formDetails.checkIn || new Date().toLocaleDateString("en-CA");
       if (new Date(value) < new Date(checkInDate)) {
@@ -48,8 +36,6 @@ function Reservation() {
         return;
       }
     }
-
-    // Update form details
     setFormDetails({
       ...formDetails,
       [name]: value,

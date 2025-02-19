@@ -1,4 +1,4 @@
-import success from "../assets/success.svg";
+import success from "@/assets/success.svg";
 
 export default function StripeSuccessPage() {
   return (

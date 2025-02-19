@@ -1,22 +1,11 @@
-import editIcon from "../../assets/edit-01.svg";
-import prop from "../../assets/prop1.svg";
-import toast from "react-hot-toast";
+import editIcon from "@/assets/edit-01.svg";
+import prop from "@/assets/prop1.svg";
 import { useState } from "react";
-import Spinner from "../Spinner";
-import apiClient from "../../helpers/apiClient";
+import Spinner from "@/components/Spinner";
 import { useCurrency } from "@/hooks/use-get-currency";
-
-function formatTimestamp(timestamp: string) {
-  const date = new Date(timestamp);
-
-  // Extract date components
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  // Combine to get the desired format
-  return `${year}-${month}-${day}`;
-}
+import { formatTimestampToYearMonthDay } from "@/lib/utils";
+import { ReservationForm } from "@/lib/types";
+import { usePostReservation } from "@/lib/api/mutations";
 
 function StepTwo({
   formDetails,
@@ -25,17 +14,7 @@ function StepTwo({
   property,
   setInvoiceId,
 }: {
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    countryCode: string;
-  };
+  formDetails: ReservationForm;
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
@@ -56,29 +35,21 @@ function StepTwo({
     status: "Upcoming",
     totalBookingValue: 0,
   });
-  const [loading, setLoading] = useState(false);
   const currency = useCurrency();
+  const { mutateAsync: reserveBooking, isPending: loading } =
+    usePostReservation();
 
   const handleReserve = async () => {
-    setFormData({
+    const updatedFormData = {
       ...formData,
-      startDate: formatTimestamp(formDetails.checkIn),
-      endDate: formatTimestamp(formDetails.checkOut),
-    });
-    setLoading(true);
-    await apiClient
-      .post(`/booking`, formData)
-      .then((res) => {
-        setLoading(false);
-        toast.success("Reservation successful");
-        setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
-        setStep(3);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        toast.error(err.response.data.error || "An error occured");
-      });
+      startDate: formatTimestampToYearMonthDay(formDetails.checkIn),
+      endDate: formatTimestampToYearMonthDay(formDetails.checkOut),
+    };
+
+    const response = await reserveBooking(updatedFormData);
+    setInvoiceId(response.invoices[response.invoices.length - 1]);
+    setStep(3);
+    setFormData(updatedFormData);
   };
 
   function getPrice(price: string) {
@@ -107,7 +78,7 @@ function StepTwo({
         return property?.price?.airbnbPrice;
 
       default:
-        return property.price.basePrice; // Default to basePrice if the price type is unrecognized
+        return property.price.basePrice;
     }
   }
 

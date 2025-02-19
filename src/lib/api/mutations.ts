@@ -2,7 +2,7 @@ import axiosInstance from "../services/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
-import { Property, SignIn, SignUp } from "../types";
+import {  SignIn, SignUp } from "../types";
 import { useNavigate } from "react-router-dom";
 
 // Signin mutation
@@ -292,13 +292,13 @@ export const usePropertyMutation = () => {
       method,
       data,
     }: {
-      id: string;
-      method: "delete" | "put";
-      data: Property;
+      id?: string;
+      method: "delete" | "put" | "post";
+      data: any;
     }) => {
       if (method === "delete") {
         return axiosInstance.delete(`/properties/${id}`);
-      } else if (method === "put" && data) {
+      } else if (method === "put" || (method === "post" && data)) {
         const formData = new FormData();
         formData.append("propertyName", data.propertyName);
         formData.append("address", data.address);
@@ -311,11 +311,12 @@ export const usePropertyMutation = () => {
         formData.append("bathroomCount", data.bathroomCount.toString());
         formData.append("amenities", JSON.stringify(data.amenities));
         formData.append("price", JSON.stringify(data.price));
-        data.images.forEach((image) => {
+        data.images.forEach((image: string) => {
           formData.append("images", image);
         });
 
-        return axiosInstance.put(`/properties/${id}`, formData, {
+        const url = method === "post" ? "/properties" : `/properties/${id}`;
+        return axiosInstance[method](url, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -324,7 +325,12 @@ export const usePropertyMutation = () => {
       throw new Error("Invalid method or missing data");
     },
     onSuccess: (_, variables) => {
-      const action = variables.method === "delete" ? "deleted" : "updated";
+      const action =
+        variables.method === "delete"
+          ? "deleted"
+          : variables.method === "post"
+          ? "created"
+          : "updated";
       toast.success(`Property ${action} successfully`);
       queryClient.invalidateQueries({ queryKey: ["properties"] });
 
@@ -333,9 +339,31 @@ export const usePropertyMutation = () => {
       }, 2000);
     },
     onError: (error) => {
-      const action = error.message.includes("delete") ? "delete" : "update";
+      const action = error.message.includes("delete")
+        ? "delete"
+        : error.message.includes("post")
+        ? "create"
+        : "update";
       toast.error(`Failed to ${action} property`);
       console.error(error);
+    },
+  });
+};
+// Create reservation mutation
+export const usePostReservation = () => {
+  return useMutation({
+    mutationKey: ["post-reservation"],
+    mutationFn: async (data: any) => {
+      const response = await axiosInstance.post(`/booking`, data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success("Reservation successful");
+      return data;
+    },
+    onError: (error: AxiosError) => {
+      // @ts-expect-error this is an error from axios
+      toast.error(error.response?.data.error || "An error occurred");
     },
   });
 };

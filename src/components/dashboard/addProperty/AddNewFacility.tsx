@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import back from "../../assets/arrow-left-02.svg";
+import back from "@/assets/arrow-left-02.svg";
+import { DialogClose } from "@/components/ui/dialog";
 
 function AddNewFacility({
   counterStates,
   setCounterStates,
-  setModal,
+  setOpen,
 }: {
   counterStates: any;
   setCounterStates: any;
-  setModal: any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [facilityList] = useState<any>({
     "Swimming Pool": 1,
@@ -45,9 +46,9 @@ function AddNewFacility({
       className="relative bg-[#FAFAFA] max-w-xl w-full rounded-2xl p-4"
     >
       <div className="flex items-center gap-2">
-        <button onClick={() => setModal(null)}>
+        <DialogClose>
           <img src={back} alt="back" />
-        </button>
+        </DialogClose>
         <h2 className="font-medium text-[#3A3A3A] text-sm">Add Amenities</h2>
       </div>
       <p className="text-[#3A3A3A] text-[10px] mt-1">
@@ -123,7 +124,7 @@ function AddNewFacility({
                 ...selectedFacility,
               },
             });
-            setModal(null);
+            setOpen(false);
           }}
           className="bg-[#219653] text-white rounded-lg text-sm font-semibold w-24 h-9"
         >

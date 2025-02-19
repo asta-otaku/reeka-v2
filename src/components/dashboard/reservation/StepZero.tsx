@@ -1,30 +1,19 @@
-import { useState, useEffect } from "react";
-import searchIcon from "../../assets/search-01.svg";
+import { useState } from "react";
+import searchIcon from "@/assets/search-01.svg";
 import toast from "react-hot-toast";
-import apiClient from "../../helpers/apiClient";
+import { useGetProperties } from "@/lib/api/queries";
+import { Property } from "@/lib/types";
 
 function StepZero({
   setStep,
   setProperty,
 }: {
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  setProperty: React.Dispatch<React.SetStateAction<any>>;
+  setProperty: React.Dispatch<React.SetStateAction<Property | undefined>>;
 }) {
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
-  const [properties, setProperties] = useState<any>([]);
-
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
+  const { data: properties = [] } = useGetProperties();
 
   return (
     <div className="flex flex-col gap-5 items-center w-full">
@@ -43,13 +32,13 @@ function StepZero({
       <div className="grid gap-6 px-6 grid-cols-1 lg:grid-cols-2">
         {properties
           .filter(
-            (property: any) =>
-              property?.propertyName
-                ?.toLowerCase()
+            (property) =>
+              property.propertyName
+                .toLowerCase()
                 .includes(search.toLowerCase()) ||
-              property?.address?.toLowerCase().includes(search.toLowerCase())
+              property?.address.toLowerCase().includes(search.toLowerCase())
           )
-          .map((property: any) => (
+          ?.map((property) => (
             <div
               key={property._id}
               onClick={() => setSelectedApartment(property._id)}
@@ -61,16 +50,16 @@ function StepZero({
             >
               <div>
                 <img
-                  src={property?.images[0]}
+                  src={property.images[0]}
                   alt="property"
                   className="h-48 w-full object-cover rounded-xl"
                 />
                 <div className="mt-2">
                   <h3 className="text-[#808080] font-medium text-xs">
-                    {property?.propertyName}
+                    {property.propertyName}
                   </h3>
                   <p className="text-secondary text-[10px]">
-                    {property?.address}
+                    {property.address}
                   </p>
                 </div>
               </div>
@@ -83,7 +72,7 @@ function StepZero({
             if (selectedApartment) {
               setProperty(
                 properties.find(
-                  (property: any) => property._id === selectedApartment
+                  (property) => property._id === selectedApartment
                 )
               );
               setStep(1);

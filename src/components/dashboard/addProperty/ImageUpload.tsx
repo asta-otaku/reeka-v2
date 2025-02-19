@@ -1,6 +1,6 @@
-import imageIcon from "../../assets/image.svg";
-import cloud from "../../assets/cloud-upload.svg";
-import graycancel from "../../assets/graycancel.svg";
+import imageIcon from "@/assets/image.svg";
+import cloud from "@/assets/cloud-upload.svg";
+import graycancel from "@/assets/graycancel.svg";
 import { useEffect, useState, useRef } from "react";
 
 function ImageUpload({
@@ -9,8 +9,8 @@ function ImageUpload({
   formDetails,
   setFormDetails,
 }: {
-  toggleSection: any;
-  openSection: any;
+  toggleSection: (section: string) => void;
+  openSection: string | null;
   formDetails: any;
   setFormDetails: any;
 }) {
@@ -104,6 +104,7 @@ function ImageUpload({
               type="file"
               id="file"
               className="hidden"
+              accept="image/*"
               onChange={(e: any) => {
                 setImages((prev: any) => [
                   ...prev,

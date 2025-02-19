@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import PropertyDetails from "./PropertyDetails";
 import ImageSection from "./ImageSection";
 import Amenities from "./Amenities";
-import Pricing from "./Pricing";
+import Pricing from "./PriceControls";
 import Spinner from "@/components/Spinner";
 import { useCurrency } from "@/hooks/use-get-currency";
 import {
@@ -92,7 +92,7 @@ function ViewProperty() {
             </span>
             <h3 className="text-[#808080] font-light text-xs">
               Listing Management /{" "}
-              <span className="text-[#121212]">{property?.propertyName}</span>
+              <span className="text-[#121212]">{property.propertyName}</span>
             </h3>
           </div>
           <NotificationIcon
@@ -112,7 +112,7 @@ function ViewProperty() {
           <div className="flex items-center gap-4">
             <span className="hidden md:block w-32 h-24 bg-[#D9D9D9] rounded-2xl">
               <img
-                src={property?.images[0]}
+                src={property.images[0]}
                 alt="property"
                 className="w-full h-full object-cover rounded-2xl"
               />
@@ -122,15 +122,15 @@ function ViewProperty() {
                 {bookedStatus ? "Booked" : "Available"}
               </span>
               <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
-                {property?.propertyName},{" "}
-                <span className="text-base">{property?.address}</span>
+                {property.propertyName},{" "}
+                <span className="text-base">{property.address}</span>
               </h2>
               <div className="flex items-center gap-2 text-sm text-[#808080]">
                 <span>Apartment</span>
                 <span className="w-2 h-2 rounded-full bg-[#808080]" />
                 <span>
                   {currency}
-                  {property?.price?.basePrice} per night
+                  {property.price.basePrice} per night
                 </span>
               </div>
             </div>

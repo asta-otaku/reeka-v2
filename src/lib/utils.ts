@@ -344,3 +344,31 @@ export const defaultProperty = {
   },
   images: [],
 };
+
+export const defaultReservationForm = {
+  firstName: "",
+  lastName: "",
+  noOfGuests: "",
+  email: "",
+  phoneNumber: "",
+  checkIn: "",
+  checkOut: "",
+  price: "",
+  countryCode: "",
+};
+
+export const emailRegex = new RegExp(
+  `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
+);
+
+export function formatTimestampToYearMonthDay(timestamp: string) {
+  const date = new Date(timestamp);
+
+  // Extract date components
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  // Combine to get the desired format
+  return `${year}-${month}-${day}`;
+}

@@ -235,3 +235,16 @@ export const useGetPortfolioLink = (id?: string) => {
     enabled: false,
   });
 };
+
+export const useGetBookedDates = (propertyId: string) => {
+  return useQuery({
+    queryKey: ["booked-dates", propertyId],
+    queryFn: async (): Promise<{ start: string; end: string }[]> => {
+      const response = await axiosInstance.get(
+        `/properties/${propertyId}/booked-dates`
+      );
+      return response.data;
+    },
+    enabled: !!propertyId,
+  });
+};

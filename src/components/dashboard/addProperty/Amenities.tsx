@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
 import CounterRender from "./CounterRender";
-import amenity from "../.././assets/amenity.svg";
-import plusIcon from "../../assets/add-circle.svg";
+import amenity from "@/assets/amenity.svg";
+import plusIcon from "@/assets/add-circle.svg";
 import AddNewFacility from "./AddNewFacility";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 function Amenities({
   toggleSection,
   openSection,
-  setModal,
   formDetails,
   setFormDetails,
 }: {
-  toggleSection: any;
-  openSection: any;
-  setModal: any;
+  toggleSection: (section: string) => void;
+  openSection: string | null;
   formDetails: any;
   setFormDetails: any;
 }) {
+  const [open, setOpen] = useState(false);
   const [counterStates, setCounterStates] = useState<any>({
     rooms: {
       bedroom: formDetails?.bedroomCount || 1,
@@ -99,20 +99,21 @@ function Amenities({
             </div>
           </div>
           <button
-            onClick={() =>
-              setModal(
-                <AddNewFacility
-                  counterStates={counterStates}
-                  setCounterStates={setCounterStates}
-                  setModal={setModal}
-                />
-              )
-            }
+            onClick={() => setOpen(true)}
             className="my-2 flex items-center gap-2 text-[#219653] text-[10px]"
           >
             <img src={plusIcon} />
             Add new facility/Equipment
           </button>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="w-full p-0">
+              <AddNewFacility
+                counterStates={counterStates}
+                setCounterStates={setCounterStates}
+                setOpen={setOpen}
+              />
+            </DialogContent>
+          </Dialog>
         </div>
       )}
     </div>

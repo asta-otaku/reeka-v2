@@ -211,10 +211,10 @@ function SignUpForm() {
                         onClick={togglePassword}
                         className="absolute top-2.5 right-3 cursor-pointer text-gray-600"
                       >
-                        {showPassword ? (
-                          <EyeOff size={20} />
+                        {!showPassword ? (
+                          <EyeOff className="cursor-pointer w-4 text-[#6D6D6D]" />
                         ) : (
-                          <Eye size={20} />
+                          <Eye className="cursor-pointer w-4 text-[#6D6D6D]" />
                         )}
                       </span>
                     </div>

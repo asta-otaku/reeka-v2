@@ -165,3 +165,15 @@ export type EditStaffModalProps = {
   onUpdate: (id: string, updatedData: Partial<Staff>) => void;
   isAgent?: boolean;
 };
+
+export type ReservationForm = {
+  firstName: string;
+  lastName: string;
+  noOfGuests: string;
+  email: string;
+  phoneNumber: string;
+  checkIn: string;
+  checkOut: string;
+  price: string;
+  countryCode: string;
+};

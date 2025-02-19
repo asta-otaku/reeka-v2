@@ -23,8 +23,8 @@ import Settings from "./pages/dashboard/settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import PublicInvoice from "./pages/PublicInvoice.tsx";
-import StripeSuccessPage from "./pages/StripeSuccess.tsx";
-import StripeCancelPage from "./pages/StripeCancel.tsx";
+import StripeSuccessPage from "./pages/stripe/Success.tsx";
+import StripeCancelPage from "./pages/stripe/Cancel.tsx";
 
 const queryClient = new QueryClient();
 

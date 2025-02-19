@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import countryList from "react-select-country-list";
 import Select from "react-select";
+import { Property } from "@/lib/types";
 
 function PropertyDetails({
   edit,
@@ -9,9 +10,9 @@ function PropertyDetails({
   setProperty,
 }: {
   edit: boolean;
-  property: any;
-  setEdit: any;
-  setProperty: any;
+  property: Property | null;
+  setEdit: React.Dispatch<React.SetStateAction<boolean>>;
+  setProperty: React.Dispatch<any>;
 }) {
   const options = useMemo(() => countryList().getData(), []);
   const user = JSON.parse(sessionStorage.getItem("user") || "{}");
@@ -43,7 +44,7 @@ function PropertyDetails({
             setProperty({ ...property, propertyName: e.target.value })
           }
           placeholder="Name"
-          disabled={!edit} // Disable the input when not in edit mode
+          disabled={!edit}
           className={`px-4 py-2 border border-[#D0D5DD] rounded-lg outline-none placeholder:text-[#808080] text-[#3A3A3A] ${
             edit
               ? "focus-within:border-primary bg-white"
@@ -61,7 +62,7 @@ function PropertyDetails({
               (option: any) => option.label === property?.country
             )}
             onChange={changeHandler}
-            isDisabled={!edit} // Disable the Select when not in edit mode
+            isDisabled={!edit}
             classNamePrefix={!edit ? "react-select-disabled" : ""}
           />
         </div>
@@ -74,7 +75,7 @@ function PropertyDetails({
             onChange={(e) =>
               setProperty({ ...property, address: e.target.value })
             }
-            disabled={!edit} // Disable the input when not in edit mode
+            disabled={!edit}
             className={`px-4 py-2 border border-[#D0D5DD] rounded-lg outline-none placeholder:text-[#808080] text-[#3A3A3A] ${
               edit
                 ? "focus-within:border-primary bg-white"

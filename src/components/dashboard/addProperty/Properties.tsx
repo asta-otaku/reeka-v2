@@ -1,6 +1,6 @@
 import countryList from "react-select-country-list";
 import Select from "react-select";
-import propertyIcon from "../../assets/property.svg";
+import propertyIcon from "@/assets/property.svg";
 import { useMemo } from "react";
 
 function Properties({
@@ -10,15 +10,15 @@ function Properties({
   toggleSection,
   openSection,
 }: {
-  handleChange: any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formDetails: any;
   setFormDetails: any;
   toggleSection: any;
-  openSection: any;
+  openSection: string | null;
 }) {
   const options = useMemo(() => countryList().getData(), []);
 
-  const changeHandler = (value: any) => {
+  const changeHandler = (value: { label: any }) => {
     setFormDetails({
       ...formDetails,
       country: value.label,
@@ -68,7 +68,8 @@ function Properties({
                 options={options}
                 value={
                   options.find(
-                    (option: any) => option.label === formDetails.country
+                    (option: { label: string }) =>
+                      option.label === formDetails.country
                   ) || null
                 }
                 placeholder="Country"

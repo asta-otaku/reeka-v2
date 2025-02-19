@@ -128,10 +128,10 @@ function SignInForm() {
                 onClick={togglePassword}
                 className=" absolute top-[40px] right-4"
               >
-                {showPassword ? (
-                  <Eye color="#6D6D6D" className="cursor-pointer" />
+                {!showPassword ? (
+                  <Eye className="cursor-pointer w-4 text-[#6D6D6D]" />
                 ) : (
-                  <EyeOff color="#6D6D6D" className="cursor-pointer" />
+                  <EyeOff className="cursor-pointer w-4 text-[#6D6D6D]" />
                 )}
               </span>
             </div>
