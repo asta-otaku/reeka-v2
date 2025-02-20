@@ -4,6 +4,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";
+import apiClient from "../helpers/apiClient";
 
 const tabs = [
   { name: "Password Reset", id: "change_password" },
@@ -21,6 +22,15 @@ function Settings() {
     setUser(storedUser);
   }, []);
 
+  const handleGetSuubscriptions = async () => {
+    try {
+      const response = await apiClient.get("/subscriptions/manage");
+      window.location.href = response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <div>
@@ -28,6 +38,12 @@ function Settings() {
           title="Settings"
           description="Manage your account settings."
         />
+        <button
+          onClick={handleGetSuubscriptions}
+          className="bg-primary p-2 rounded-xl mx-4 text-white w-4/5 md:w-fit md:absolute md:top-24 z-10 md:right-24 lg:right-16 font-medium text-sm border border-primary"
+        >
+          Manage subscriptions
+        </button>
         <div className="mt-4 px-6">
           {/* Tabs */}
           <div className="flex border-b border-gray-200">
