@@ -1,6 +1,9 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useCurrency } from "../../helpers/getCurrency";
+import useStore from "../../store";
+import AirBnbModal, { Rate } from "./AirBnbModal";
+import PricingCalendar from "./RenderRates";
 
 function Pricing({
   edit,
@@ -11,6 +14,25 @@ function Pricing({
   property: any;
   setProperty: any;
 }) {
+  const setModal = useStore((state: any) => state.setModal);
+  const [rates, setRates] = useState<Rate>({
+    "2025-02-27": { rate: 101 },
+    "2025-02-28": { rate: 101 },
+    "2025-03-01": { rate: 248 },
+    "2025-03-02": { rate: 248 },
+    "2025-03-03": { rate: 248 },
+  });
+  const handleSetRates = (newRates: Rate) => {
+    setRates(newRates);
+    setProperty({
+      ...property,
+      price: {
+        ...property.price,
+        rates: newRates,
+      },
+    });
+  };
+  console.log(property.price.rates);
   // Helper function to ensure number input is valid
   const parseNumberInput = useCallback((value: string) => {
     return value.replace(/[^0-9.]/g, ""); // Allow only numbers and a single decimal
@@ -153,18 +175,18 @@ function Pricing({
   );
 
   // Handler for airbnb price
-  const handleAirbnbPrice = useCallback((value: string) => {
-    const rawValue = value.replace(/,/g, "");
-    if (!isNaN(Number(rawValue))) {
-      setProperty((prev: any) => ({
-        ...prev,
-        price: {
-          ...prev.price,
-          airbnbPrice: Number(rawValue),
-        },
-      }));
-    }
-  }, []);
+  // const handleAirbnbPrice = useCallback((value: string) => {
+  //   const rawValue = value.replace(/,/g, "");
+  //   if (!isNaN(Number(rawValue))) {
+  //     setProperty((prev: any) => ({
+  //       ...prev,
+  //       price: {
+  //         ...prev.price,
+  //         airbnbPrice: Number(rawValue),
+  //       },
+  //     }));
+  //   }
+  // }, []);
 
   return (
     <div className="my-4">
@@ -336,22 +358,28 @@ function Pricing({
 
         <div className="flex flex-col gap-2 w-full">
           <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>
-          <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-            <span className={`${edit ? "text-black " : "text-[#808080]"}`}>
-              $
+          <div
+            onClick={() =>
+              edit &&
+              setModal(
+                <AirBnbModal
+                  setModal={setModal}
+                  setRates={handleSetRates}
+                  currentRates={rates}
+                />
+              )
+            }
+            className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full cursor-pointer"
+          >
+            <span className={edit ? "text-black" : "text-[#808080]"}>
+              {property?.price?.airbnbPrice
+                ? `$${property.price.airbnbPrice}`
+                : "Set price"}
             </span>
-            <input
-              name="airbnbPrice"
-              disabled={!edit}
-              type="number"
-              style={{ color: edit ? "#121212" : "#808080" }}
-              onChange={(e) => handleAirbnbPrice(e.target.value)}
-              value={property?.price?.airbnbPrice?.toLocaleString()}
-              className="w-full outline-none bg-transparent"
-            />
-            <h4 className="text-[#808080]">/Night</h4>
           </div>
         </div>
+
+        <PricingCalendar rates={rates} />
       </div>
     </div>
   );
