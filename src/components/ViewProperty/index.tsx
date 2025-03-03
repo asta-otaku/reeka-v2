@@ -122,7 +122,7 @@ function ViewProperty() {
         toast.success("Property updated successfully");
         setLoading(false);
         setTimeout(() => {
-          navigate("/listing");
+          navigate(`/listing/${id}`);
         }, 2000);
       } else {
         toast.error("An error occurred");
