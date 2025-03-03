@@ -16,6 +16,8 @@ export default function PricingCalendar({ rates }: PricingCalendarProps) {
   const rateRanges = useMemo(() => {
     const entries = Object.entries(rates)
       .map(([date, { rate }]) => ({ date: new Date(date), rate }))
+      // Filter out any invalid dates
+      .filter(({ date }) => !isNaN(date.getTime()))
       .sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const ranges: { startDate: Date; endDate: Date; rate: number }[] = [];
@@ -46,10 +48,13 @@ export default function PricingCalendar({ rates }: PricingCalendarProps) {
   }, [rates]);
 
   function formatTimestamp(date: Date, isEndDate = false) {
+    // Return empty string if date is invalid (defensive)
+    if (isNaN(date.getTime())) return "";
     const iso = date.toISOString().split("T")[0];
     const time = isEndDate ? "18:00" : "06:00";
     return `${iso} ${time}`;
   }
+
   const events = rateRanges.map((range, index) => ({
     id: index,
     label: `$${range.rate}`,
