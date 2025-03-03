@@ -25,7 +25,7 @@ function Pricing({
       ...property,
       price: {
         ...property.price,
-        airbnbPrice: currentAirbnbRate,
+        airbnbPrice: newRates[todayStr]?.rate,
       },
     });
   };
