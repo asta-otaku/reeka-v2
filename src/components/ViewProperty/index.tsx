@@ -124,6 +124,7 @@ function ViewProperty() {
         setTimeout(() => {
           navigate(`/listing/${id}`);
         }, 2000);
+        setEdit(false);
       } else {
         toast.error("An error occurred");
         setLoading(false);
