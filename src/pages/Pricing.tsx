@@ -1,45 +1,36 @@
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../helpers/apiClient";
 
 function Pricing() {
   const [pricingPlan, setPricingPlan] = useState("");
-
-  useEffect(() => {
-    const fetchPricing = async () => {
-      try {
-        const res = await apiClient.get(`/subscriptions/user-subscription`);
-        if (res.data.planType) {
-          // window.location.href = "/dashboard";
-        }
-      } catch (error) {
-        console.error("Error fetching subscription data:", error);
-      }
-    };
-
-    fetchPricing();
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (pricingPlan) {
-      apiClient
-        .post(`/subscriptions/init-user-subscription`, {
-          planType: pricingPlan,
-        })
-        .then((res: any) => {
-          toast.success(`You have selected the ${pricingPlan} plan`);
-          if (res.data.data.authorizationUrl || res.data.data) {
-            setTimeout(() => {
-              window.location.href =
-                res.data.data.authorizationUrl ?? res.data.data;
-            }, 2000);
-          }
-        })
-        .catch((err: any) => {
-          console.log(err);
-          toast.error(err.response.data.error || "Something went wrong!");
-        });
+      const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+      if (Object.keys(user).length === 0) {
+        navigate("/signin");
+      } else {
+        apiClient
+          .post(`/subscriptions/init-user-subscription`, {
+            planType: pricingPlan,
+          })
+          .then((res: any) => {
+            toast.success(`You have selected the ${pricingPlan} plan`);
+            if (res.data.data.authorizationUrl || res.data.data) {
+              setTimeout(() => {
+                window.location.href =
+                  res.data.data.authorizationUrl ?? res.data.data;
+              }, 2000);
+            }
+          })
+          .catch((err: any) => {
+            console.log(err);
+            toast.error(err.response.data.error || "Something went wrong!");
+          });
+      }
     }
   }, [pricingPlan]);
 
