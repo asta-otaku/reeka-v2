@@ -19,9 +19,10 @@ function Pricing() {
           })
           .then((res: any) => {
             toast.success(`You have selected the ${pricingPlan} plan`);
-            if (res.data.data.authorizationUrl) {
+            if (res.data.data.authorizationUrl || res.data.data) {
               setTimeout(() => {
-                window.location.href = res.data.data.authorizationUrl;
+                window.location.href =
+                  res.data.data.authorizationUrl ?? res.data.data;
               }, 2000);
             }
           })
@@ -66,7 +67,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-white text-xs">
-                    ₦ <span className="text-xl font-bold">0</span> /Month
+                    $ <span className="text-xl font-bold">0</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("trial")}
@@ -112,7 +113,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-[#121212] text-xs">
-                    ₦ <span className="text-xl font-bold">10,000</span> /Month
+                    $ <span className="text-xl font-bold">10</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("reeka_light")}
@@ -159,7 +160,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-white text-xs">
-                    ₦ <span className="text-xl font-bold">20,000</span> /Month
+                    $ <span className="text-xl font-bold">20</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("reeka_premier")}
@@ -204,7 +205,7 @@ function Pricing() {
                 </p>
                 <div className="mt-6 flex w-full justify-between items-center">
                   <h2 className="text-[#121212] text-xs">
-                    ₦ <span className="text-xl font-bold">50,000</span> /Month
+                    $ <span className="text-xl font-bold">50</span> /Month
                   </h2>
                   <button
                     onClick={() => setPricingPlan("reeka_pro")}
