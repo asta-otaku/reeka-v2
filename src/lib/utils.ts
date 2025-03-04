@@ -31,7 +31,7 @@ export const isTokenExpired = (token: string | null) => {
 export const pricingPlans = [
   {
     title: "Trial",
-    planType: "Free Trial",
+    planType: "Trial",
     description: "Property management built for you to scale",
     price: "0",
     features: [
