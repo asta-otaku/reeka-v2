@@ -6,25 +6,25 @@ import { Toaster } from "react-hot-toast";
 import "./index.css";
 
 import App from "./pages/index.tsx";
-import Bookings from "./pages/Dashboard/Bookings.tsx";
-import Calendar from "./pages/Dashboard/Calendar.tsx";
-import Dashboard from "./pages/Dashboard/index.tsx";
-import Integrations from "./pages/Dashboard/Integrations.tsx";
-import ListingManagement from "./pages/Dashboard/ListingManagement.tsx";
-import ReportCenter from "./pages/Dashboard/ReportCenter.tsx";
+import Bookings from "./pages/Bookings.tsx";
+import Calendar from "./pages/Calendar.tsx";
+import Dashboard from "./pages/DashboardIndex.tsx";
+import Integrations from "./pages/Integrations.tsx";
+import ListingManagement from "./pages/ListingManagement.tsx";
+import ReportCenter from "./pages/ReportCenter.tsx";
 import Reservation from "./pages/Reservation.tsx";
 import ViewProperty from "./components/dashboard/viewProperty/index.tsx";
-import SignIn from "./pages/Auth/SignIn.tsx";
-import SignUp from "./pages/Auth/SignUp.tsx";
+import SignIn from "./pages/SignIn.tsx";
+import SignUp from "./pages/SignUp.tsx";
 import Pricing from "./pages/Pricing.tsx";
-import ResetPassword from "./pages/Auth/Reset-password.tsx";
-import ForgotPassword from "./pages/Auth/Forgot-password.tsx";
-import Settings from "./pages/Dashboard/Settings.tsx";
+import ResetPassword from "./pages/Reset-password.tsx";
+import ForgotPassword from "./pages/Forgot-password.tsx";
+import Settings from "./pages/Settings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PublicBooking from "./pages/PublicBooking.tsx";
 import PublicInvoice from "./pages/PublicInvoice.tsx";
-import StripeSuccessPage from "./pages/Stripe/Success.tsx";
-import StripeCancelPage from "./pages/Stripe/Cancel.tsx";
+import StripeSuccessPage from "./pages/Success.tsx";
+import StripeCancelPage from "./pages/Cancel.tsx";
 
 const queryClient = new QueryClient();
 
