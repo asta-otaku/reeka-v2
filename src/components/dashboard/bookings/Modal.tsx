@@ -125,7 +125,7 @@ export function Modal({
         <button
           onClick={handleShareInvoice}
           disabled={loading}
-          className="text-white bg-primary/90 px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2"
+          className="text-white bg-primary/90 px-3 py-2.5 rounded-xl font-medium text-sm min-w-[150px] flex items-center gap-2"
         >
           {loading ? <Spinner /> : "Share invoice"}
         </button>

@@ -130,7 +130,7 @@ function AddProperty({ setStep }: { setStep: any }) {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="bg-primary border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 rounded-md"
+              className="bg-primary border border-solid border-primary shadow-sm shadow-primary/40 font-semibold text-xs text-white p-2 min-w-[150px] rounded-md"
             >
               {loading ? <Spinner /> : "Add Property"}
             </button>

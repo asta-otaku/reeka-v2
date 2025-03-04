@@ -160,7 +160,7 @@ function AddPersonnel({
           </form>
           <button
             onClick={handleFormSubmit}
-            className="bg-primary border border-solid border-primary text-sm shadow-primary/40 font-semibold text-white px-4 py-2.5 rounded-md"
+            className="bg-primary border border-solid border-primary min-w-[120px] text-sm shadow-primary/40 font-semibold text-white px-4 py-2.5 rounded-md"
           >
             {loading ? <Spinner /> : "Add Personnel"}
           </button>

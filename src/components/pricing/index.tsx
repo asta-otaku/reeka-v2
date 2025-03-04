@@ -1,25 +1,23 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import { pricingPlans } from "@/lib/utils";
 import PricingCard from "./PricingCard";
 import { usePostUserSubscription } from "@/lib/api/mutations";
-import { useGetUserSubscription } from "@/lib/api/queries";
 
 function Pricing() {
+  const navigate = useNavigate();
   const [_, setPricingPlan] = useState("");
-  const { data } = useGetUserSubscription();
   const { mutate: initSubscription } = usePostUserSubscription();
 
   const handlePlanSelection = (planType: string) => {
-    setPricingPlan(planType);
-    initSubscription(planType);
-  };
-
-  useEffect(() => {
-    if (data?.planType) {
-      window.location.href = "/dashboard";
+    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+    if (Object.keys(user).length === 0) {
+      navigate("/signin");
+    } else {
+      setPricingPlan(planType);
+      initSubscription(planType);
     }
-  }, [data]);
+  };
 
   return (
     <div>

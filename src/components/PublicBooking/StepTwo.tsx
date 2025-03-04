@@ -1,45 +1,25 @@
 import editIcon from "../../assets/edit-01.svg";
 import prop from "../../assets/prop1.svg";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import { useNavigate } from "react-router-dom";
 import { useCurrency } from "@/hooks/use-get-currency";
-import apiClient from "@/helpers/apiClient";
-
-function formatTimestamp(timestamp: string) {
-  const date = new Date(timestamp);
-
-  // Extract date components
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  // Combine to get the desired format
-  return `${year}-${month}-${day}`;
-}
+import { formatTimestampToYearMonthDay } from "@/lib/utils";
+import { Property, ReservationForm } from "@/lib/types";
+import { usePostReservation } from "@/lib/api/mutations";
 
 function StepTwo({
   formDetails,
   hideFeatures,
   property,
 }: {
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    countryCode: string;
+  formDetails: ReservationForm & {
     propertyName?: string;
     propertyAddress?: string;
     property?: string;
   };
   hideFeatures?: boolean;
-  property?: any;
+  property?: Property;
 }) {
   const [formData, setFormData] = useState({
     propertyId: property?._id || formDetails.property,
@@ -54,29 +34,21 @@ function StepTwo({
     numberOfGuests: formDetails.noOfGuests,
     priceState: formDetails.price,
   });
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const currency = useCurrency();
+  const { mutateAsync: reserveBooking, isPending: loading } =
+    usePostReservation(true);
 
   const handleReserve = async () => {
-    setFormData({
+    const updatedFormData = {
       ...formData,
-      startDate: formatTimestamp(formDetails.checkIn),
-      endDate: formatTimestamp(formDetails.checkOut),
-    });
-    setLoading(true);
-    await apiClient
-      .post(`/public/booking`, formData)
-      .then((res) => {
-        setLoading(false);
-        toast.success("Reservation successful");
-        navigate(`/invoice/${res.data.invoices[res.data.invoices.length - 1]}`);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        toast.error(err.response.data.error || "An error occured");
-      });
+      startDate: formatTimestampToYearMonthDay(formDetails.checkIn),
+      endDate: formatTimestampToYearMonthDay(formDetails.checkOut),
+    };
+
+    const response = await reserveBooking(updatedFormData);
+    navigate(`/invoice/${response.invoices[response.invoices.length - 1]}`);
+    setFormData(updatedFormData);
   };
 
   function getPrice(price: string) {
@@ -90,22 +62,22 @@ function StepTwo({
 
       case "high":
         return (
-          property?.price?.basePrice +
-          (property?.price?.boostPercentage / 100) * property?.price?.basePrice
+          property.price.basePrice +
+          (property.price.boostPercentage / 100) * property.price.basePrice
         ).toFixed(2);
 
       case "low":
         return (
-          property?.price?.basePrice -
-          (Math.abs(property?.price?.discountPercentage) / 100) *
-            property?.price?.basePrice
+          property.price.basePrice -
+          (Math.abs(property.price.discountPercentage) / 100) *
+            property.price.basePrice
         ).toFixed(2);
 
       case "airbnb":
-        return property?.price?.airbnbPrice;
+        return property.price.airbnbPrice;
 
       default:
-        return property.price.basePrice; // Default to basePrice if the price type is unrecognized
+        return property.price.basePrice;
     }
   }
 
@@ -185,8 +157,8 @@ function StepTwo({
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
               {formDetails.price === "airbnb" ? "$" : currency}
               {getPrice(formDetails.price)
-                ?.toString()
-                ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}
             </h4>
           </div>
           <div>

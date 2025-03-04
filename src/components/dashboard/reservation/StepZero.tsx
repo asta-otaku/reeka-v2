@@ -36,9 +36,9 @@ function StepZero({
               property.propertyName
                 .toLowerCase()
                 .includes(search.toLowerCase()) ||
-              property?.address.toLowerCase().includes(search.toLowerCase())
+              property.address.toLowerCase().includes(search.toLowerCase())
           )
-          ?.map((property) => (
+          .map((property) => (
             <div
               key={property._id}
               onClick={() => setSelectedApartment(property._id)}
@@ -54,13 +54,20 @@ function StepZero({
                   alt="property"
                   className="h-48 w-full object-cover rounded-xl"
                 />
-                <div className="mt-2">
-                  <h3 className="text-[#808080] font-medium text-xs">
-                    {property.propertyName}
-                  </h3>
-                  <p className="text-secondary text-[10px]">
-                    {property.address}
-                  </p>
+                <div className="mt-2 flex flex-wrap justify-between items-center gap-2">
+                  <div>
+                    <h3 className="text-[#808080] font-medium text-xs">
+                      {property.propertyName}
+                    </h3>
+                    <p className="text-secondary text-[10px]">
+                      {property.address}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-secondary text-[10px] font-medium">
+                      {property.price.basePrice.toLocaleString()}/ night
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

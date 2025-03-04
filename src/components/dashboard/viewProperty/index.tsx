@@ -52,6 +52,7 @@ function ViewProperty() {
   const handleUpdate = async (method: "put" | "delete") => {
     if (id) {
       await updateProperty({ id, method, data: property });
+      setEdit(false);
     } else {
       toast.error("Property ID is missing");
     }
@@ -184,9 +185,9 @@ function ViewProperty() {
 
             <div className="flex items-center gap-4 mt-6">
               <button
-                disabled={loading}
+                disabled={loading || !edit}
                 onClick={() => handleUpdate("put")}
-                className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium"
+                className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium min-w-[120px] flex-1 md:flex-none"
               >
                 {loading ? <Spinner /> : "Save Changes"}
               </button>

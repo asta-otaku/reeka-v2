@@ -4,7 +4,7 @@ import { useState } from "react";
 import Spinner from "@/components/Spinner";
 import { useCurrency } from "@/hooks/use-get-currency";
 import { formatTimestampToYearMonthDay } from "@/lib/utils";
-import { ReservationForm } from "@/lib/types";
+import { Property, ReservationForm } from "@/lib/types";
 import { usePostReservation } from "@/lib/api/mutations";
 
 function StepTwo({
@@ -17,7 +17,7 @@ function StepTwo({
   formDetails: ReservationForm;
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  property: any;
+  property: Property;
   setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [formData, setFormData] = useState({
@@ -189,7 +189,7 @@ function StepTwo({
         <button
           disabled={loading}
           onClick={handleReserve}
-          className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
+          className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2 min-w-[100px]"
         >
           {loading ? <Spinner /> : "Reserve"}
         </button>

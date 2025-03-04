@@ -9,7 +9,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
-import { ReservationForm } from "@/lib/types";
+import { Property, ReservationForm } from "@/lib/types";
 import { emailRegex } from "@/lib/utils";
 import { useGetBookedDates } from "@/lib/api/queries";
 
@@ -24,7 +24,7 @@ function StepOne({
   formDetails: ReservationForm;
   setFormDetails: React.Dispatch<React.SetStateAction<ReservationForm>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  property: any;
+  property: Property;
 }) {
   const { data: bookedDates = [] } = useGetBookedDates(property._id);
 

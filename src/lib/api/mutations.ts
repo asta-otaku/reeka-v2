@@ -99,9 +99,9 @@ export const usePostUserSubscription = () => {
     },
     onSuccess: (data, variables) => {
       toast.success(`You have selected the ${variables} plan`);
-      if (data.data.authorizationUrl) {
+      if (data.data.authorizationUrl || data.data) {
         setTimeout(() => {
-          window.location.href = data.data.authorizationUrl;
+          window.location.href = data.data.authorizationUrl ?? data.data;
         }, 2000);
       }
     },
@@ -335,7 +335,7 @@ export const usePropertyMutation = () => {
       queryClient.invalidateQueries({ queryKey: ["properties"] });
 
       setTimeout(() => {
-        navigate("/listing");
+        navigate(`/listing/${variables.id}`);
       }, 2000);
     },
     onError: (error) => {
@@ -350,11 +350,12 @@ export const usePropertyMutation = () => {
   });
 };
 // Create reservation mutation
-export const usePostReservation = () => {
+export const usePostReservation = (isPublic?: boolean) => {
   return useMutation({
     mutationKey: ["post-reservation"],
     mutationFn: async (data: any) => {
-      const response = await axiosInstance.post(`/booking`, data);
+      const url = isPublic ? "/public/booking" : "/booking";
+      const response = await axiosInstance.post(url, data);
       return response.data;
     },
     onSuccess: (data) => {

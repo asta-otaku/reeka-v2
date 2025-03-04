@@ -1,22 +1,17 @@
 import StepTwo from "./StepTwo";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { ReservationForm } from "@/lib/types";
+import axiosInstance from "@/lib/services/axiosInstance";
+import { useState } from "react";
+import { useGetReport } from "@/lib/api/queries";
+import Spinner from "../Spinner";
 
 function StepThree({
   formDetails,
   invoiceId,
   bookingId,
 }: {
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    countryCode: string;
+  formDetails: ReservationForm & {
     propertyName: string;
     propertyAddress: string;
     property: string;
@@ -25,9 +20,18 @@ function StepThree({
   invoiceId: string;
   bookingId: string;
 }) {
-  const baseURL = import.meta.env.VITE_BASE_URL;
+  const [reportDetails, setReportDetails] = useState<{
+    url: string;
+    title: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { refetch } = useGetReport(
+    reportDetails?.url || "",
+    reportDetails?.title || ""
+  );
+
   const handlePay = async () => {
-    const res = await axios.get(`${baseURL}/invoice/${invoiceId}`);
+    const res = await axiosInstance.get(`/invoice/${invoiceId}`);
     if (res.status === 200) {
       const link = res.data.invoice.paymentLink;
       window.open(link, "_blank");
@@ -36,22 +40,16 @@ function StepThree({
     }
   };
 
-  const handleInvoiceDownload = async () => {
-    axios
-      .get(`${baseURL}/invoice/${bookingId}/pdf`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `invoice-${bookingId}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleInvoiceDownload = () => {
+    setLoading(true);
+    setReportDetails({
+      url: `/invoice/${bookingId}/pdf`,
+      title: `Invoice-${bookingId}`,
+    });
+    setTimeout(() => {
+      refetch();
+      setLoading(false);
+    }, 500);
   };
 
   return (
@@ -78,7 +76,7 @@ function StepThree({
             formDetails.paymentStatus === "paid" ? "hidden" : ""
           }`}
         >
-          Pay Now
+          {loading ? <Spinner /> : "Pay Now"}
         </button>
       </div>
     </div>

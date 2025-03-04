@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import StepThree from "../components/PublicBooking/StepThree";
 import moment from "moment";
-import apiClient from "@/helpers/apiClient";
+import axiosInstance from "@/lib/services/axiosInstance";
 
 function PublicInvoice() {
   const { id } = useParams<{ id: string }>();
@@ -27,7 +27,7 @@ function PublicInvoice() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await apiClient.get(`/invoice/${id}`);
+      const res = await axiosInstance.get(`/invoice/${id}`);
       if (res.status === 200) {
         const {
           endDate,

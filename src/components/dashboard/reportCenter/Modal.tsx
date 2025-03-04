@@ -137,7 +137,7 @@ export function ReportModal({ properties }: any) {
         <button
           disabled={loading}
           onClick={handleDownload}
-          className="bg-primary p-2 rounded-lg text-white mt-8 w-32 mx-auto font-semibold text-sm"
+          className="bg-primary p-2 rounded-lg text-white mt-8 w-32 mx-auto font-semibold text-sm min-w-[120px]"
         >
           {loading ? <Spinner /> : "Generate"}
         </button>

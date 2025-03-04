@@ -1,6 +1,7 @@
 import buy from "@/assets/Buy.svg";
-import useStore from "@/store";
 import AddNewFacility from "@/components/dashboard/addProperty/AddNewFacility";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from "react";
 
 function Amenities({
   edit,
@@ -11,17 +12,11 @@ function Amenities({
   property: any;
   setProperty: any;
 }) {
-  const setModal = useStore((state: any) => state.setModal);
+  const [open, setOpen] = useState(false);
 
   const handleClick = () => {
     if (edit) {
-      setModal(
-        <AddNewFacility
-          counterStates={property}
-          setCounterStates={setProperty}
-          setModal={setModal}
-        />
-      );
+      setOpen(true);
     }
   };
 
@@ -60,6 +55,15 @@ function Amenities({
           </div>
         </div>
       )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="w-full p-0">
+          <AddNewFacility
+            counterStates={property}
+            setCounterStates={setProperty}
+            setOpen={setOpen}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

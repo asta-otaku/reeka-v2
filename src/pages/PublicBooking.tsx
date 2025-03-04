@@ -1,32 +1,23 @@
 import { useState } from "react";
-import StepOne from "../components/PublicBooking/StepOne";
+import StepOne from "@/components/dashboard/reservation/StepOne";
 import StepTwo from "../components/PublicBooking/StepTwo";
-import StepZero from "../components/PublicBooking/StepZero";
+import StepZero from "@/components/PublicBooking/StepZero";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { defaultReservationForm } from "@/lib/utils";
+import { Property } from "@/lib/types";
 
 const steps = ["Apartment", "Details", "Confirmation"];
 
 function PublicBooking() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formDetails, setFormDetails] = useState({
-    firstName: "",
-    lastName: "",
-    noOfGuests: "",
-    email: "",
-    phoneNumber: "",
-    checkIn: "",
-    checkOut: "",
-    price: "",
-    countryCode: "",
-  });
-  const [property, setProperty] = useState<any>(null);
+  const [formDetails, setFormDetails] = useState(defaultReservationForm);
+  const [property, setProperty] = useState<Property | undefined>(undefined);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     if (name === "checkIn") {
-      // Compare checkIn date with current date
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       if (new Date(value) < yesterday) {
@@ -34,10 +25,7 @@ function PublicBooking() {
         return;
       }
     }
-
-    // Check if it's the Check-Out Date field
     if (name === "checkOut") {
-      // Compare checkOut date with checkIn date or current date
       const checkInDate =
         formDetails.checkIn || new Date().toLocaleDateString("en-CA");
       if (new Date(value) < new Date(checkInDate)) {
@@ -45,8 +33,6 @@ function PublicBooking() {
         return;
       }
     }
-
-    // Update form details
     setFormDetails({
       ...formDetails,
       [name]: value,
@@ -111,7 +97,7 @@ function PublicBooking() {
                   formDetails={formDetails}
                   setFormDetails={setFormDetails}
                   setStep={setCurrentStep}
-                  property={property}
+                  property={property as Property}
                 />
               ),
               2: <StepTwo formDetails={formDetails} property={property} />,

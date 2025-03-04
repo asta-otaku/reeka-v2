@@ -19,10 +19,10 @@ export const useGetUserSubscription = () => {
     queryKey: ["user-subscription"],
     queryFn: async (): Promise<PricingPlan> =>
       axiosInstance
-        .get("/subscriptions/user-subscriptin")
+        .get("/subscriptions/user-subscription")
         .then((res) => res.data)
         .catch((error) => {
-          window.location.href = "/pricing";
+          setTimeout(() => (window.location.href = "/pricing"), 500);
           throw new Error(error);
         }),
   });
@@ -44,6 +44,17 @@ export const useGetProperty = (id: string) => {
       return axiosInstance.get(`/properties/${id}`).then((res) => res.data);
     },
     enabled: !!id,
+  });
+};
+
+export const useGetPublicProperties = (token: string) => {
+  return useQuery({
+    queryKey: ["public-properties", token],
+    queryFn: async (): Promise<Property[]> => {
+      return axiosInstance
+        .get("/public/property", { params: { token } })
+        .then((res) => res.data);
+    },
   });
 };
 

@@ -14,24 +14,17 @@ import {
   PropertyIcon,
   ScaleIcon,
 } from "@/assets/icons";
-import ModalLayout from "./ModalLayout";
-import useStore from "@/store";
 import toast from "react-hot-toast";
-import apiClient from "@/helpers/apiClient";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import { useGetUserSubscription } from "@/lib/api/queries";
 
 function DashboardLayout({ children }: any) {
-  const currentModal = useStore((state: any) => state.currentModal);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (currentModal != null) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "";
-  }, [currentModal]);
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
   const user = JSON.parse(sessionStorage.getItem("user") || "{}");
   const location = useLocation();
+  const { data } = useGetUserSubscription();
 
   useEffect(() => {
     if (Object.keys(user).length === 0) {
@@ -55,32 +48,16 @@ function DashboardLayout({ children }: any) {
 
   useEffect(() => {
     if (user && user.userRole === "Owner") {
-      const fetchPricing = async () => {
-        try {
-          const res = await apiClient.get(`/subscriptions/user-subscription`);
-          if (res.data.planType === "") {
-            window.location.href = "/pricing";
-          }
-        } catch (error: any) {
-          if (error.response) {
-            setTimeout(() => navigate("/pricing"), 500);
-          }
-        }
-      };
-
-      fetchPricing();
+      if (data?.planType === "") {
+        window.location.href = "/pricing";
+      }
     }
   }, []);
 
   return (
     <div className="bg-[#FAFAFA]">
       {/* General Modal */}
-      {currentModal && <ModalLayout />}
-      <div
-        className={`md:flex grow gap-6 p-2 h-screen md:p-6 max-w-[1800px] relative mx-auto ${
-          currentModal && "blur-sm"
-        }`}
-      >
+      <div className="md:flex grow gap-6 p-2 h-screen md:p-6 max-w-[1800px] relative mx-auto">
         {/* Nav section */}
         <nav className="w-full grow md:w-[200px] lg:w-[280px] md:fixed flex shrink-0 justify-between">
           <div className="w-full flex flex-col">

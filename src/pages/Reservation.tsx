@@ -100,14 +100,14 @@ function Reservation() {
                     formDetails={formDetails}
                     setFormDetails={setFormDetails}
                     setStep={setCurrentStep}
-                    property={property}
+                    property={property as Property}
                   />
                 ),
                 2: (
                   <StepTwo
                     formDetails={formDetails}
                     setStep={setCurrentStep}
-                    property={property}
+                    property={property as Property}
                     setInvoiceId={setInvoiceId}
                   />
                 ),

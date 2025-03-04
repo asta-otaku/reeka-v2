@@ -2,40 +2,25 @@ import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
-import apiClient from "@/helpers/apiClient";
+import { Property } from "@/lib/types";
+import { useGetPublicProperties } from "@/lib/api/queries";
 
 function StepZero({
   setStep,
   setProperty,
 }: {
   setStep: React.Dispatch<React.SetStateAction<number>>;
-  setProperty: React.Dispatch<React.SetStateAction<any>>;
+  setProperty: React.Dispatch<React.SetStateAction<Property | undefined>>;
 }) {
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
-  const [properties, setProperties] = useState<any>([]);
   const { id, propId } = useParams<{ id: string; propId: string }>();
-
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/public/property`, {
-          params: {
-            token: id,
-          },
-        });
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchProperties();
-  }, []);
+  const { data: properties = [] } = useGetPublicProperties(id || "");
 
   useEffect(() => {
     if (propId && properties.length > 0) {
       const matchingProperty = properties.find(
-        (property: any) => property._id === propId
+        (property) => property._id === propId
       );
 
       if (matchingProperty) {
@@ -64,14 +49,14 @@ function StepZero({
 
       <div className="grid gap-6 px-6 grid-cols-1 lg:grid-cols-2 w-full">
         {properties
-          ?.filter(
-            (property: any) =>
-              property?.propertyName
+          .filter(
+            (property) =>
+              property.propertyName
                 ?.toLowerCase()
                 .includes(search.toLowerCase()) ||
               property?.address?.toLowerCase().includes(search.toLowerCase())
           )
-          .map((property: any) => (
+          .map((property) => (
             <div
               key={property._id}
               onClick={() => setSelectedApartment(property._id)}
@@ -90,15 +75,15 @@ function StepZero({
                 <div className="mt-2 flex flex-wrap justify-between items-center gap-2">
                   <div>
                     <h3 className="text-[#808080] font-medium text-xs">
-                      {property?.propertyName}
+                      {property.propertyName}
                     </h3>
                     <p className="text-secondary text-[10px]">
-                      {property?.address}
+                      {property.address}
                     </p>
                   </div>
                   <div>
                     <p className="text-secondary text-[10px] font-medium">
-                      {property?.price?.basePrice?.toLocaleString()}/ night
+                      {property.price.basePrice.toLocaleString()}/ night
                     </p>
                   </div>
                 </div>
@@ -112,7 +97,7 @@ function StepZero({
             if (selectedApartment) {
               setProperty(
                 properties.find(
-                  (property: any) => property._id === selectedApartment
+                  (property) => property._id === selectedApartment
                 )
               );
               setStep(1);
