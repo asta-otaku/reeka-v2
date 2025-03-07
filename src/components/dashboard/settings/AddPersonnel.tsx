@@ -32,7 +32,7 @@ function AddPersonnel({
   const handleFormSubmit = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
 
-    const { email, role, name } = formDetails;
+    const { email, role, name, phone } = formDetails;
 
     if (!role || !email) {
       toast.error("All fields are required!");
@@ -50,6 +50,7 @@ function AddPersonnel({
           email,
           name,
           propertIds: selectedProperties,
+          phoneNumber: phone,
         });
       } else {
         await axiosInstance.post(`/staff`, {
