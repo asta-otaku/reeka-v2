@@ -15,6 +15,7 @@ import Spinner from "../Spinner";
 import useStore from "../../store";
 import apiClient from "../../helpers/apiClient";
 import { useCurrency } from "../../helpers/getCurrency";
+import AirBnbPricing from "./AirBnbPricing";
 
 function ViewProperty() {
   const { id } = useParams(); // Get property ID from the URL
@@ -276,7 +277,7 @@ function ViewProperty() {
               edit={edit}
             />
 
-            <div className="flex items-center gap-4 mt-6">
+            <div className="flex items-center gap-4 my-6">
               <button
                 disabled={loading}
                 onClick={handleUpdate}
@@ -285,6 +286,8 @@ function ViewProperty() {
                 {loading ? <Spinner /> : "Save Changes"}
               </button>
             </div>
+
+            <AirBnbPricing id={property._id} />
           </div>
 
           <div className="w-full lg:w-[48%] rounded-2xl border shadow-xl shadow-gray-300">
