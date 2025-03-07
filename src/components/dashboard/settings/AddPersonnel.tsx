@@ -49,7 +49,7 @@ function AddPersonnel({
         await axiosInstance.post("/agents", {
           email,
           name,
-          propertIds: selectedProperties,
+          properties: selectedProperties,
           phoneNumber: phone,
         });
       } else {
