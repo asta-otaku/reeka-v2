@@ -56,7 +56,7 @@ function AddPersonnel({
           email,
           role,
           name,
-          propertyIds: selectedProperties,
+          properties: selectedProperties,
         });
       }
       toast.success("Invitation sent successfully!");
