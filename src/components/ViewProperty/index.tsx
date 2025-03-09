@@ -281,7 +281,9 @@ function ViewProperty() {
               <button
                 disabled={loading}
                 onClick={handleUpdate}
-                className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium"
+                className={`px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium ${
+                  !edit && "hidden"
+                }`}
               >
                 {loading ? <Spinner /> : "Save Changes"}
               </button>
