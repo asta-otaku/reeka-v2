@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import cancelIcon from "../../assets/cancel-01.svg";
 import apiClient from "../../helpers/apiClient";
 import Spinner from "../Spinner";
+import toast from "react-hot-toast";
 export interface Rate {
   [date: string]: {
     rate: number;
@@ -37,7 +38,7 @@ export default function AirBnbModal({
 
   const handleSave = async () => {
     if (rate === "") {
-      alert("Please enter a rate");
+      toast.error("Please enter a rate");
       return;
     }
 
@@ -58,7 +59,7 @@ export default function AirBnbModal({
       setModal(null);
       setLoading(false);
     } catch (error) {
-      alert("Error updating rates");
+      toast.error("Error updating rates");
       setLoading(false);
     }
   };
