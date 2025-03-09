@@ -21,7 +21,6 @@ function EditBookingModal({
 
   const handleProceed = async () => {
     const payload = {
-      ...booking,
       startDate: startDate.toISOString().split("T")[0],
       endDate: endDate.toISOString().split("T")[0],
     };
