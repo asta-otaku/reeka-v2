@@ -56,6 +56,7 @@ export default function AirBnbModal({
         payload
       );
       setRates(response.data.rates);
+      toast.success("Rates updated successfully");
       setModal(null);
       setLoading(false);
     } catch (error) {
