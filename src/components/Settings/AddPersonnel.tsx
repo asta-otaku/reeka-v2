@@ -16,6 +16,8 @@ function AddPersonnel({
     email: "",
     role: "Property Manager",
     name: "",
+    firstName: "",
+    lastName: "",
     phone: "",
   });
   const [loading, setLoading] = useState(false);
@@ -31,7 +33,7 @@ function AddPersonnel({
   const handleFormSubmit = async (e: any) => {
     e.preventDefault();
 
-    const { email, role, name, phone } = formDetails;
+    const { email, role, name } = formDetails;
 
     if (!role || !email) {
       toast.error("All fields are required!");
@@ -47,20 +49,20 @@ function AddPersonnel({
       if (isAgent) {
         await apiClient.post("/agents", {
           email,
-          name,
+          firstName: formDetails.firstName,
+          lastName: formDetails.lastName,
           propertIds: selectedProperties,
-          phoneNumber: phone,
         });
       } else {
         await apiClient.post(`/staff`, {
           email,
           role,
           name,
-          properties: selectedProperties,
+          propertyIds: selectedProperties,
         });
       }
       toast.success("Invitation sent successfully!");
-      setStep(1); // Navigate back to the previous step
+      setStep(1);
       setLoading(false);
     } catch (error: any) {
       console.error(error);
@@ -94,18 +96,48 @@ function AddPersonnel({
             onSubmit={handleFormSubmit}
             className="flex flex-col gap-2 bg-white rounded-3xl shadow-sm shadow-black/10 p-4"
           >
-            <div className="flex flex-col gap-2 w-full">
-              <h4 className="text-[#344054] text-sm font-medium">Name*</h4>
-              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-                <input
-                  name="name"
-                  placeholder="FirstName LastName"
-                  className="w-full outline-none bg-transparent"
-                  onChange={handleChange}
-                />
-                <ChevronDownIcon width={16} />
+            {!isAgent ? (
+              <div className="flex flex-col gap-2 w-full">
+                <h4 className="text-[#344054] text-sm font-medium">Name*</h4>
+                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+                  <input
+                    name="name"
+                    placeholder="FirstName LastName"
+                    className="w-full outline-none bg-transparent"
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2 w-full">
+                  <h4 className="text-[#344054] text-sm font-medium">
+                    First Name*
+                  </h4>
+                  <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+                    <input
+                      name="firstName"
+                      placeholder="FirstName"
+                      className="w-full outline-none bg-transparent"
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 w-full">
+                  <h4 className="text-[#344054] text-sm font-medium">
+                    Last Name*
+                  </h4>
+                  <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
+                    <input
+                      name="lastName"
+                      placeholder="LastName"
+                      className="w-full outline-none bg-transparent"
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
             <div className="flex flex-col gap-2 w-full">
               <h4 className="text-[#344054] text-sm font-medium">Email*</h4>
               <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
@@ -115,7 +147,6 @@ function AddPersonnel({
                   className="w-full outline-none bg-transparent"
                   onChange={handleChange}
                 />
-                <ChevronDownIcon width={16} />
               </div>
             </div>
             <div className="flex flex-col gap-2 w-full">
@@ -127,7 +158,6 @@ function AddPersonnel({
                   className="w-full outline-none bg-transparent"
                   onChange={handleChange}
                 />
-                <ChevronDownIcon width={16} />
               </div>
             </div>
             <div
