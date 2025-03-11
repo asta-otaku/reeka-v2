@@ -51,7 +51,8 @@ function AddPersonnel({
           email,
           firstName: formDetails.firstName,
           lastName: formDetails.lastName,
-          propertyIds: selectedProperties,
+          properties: selectedProperties,
+          phoneNumber: formDetails.phone,
         });
       } else {
         await apiClient.post(`/staff`, {
