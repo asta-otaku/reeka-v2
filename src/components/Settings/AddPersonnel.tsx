@@ -51,7 +51,7 @@ function AddPersonnel({
           email,
           firstName: formDetails.firstName,
           lastName: formDetails.lastName,
-          propertIds: selectedProperties,
+          propertyIds: selectedProperties,
         });
       } else {
         await apiClient.post(`/staff`, {
@@ -67,7 +67,7 @@ function AddPersonnel({
     } catch (error: any) {
       console.error(error);
       toast.error(
-        error.response.data.error ||
+        error?.response?.data?.error ||
           "Failed to add personnel. Please try again."
       );
       setLoading(false);
