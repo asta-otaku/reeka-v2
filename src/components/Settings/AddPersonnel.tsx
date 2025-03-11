@@ -48,14 +48,15 @@ function AddPersonnel({
         await apiClient.post("/agents", {
           email,
           name,
-          propertIds: selectedProperties,
+          properties: selectedProperties,
+          phoneNumber: formDetails.phone,
         });
       } else {
         await apiClient.post(`/staff`, {
           email,
           role,
           name,
-          propertyIds: selectedProperties,
+          properties: selectedProperties,
         });
       }
       toast.success("Invitation sent successfully!");
