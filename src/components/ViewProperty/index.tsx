@@ -101,7 +101,8 @@ function ViewProperty() {
   };
 
   // Update property function
-  const handleUpdate = async () => {
+  const handleUpdate = async (updatedProperty?: any) => {
+    const targetProperty = updatedProperty || property;
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);
@@ -113,7 +114,7 @@ function ViewProperty() {
     formData.append("bedroomCount", property.bedroomCount.toString());
     formData.append("bathroomCount", property.bathroomCount.toString());
     formData.append("amenities", JSON.stringify(property.amenities));
-    formData.append("price", JSON.stringify(property.price));
+    formData.append("price", JSON.stringify(targetProperty.price));
     property.images.forEach((image: any) => {
       formData.append("images", image);
     });
@@ -175,8 +176,8 @@ function ViewProperty() {
               airbnbPrice: newPrice,
             },
           };
+          await handleUpdate(updatedProperty);
           setProperty(updatedProperty);
-          await handleUpdate();
           try {
             setPending(true);
             const response = await apiClient.post(

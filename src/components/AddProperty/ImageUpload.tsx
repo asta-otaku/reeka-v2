@@ -103,6 +103,7 @@ function ImageUpload({
             <input
               type="file"
               id="file"
+              accept="image/*"
               className="hidden"
               onChange={(e: any) => {
                 setImages((prev: any) => [
