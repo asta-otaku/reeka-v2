@@ -59,7 +59,7 @@ function AddPersonnel({
           email,
           role,
           name,
-          propertyIds: selectedProperties,
+          properties: selectedProperties,
         });
       }
       toast.success("Invitation sent successfully!");
@@ -68,7 +68,7 @@ function AddPersonnel({
     } catch (error: any) {
       console.error(error);
       toast.error(
-        error.response.data.error ||
+        error?.response?.data?.error ||
           "Failed to add personnel. Please try again."
       );
       setLoading(false);
