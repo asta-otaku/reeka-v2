@@ -167,6 +167,22 @@ function ViewProperty() {
   //   }
   // };
 
+  const handleAirbnbLink = async () => {
+    try {
+      const response = await apiClient.post(
+        `/properties/process-property-on-channex`,
+        {
+          propertyId: id,
+        }
+      );
+      if (response.status === 200) {
+        toast.success("Property linked with Airbnb successfully");
+      }
+    } catch (error: any) {
+      toast(error.response.data.error || "Couldn't link with Airbnb");
+    }
+  };
+
   return (
     <DashboardLayout>
       <div>
@@ -226,9 +242,12 @@ function ViewProperty() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* <button className="px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium">
-              De-List Property
-            </button> */}
+            <button
+              onClick={handleAirbnbLink}
+              className="px-3 py-2 text-white rounded-lg bg-secondary text-sm font-medium"
+            >
+              Link with Airbnb
+            </button>
             {/* <button
               onClick={generatePublicUrl}
               className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none"
