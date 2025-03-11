@@ -16,11 +16,13 @@ import useStore from "../../store";
 import apiClient from "../../helpers/apiClient";
 import { useCurrency } from "../../helpers/getCurrency";
 import AirBnbPricing from "./AirBnbPricing";
+import { AirbnbModal, DeleteModal } from "./Modals";
 
 function ViewProperty() {
   const { id } = useParams(); // Get property ID from the URL
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
   const currency = useCurrency();
@@ -50,6 +52,7 @@ function ViewProperty() {
   const [search, setSearch] = useState("");
   const [bookings, setBookings] = useState<any>([]);
 
+  // Fetch property details
   useEffect(() => {
     apiClient
       .get(`/properties/${id}`)
@@ -60,8 +63,9 @@ function ViewProperty() {
         console.error("Property not found", error);
         navigate("/listing");
       });
-  }, [id]);
+  }, [id, pending]);
 
+  // Fetch bookings
   useEffect(() => {
     apiClient
       .get(`/booking/property/${id}`)
@@ -77,6 +81,7 @@ function ViewProperty() {
     setBookedStatus(bookings.length > 0);
   }, [bookings]);
 
+  // Delete property function
   const handleDelete = async () => {
     try {
       const res = await apiClient.delete(`/properties/${id}`);
@@ -95,6 +100,7 @@ function ViewProperty() {
     }
   };
 
+  // Update property function
   const handleUpdate = async () => {
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
@@ -137,6 +143,7 @@ function ViewProperty() {
     }
   };
 
+  // Pagination
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(0);
   const pageCount = Math.ceil(bookings.length / itemsPerPage);
@@ -155,32 +162,43 @@ function ViewProperty() {
     )
     .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
-  // const generatePublicUrl = async () => {
-  //   try {
-  //     const response = await apiClient.get(`/public/url`, {
-  //       params: { propertyId: id },
-  //     });
-  //     navigator.clipboard.writeText(response.data);
-  //     toast.success("Public URL copied to clipboard");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  const handleAirbnbLink = async () => {
-    try {
-      const response = await apiClient.post(
-        `/properties/process-property-on-channex`,
-        {
-          propertyId: id,
-        }
-      );
-      if (response.status === 200) {
-        toast.success("Property linked with Airbnb successfully");
-      }
-    } catch (error: any) {
-      toast(error.response.data.error || "Couldn't link with Airbnb");
-    }
+  const openAirbnbModal = () => {
+    setModal(
+      <AirbnbModal
+        initialPrice={property.price.airbnbPrice}
+        onCancel={() => setModal(null)}
+        onProceed={async (newPrice: number) => {
+          const updatedProperty = {
+            ...property,
+            price: {
+              ...property.price,
+              airbnbPrice: newPrice,
+            },
+          };
+          setProperty(updatedProperty);
+          await handleUpdate();
+          try {
+            setPending(true);
+            const response = await apiClient.post(
+              `/properties/process-property-on-channex`,
+              {
+                propertyId: id,
+              }
+            );
+            if (response.status === 200) {
+              toast.success("Property linked with Airbnb successfully");
+            } else {
+              toast.error("An error occurred during linking");
+            }
+          } catch (error: any) {
+            toast(error.response.data.error || "Couldn't link with Airbnb");
+          } finally {
+            setPending(false);
+            setModal(null);
+          }
+        }}
+      />
+    );
   };
 
   return (
@@ -203,7 +221,6 @@ function ViewProperty() {
             onClick={() => setOpenModal(!openModal)}
             className="w-5 h-5 cursor-pointer"
           />
-
           {/* {openModal && <NotificationModal setOpenModal={setOpenModal} />} */}
         </div>
 
@@ -242,18 +259,19 @@ function ViewProperty() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              onClick={handleAirbnbLink}
-              className="px-3 py-2 text-white rounded-lg bg-secondary text-sm font-medium"
-            >
-              Link with Airbnb
-            </button>
-            {/* <button
-              onClick={generatePublicUrl}
-              className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none"
-            >
-              Generate Portfolio Link
-            </button> */}
+            {property.channexId ? (
+              <button className="px-3 py-2 text-white rounded-lg bg-green-500 text-sm font-medium">
+                Linked with Airbnb
+              </button>
+            ) : (
+              <button
+                onClick={openAirbnbModal}
+                disabled={pending}
+                className="px-3 py-2 text-white rounded-lg bg-secondary text-sm font-medium"
+              >
+                {pending ? <Spinner /> : "Link with Airbnb"}
+              </button>
+            )}
             <button
               onClick={() =>
                 setModal(
@@ -295,7 +313,6 @@ function ViewProperty() {
               setProperty={setProperty}
               edit={edit}
             />
-
             <div className="flex items-center gap-4 my-6">
               <button
                 disabled={loading}
@@ -307,7 +324,6 @@ function ViewProperty() {
                 {loading ? <Spinner /> : "Save Changes"}
               </button>
             </div>
-
             <AirBnbPricing id={property._id} />
           </div>
 
@@ -332,16 +348,6 @@ function ViewProperty() {
               >
                 Booking
               </button>
-              {/* <button
-                onClick={() => setSelected(1)}
-                className={`text-sm pb-2 ${
-                  selected === 1
-                    ? " text-primary border-b border-primary"
-                    : "text-[#808080]"
-                }`}
-              >
-                Finance
-              </button> */}
             </div>
             <div className="px-4 overflow-auto max-h-[400px] no-scrollbar">
               <BookingTable data={displayedData} />
@@ -366,41 +372,3 @@ function ViewProperty() {
 }
 
 export default ViewProperty;
-
-function DeleteModal({ handleDelete, setModal }: any) {
-  return (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xs w-full relative"
-    >
-      <div className="flex items-center justify-between px-4 py-2 border-b">
-        <h3 className="text-[#121212] font-medium text-sm">Delete Property</h3>
-        <span
-          onClick={() => setModal(null)}
-          className="cursor-pointer text-[#808080]"
-        >
-          X
-        </span>
-      </div>
-      <div className="p-4">
-        <p className="text-[#808080] text-xs">
-          Are you sure you want to delete this property?
-        </p>
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <button
-            onClick={handleDelete}
-            className="px-3 py-1.5 text-white rounded-xl bg-[#FF3B30] text-sm font-medium"
-          >
-            Yes
-          </button>
-          <button
-            onClick={() => setModal(null)}
-            className="px-3 py-1.5 text-white rounded-xl bg-green-500 text-sm font-medium"
-          >
-            No
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
