@@ -107,12 +107,12 @@ function SignUpForm() {
           >
             <FormField
               control={form.control}
-              name="lastName"
+              name="firstName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Last Name" {...field} />
+                    <Input placeholder="First Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,12 +120,12 @@ function SignUpForm() {
             />
             <FormField
               control={form.control}
-              name="firstName"
+              name="lastName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First Name</FormLabel>
+                  <FormLabel>Last Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="First Name" {...field} />
+                    <Input placeholder="Last Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

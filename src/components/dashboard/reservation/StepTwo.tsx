@@ -3,9 +3,9 @@ import prop from "@/assets/prop1.svg";
 import { useState } from "react";
 import Spinner from "@/components/Spinner";
 import { useCurrency } from "@/hooks/use-get-currency";
-import { formatTimestampToYearMonthDay } from "@/lib/utils";
 import { Property, ReservationForm } from "@/lib/types";
 import { usePostReservation } from "@/lib/api/mutations";
+import moment from "moment";
 
 function StepTwo({
   formDetails,
@@ -38,12 +38,15 @@ function StepTwo({
   const currency = useCurrency();
   const { mutateAsync: reserveBooking, isPending: loading } =
     usePostReservation();
+  function formatDate(date: string) {
+    return moment(date).tz("Africa/Lagos").format("YYYY-MM-DD");
+  }
 
   const handleReserve = async () => {
     const updatedFormData = {
       ...formData,
-      startDate: formatTimestampToYearMonthDay(formDetails.checkIn),
-      endDate: formatTimestampToYearMonthDay(formDetails.checkOut),
+      startDate: formatDate(formDetails.checkIn),
+      endDate: formatDate(formDetails.checkOut),
     };
 
     const response = await reserveBooking(updatedFormData);
