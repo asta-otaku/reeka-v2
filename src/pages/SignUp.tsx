@@ -105,20 +105,6 @@ function SignUp() {
                   <div className="flex flex-col gap-1">
                     <label
                       className="text-[#3A3A3A] font-medium text-sm"
-                      htmlFor="lastName"
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      name="lastName"
-                      onChange={handleChange}
-                      placeholder="Last Name"
-                      className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label
-                      className="text-[#3A3A3A] font-medium text-sm"
                       htmlFor="firstName"
                     >
                       First Name
@@ -127,6 +113,20 @@ function SignUp() {
                       name="firstName"
                       onChange={handleChange}
                       placeholder="First Name"
+                      className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label
+                      className="text-[#3A3A3A] font-medium text-sm"
+                      htmlFor="lastName"
+                    >
+                      Last Name
+                    </label>
+                    <input
+                      name="lastName"
+                      onChange={handleChange}
+                      placeholder="Last Name"
                       className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
                     />
                   </div>
