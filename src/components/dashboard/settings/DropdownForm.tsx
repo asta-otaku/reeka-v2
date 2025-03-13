@@ -1,12 +1,15 @@
 import info from "@/assets/alert-circle.svg";
 import { useGetProperties } from "@/lib/api/queries";
+import { useEffect } from "react";
 
 function DropdownForm({
   selectedProperties,
   setSelectedProperties,
+  role,
 }: {
   selectedProperties: string[];
   setSelectedProperties: React.Dispatch<React.SetStateAction<string[]>>;
+  role: string;
 }) {
   const { data: properties = [] } = useGetProperties();
 
@@ -19,6 +22,12 @@ function DropdownForm({
       setSelectedProperties([...selectedProperties, propertyId]);
     }
   };
+
+  useEffect(() => {
+    if (role === "Administrator") {
+      setSelectedProperties([...properties.map((property) => property._id)]);
+    }
+  }, [role]);
 
   return (
     <div className="flex flex-col gap-2 w-full mt-2">
