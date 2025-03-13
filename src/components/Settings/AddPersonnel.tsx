@@ -190,6 +190,7 @@ function AddPersonnel({
             <DropdownForm
               selectedProperties={selectedProperties}
               setSelectedProperties={setSelectedProperties}
+              role={formDetails.role}
             />
           </form>
           <button

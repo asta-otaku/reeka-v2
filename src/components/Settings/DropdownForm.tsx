@@ -5,11 +5,19 @@ import apiClient from "../../helpers/apiClient";
 function DropdownForm({
   selectedProperties,
   setSelectedProperties,
+  role,
 }: {
   selectedProperties: string[];
   setSelectedProperties: React.Dispatch<React.SetStateAction<string[]>>;
+  role: string;
 }) {
   const [properties, setProperties] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (role === "Administrator") {
+      setSelectedProperties([...properties.map((property) => property._id)]);
+    }
+  }, [role]);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -25,7 +33,6 @@ function DropdownForm({
 
   const handlePropertySelect = (propertyId: string) => {
     if (selectedProperties.includes(propertyId)) {
-      // Deselect the property
       setSelectedProperties(
         selectedProperties.filter((id) => id !== propertyId)
       );
