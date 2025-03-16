@@ -102,7 +102,7 @@ function ViewProperty() {
 
   // Update property function
   const handleUpdate = async (updatedProperty?: any) => {
-    const targetProperty = updatedProperty || property;
+    console.log(updatedProperty);
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);
@@ -110,14 +110,11 @@ function ViewProperty() {
     formData.append("country", property.country);
     formData.append("baseCurrency", property.baseCurrency);
     formData.append("owner", property.owner);
-    formData.append("employees", JSON.stringify([]));
     formData.append("bedroomCount", property.bedroomCount.toString());
     formData.append("bathroomCount", property.bathroomCount.toString());
     formData.append("amenities", JSON.stringify(property.amenities));
-    formData.append("price", JSON.stringify(targetProperty.price));
-    property.images.forEach((image: any) => {
-      formData.append("images", image);
-    });
+    formData.append("price", JSON.stringify(property.price));
+    formData.append("images", property.images);
 
     try {
       setLoading(true);
