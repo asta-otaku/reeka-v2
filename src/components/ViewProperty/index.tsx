@@ -114,7 +114,9 @@ function ViewProperty() {
     formData.append("bathroomCount", property.bathroomCount.toString());
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
-    formData.append("images", JSON.stringify(property.images));
+    property.images.forEach((image: any) => {
+      formData.append("images", image);
+    });
 
     try {
       setLoading(true);
