@@ -306,7 +306,6 @@ export const usePropertyMutation = () => {
         formData.append("country", data.country);
         formData.append("baseCurrency", data.baseCurrency);
         formData.append("owner", data.owner);
-        formData.append("employees", JSON.stringify([]));
         formData.append("bedroomCount", data.bedroomCount.toString());
         formData.append("bathroomCount", data.bathroomCount.toString());
         formData.append("amenities", JSON.stringify(data.amenities));
