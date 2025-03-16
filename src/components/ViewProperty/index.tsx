@@ -102,7 +102,6 @@ function ViewProperty() {
     formData.append("country", property.country);
     formData.append("baseCurrency", property.baseCurrency);
     formData.append("owner", property.owner);
-    formData.append("employees", JSON.stringify([]));
     formData.append("bedroomCount", property.bedroomCount.toString());
     formData.append("bathroomCount", property.bathroomCount.toString());
     formData.append("amenities", JSON.stringify(property.amenities));
