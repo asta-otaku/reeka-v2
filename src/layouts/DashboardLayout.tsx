@@ -192,16 +192,29 @@ function ListItem({
   title: string;
 }) {
   const location = useLocation();
+  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const { staffId } = userSessionDetails;
+
+  const handleLogout = async () => {
+    try {
+      if (staffId) {
+        await apiClient.post("/auth/logout", { staffId });
+      } else {
+        await apiClient.post("/auth/logout");
+      }
+      toast.success("Logged out successfully");
+      sessionStorage.removeItem("user");
+      window.location.href = "/signin";
+    } catch (error) {
+      toast.error("An error occurred. Please try again");
+    }
+  };
   return (
     <li>
       <Link
         onClick={() => {
           if (route === "#") {
-            toast.success("Logged out successfully");
-            setTimeout(() => {
-              sessionStorage.removeItem("user");
-              window.location.href = "/signin";
-            }, 2000);
+            handleLogout();
           }
         }}
         to={route}
