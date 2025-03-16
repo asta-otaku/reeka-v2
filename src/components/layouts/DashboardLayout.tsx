@@ -17,6 +17,7 @@ import {
 import toast from "react-hot-toast";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { useGetUserSubscription } from "@/lib/api/queries";
+import axiosInstance from "@/lib/services/axiosInstance";
 
 function DashboardLayout({ children }: any) {
   const navigate = useNavigate();
@@ -163,16 +164,29 @@ function ListItem({
   title: string;
 }) {
   const location = useLocation();
+  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const { staffId } = userSessionDetails;
+
+  const handleLogout = async () => {
+    try {
+      if (staffId) {
+        await axiosInstance.post("/auth/logout", { staffId });
+      } else {
+        await axiosInstance.post("/auth/logout");
+      }
+      toast.success("Logged out successfully");
+      sessionStorage.removeItem("user");
+      window.location.href = "/signin";
+    } catch (error) {
+      toast.error("An error occurred. Please try again");
+    }
+  };
   return (
     <li>
       <Link
         onClick={() => {
           if (route === "#") {
-            toast.success("Logged out successfully");
-            setTimeout(() => {
-              sessionStorage.removeItem("user");
-              window.location.href = "/signin";
-            }, 2000);
+            handleLogout();
           }
         }}
         to={route}
