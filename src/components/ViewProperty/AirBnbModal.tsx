@@ -26,6 +26,20 @@ const weekDays = [
   "Saturday",
 ];
 
+const utcToLocalDate = (utcDate: Date): Date => {
+  return new Date(
+    utcDate.getUTCFullYear(),
+    utcDate.getUTCMonth(),
+    utcDate.getUTCDate()
+  );
+};
+
+const localToUTCDate = (localDate: Date): Date => {
+  return new Date(
+    Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate())
+  );
+};
+
 export default function AirBnbModal({
   setModal,
   setRates,
@@ -38,8 +52,19 @@ export default function AirBnbModal({
   id: string;
 }) {
   const [activeTab, setActiveTab] = useState("date_range");
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(() => {
+    const now = new Date();
+    return new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    );
+  });
+
+  const [endDate, setEndDate] = useState<Date>(() => {
+    const now = new Date();
+    return new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+    );
+  });
   const [rate, setRate] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -118,27 +143,39 @@ export default function AirBnbModal({
         <label className="block text-secondary text-sm mb-2">Date Range</label>
         <div className="flex gap-2">
           <DatePicker
-            selected={startDate}
+            selected={utcToLocalDate(startDate)}
             onChange={(date: Date | null) => {
               if (date) {
-                setStartDate(date);
-                if (date > endDate) setEndDate(date);
+                const utcDate = localToUTCDate(date);
+                setStartDate(utcDate);
+                if (utcDate > endDate) setEndDate(utcDate);
               }
             }}
             className="border p-2 rounded w-full"
-            minDate={new Date()}
+            minDate={utcToLocalDate(
+              new Date(
+                Date.UTC(
+                  new Date().getUTCFullYear(),
+                  new Date().getUTCMonth(),
+                  new Date().getUTCDate()
+                )
+              )
+            )}
           />
           <span className="self-center">–</span>
           <DatePicker
-            selected={endDate}
+            selected={utcToLocalDate(endDate)}
             onChange={(date: Date | null) => {
-              if (date) setEndDate(date);
+              if (date) setEndDate(localToUTCDate(date));
             }}
             className="border p-2 rounded w-full"
-            minDate={startDate}
+            minDate={utcToLocalDate(startDate)}
           />
         </div>
       </div>
+      <p className="text-xs text-secondary mb-4">
+        All dates are formatted to UTC
+      </p>
 
       {/* Nightly Rate */}
       <div className="mb-6">
