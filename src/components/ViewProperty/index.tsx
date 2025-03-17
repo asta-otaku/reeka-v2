@@ -167,12 +167,13 @@ function ViewProperty() {
       <AirbnbModal
         initialPrice={property.price.airbnbPrice}
         onCancel={() => setModal(null)}
-        onProceed={async (newPrice: number) => {
+        onProceed={async (newPrice: number, weekendPrice: number) => {
           const updatedProperty = {
             ...property,
             price: {
               ...property.price,
               airbnbPrice: newPrice,
+              airbnbWeekendPrice: weekendPrice,
             },
           };
           await handleUpdate(updatedProperty);

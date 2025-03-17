@@ -7,24 +7,38 @@ export function AirbnbModal({
 }: {
   initialPrice: number | undefined;
   onCancel: () => void;
-  onProceed: (price: number) => void;
+  onProceed: (price: number, weekendPrice: number) => void;
 }) {
   const [price, setPrice] = useState<number | string>(initialPrice || 0);
+  const [weekendPrice, setWeekendPrice] = useState<number | string>(0);
   const parseNumberInput = useCallback((value: string) => {
     return value.replace(/[^0-9.]/g, ""); // Allow only numbers and a single decimal
   }, []);
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="border border-gray-300 rounded-2xl p-4 bg-white max-w-md w-full"
+      className="border border-gray-300 rounded-2xl p-4 bg-white max-w-md w-full flex flex-col gap-4"
     >
-      <h3 className="text-lg font-medium mb-2">Link with Airbnb</h3>
-      <p className="text-sm mb-4">Please update or enter the Airbnb price.</p>
-      <input
-        value={price}
-        onChange={(e) => setPrice(parseNumberInput(e.target.value))}
-        className="w-full border rounded p-2 mb-4"
-      />
+      <h3 className="text-lg font-medium">Link with Airbnb</h3>
+      <div>
+        <p className="text-sm mb-2">Please update or enter the Airbnb price.</p>
+        <input
+          value={price}
+          onChange={(e) => setPrice(parseNumberInput(e.target.value))}
+          className="w-full border rounded p-2"
+        />
+      </div>
+      <div>
+        <p className="text-sm mb-2">
+          Please update or enter the Airbnb weekend price.
+        </p>
+        <input
+          value={weekendPrice}
+          onChange={(e) => setWeekendPrice(parseNumberInput(e.target.value))}
+          className="w-full border rounded p-2"
+        />
+      </div>
+
       <div className="flex justify-end gap-2">
         <button
           onClick={onCancel}
@@ -33,7 +47,7 @@ export function AirbnbModal({
           Cancel
         </button>
         <button
-          onClick={() => onProceed(Number(price))}
+          onClick={() => onProceed(Number(price), Number(weekendPrice))}
           className="px-3 py-2 text-sm bg-primary text-white rounded"
         >
           Proceed
