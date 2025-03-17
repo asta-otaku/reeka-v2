@@ -63,7 +63,7 @@ function ViewProperty() {
         console.error("Property not found", error);
         navigate("/listing");
       });
-  }, [id, pending]);
+  }, [id]);
 
   // Fetch bookings
   useEffect(() => {
@@ -134,6 +134,7 @@ function ViewProperty() {
       } else {
         toast.error("An error occurred");
         setLoading(false);
+        window.location.reload();
       }
     } catch (error) {
       toast.error("Failed to update property");
