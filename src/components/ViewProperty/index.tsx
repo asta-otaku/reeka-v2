@@ -101,7 +101,7 @@ function ViewProperty() {
   };
 
   // Update property function
-  const handleUpdate = async () => {
+  const handleUpdate = async (property: any) => {
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);
@@ -167,15 +167,17 @@ function ViewProperty() {
         initialPrice={property.price.airbnbPrice}
         onCancel={() => setModal(null)}
         onProceed={async (newPrice: number, weekendPrice: number) => {
-          setProperty({
+          const updatedProperty = {
             ...property,
             price: {
               ...property.price,
               airbnbPrice: newPrice,
               airbnbWeekendPrice: weekendPrice,
             },
-          });
-          setTimeout(async () => await handleUpdate(), 500);
+          };
+
+          await handleUpdate(updatedProperty);
+          setProperty(updatedProperty);
           try {
             setPending(true);
             const response = await apiClient.post(
