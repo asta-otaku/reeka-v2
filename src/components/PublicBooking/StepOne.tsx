@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parseISO, addDays, isWithinInterval, parse } from "date-fns";
+import { format, parseISO, isWithinInterval, parse } from "date-fns";
 import axios from "axios";
 import { CONSTANT } from "../../util";
 import prop from "../../assets/prop1.svg";
@@ -280,7 +280,7 @@ function StepOne({
                 }
                 minDate={
                   formDetails.checkIn
-                    ? addDays(parseISO(formDetails.checkIn), 1)
+                    ? parseISO(formDetails.checkIn)
                     : new Date()
                 }
                 filterDate={(date) => !isDateBooked(date)} // Exclude booked dates
