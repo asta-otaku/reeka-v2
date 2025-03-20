@@ -5,7 +5,7 @@ import PhoneInput from "../PhoneInput";
 import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parseISO, isWithinInterval, parse, addDays } from "date-fns";
+import { format, parseISO, isWithinInterval, parse } from "date-fns";
 import axios from "axios";
 import prop from "../../assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -77,6 +77,23 @@ function StepOne({
         end: parse(end, "yyyy-MM-dd", new Date()),
       })
     );
+  };
+
+  const getNextBookedDate = (checkInDate: Date) => {
+    const futureBookings = bookedDates.filter(({ start }) => {
+      const bookingStart = parse(start, "yyyy-MM-dd", new Date());
+      return bookingStart > checkInDate;
+    });
+
+    if (futureBookings.length > 0) {
+      futureBookings.sort((a, b) => {
+        const aStart = parse(a.start, "yyyy-MM-dd", new Date());
+        const bStart = parse(b.start, "yyyy-MM-dd", new Date());
+        return aStart.getTime() - bStart.getTime();
+      });
+      return parse(futureBookings[0].start, "yyyy-MM-dd", new Date());
+    }
+    return null;
   };
 
   const handleSubmit = (e: any) => {
@@ -290,15 +307,17 @@ function StepOne({
                 }
                 minDate={
                   formDetails.checkIn
-                    ? addDays(parseISO(formDetails.checkIn), 1)
+                    ? parseISO(formDetails.checkIn)
                     : new Date()
                 }
                 filterDate={(date) => {
-                  const formattedDate = format(date, "yyyy-MM-dd");
-                  if (
-                    bookedDates.some(({ start }) => start === formattedDate)
-                  ) {
-                    return true;
+                  if (!formDetails.checkIn) return true;
+
+                  const checkInDate = parseISO(formDetails.checkIn);
+                  const nextBookedDate = getNextBookedDate(checkInDate);
+
+                  if (nextBookedDate) {
+                    return date <= nextBookedDate;
                   }
                   return !isDateBooked(date);
                 }}
