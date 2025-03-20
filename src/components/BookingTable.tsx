@@ -1,7 +1,6 @@
 import useStore from "../store";
-import moment from "moment-timezone";
+import moment from "moment";
 import { useLocation } from "react-router-dom";
-
 import { useCurrency } from "../helpers/getCurrency";
 import BookingModal from "./BookingModal";
 
@@ -14,20 +13,20 @@ function BookingTable({
 }) {
   const setModal = useStore((state: any) => state.setModal);
   const location = useLocation();
-  const currentDate = moment().tz("Africa/Lagos");
+  const currentDate = moment.utc();
   const currency = useCurrency();
 
   function formatDate(date: string) {
-    return moment(date).tz("Africa/Lagos").format("MMM DD");
+    return moment.utc(date).format("MMM DD");
   }
 
   function formatTime(date: string) {
-    return moment(date).tz("Africa/Lagos").format("hh:mm A");
+    return moment.utc(date).format("hh:mm A");
   }
 
   function getStatus(startDate: string, endDate: string) {
-    const start = moment(startDate).tz("Africa/Lagos");
-    const end = moment(endDate).tz("Africa/Lagos");
+    const start = moment.utc(startDate);
+    const end = moment.utc(endDate);
 
     if (currentDate.isAfter(end)) {
       return "Completed";
@@ -38,14 +37,12 @@ function BookingTable({
     }
   }
 
-  // Filter data based on statusFilter if provided
   const filteredData = statusFilter
     ? data.filter(
         (item) => getStatus(item.startDate, item.endDate) === statusFilter
       )
     : data;
 
-  // Sort filtered data by startDate in ascending order
   const sortedData = filteredData.slice().sort((a, b) => {
     return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
   });

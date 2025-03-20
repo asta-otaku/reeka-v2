@@ -12,6 +12,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
+import { localToUTCDate, utcToLocalDate } from "../ViewProperty/AirBnbModal";
 
 function StepOne({
   handleChange,
@@ -274,13 +275,24 @@ function StepOne({
                 selected={
                   formDetails.checkIn ? parseISO(formDetails.checkIn) : null
                 }
-                onChange={(date: Date | null) =>
-                  setFormDetails({
-                    ...formDetails,
-                    checkIn: date ? format(date, "yyyy-MM-dd") : "",
-                  })
-                }
-                minDate={new Date()}
+                onChange={(date: Date | null) => {
+                  if (date) {
+                    const utcDate = localToUTCDate(date);
+                    setFormDetails({
+                      ...formDetails,
+                      checkIn: format(utcDate, "yyyy-MM-dd"),
+                    });
+                  }
+                }}
+                minDate={utcToLocalDate(
+                  new Date(
+                    Date.UTC(
+                      new Date().getUTCFullYear(),
+                      new Date().getUTCMonth(),
+                      new Date().getUTCDate()
+                    )
+                  )
+                )}
                 filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
                 className="w-full text-[#667085]"
@@ -299,17 +311,20 @@ function StepOne({
                 selected={
                   formDetails.checkOut ? parseISO(formDetails.checkOut) : null
                 }
-                onChange={(date: Date | null) =>
-                  setFormDetails({
-                    ...formDetails,
-                    checkOut: date ? format(date, "yyyy-MM-dd") : "",
-                  })
-                }
-                minDate={
+                onChange={(date: Date | null) => {
+                  if (date) {
+                    const utcDate = localToUTCDate(date);
+                    setFormDetails({
+                      ...formDetails,
+                      checkOut: format(utcDate, "yyyy-MM-dd"),
+                    });
+                  }
+                }}
+                minDate={utcToLocalDate(
                   formDetails.checkIn
                     ? parseISO(formDetails.checkIn)
                     : new Date()
-                }
+                )}
                 filterDate={(date) => {
                   if (!formDetails.checkIn) return true;
 

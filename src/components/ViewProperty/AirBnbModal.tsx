@@ -26,7 +26,7 @@ const weekDays = [
   "Saturday",
 ];
 
-const utcToLocalDate = (utcDate: Date): Date => {
+export const utcToLocalDate = (utcDate: Date): Date => {
   return new Date(
     utcDate.getUTCFullYear(),
     utcDate.getUTCMonth(),
@@ -34,7 +34,7 @@ const utcToLocalDate = (utcDate: Date): Date => {
   );
 };
 
-const localToUTCDate = (localDate: Date): Date => {
+export const localToUTCDate = (localDate: Date): Date => {
   return new Date(
     Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate())
   );

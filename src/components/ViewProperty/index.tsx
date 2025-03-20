@@ -63,7 +63,7 @@ function ViewProperty() {
         console.error("Property not found", error);
         navigate("/listing");
       });
-  }, [id]);
+  }, [id, pending]);
 
   // Fetch bookings
   useEffect(() => {
@@ -109,8 +109,8 @@ function ViewProperty() {
     formData.append("country", property.country);
     formData.append("baseCurrency", property.baseCurrency);
     formData.append("owner", property.owner);
-    formData.append("bedroomCount", property.bedroomCount.toString());
-    formData.append("bathroomCount", property.bathroomCount.toString());
+    formData.append("bedroomCount", property.bedroomCount.toString() || "0");
+    formData.append("bathroomCount", property.bathroomCount.toString() || "0");
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
     property.images.forEach((image: any) => {
@@ -189,6 +189,7 @@ function ViewProperty() {
             );
             if (response.status === 200) {
               toast.success("Property linked with Airbnb successfully");
+              setModal(null);
             } else {
               toast.error("An error occurred during linking");
             }
@@ -318,7 +319,7 @@ function ViewProperty() {
             <div className="flex items-center gap-4 my-6">
               <button
                 disabled={loading}
-                onClick={handleUpdate}
+                onClick={() => handleUpdate(property)}
                 className={`px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium ${
                   !edit && "hidden"
                 }`}
