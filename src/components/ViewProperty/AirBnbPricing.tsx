@@ -4,7 +4,7 @@ import AirBnbModal, { Rate } from "./AirBnbModal";
 import PricingCalendar from "./RenderRates";
 import apiClient from "../../helpers/apiClient";
 
-function AirBnbPricing({ id }: { id: string }) {
+function AirBnbPricing({ id, loading }: { id: string; loading: boolean }) {
   const setModal = useStore((state: any) => state.setModal);
   const [rates, setRates] = useState<Rate>({});
   const todayStr = new Date().toISOString().split("T")[0];
@@ -24,7 +24,7 @@ function AirBnbPricing({ id }: { id: string }) {
           console.error("Failed to fetch rates:", error);
         });
     }
-  }, [id]);
+  }, [id, loading]);
 
   return (
     <div>

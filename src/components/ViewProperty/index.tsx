@@ -23,6 +23,7 @@ function ViewProperty() {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState(false);
+  const [loadingSync, setLoadingSync] = useState(false);
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
   const currency = useCurrency();
@@ -140,6 +141,25 @@ function ViewProperty() {
       toast.error("Failed to update property");
       setLoading(false);
       console.error(error);
+    }
+  };
+
+  // Handle Full Sync
+  const handleFullSync = async () => {
+    try {
+      setLoadingSync(true);
+      const response = await apiClient.post(`/properties/full-sync`, {
+        propertyId: id,
+      });
+      if (response.status === 200) {
+        toast.success("Property synced successfully");
+      } else {
+        toast.error("An error occurred during syncing");
+      }
+    } catch (error: any) {
+      toast(error.response.data.error || "Couldn't sync property");
+    } finally {
+      setLoadingSync(false);
     }
   };
 
@@ -261,33 +281,44 @@ function ViewProperty() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            {property.channexId ? (
-              <button className="px-3 py-2 text-white rounded-lg bg-green-500 text-sm font-medium">
-                Linked with Airbnb
-              </button>
-            ) : (
+          <div className="flex flex-col gap-2 relative">
+            <div className="flex items-center gap-2">
+              {property.channexId ? (
+                <button className="px-3 py-2 text-white rounded-lg bg-green-500 text-sm font-medium">
+                  Linked with Airbnb
+                </button>
+              ) : (
+                <button
+                  onClick={openAirbnbModal}
+                  disabled={pending}
+                  className="px-3 py-2 text-white rounded-lg bg-secondary text-sm font-medium"
+                >
+                  {pending ? <Spinner /> : "Link with Airbnb"}
+                </button>
+              )}
               <button
-                onClick={openAirbnbModal}
-                disabled={pending}
-                className="px-3 py-2 text-white rounded-lg bg-secondary text-sm font-medium"
+                onClick={() =>
+                  setModal(
+                    <DeleteModal
+                      handleDelete={handleDelete}
+                      setModal={setModal}
+                    />
+                  )
+                }
+                className="px-3 py-2 text-white rounded-lg bg-[#FF3B30] text-sm font-medium"
               >
-                {pending ? <Spinner /> : "Link with Airbnb"}
+                Delete Property
+              </button>
+            </div>
+            {property.channexId && (
+              <button
+                onClick={handleFullSync}
+                disabled={loadingSync}
+                className="bg-blue-500 py-2 px-5 rounded-xl text-white font-medium text-sm border min-w-[150px]"
+              >
+                {loadingSync ? <Spinner /> : "Full Sync"}
               </button>
             )}
-            <button
-              onClick={() =>
-                setModal(
-                  <DeleteModal
-                    handleDelete={handleDelete}
-                    setModal={setModal}
-                  />
-                )
-              }
-              className="px-3 py-2 text-white rounded-lg bg-[#FF3B30] text-sm font-medium"
-            >
-              Delete Property
-            </button>
           </div>
 
           <hr className="w-full mt-2" />
@@ -327,7 +358,7 @@ function ViewProperty() {
                 {loading ? <Spinner /> : "Save Changes"}
               </button>
             </div>
-            <AirBnbPricing id={property._id} />
+            <AirBnbPricing id={property._id} loading={loadingSync} />
           </div>
 
           <div className="w-full lg:w-[48%] rounded-2xl border shadow-xl shadow-gray-300">
