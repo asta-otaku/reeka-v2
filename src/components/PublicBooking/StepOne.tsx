@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { Calendar, ChevronDownIcon } from "../../assets/icons";
 import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
-import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, isWithinInterval, parse } from "date-fns";
 import axios from "axios";
+import { CONSTANT } from "../../util";
 import prop from "../../assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
-import { localToUTCDate, utcToLocalDate } from "../ViewProperty/AirBnbModal";
 
 function StepOne({
   handleChange,
@@ -173,7 +172,6 @@ function StepOne({
           Enter the correct details required
         </h4>
         <form className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-          {/* First Name */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">First Name*</h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
@@ -186,8 +184,6 @@ function StepOne({
               />
             </div>
           </div>
-
-          {/* Last Name */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
@@ -200,11 +196,9 @@ function StepOne({
               />
             </div>
           </div>
-
-          {/* No. of Guests */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Number of Guests*
+              Number of guest*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <input
@@ -216,11 +210,9 @@ function StepOne({
               />
             </div>
           </div>
-
-          {/* Email */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Email Address*
+              Email address*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <input
@@ -233,8 +225,6 @@ function StepOne({
               />
             </div>
           </div>
-
-          {/* Phone Number */}
           <div>
             <h4 className="text-[#121212] text-sm font-medium">
               Phone Number*
@@ -245,10 +235,9 @@ function StepOne({
             />
           </div>
 
-          {/* Price */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
-              Price per Night*
+              Price per night*
             </h4>
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <select
@@ -267,8 +256,6 @@ function StepOne({
               <ChevronDownIcon width={12} />
             </div>
           </div>
-
-          {/* Check In Date */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
               Check In Date
@@ -279,32 +266,19 @@ function StepOne({
                 selected={
                   formDetails.checkIn ? parseISO(formDetails.checkIn) : null
                 }
-                onChange={(date: Date | null) => {
-                  if (date) {
-                    const utcDate = localToUTCDate(date);
-                    setFormDetails({
-                      ...formDetails,
-                      checkIn: format(utcDate, "yyyy-MM-dd"),
-                    });
-                  }
-                }}
-                minDate={utcToLocalDate(
-                  new Date(
-                    Date.UTC(
-                      new Date().getUTCFullYear(),
-                      new Date().getUTCMonth(),
-                      new Date().getUTCDate()
-                    )
-                  )
-                )}
+                onChange={(date: Date | null) =>
+                  setFormDetails({
+                    ...formDetails,
+                    checkIn: date ? format(date, "yyyy-MM-dd") : "",
+                  })
+                }
+                minDate={new Date()}
                 filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
                 className="w-full text-[#667085]"
               />
             </div>
           </div>
-
-          {/* Check Out Date */}
           <div className="flex flex-col gap-1 w-full">
             <h4 className="text-[#121212] text-sm font-medium">
               Check Out Date
@@ -315,20 +289,17 @@ function StepOne({
                 selected={
                   formDetails.checkOut ? parseISO(formDetails.checkOut) : null
                 }
-                onChange={(date: Date | null) => {
-                  if (date) {
-                    const utcDate = localToUTCDate(date);
-                    setFormDetails({
-                      ...formDetails,
-                      checkOut: format(utcDate, "yyyy-MM-dd"),
-                    });
-                  }
-                }}
-                minDate={utcToLocalDate(
+                onChange={(date: Date | null) =>
+                  setFormDetails({
+                    ...formDetails,
+                    checkOut: date ? format(date, "yyyy-MM-dd") : "",
+                  })
+                }
+                minDate={
                   formDetails.checkIn
                     ? parseISO(formDetails.checkIn)
                     : new Date()
-                )}
+                }
                 filterDate={(date) => {
                   if (!formDetails.checkIn) return true;
 
