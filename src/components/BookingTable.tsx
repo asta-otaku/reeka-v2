@@ -1,7 +1,6 @@
 import useStore from "../store";
 import moment from "moment";
 import { useLocation } from "react-router-dom";
-import { useCurrency } from "../helpers/getCurrency";
 import BookingModal from "./BookingModal";
 
 function BookingTable({
@@ -14,7 +13,6 @@ function BookingTable({
   const setModal = useStore((state: any) => state.setModal);
   const location = useLocation();
   const currentDate = moment.utc();
-  const currency = useCurrency();
 
   function formatDate(date: string) {
     return moment.utc(date).format("MMM DD");
@@ -59,7 +57,7 @@ function BookingTable({
                     <BookingModal
                       setModal={setModal}
                       booking={item}
-                      currency={currency}
+                      currency={item.currency === "NGN" ? "₦" : "$"}
                     />
                   )
                 }
@@ -153,7 +151,7 @@ function BookingTable({
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap w-[140px]">
                       <div className="text-sm text-[#121212] max-w-[110px] w-full font-medium">
-                        {currency}
+                        {item.currency === "NGN" ? "₦" : "$"}
                         {item?.totalBookingValue
                           ?.toFixed(2)
                           ?.toString()
