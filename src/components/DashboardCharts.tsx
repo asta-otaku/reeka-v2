@@ -3,16 +3,17 @@ import info from "../assets/info.svg";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import apiClient from "../helpers/apiClient";
-import { useCurrency } from "../helpers/getCurrency";
 
 function DashboardCharts({
   filterType,
   startDate,
   endDate,
+  userCurrency,
 }: {
   filterType: string;
   startDate: Date | undefined;
   endDate: Date | undefined;
+  userCurrency: string;
 }) {
   const [activeMonth, setActiveMonth] = useState("current");
   const [cardData, setCardData] = useState<{
@@ -92,12 +93,14 @@ function DashboardCharts({
     const filterQuery =
       filterType !== "custom_date_range"
         ? `filterType=${filterType}`
-        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
+        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}?targetCurrency=${userCurrency}`;
 
     //  Card Data
     const fetchCardData = async () => {
       try {
-        const response = await apiClient.get(`/analytics/user?${filterQuery}`);
+        const response = await apiClient.get(
+          `/analytics/user?${filterQuery}?targetCurrency=${userCurrency}`
+        );
         setCardData(response.data);
       } catch (error) {
         console.error(error);
@@ -129,7 +132,7 @@ function DashboardCharts({
     const fetchPreviousGraphData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/previous/user/daily?${filterQuery}`
+          `/analytics/previous/user/daily?${filterQuery}?targetCurrency=${userCurrency}`
         );
         setPreviousGraphData(response.data);
       } catch (error) {
@@ -277,7 +280,9 @@ function DashboardCharts({
                 <h2 className="text-[#121212] text-2xl font-medium">
                   {data.title === "Bookings" || data.title === "Occupancy Rate"
                     ? data?.amount
-                    : `${useCurrency()}${Number(data?.amount)
+                    : `${userCurrency === "NGN" ? "₦" : "$"}${Number(
+                        data?.amount
+                      )
                         ?.toFixed(2)
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
                 </h2>
@@ -327,7 +332,7 @@ function DashboardCharts({
             <h2 className="flex items-baseline gap-2 text-[#121212] text-2xl font-semibold">
               {data.title === "Bookings"
                 ? data?.amount
-                : `${useCurrency()}${data?.amount
+                : `${userCurrency === "NGN" ? "₦" : "$"}${data?.amount
                     ?.toFixed(2)
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               <span

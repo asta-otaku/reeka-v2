@@ -20,6 +20,13 @@ function Dashboard() {
   const [activePropertyId, setActivePropertyId] = useState("");
   const [filterType, setFilterType] = useState("last_30_days");
 
+  const [userCurrency, setUserCurrency] = useState("USD");
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+    setUserCurrency(user.country?.toLowerCase() !== "nigeria" ? "USD" : "NGN");
+  }, []);
+
   // States for custom date range
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
@@ -91,6 +98,22 @@ function Dashboard() {
                 </button>
               </div>
               <div className="flex flex-wrap items-center gap-2">
+                <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+                  <select
+                    onChange={(e) => {
+                      setUserCurrency(e.target.value);
+                    }}
+                    value={userCurrency}
+                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
+                  >
+                    <option value="USD">USD</option>
+                    <option value="NGN">NGN</option>
+                  </select>
+                  <ChevronDownIcon
+                    className="absolute pointer-events-none cursor-pointer right-2 "
+                    width={12}
+                  />
+                </div>
                 <div
                   className={`relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit ${
                     selected == 0 && "hidden"
@@ -179,6 +202,7 @@ function Dashboard() {
                     filterType={filterType}
                     startDate={startDate}
                     endDate={endDate}
+                    userCurrency={userCurrency}
                   />
                 ),
                 1: (
@@ -187,6 +211,7 @@ function Dashboard() {
                     filterType={filterType}
                     startDate={startDate}
                     endDate={endDate}
+                    userCurrency={userCurrency}
                   />
                 ),
               }[selected]

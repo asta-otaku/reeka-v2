@@ -3,18 +3,19 @@ import { useEffect, useState } from "react";
 import info from "../assets/info.svg";
 import LineChart from "../charts/Line";
 import moment from "moment";
-import { useCurrency } from "../helpers/getCurrency";
 
 function DashboardPropertyChart({
   activePropertyId,
   filterType,
   startDate,
   endDate,
+  userCurrency,
 }: {
   activePropertyId: string;
   filterType: string;
   startDate: Date | undefined;
   endDate: Date | undefined;
+  userCurrency: string;
 }) {
   const [cardData, setCardData] = useState<{
     propertyAnalytics: {
@@ -55,7 +56,7 @@ function DashboardPropertyChart({
   useEffect(() => {
     const fetchCardData = async () => {
       try {
-        let url = `/analytics/user/properties/${activePropertyId}?filterType=${filterType}`;
+        let url = `/analytics/user/properties/${activePropertyId}?filterType=${filterType}?targetCurrency=${userCurrency}`;
 
         // Handle custom date range filter
         if (filterType === "custom_date_range") {
@@ -66,7 +67,7 @@ function DashboardPropertyChart({
           // Append date range to the URL
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-          url = `/analytics/user/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
+          url = `/analytics/user/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}?targetCurrency=${userCurrency}`;
         }
 
         const response = await apiClient.get(url);
@@ -78,7 +79,7 @@ function DashboardPropertyChart({
 
     const fetchGraphData = async () => {
       try {
-        let url = `/analytics/user/properties/${activePropertyId}/daily?filterType=${filterType}`;
+        let url = `/analytics/user/properties/${activePropertyId}/daily?filterType=${filterType}?targetCurrency=${userCurrency}`;
 
         if (filterType === "custom_date_range") {
           if (!startDate || !endDate) {
@@ -87,7 +88,7 @@ function DashboardPropertyChart({
 
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-          url = `/analytics/user/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
+          url = `/analytics/user/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}?targetCurrency=${userCurrency}`;
         }
 
         const response = await apiClient.get(url);
@@ -180,7 +181,7 @@ function DashboardPropertyChart({
               <h2 className="text-[#121212] text-2xl font-medium">
                 {data.title === "Bookings" || data.title === "Occupancy Rate"
                   ? data?.amount
-                  : `${useCurrency()}${
+                  : `${userCurrency === "NGN" ? "₦" : "$"}${
                       typeof data.amount === "number"
                         ? data.amount
                             .toFixed(2)
@@ -209,7 +210,7 @@ function DashboardPropertyChart({
             <h2 className="flex items-baseline gap-2 text-[#121212] text-2xl font-semibold">
               {data.title === "Bookings"
                 ? data?.amount
-                : `${useCurrency()}${data?.amount
+                : `${userCurrency === "NGN" ? "₦" : "$"}${data?.amount
                     ?.toFixed(2)
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               <span
