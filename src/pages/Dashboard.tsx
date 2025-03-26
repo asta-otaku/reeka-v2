@@ -103,7 +103,6 @@ function Dashboard() {
                     onChange={(e) => {
                       setUserCurrency(e.target.value);
                     }}
-                    value={userCurrency}
                     className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
                   >
                     <option value="USD">USD</option>
