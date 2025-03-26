@@ -53,27 +53,27 @@ function DashboardPropertyChart({
     }[]
   >([]);
   const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
+
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const fetchCardData = async () => {
       try {
         let url = `/analytics/user/properties/${activePropertyId}?filterType=${filterType}&targetCurrency=${userCurrency}`;
 
-        // Handle custom date range filter
         if (filterType === "custom_date_range") {
-          if (!startDate || !endDate) {
-            return;
-          }
+          if (!startDate || !endDate) return;
 
-          // Append date range to the URL
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
           url = `/analytics/user/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
         }
 
-        const response = await apiClient.get(url);
-        setCardData(response.data);
+        const response = await apiClient.get(url, { signal });
+        if (!signal.aborted) setCardData(response.data);
       } catch (error) {
-        console.error(error);
+        if (!signal.aborted) console.error(error);
       }
     };
 
@@ -82,24 +82,24 @@ function DashboardPropertyChart({
         let url = `/analytics/user/properties/${activePropertyId}/daily?filterType=${filterType}&targetCurrency=${userCurrency}`;
 
         if (filterType === "custom_date_range") {
-          if (!startDate || !endDate) {
-            return;
-          }
+          if (!startDate || !endDate) return;
 
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
           url = `/analytics/user/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
         }
 
-        const response = await apiClient.get(url);
-        setGraphData(response.data);
+        const response = await apiClient.get(url, { signal });
+        if (!signal.aborted) setGraphData(response.data);
       } catch (error) {
-        console.error(error);
+        if (!signal.aborted) console.error(error);
       }
     };
 
     fetchCardData();
     fetchGraphData();
+
+    return () => controller.abort();
   }, [activePropertyId, filterType, startDate, endDate, userCurrency]);
 
   const cards = [

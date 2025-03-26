@@ -87,7 +87,11 @@ function DashboardCharts({
     }[]
   >([]);
   const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
+
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
     const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
     const filterQuery =
@@ -95,55 +99,63 @@ function DashboardCharts({
         ? `filterType=${filterType}`
         : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
 
-    //  Card Data
+    // Fetch functions with signal
     const fetchCardData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/user?${filterQuery}&targetCurrency=${userCurrency}`
+          `/analytics/user?${filterQuery}&targetCurrency=${userCurrency}`,
+          { signal }
         );
-        setCardData(response.data);
+        if (!signal.aborted) setCardData(response.data);
       } catch (error) {
-        console.error(error);
+        if (!signal.aborted) console.error(error);
       }
     };
 
     const fetchPreviousCardData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/previous/user?${filterQuery}&targetCurrency=${userCurrency}`
+          `/analytics/previous/user?${filterQuery}&targetCurrency=${userCurrency}`,
+          { signal }
         );
-        setPreviousCardData(response.data);
+        if (!signal.aborted) setPreviousCardData(response.data);
       } catch (error) {
-        console.error(error);
+        if (!signal.aborted) console.error(error);
       }
     };
 
-    // Graph Data
     const fetchGraphData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/user/daily?${filterQuery}&targetCurrency=${userCurrency}`
+          `/analytics/user/daily?${filterQuery}`,
+          { signal }
         );
-        setGraphData(response.data);
+        if (!signal.aborted) setGraphData(response.data);
       } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchPreviousGraphData = async () => {
-      try {
-        const response = await apiClient.get(
-          `/analytics/previous/user/daily?${filterQuery}&targetCurrency=${userCurrency}`
-        );
-        setPreviousGraphData(response.data);
-      } catch (error) {
-        console.error(error);
+        if (!signal.aborted) console.error(error);
       }
     };
 
+    const fetchPreviousGraphData = async () => {
+      try {
+        const response = await apiClient.get(
+          `/analytics/previous/user/daily?${filterQuery}&targetCurrency=${userCurrency}`,
+          { signal }
+        );
+        if (!signal.aborted) setPreviousGraphData(response.data);
+      } catch (error) {
+        if (!signal.aborted) console.error(error);
+      }
+    };
+
+    // Execute all fetches
     fetchCardData();
     fetchPreviousCardData();
     fetchGraphData();
     fetchPreviousGraphData();
+
+    // Cleanup: Abort requests on unmount/dependency change
+    return () => controller.abort();
   }, [filterType, startDate, endDate, userCurrency]);
 
   const cards = [
