@@ -20,7 +20,7 @@ function Dashboard() {
   const [activePropertyId, setActivePropertyId] = useState("");
   const [filterType, setFilterType] = useState("last_30_days");
 
-  const [userCurrency, setUserCurrency] = useState("USD");
+  const [userCurrency, setUserCurrency] = useState("");
 
   useEffect(() => {
     const storedCurrency = localStorage.getItem("userCurrency");

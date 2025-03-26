@@ -110,7 +110,7 @@ function DashboardCharts({
     const fetchPreviousCardData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/previous/user?${filterQuery}`
+          `/analytics/previous/user?${filterQuery}&targetCurrency=${userCurrency}`
         );
         setPreviousCardData(response.data);
       } catch (error) {
@@ -122,7 +122,7 @@ function DashboardCharts({
     const fetchGraphData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/user/daily?${filterQuery}`
+          `/analytics/user/daily?${filterQuery}&targetCurrency=${userCurrency}`
         );
         setGraphData(response.data);
       } catch (error) {
@@ -144,7 +144,7 @@ function DashboardCharts({
     fetchPreviousCardData();
     fetchGraphData();
     fetchPreviousGraphData();
-  }, [filterType, startDate, endDate, currencySymbol, userCurrency]);
+  }, [filterType, startDate, endDate, userCurrency]);
 
   const cards = [
     {
