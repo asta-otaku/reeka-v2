@@ -93,13 +93,13 @@ function DashboardCharts({
     const filterQuery =
       filterType !== "custom_date_range"
         ? `filterType=${filterType}`
-        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}?targetCurrency=${userCurrency}`;
+        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
 
     //  Card Data
     const fetchCardData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/user?${filterQuery}?targetCurrency=${userCurrency}`
+          `/analytics/user?${filterQuery}&targetCurrency=${userCurrency}`
         );
         setCardData(response.data);
       } catch (error) {
@@ -132,7 +132,7 @@ function DashboardCharts({
     const fetchPreviousGraphData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/previous/user/daily?${filterQuery}?targetCurrency=${userCurrency}`
+          `/analytics/previous/user/daily?${filterQuery}&targetCurrency=${userCurrency}`
         );
         setPreviousGraphData(response.data);
       } catch (error) {

@@ -56,7 +56,7 @@ function DashboardPropertyChart({
   useEffect(() => {
     const fetchCardData = async () => {
       try {
-        let url = `/analytics/user/properties/${activePropertyId}?filterType=${filterType}?targetCurrency=${userCurrency}`;
+        let url = `/analytics/user/properties/${activePropertyId}?filterType=${filterType}&targetCurrency=${userCurrency}`;
 
         // Handle custom date range filter
         if (filterType === "custom_date_range") {
@@ -67,7 +67,7 @@ function DashboardPropertyChart({
           // Append date range to the URL
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-          url = `/analytics/user/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}?targetCurrency=${userCurrency}`;
+          url = `/analytics/user/properties/${activePropertyId}?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
         }
 
         const response = await apiClient.get(url);
@@ -79,7 +79,7 @@ function DashboardPropertyChart({
 
     const fetchGraphData = async () => {
       try {
-        let url = `/analytics/user/properties/${activePropertyId}/daily?filterType=${filterType}?targetCurrency=${userCurrency}`;
+        let url = `/analytics/user/properties/${activePropertyId}/daily?filterType=${filterType}&targetCurrency=${userCurrency}`;
 
         if (filterType === "custom_date_range") {
           if (!startDate || !endDate) {
@@ -88,7 +88,7 @@ function DashboardPropertyChart({
 
           const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
           const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-          url = `/analytics/user/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}?targetCurrency=${userCurrency}`;
+          url = `/analytics/user/properties/${activePropertyId}/daily?filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
         }
 
         const response = await apiClient.get(url);
