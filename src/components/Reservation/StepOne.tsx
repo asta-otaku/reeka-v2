@@ -5,7 +5,7 @@ import PhoneInput from "../PhoneInput";
 import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, parseISO, isWithinInterval, parse } from "date-fns";
+import { format, parseISO, isWithinInterval, parse, addDays } from "date-fns";
 import axios from "axios";
 import prop from "../../assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -307,7 +307,7 @@ function StepOne({
                 }
                 minDate={
                   formDetails.checkIn
-                    ? parseISO(formDetails.checkIn)
+                    ? addDays(parseISO(formDetails.checkIn), 1)
                     : new Date()
                 }
                 filterDate={(date) => {

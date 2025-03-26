@@ -100,7 +100,7 @@ function DashboardPropertyChart({
 
     fetchCardData();
     fetchGraphData();
-  }, [activePropertyId, filterType, startDate, endDate]);
+  }, [activePropertyId, filterType, startDate, endDate, userCurrency]);
 
   const cards = [
     {

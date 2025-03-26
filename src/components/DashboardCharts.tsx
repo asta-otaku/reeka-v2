@@ -144,7 +144,7 @@ function DashboardCharts({
     fetchPreviousCardData();
     fetchGraphData();
     fetchPreviousGraphData();
-  }, [filterType, startDate, endDate]);
+  }, [filterType, startDate, endDate, userCurrency]);
 
   const cards = [
     {
