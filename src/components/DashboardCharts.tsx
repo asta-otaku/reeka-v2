@@ -118,7 +118,7 @@ function DashboardCharts({
       }
     };
 
-    //Graph Data
+    // Graph Data
     const fetchGraphData = async () => {
       try {
         const response = await apiClient.get(
@@ -145,6 +145,9 @@ function DashboardCharts({
     fetchGraphData();
     fetchPreviousGraphData();
   }, [filterType, startDate, endDate, userCurrency]);
+
+  // Ensure currency comparison is case-insensitive
+  const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
 
   const cards = [
     {
@@ -280,10 +283,8 @@ function DashboardCharts({
                 <h2 className="text-[#121212] text-2xl font-medium">
                   {data.title === "Bookings" || data.title === "Occupancy Rate"
                     ? data?.amount
-                    : `${userCurrency === "NGN" ? "₦" : "$"}${Number(
-                        data?.amount
-                      )
-                        ?.toFixed(2)
+                    : `${currencySymbol}${Number(data?.amount)
+                        .toFixed(2)
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
                 </h2>
                 <p className="text-xs text-[#808080]">{data.caption}</p>
@@ -327,12 +328,12 @@ function DashboardCharts({
           <div key={index}>
             <h4 className="flex gap-1 text-[#808080] font-medium items-center">
               {data.title}
-              <img src={info} />
+              <img src={info} alt="info" />
             </h4>
             <h2 className="flex items-baseline gap-2 text-[#121212] text-2xl font-semibold">
               {data.title === "Bookings"
                 ? data?.amount
-                : `${userCurrency === "NGN" ? "₦" : "$"}${data?.amount
+                : `${currencySymbol}${data?.amount
                     ?.toFixed(2)
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`}
               <span
@@ -348,8 +349,12 @@ function DashboardCharts({
             </h2>
             <div className="mt-4 border rounded-2xl p-3 bg-[#FAFAFA] w-full h-56">
               <LineChart
-                labels={data.labels} // X-axis labels (dates)
-                data={activeMonth === "current" ? data.current : data.previous} // Show current or previous month data
+                labels={
+                  activeMonth === "current"
+                    ? data.labels
+                    : data.labels /* previous labels if needed */
+                }
+                data={activeMonth === "current" ? data.current : data.previous}
                 activeMonth={activeMonth}
               />
             </div>
