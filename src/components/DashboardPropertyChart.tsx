@@ -52,7 +52,7 @@ function DashboardPropertyChart({
       averageNightlyRate: number;
     }[]
   >([]);
-
+  const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
   useEffect(() => {
     const fetchCardData = async () => {
       try {
@@ -100,9 +100,14 @@ function DashboardPropertyChart({
 
     fetchCardData();
     fetchGraphData();
-  }, [activePropertyId, filterType, startDate, endDate, userCurrency]);
-
-  const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
+  }, [
+    activePropertyId,
+    filterType,
+    startDate,
+    endDate,
+    currencySymbol,
+    userCurrency,
+  ]);
 
   const cards = [
     {

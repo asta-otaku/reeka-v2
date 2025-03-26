@@ -86,7 +86,7 @@ function DashboardCharts({
       averageNightlyRate: number;
     }[]
   >([]);
-
+  const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
   useEffect(() => {
     const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
     const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
@@ -144,10 +144,7 @@ function DashboardCharts({
     fetchPreviousCardData();
     fetchGraphData();
     fetchPreviousGraphData();
-  }, [filterType, startDate, endDate, userCurrency]);
-
-  // Ensure currency comparison is case-insensitive
-  const currencySymbol = userCurrency.toUpperCase() === "NGN" ? "₦" : "$";
+  }, [filterType, startDate, endDate, currencySymbol, userCurrency]);
 
   const cards = [
     {
