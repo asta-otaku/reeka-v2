@@ -23,8 +23,15 @@ function Dashboard() {
   const [userCurrency, setUserCurrency] = useState("USD");
 
   useEffect(() => {
-    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
-    setUserCurrency(user.country?.toLowerCase() !== "nigeria" ? "USD" : "NGN");
+    const storedCurrency = localStorage.getItem("userCurrency");
+    if (storedCurrency) {
+      setUserCurrency(storedCurrency);
+    } else {
+      const defaultCurrency =
+        user.country?.toLowerCase() !== "nigeria" ? "USD" : "NGN";
+      setUserCurrency(defaultCurrency);
+      localStorage.setItem("userCurrency", defaultCurrency);
+    }
   }, []);
 
   // States for custom date range
@@ -101,8 +108,11 @@ function Dashboard() {
                 <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
                   <select
                     onChange={(e) => {
-                      setUserCurrency(e.target.value);
+                      const newCurrency = e.target.value;
+                      setUserCurrency(newCurrency);
+                      localStorage.setItem("userCurrency", newCurrency);
                     }}
+                    value={userCurrency}
                     className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
                   >
                     <option value="USD">USD</option>
@@ -142,17 +152,10 @@ function Dashboard() {
                     width={12}
                   />
                 </div>
-                {/* <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
-                  <select className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent">
-                    <option>Monthly</option>
-                  </select>
-                  <ChevronDownIcon width={12} />
-                </div> */}
                 <div className="flex items-center justify-center gap-2 bg-white border border-solid rounded-md p-2 w-fit">
                   <Calendar width={12} />
                   {filterType === "custom_date_range" ? (
                     <div className="overflow-x-auto no-scrollbar max-w-xs md:max-w-full flex ">
-                      {/* Date Range Picker */}
                       <div className="flex items-center gap-2">
                         <RangePicker
                           onChange={(dates, dateStrings) => {
@@ -163,8 +166,6 @@ function Dashboard() {
                           className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent"
                         />
                       </div>
-
-                      {/* Button to Switch Back to Predefined Options */}
                       <button
                         className="text-[10px] whitespace-nowrap text-primary hover:underline"
                         onClick={() => setFilterType("last_30_days")}
