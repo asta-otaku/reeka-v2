@@ -4,13 +4,13 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";
-import apiClient from "../helpers/apiClient";
+// import apiClient from "../helpers/apiClient";
 
 const tabs = [
   { name: "Password Reset", id: "change_password" },
   { name: "Edit Info", id: "edit_info" },
   { name: "Staff Management", id: "staff_management" },
-  { name: "Agent Management", id: "agent_management" },
+  // { name: "Agent Management", id: "agent_management" },
 ];
 
 function Settings() {
@@ -22,14 +22,14 @@ function Settings() {
     setUser(storedUser);
   }, []);
 
-  const handleGetSuubscriptions = async () => {
-    try {
-      const response = await apiClient.get("/subscriptions/manage");
-      window.location.href = response.data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleGetSubscriptions = async () => {
+  //   try {
+  //     const response = await apiClient.get("/subscriptions/manage");
+  //     window.location.href = response.data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <DashboardLayout>
@@ -38,12 +38,12 @@ function Settings() {
           title="Settings"
           description="Manage your account settings."
         />
-        <button
-          onClick={handleGetSuubscriptions}
+        {/* <button
+          onClick={handleGetSubscriptions}
           className="bg-primary p-2 rounded-xl mx-4 text-white w-4/5 md:w-fit md:absolute md:top-24 z-10 md:right-24 lg:right-16 font-medium text-sm border border-primary"
         >
           Manage subscriptions
-        </button>
+        </button> */}
         <div className="mt-4 px-6">
           {/* Tabs */}
           <div className="flex border-b border-gray-200">

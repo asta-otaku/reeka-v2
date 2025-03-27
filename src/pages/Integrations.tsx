@@ -22,7 +22,7 @@ const bookings: {
     description: "Manage your bookings with ease.",
     logo: airbnb,
     status: false,
-    disabled: true,
+    disabled: false,
   },
   {
     name: "Booking.com",
@@ -103,7 +103,7 @@ function Integrations() {
           >
             Booking
           </button>
-          <button
+          {/* <button
             disabled
             onClick={() => setSelected(1)}
             className={`text-sm pb-2 cursor-not-allowed ${
@@ -113,19 +113,19 @@ function Integrations() {
             }`}
           >
             Finance
-          </button>
+          </button> */}
         </div>
 
         {selected === 0 ? (
           <div>
             <Cards list={bookingList} setList={setBookingList} tag={false} />
 
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <h2 className="text-[#121212] font-medium text-2xl mb-4">
                 Your Integrations
               </h2>
               <Cards list={bookingList} setList={setBookingList} tag />
-            </div>
+            </div> */}
           </div>
         ) : (
           <div>
