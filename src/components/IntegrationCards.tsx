@@ -2,7 +2,7 @@ import unlink from "../assets/unlink-03.svg";
 
 function Cards({
   list,
-  setList,
+  // setList,
   tag,
 }: {
   list: {
@@ -34,22 +34,20 @@ function Cards({
             </div>
             <button
               disabled={booking?.disabled}
-              onClick={() => {
-                setList((prev: any) =>
-                  prev.map((bk: any) =>
-                    bk.name === booking.name
-                      ? { ...bk, status: !bk.status }
-                      : bk
-                  )
-                );
-              }}
+              // onClick={() => {
+              //   setList((prev: any) =>
+              //     prev.map((bk: any) =>
+              //       bk.name === booking.name
+              //         ? { ...bk, status: !bk.status }
+              //         : bk
+              //     )
+              //   );
+              // }}
               style={{
                 cursor: booking?.disabled ? "not-allowed" : "pointer",
               }}
-              className={`${
-                tag ? "bg-primary w-28 h-9" : "bg-[#FAFAFA] w-24 h-10"
-              } ${
-                booking.disabled && "w-32"
+              className={`${tag ? "bg-primary w-28 h-9" : "w-24 h-10"} ${
+                booking.disabled ? "w-32 bg-[#FAFAFA]" : "bg-green-100"
               } p-2 rounded-lg flex items-center gap-2 justify-center`}
             >
               <img
@@ -66,7 +64,7 @@ function Cards({
                   ? "Coming soon"
                   : tag
                   ? "Disconnect"
-                  : "Set Up"}
+                  : "Live"}
               </span>
             </button>
           </div>

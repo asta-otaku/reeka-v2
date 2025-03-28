@@ -14,7 +14,7 @@ function ReportCenter() {
   const setModal = useStore((state: any) => state.setModal);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
-  const [reportFilter, setReportFilter] = useState("bookings");
+  const [reportFilter, _] = useState("bookings");
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -64,7 +64,7 @@ function ReportCenter() {
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 relative">
           <div className="flex items-center gap-4">
-            <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+            {/* <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {
                   setReportFilter(e.target.value);
@@ -78,7 +78,7 @@ function ReportCenter() {
                 className="absolute cursor-pointer pointer-events-none right-2"
                 width={12}
               />
-            </div>
+            </div> */}
             <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {

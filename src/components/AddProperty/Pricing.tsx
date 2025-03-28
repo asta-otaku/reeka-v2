@@ -25,6 +25,14 @@ function Pricing({
     setFormDetails({ ...formDetails, price: price });
   }, [price]);
 
+  const handleDiscountPercentage = (value: number) => {
+    const clampedValue = Math.max(0, Math.min(100, value));
+    setPrice({
+      ...price,
+      discountPercentage: -clampedValue,
+    });
+  };
+
   return (
     <div
       onClick={() => toggleSection("pricing")}
@@ -102,41 +110,44 @@ function Pricing({
                 <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                   <button
                     onClick={() => {
-                      if (price?.discountPercentage == 0) return;
-                      setPrice({
-                        ...price,
-                        discountPercentage: price.discountPercentage + 1,
-                      });
+                      if (!price) return;
+                      const currentAbs = Math.abs(
+                        price.discountPercentage || 0
+                      );
+                      if (currentAbs === 0) return;
+                      handleDiscountPercentage(currentAbs - 1);
                     }}
                     className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
                   >
                     -
                   </button>
                 </span>
-
                 <span className="text-xs text-[#808080] flex items-center gap-1">
                   Discount by
-                  <input
-                    className="w-8 outline-none text-center"
-                    value={price?.discountPercentage || 0}
-                    onChange={(e: any) => {
-                      if (e.target.value > 100) return;
-                      setPrice({
-                        ...price,
-                        discountPercentage: -Number(e.target.value) || 0,
-                      });
-                    }}
-                  />
+                  <div className="flex items-center">
+                    <span>-</span>
+                    <input
+                      className="w-8 outline-none text-center"
+                      value={Math.abs(price?.discountPercentage || 0)}
+                      onChange={(e: any) => {
+                        const val = Number(e.target.value);
+                        if (isNaN(val) || val > 100) return;
+                        handleDiscountPercentage(val);
+                      }}
+                    />
+                  </div>
                   %
                 </span>
+
                 <span className="bg-[#ECECEC] w-[30px] h-[30px] flex items-center justify-center rounded-full">
                   <button
                     onClick={() => {
-                      if (price?.discountPercentage > 100) return;
-                      setPrice({
-                        ...price,
-                        discountPercentage: price.discountPercentage - 1,
-                      });
+                      if (!price) return;
+                      const currentAbs = Math.abs(
+                        price.discountPercentage || 0
+                      );
+                      if (currentAbs >= 100) return;
+                      handleDiscountPercentage(currentAbs + 1);
                     }}
                     className="w-5 h-5 rounded-full bg-[#FAFAFA] text-xs"
                   >
@@ -160,7 +171,7 @@ function Pricing({
                     onChange={(e) => {
                       const newBoostedPrice = Number(e.target.value);
                       if (newBoostedPrice < 0) return;
-                      // Ensure basePrice is not zero to avoid division by zero
+
                       const boostPercentage =
                         price.basePrice !== 0
                           ? ((newBoostedPrice - price.basePrice) /
