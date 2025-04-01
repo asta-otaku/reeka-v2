@@ -99,7 +99,7 @@ function BookingModal({
           </div>
           <div>
             <h2 className="text-[#808080] text-xs">Email</h2>
-            <h4 className="text-[#121212] text-xs mt-0.5">
+            <h4 className="text-[#121212] text-xs mt-0.5 max-w-[180px] truncate">
               {booking?.guestEmail}
             </h4>
           </div>
