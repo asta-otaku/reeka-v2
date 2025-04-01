@@ -53,53 +53,8 @@ function Pricing() {
             </p>
           </div>
 
-          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-2 w-full">
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 max-w-6xl mx-auto w-full">
             {/* Pricing Cards */}
-
-            <div className="p-2 rounded-[32px] bg-primary">
-              <div className="p-4 rounded-3xl bg-[#E9895F]">
-                <h6 className="text-white text-xs">Trial</h6>
-                <h3 className="mt-2 text-white font-medium text-base">
-                  Free Trial
-                </h3>
-                <p className="text-xs text-white max-w-[280px]">
-                  Property management built for you to scale
-                </p>
-                <div className="mt-6 flex w-full justify-between items-center">
-                  <h2 className="text-white text-xs">
-                    ₦ <span className="text-xl font-bold">0</span> /Month
-                  </h2>
-                  <button
-                    onClick={() => setPricingPlan("trial")}
-                    className="bg-white text-[#121212] w-24 py-2 text-sm rounded-3xl"
-                  >
-                    Get Started
-                  </button>
-                </div>
-              </div>
-              <ul className="mt-6 mb-2 grid grid-cols-2 gap-2 px-4">
-                <li className="flex items-center gap-2 text-xs">
-                  <div className="w-1 h-1 bg-white rounded-full"></div>
-                  <span className="text-xs text-white">
-                    Up to 25 Properties
-                  </span>
-                </li>
-                <li className="flex items-center gap-2 text-xs">
-                  <div className="w-1 h-1 bg-white rounded-full"></div>
-                  <span className="text-xs text-white">Payment Processing</span>
-                </li>
-                <li className="flex items-center gap-2 text-xs">
-                  <div className="w-1 h-1 bg-white rounded-full"></div>
-                  <span className="text-xs text-white">Calendar Sync</span>
-                </li>
-                <li className="flex items-baseline gap-2 text-xs">
-                  <div className="min-w-1 min-h-1 bg-white rounded-full"></div>
-                  <span className="text-xs text-white">
-                    0.5% Transaction Fee on Direct Bookings
-                  </span>
-                </li>
-              </ul>
-            </div>
 
             <div className="p-2 rounded-[32px] bg-[#FFE9DF]">
               <div className="p-4 rounded-3xl bg-[#FFEDE5]">
