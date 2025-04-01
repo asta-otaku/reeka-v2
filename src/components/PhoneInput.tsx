@@ -8,11 +8,18 @@ function PhoneInput({
   const handleCountryCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
 
+    if (input === "") {
+      setFormDetails({ ...formDetails, countryCode: "" });
+      return;
+    }
+
     if (input.includes("+")) {
       const codeMatch = input.match(/\+\d+/);
       if (codeMatch) {
         const code = codeMatch[0];
         setFormDetails({ ...formDetails, countryCode: code });
+      } else {
+        setFormDetails({ ...formDetails, countryCode: "" });
       }
     } else {
       const validCode = "+" + input.replace(/[^\d]/g, "");
