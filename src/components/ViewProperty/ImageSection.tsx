@@ -76,10 +76,12 @@ function ImageSection({
               type="file"
               id="file"
               className="hidden"
+              accept="image/*"
               multiple
               onChange={(e: any) => {
                 const newImages = Array.from(e.target.files);
                 setProperty((prev: any) => {
+                  // Limit to the last 10 images
                   const updatedImages = [...prev.images, ...newImages].slice(
                     -10
                   );

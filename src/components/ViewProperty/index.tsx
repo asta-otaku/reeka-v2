@@ -114,9 +114,13 @@ function ViewProperty() {
     formData.append("bathroomCount", property.bathroomCount.toString() || "0");
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
-    property.images.forEach((image: any) => {
-      formData.append("images", image);
-    });
+    if (property.images && property.images.length > 0) {
+      property.images.forEach((image: any) => {
+        formData.append("images", image);
+      });
+    } else {
+      formData.append("images", JSON.stringify([]));
+    }
 
     try {
       setLoading(true);
