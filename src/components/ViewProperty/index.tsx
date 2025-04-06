@@ -115,9 +115,7 @@ function ViewProperty() {
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
     if (property.images && property.images.length > 0) {
-      property.images.forEach((image: any) => {
-        formData.append("images", image);
-      });
+      formData.append("images", JSON.stringify(property.images));
     } else {
       formData.append("images", JSON.stringify([]));
     }
