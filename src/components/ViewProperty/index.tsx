@@ -24,6 +24,7 @@ function ViewProperty() {
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState(false);
   const [loadingSync, setLoadingSync] = useState(false);
+  const [newImages, setNewImages] = useState<File[]>([]);
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
   const currency = useCurrency();
@@ -118,6 +119,11 @@ function ViewProperty() {
       formData.append("images", JSON.stringify(property.images));
     } else {
       formData.append("images", JSON.stringify([]));
+    }
+    if (newImages.length > 0) {
+      newImages.forEach((image) => {
+        formData.append("images", image);
+      });
     }
 
     try {
@@ -338,6 +344,8 @@ function ViewProperty() {
               property={property}
               setProperty={setProperty}
               edit={edit}
+              newImages={newImages}
+              setNewImages={setNewImages}
             />
             <Amenities
               property={property}
