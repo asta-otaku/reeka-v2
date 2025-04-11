@@ -17,6 +17,7 @@ import apiClient from "../../helpers/apiClient";
 import { useCurrency } from "../../helpers/getCurrency";
 import AirBnbPricing from "./AirBnbPricing";
 import { AirbnbModal, DeleteModal } from "./Modals";
+import FeeSection, { PricePreview } from "./FeeSection";
 
 function ViewProperty() {
   const { id } = useParams(); // Get property ID from the URL
@@ -179,6 +180,7 @@ function ViewProperty() {
   const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
+  const [showPreview, setShowPreview] = useState(false);
 
   const displayedData = bookings
     .filter(
@@ -357,6 +359,30 @@ function ViewProperty() {
               setProperty={setProperty}
               edit={edit}
             />
+            <FeeSection
+              cautionFee={property.price.cautionFee}
+              setCautionFee={(val) =>
+                setProperty({
+                  ...property,
+                  price: { ...property.price, cautionFee: val },
+                })
+              }
+              edit={edit}
+            />
+            {showPreview && (
+              <PricePreview
+                basePrice={property.price.basePrice}
+                cautionFee={property.price.cautionFee}
+              />
+            )}
+            {property.price.cautionFee > 0 && (
+              <button
+                onClick={() => setShowPreview(!showPreview)}
+                className="mt-2 text-[#3498db] underline text-sm"
+              >
+                {showPreview ? "Hide Price Preview" : "Show Price Preview"}
+              </button>
+            )}
             <div className="flex items-center gap-4 my-6">
               <button
                 disabled={loading}

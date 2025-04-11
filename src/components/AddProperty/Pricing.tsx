@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import pricetag from "../../assets/pricetag.svg";
 import { useCurrency } from "../../helpers/getCurrency";
+import FeeSection, { PricePreview } from "../ViewProperty/FeeSection";
 
 function Pricing({
   toggleSection,
@@ -32,6 +33,7 @@ function Pricing({
       discountPercentage: -clampedValue,
     });
   };
+  const [showPreview, setShowPreview] = useState(false);
 
   return (
     <div
@@ -236,6 +238,31 @@ function Pricing({
               </div>
             </div>
           </div>
+
+          <FeeSection
+            cautionFee={formDetails.price.cautionFee}
+            setCautionFee={(val) =>
+              setFormDetails({
+                ...formDetails,
+                price: { ...formDetails.price, cautionFee: val },
+              })
+            }
+            edit={true}
+          />
+          {showPreview && (
+            <PricePreview
+              basePrice={formDetails.price.basePrice}
+              cautionFee={formDetails.price.cautionFee}
+            />
+          )}
+          {formDetails.price.cautionFee > 0 && (
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="mt-2 text-[#3498db] underline text-sm"
+            >
+              {showPreview ? "Hide Price Preview" : "Show Price Preview"}
+            </button>
+          )}
 
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>
