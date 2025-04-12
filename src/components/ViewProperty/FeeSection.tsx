@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useCurrency } from "../../helpers/getCurrency";
 
 interface FeeSectionProps {
   cautionFee: number;
@@ -11,6 +12,7 @@ const FeeSection: FC<FeeSectionProps> = ({
   setCautionFee,
   edit,
 }) => {
+  const currency = useCurrency();
   return (
     <div className="border p-6 rounded-xl shadow-sm bg-white my-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">
@@ -69,7 +71,7 @@ const FeeSection: FC<FeeSectionProps> = ({
         <p className="font-medium mb-2">Fee Breakdown</p>
         {cautionFee > 0 && (
           <p>
-            <span className="font-semibold">Caution Fee:</span> ₦
+            <span className="font-semibold">Caution Fee:</span> {currency}
             {cautionFee?.toLocaleString()}
           </p>
         )}
@@ -85,34 +87,41 @@ const FeeSection: FC<FeeSectionProps> = ({
 export const PricePreview = ({
   basePrice,
   cautionFee,
+  days = 5,
 }: {
   basePrice: number;
   cautionFee: number;
+  days?: number;
 }) => {
-  const days = 5;
   const totalBase = basePrice * days;
   const paymentFee = 0.01 * totalBase;
   const total = totalBase + paymentFee + cautionFee;
+  const currency = useCurrency();
 
   return (
-    <div className="bg-white mt-6 p-6 rounded-xl border border-gray-200 shadow-sm text-sm text-gray-800 space-y-2">
+    <div className="bg-white mt-6 p-6 border border-[#C0C0C0]/40 rounded-xl shadow-sm text-sm text-gray-800 space-y-2">
       <h4 className="text-md font-semibold mb-3">
-        📊 Price Preview (5 nights)
+        📊 Price Preview ({days} nights)
       </h4>
       <p>
-        <span className="font-medium">Base Price:</span> ₦
+        <span className="font-medium">Price per night:</span> {currency}
+        {basePrice?.toLocaleString()}
+      </p>
+      <p>
+        <span className="font-medium">Base Price:</span> {currency}
         {totalBase?.toLocaleString()}
       </p>
       <p>
-        <span className="font-medium">Online Payment Fee (1%):</span> ₦
+        <span className="font-medium">Online Payment Fee (1%):</span> {currency}
         {paymentFee?.toLocaleString()}
       </p>
       <p>
-        <span className="font-medium">Caution Fee:</span> ₦
+        <span className="font-medium">Caution Fee:</span> {currency}
         {cautionFee?.toLocaleString()}
       </p>
       <p className="font-bold text-gray-900 pt-2">
-        Total: ₦{total.toLocaleString()}
+        Total: {currency}
+        {total.toLocaleString()}
       </p>
       <p className="italic text-xs text-gray-500 pt-1">
         Note: Caution Fee will be automatically refunded 72 hours after checkout

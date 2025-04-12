@@ -252,17 +252,15 @@ function Pricing({
           {showPreview && (
             <PricePreview
               basePrice={formDetails.price.basePrice}
-              cautionFee={formDetails.price.cautionFee}
+              cautionFee={formDetails.price.cautionFee || 0}
             />
           )}
-          {formDetails.price.cautionFee > 0 && (
-            <button
-              onClick={() => setShowPreview(!showPreview)}
-              className="mt-2 text-[#3498db] underline text-sm"
-            >
-              {showPreview ? "Hide Price Preview" : "Show Price Preview"}
-            </button>
-          )}
+          <button
+            onClick={() => setShowPreview(!showPreview)}
+            className="mt-2 text-[#3498db] underline text-sm"
+          >
+            {showPreview ? "Hide Price Preview" : "Show Price Preview"}
+          </button>
 
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">AirBnB Price</h4>

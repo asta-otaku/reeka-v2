@@ -6,6 +6,8 @@ import Spinner from "../Spinner";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useCurrency } from "../../helpers/getCurrency";
 import apiClient from "../../helpers/apiClient";
+import moment from "moment";
+import { PricePreview } from "../ViewProperty/FeeSection";
 
 function formatTimestamp(timestamp: string) {
   const date = new Date(timestamp);
@@ -55,6 +57,7 @@ function StepTwo({
     priceState: formDetails.price,
   });
   const [loading, setLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
   const currency = useCurrency();
   const { id } = useParams();
@@ -113,6 +116,19 @@ function StepTwo({
       default:
         return property.price.basePrice; // Default to basePrice if the price type is unrecognized
     }
+  }
+
+  const days = moment(formDetails.checkOut).diff(
+    moment(formDetails.checkIn),
+    "days"
+  );
+
+  function getTotalPrice() {
+    const totalBase = getPrice(formDetails.price) * days;
+    const paymentFee = 0.01 * totalBase;
+    const cautionFee = property.cautionFee || 0;
+    const totalPrice = totalBase + paymentFee + cautionFee;
+    return totalPrice;
   }
 
   return (
@@ -187,10 +203,10 @@ function StepTwo({
             </h4>
           </div>
           <div>
-            <h2 className="text-[#808080] text-xs">Price per night</h2>
+            <h2 className="text-[#808080] text-xs">Total Price</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
               {formDetails.price === "airbnb" ? "$" : currency}
-              {getPrice(formDetails.price)
+              {getTotalPrice()
                 ?.toString()
                 ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}
             </h4>
@@ -215,6 +231,25 @@ function StepTwo({
           </div>
         </div>
       </div>
+
+      <div className="-mt-4">
+        {showPreview && (
+          <PricePreview
+            basePrice={getPrice(formDetails.price)}
+            cautionFee={property.price.cautionFee || 0}
+            days={days}
+          />
+        )}
+      </div>
+      <button
+        onClick={() => setShowPreview(!showPreview)}
+        className={`${
+          showPreview ? "mt-2" : "mt-6"
+        } text-primary underline text-xs`}
+      >
+        {showPreview ? "Hide Price Preview" : "Show Price Preview"}
+      </button>
+
       <div
         className={`my-3 w-full flex justify-center ${
           hideFeatures && "hidden"

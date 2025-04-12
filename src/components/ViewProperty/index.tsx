@@ -372,17 +372,15 @@ function ViewProperty() {
             {showPreview && (
               <PricePreview
                 basePrice={property.price.basePrice}
-                cautionFee={property.price.cautionFee}
+                cautionFee={property.price.cautionFee || 0}
               />
             )}
-            {property.price.cautionFee > 0 && (
-              <button
-                onClick={() => setShowPreview(!showPreview)}
-                className="mt-2 text-[#3498db] underline text-sm"
-              >
-                {showPreview ? "Hide Price Preview" : "Show Price Preview"}
-              </button>
-            )}
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="mt-2 text-[#3498db] underline text-sm"
+            >
+              {showPreview ? "Hide Price Preview" : "Show Price Preview"}
+            </button>
             <div className="flex items-center gap-4 my-6">
               <button
                 disabled={loading}
