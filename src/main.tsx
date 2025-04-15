@@ -7,6 +7,7 @@ import App from "./pages/App.tsx";
 import Bookings from "./pages/Bookings.tsx";
 import Calendar from "./pages/Calendar.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import IncidentReport from "./pages/IncidentReport.tsx";
 import Integrations from "./pages/Integrations.tsx";
 import ListingManagement from "./pages/ListingManagement.tsx";
 import ReportCenter from "./pages/ReportCenter.tsx";
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/report" element={<ReportCenter />} />
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/incident-report/:id" element={<IncidentReport />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/property/:id/:propId?" element={<PublicBooking />} />
         <Route path="/agent/:id" element={<PublicBooking />} />
