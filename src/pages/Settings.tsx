@@ -4,6 +4,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";
+import EditContact from "../components/Settings/EditContact";
 // import apiClient from "../helpers/apiClient";
 
 const tabs = [
@@ -11,6 +12,7 @@ const tabs = [
   { name: "Edit Info", id: "edit_info" },
   { name: "Staff Management", id: "staff_management" },
   // { name: "Agent Management", id: "agent_management" },
+  { name: "Contact Info", id: "contact_info" },
 ];
 
 function Settings() {
@@ -76,6 +78,7 @@ function Settings() {
             {activeTab === "agent_management" && (
               <PersonnelManagement isAgent={true} />
             )}
+            {activeTab === "contact_info" && <EditContact />}
           </div>
         </div>
       </div>
