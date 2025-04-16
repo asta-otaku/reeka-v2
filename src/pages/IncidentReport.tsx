@@ -58,10 +58,18 @@ export default function IncidentReport() {
     formData.append("title", damageType);
     formData.append("description", description);
     formData.append("propertyName", booking?.propertyName || "");
-    images.forEach((img) => formData.append("photos", img));
+    images.forEach((img) => {
+      if (img instanceof File) {
+        formData.append("photos", img);
+      }
+    });
 
     try {
-      await apiClient.post(`/booking/${id}/incident-report`, formData);
+      await apiClient.post(`/booking/${id}/incident-report`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast.success("Incident submitted successfully");
       setTimeout(() => {
         navigate("/");
