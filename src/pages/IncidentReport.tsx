@@ -58,11 +58,7 @@ export default function IncidentReport() {
     formData.append("title", damageType);
     formData.append("description", description);
     formData.append("propertyName", booking?.propertyName || "");
-    images.forEach((img) => {
-      if (img instanceof File) {
-        formData.append("photos", img);
-      }
-    });
+    formData.append("images", JSON.stringify(images));
 
     try {
       await apiClient.post(`/booking/${id}/incident-report`, formData, {
