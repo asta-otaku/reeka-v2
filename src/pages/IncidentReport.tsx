@@ -71,13 +71,6 @@ export default function IncidentReport() {
     }
   };
 
-  if (!booking) {
-    toast.error("Booking not found");
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
-  }
-
   return (
     <div className="max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-xl my-12 border">
       <h1 className="text-3xl font-semibold mb-8 text-gray-800">
