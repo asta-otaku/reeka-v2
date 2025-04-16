@@ -1,10 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import authBg from "../assets/authBg.png";
 import axios from "axios";
 import { CONSTANT } from "../util";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 
 function SignIn() {
@@ -12,6 +11,7 @@ function SignIn() {
   const accessToken = sessionStorage.getItem("accessToken");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Function to check if the token is expired
   const isTokenExpired = (token: string | null) => {
@@ -21,27 +21,29 @@ function SignIn() {
       const base64Url = token.split(".")[1];
       const base64 = base64Url.replace("-", "+").replace("_", "/");
       const payload = JSON.parse(window.atob(base64));
-
       // Check if the token is expired
       return payload.exp * 1000 < Date.now();
     } catch (error) {
-      // If decoding fails, consider the token invalid
       console.error("Error checking token expiration:", error);
       return true;
     }
   };
 
+  // Read the redirect URL from query parameters (default to dashboard)
+  const searchParams = new URLSearchParams(location.search);
+  const redirectUrl = searchParams.get("redirectUrl") || "/dashboard";
+
   useEffect(() => {
-    // Check if user exists, access token exists, and is not expired
+    // If the user is already logged in, redirect immediately
     if (
       user &&
       Object.keys(user).length > 0 &&
       accessToken &&
       !isTokenExpired(accessToken)
     ) {
-      navigate("/dashboard");
+      navigate(redirectUrl);
     }
-  }, [user, accessToken]);
+  }, [user, accessToken, navigate, redirectUrl]);
 
   const [formDetails, setFormDetails] = useState({
     email: "",
@@ -89,7 +91,8 @@ function SignIn() {
             JSON.stringify({ firstName, lastName, userRole, country, staffId })
           );
 
-          setTimeout(() => navigate("/dashboard"), 2000);
+          // Redirect the user back to the original URL (or dashboard by default)
+          setTimeout(() => navigate(redirectUrl), 2000);
         }
       })
       .catch((err) => {
@@ -113,7 +116,10 @@ function SignIn() {
             Sign In
           </h4>
           <p className="mt-1 text-[#808080]">Enter the correct details</p>
-          <form className="mt-4 flex flex-col gap-4 w-full">
+          <form
+            className="mt-4 flex flex-col gap-4 w-full"
+            onSubmit={handleSignIn}
+          >
             <div className="flex flex-col gap-1">
               <label
                 className="text-[#3A3A3A] text-sm font-medium"
@@ -152,7 +158,7 @@ function SignIn() {
             </Link>
             <button
               disabled={loading}
-              onClick={handleSignIn}
+              type="submit"
               className="bg-primary text-white rounded-lg p-2.5 font-semibold mt-3"
             >
               {loading ? <Spinner /> : "Sign In"}
@@ -166,7 +172,7 @@ function SignIn() {
           </form>
         </div>
         <div className="w-full md:w-[65%] hidden md:block">
-          <img src={authBg} />
+          <img src={authBg} alt="Authentication Background" />
         </div>
       </div>
     </div>

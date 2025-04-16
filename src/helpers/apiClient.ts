@@ -3,24 +3,21 @@ import axios from 'axios';
 import { CONSTANT } from '../util';
 import { toast } from "react-hot-toast";
 
-// Function to get tokens from local storage
+// Helper functions for tokens
 const getAccessToken = () => sessionStorage.getItem("accessToken");
 const getRefreshToken = () => sessionStorage.getItem("refreshToken");
 
-// Create the Axios instance
 const apiClient = axios.create({
   baseURL: CONSTANT.BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" },
 });
 
-// Function to refresh the access token
 const refreshAccessToken = async () => {
   try {
-    const response = await axios.post(`${CONSTANT.BASE_URL}/auth/refresh-token`, {
-      refreshToken: getRefreshToken(),
-    });
+    const response = await axios.post(
+      `${CONSTANT.BASE_URL}/auth/refresh-token`,
+      { refreshToken: getRefreshToken() }
+    );
 
     const newAccessToken = response.data.newAccessToken;
     if (newAccessToken) {
@@ -31,12 +28,14 @@ const refreshAccessToken = async () => {
   } catch (error) {
     console.error("Failed to refresh access token:", error);
     toast.error("Session expired. Please log in again.");
-    window.location.href = "/signin";
+    // Capture current URL so the user can be routed back after signin
+    const currentUrl = window.location.pathname + window.location.search;
+    window.location.href = `/signin?redirectUrl=${encodeURIComponent(currentUrl)}`;
     throw error;
   }
 };
 
-// Interceptor to add Authorization header
+// Add request interceptor to attach access token
 apiClient.interceptors.request.use(
   (config) => {
     const accessToken = getAccessToken();
@@ -48,17 +47,19 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Interceptor to handle 401 responses
+// Add response interceptor to handle 401 errors (and refresh once)
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response && error.response.status === 401 && !error.config._retry) {
-      error.config._retry = true; // Prevent infinite loop
+    if (error.response &&
+        error.response.status === 401 &&
+        !error.config._retry) {
+      error.config._retry = true;
       try {
         const newAccessToken = await refreshAccessToken();
         if (newAccessToken) {
           error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
-          return apiClient(error.config); // Retry the original request
+          return apiClient(error.config);
         }
       } catch (refreshError) {
         return Promise.reject(refreshError);
