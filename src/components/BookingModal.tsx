@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import graycancel from "../assets/graycancel.svg";
 import redcancel from "../assets/cancel-red.svg";
 import toast from "react-hot-toast";
@@ -12,6 +13,27 @@ function BookingModal({
   setModal: any;
   currency: string;
 }) {
+  const [incident, setIncident] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchIncident = async () => {
+      try {
+        const res = await apiClient.get(
+          `/booking/${booking?._id}/incident-report`
+        );
+        setIncident(res.data);
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          setIncident(null);
+        }
+      }
+    };
+
+    if (booking?._id) {
+      fetchIncident();
+    }
+  }, [booking?._id]);
+
   const handleDelete = async () => {
     try {
       await apiClient.delete(`/booking/${booking._id}`);
@@ -66,6 +88,19 @@ function BookingModal({
               {booking?.propertyId?.address}
             </p>
           </div>
+          {incident ? (
+            <div className="bg-yellow-100 text-yellow-700 text-[10px] font-medium px-2.5 py-1 rounded-full">
+              Incident Recorded – {incident.title}
+            </div>
+          ) : booking?.cautionFee ? (
+            <div className="bg-green-100 text-green-700 text-[10px] font-medium px-2.5 py-1 rounded-full">
+              No incidents
+            </div>
+          ) : (
+            <div className="bg-gray-200 text-gray-600 text-[10px] font-medium px-2.5 py-1 rounded-full">
+              No Caution Fee Assigned
+            </div>
+          )}
         </div>
         <div className="w-full h-40">
           <img
