@@ -113,9 +113,7 @@ function StepTwo({
 
   function getTotalPrice() {
     const totalBase = getPrice(formDetails.price) * days;
-    const paymentFee = 0.01 * totalBase;
-    const cautionFee = property.cautionFee || 0;
-    const totalPrice = totalBase + paymentFee + cautionFee;
+    const totalPrice = totalBase;
     return totalPrice;
   }
 
