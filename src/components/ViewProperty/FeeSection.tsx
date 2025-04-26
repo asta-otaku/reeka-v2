@@ -111,24 +111,35 @@ export const PricePreview = ({
         {basePrice?.toLocaleString(undefined, { minimumFractionDigits: 0 })}
       </p>
       <p>
-        <span className="font-medium">Base Price:</span> {currency}
+        <span className="font-medium">
+          Total Base Price for {days} day{days > 1 ? "s" : ""}:
+        </span>{" "}
+        {currency}
         {totalBase?.toLocaleString()}
       </p>
       <p>
         <span className="font-medium">Online Payment Fee (1%):</span> {currency}
-        {paymentFee?.toLocaleString()}
+        {paymentFee?.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
       </p>
       <p>
         <span className="font-medium">Caution Fee:</span> {currency}
         {cautionFee?.toLocaleString()}
       </p>
       <p className="font-bold text-gray-900 pt-2">
-        Total: {currency}
+        Total {location.pathname.includes("listing") && "paid by guest"}:{" "}
+        {currency}
         {total.toLocaleString()}
       </p>
-      <p className="italic text-xs text-gray-500 pt-1">
-        Note: Caution Fee will be automatically refunded 72 hours after checkout
-        if no incident is reported.
+      <p className="italic text-xs text-gray-500 py-1">
+        Note: Caution Fee will be automatically refunded{" "}
+        {location.pathname.includes("listing") ? "24" : "72"} hours after
+        checkout if no incident is reported.
+      </p>
+      <p className="text-xs text-gray-500">
+        A 1% fee applies to all direct bookings processed through Reeka.
       </p>
     </div>
   );

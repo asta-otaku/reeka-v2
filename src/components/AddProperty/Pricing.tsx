@@ -33,7 +33,7 @@ function Pricing({
       discountPercentage: -clampedValue,
     });
   };
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
   return (
     <div

@@ -57,7 +57,7 @@ function StepTwo({
     priceState: formDetails.price,
   });
   const [loading, setLoading] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const navigate = useNavigate();
   const currency = useCurrency();
   const { id } = useParams();

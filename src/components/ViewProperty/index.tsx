@@ -180,7 +180,7 @@ function ViewProperty() {
   const handlePageChange = ({ selected }: { selected: number }) => {
     setCurrentPage(selected);
   };
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
   const displayedData = bookings
     .filter(

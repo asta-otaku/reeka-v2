@@ -51,9 +51,9 @@ function EditContact() {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white border rounded-lg p-6 mt-12">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Edit Contact Information
+    <div className="max-w-lg w-full mx-auto bg-white border rounded-lg p-6 mt-12">
+      <h2 className="md:text-xl font-semibold text-gray-800 mb-4">
+        Edit Primary Customer Contact Information
       </h2>
       <form onSubmit={handleInfoUpdate}>
         <div className="mb-4">

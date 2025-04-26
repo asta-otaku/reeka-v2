@@ -47,7 +47,7 @@ function StepTwo({
     totalBookingValue: 0,
   });
   const [loading, setLoading] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
   const currency = useCurrency();
 
   function formatTimestamp(date: string) {
