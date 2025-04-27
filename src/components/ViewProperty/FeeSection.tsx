@@ -77,7 +77,7 @@ const FeeSection: FC<FeeSectionProps> = ({
           </p>
         )}
         <p className="text-gray-500 italic text-xs mt-2">
-          This fee is fully refundable within 72 hours after checkout if no
+          This fee is fully refundable within 24 hours after checkout if no
           incident is reported.
         </p>
       </div>
@@ -104,7 +104,7 @@ export const PricePreview = ({
     <div className="bg-white mt-6 p-6 border border-[#C0C0C0]/40 rounded-xl shadow-sm text-sm text-gray-800 space-y-2">
       <h4 className="text-md font-semibold mb-3">
         📊 {location.pathname.includes("listing") && "Example"} Price Preview (
-        {days} nights)
+        {days} night{days > 1 ? "s" : ""})
       </h4>
       <p>
         <span className="font-medium">Price per night:</span> {currency}
@@ -112,34 +112,33 @@ export const PricePreview = ({
       </p>
       <p>
         <span className="font-medium">
-          Total Base Price for {days} day{days > 1 ? "s" : ""}:
+          Total room rate for {days} day{days > 1 ? "s" : ""}:
         </span>{" "}
         {currency}
         {totalBase?.toLocaleString()}
       </p>
       <p>
-        <span className="font-medium">Online Payment Fee (1%):</span> {currency}
+        <span className="font-medium">Online payment fee (1%):</span> {currency}
         {paymentFee?.toLocaleString(undefined, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
       </p>
       <p>
-        <span className="font-medium">Caution Fee:</span> {currency}
+        <span className="font-medium">Caution fee:</span> {currency}
         {cautionFee?.toLocaleString()}
       </p>
       <p className="font-bold text-gray-900 pt-2">
-        Total {location.pathname.includes("listing") && "paid by guest"}:{" "}
-        {currency}
+        Total paid by guest: {currency}
         {total.toLocaleString()}
       </p>
       <p className="italic text-xs text-gray-500 py-1">
-        Note: Caution Fee will be automatically refunded{" "}
-        {location.pathname.includes("listing") ? "24" : "72"} hours after
-        checkout if no incident is reported.
+        Note: Caution fee will be automatically refunded 24 hours after checkout
+        if no incident is reported.
       </p>
       <p className="text-xs text-gray-500">
-        A 1% fee applies to all direct bookings processed through Reeka.
+        A 1% fee applies to all direct bookings processed through Reeka. (Paid
+        by <span className="font-bold">Guest</span>)
       </p>
     </div>
   );

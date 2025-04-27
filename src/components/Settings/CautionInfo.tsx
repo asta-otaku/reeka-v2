@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import toast from "react-hot-toast";
+// import { useState } from "react";
+// import toast from "react-hot-toast";
 function CautionInfo() {
-  const [subscribed, setSubscribed] = useState(false);
+  // const [subscribed, setSubscribed] = useState(false);
 
-  const handleToggle = async () => {
-    try {
-      // Simulate API call here
-      // await apiClient.post("/settings/caution-fee", { subscribed: !subscribed });
-      setSubscribed(!subscribed);
-      toast.success(
-        `Caution Fee ${!subscribed ? "activated" : "deactivated"} successfully`
-      );
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update Caution Fee preference.");
-    }
-  };
+  // const handleToggle = async () => {
+  //   try {
+  //     // Simulate API call here
+  //     // await apiClient.post("/settings/caution-fee", { subscribed: !subscribed });
+  //     setSubscribed(!subscribed);
+  //     toast.success(
+  //       `Caution Fee ${!subscribed ? "activated" : "deactivated"} successfully`
+  //     );
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Failed to update Caution Fee preference.");
+  //   }
+  // };
 
   return (
     <div className="max-w-lg w-full mx-auto bg-white border rounded-lg p-6 mt-12">
@@ -32,7 +32,7 @@ function CautionInfo() {
         refunded within 72 hours after checkout if no incident is reported.
       </p>
 
-      <div className="flex items-center justify-between mb-6">
+      {/* <div className="flex items-center justify-between mb-6">
         <label className="block text-sm font-medium text-gray-700">
           Enable Caution Fee
         </label>
@@ -49,7 +49,7 @@ function CautionInfo() {
             }`}
           />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
