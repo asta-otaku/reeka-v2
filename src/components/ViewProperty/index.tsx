@@ -3,23 +3,25 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLongLeftIcon, NotificationIcon } from "../../assets/icons";
 // import NotificationModal from "./NotificationModal";
 import DashboardLayout from "../../layouts/DashboardLayout";
-import searchIcon from "../../assets/search-01.svg";
-import BookingTable from "../BookingTable";
-import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
-import PropertyDetails from "./PropertyDetails";
-import ImageSection from "./ImageSection";
-import Amenities from "./Amenities";
-import Pricing from "./Pricing";
 import Spinner from "../Spinner";
 import useStore from "../../store";
 import apiClient from "../../helpers/apiClient";
 import { useCurrency } from "../../helpers/getCurrency";
-import AirBnbPricing from "./AirBnbPricing";
 import { AirbnbModal, DeleteModal } from "./Modals";
-import FeeSection, { PricePreview } from "./FeeSection";
+
+import BookingsTab from "./Tabs/BookingsTab";
+import PropertyTab from "./Tabs/PropertyTab";
+import RateCardsTab from "./Tabs/RateCardsTab";
+
+const tabs = [
+  { name: "Property Details", id: "property_details" },
+  { name: "Booking & Reservation", id: "booking_reservation" },
+  { name: "Reeka Rate Cards", id: "reeka_rate_cards" },
+];
 
 function ViewProperty() {
+  const [activeTab, setActiveTab] = useState("property_details");
   const { id } = useParams(); // Get property ID from the URL
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,8 +53,6 @@ function ViewProperty() {
   });
   const [bookedStatus, setBookedStatus] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [selected, setSelected] = useState(0);
-  const [search, setSearch] = useState("");
   const [bookings, setBookings] = useState<any>([]);
 
   // Fetch property details
@@ -171,26 +171,6 @@ function ViewProperty() {
       setLoadingSync(false);
     }
   };
-
-  // Pagination
-  const itemsPerPage = 5;
-  const [currentPage, setCurrentPage] = useState(0);
-  const pageCount = Math.ceil(bookings.length / itemsPerPage);
-
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setCurrentPage(selected);
-  };
-  const [showPreview, setShowPreview] = useState(true);
-
-  const displayedData = bookings
-    .filter(
-      (bk: any) =>
-        bk?.properyName?.toLowerCase().includes(search.toLowerCase()) ||
-        bk?.address?.toLowerCase().includes(search.toLowerCase()) ||
-        bk?.guestFirstName?.toLowerCase().includes(search.toLowerCase()) ||
-        bk?.guestLastName?.toLowerCase().includes(search.toLowerCase())
-    )
-    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
   const openAirbnbModal = () => {
     setModal(
@@ -330,109 +310,45 @@ function ViewProperty() {
               </button>
             )}
           </div>
-
-          <hr className="w-full mt-2" />
         </div>
 
-        <div className="my-4 flex flex-col lg:flex-row justify-between items-start gap-8 px-6">
-          <div className="w-full lg:w-[50%]">
-            <PropertyDetails
-              property={property}
-              setProperty={setProperty}
-              edit={edit}
-              setEdit={setEdit}
-            />
-            <ImageSection
-              property={property}
-              setProperty={setProperty}
-              edit={edit}
-              newImages={newImages}
-              setNewImages={setNewImages}
-            />
-            <Amenities
-              property={property}
-              setProperty={setProperty}
-              edit={edit}
-            />
-            <Pricing
-              property={property}
-              setProperty={setProperty}
-              edit={edit}
-            />
-            <FeeSection
-              cautionFee={property.price.cautionFee}
-              setCautionFee={(val) =>
-                setProperty({
-                  ...property,
-                  price: { ...property.price, cautionFee: val },
-                })
-              }
-              edit={edit}
-            />
-            {showPreview && (
-              <PricePreview
-                basePrice={property.price.basePrice}
-                cautionFee={property.price.cautionFee || 0}
-              />
-            )}
+        <div className="flex border-b border-gray-200 m-4">
+          {tabs.map((tab) => (
             <button
-              onClick={() => setShowPreview(!showPreview)}
-              className="mt-2 text-[#3498db] underline text-sm"
+              key={tab.id}
+              className={`px-4 py-2 text-xs md:text-sm ${
+                activeTab === tab.id
+                  ? "border-b-2 border-primary text-primary"
+                  : "text-[#808080]"
+              }`}
+              onClick={() => setActiveTab(tab.id)}
             >
-              {showPreview ? "Hide Price Preview" : "Show Price Preview"}
+              {tab.name}
             </button>
-            <div className="flex items-center gap-4 my-6">
-              <button
-                disabled={loading}
-                onClick={() => handleUpdate(property)}
-                className={`px-3 py-2 text-white rounded-lg bg-primary text-sm font-medium ${
-                  !edit && "hidden"
-                }`}
-              >
-                {loading ? <Spinner /> : "Save Changes"}
-              </button>
-            </div>
-            <AirBnbPricing id={property._id} loading={loadingSync} />
-          </div>
+          ))}
+        </div>
 
-          <div className="w-full lg:w-[48%] rounded-2xl border shadow-xl shadow-gray-300">
-            <div className="border-b p-4 flex items-center gap-2">
-              <img src={searchIcon} alt="search" />
-              <input
-                type="text"
-                placeholder="Search"
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full outline-none bg-transparent text-[#808080] text-xs"
-              />
-            </div>
-            <div className="flex items-center gap-6 w-full border-b border-0 my-4 px-4">
-              <button
-                onClick={() => setSelected(0)}
-                className={`text-sm pb-2 ${
-                  selected === 0
-                    ? " text-primary border-b border-primary"
-                    : "text-[#808080]"
-                }`}
-              >
-                Booking
-              </button>
-            </div>
-            <div className="px-4 overflow-auto max-h-[400px] no-scrollbar">
-              <BookingTable data={displayedData} />
-              <ReactPaginate
-                previousLabel={""}
-                nextLabel={""}
-                breakLabel={"..."}
-                pageCount={pageCount}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={2}
-                onPageChange={handlePageChange}
-                pageClassName="block border hover:bg-primary/80 hover:text-white border-primary rounded-lg p-1.5 cursor-pointer"
-                containerClassName="flex justify-center items-center font-medium mt-12 gap-5"
-                activeClassName="bg-primary border border-primary text-white"
-              />
-            </div>
-          </div>
+        {/* Tab Content */}
+        <div className="mt-12">
+          {
+            {
+              property_details: (
+                <PropertyTab
+                  property={property}
+                  setProperty={setProperty}
+                  handleUpdate={handleUpdate}
+                  newImages={newImages}
+                  setNewImages={setNewImages}
+                  loading={loading}
+                  loadingSync={loadingSync}
+                  edit={edit}
+                  setEdit={setEdit}
+                />
+              ),
+              booking_reservation: <BookingsTab bookings={bookings} />,
+              reeka_rate_cards: <RateCardsTab property={property} />,
+            }[activeTab]
+          }
         </div>
       </div>
     </DashboardLayout>

@@ -45,6 +45,8 @@ function BookingTable({
     return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
   });
 
+  const isListing = location.pathname.includes("/listing");
+
   return (
     <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar">
       {sortedData.length > 0 ? (
@@ -71,18 +73,22 @@ function BookingTable({
                     >
                       Date
                     </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-4 w-[160px] whitespace-nowrap font-bold"
-                    >
-                      Apartment
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-4 w-[140px] whitespace-nowrap font-bold"
-                    >
-                      Name
-                    </th>
+                    {!isListing && (
+                      <th
+                        scope="col"
+                        className="px-4 py-4 w-[160px] whitespace-nowrap font-bold"
+                      >
+                        Apartment
+                      </th>
+                    )}
+                    {!isListing && (
+                      <th
+                        scope="col"
+                        className="px-4 py-4 w-[140px] whitespace-nowrap font-bold"
+                      >
+                        Name
+                      </th>
+                    )}
                     <th
                       scope="col"
                       className="px-4 py-4 w-[140px] whitespace-nowrap font-bold"
@@ -95,12 +101,14 @@ function BookingTable({
                     >
                       Status
                     </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-4 w-[120px] whitespace-nowrap font-bold"
-                    >
-                      Guest
-                    </th>
+                    {!isListing && (
+                      <th
+                        scope="col"
+                        className="px-4 py-4 w-[120px] whitespace-nowrap font-bold"
+                      >
+                        Guest
+                      </th>
+                    )}
                     <th
                       scope="col"
                       className="px-4 py-4 w-[150px] whitespace-nowrap font-bold"
@@ -124,31 +132,31 @@ function BookingTable({
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap w-[160px]">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={item?.propertyId?.images[0]}
-                          className={`w-10 h-10 hidden lg:block ${
-                            location.pathname.startsWith("/listing")
-                              ? "hidden lg:hidden"
-                              : "block"
-                          }`}
-                        />
-                        <div>
-                          <div className="text-sm text-[#121212] font-medium max-w-[100px] w-full truncate text-ellipsis">
-                            {item?.propertyId?.propertyName}
-                          </div>
-                          <div className="text-[10px] text-[#808080] font-light max-w-[100px] w-full truncate text-ellipsis">
-                            {item?.propertyId?.address}
+                    {!isListing && (
+                      <td className="px-4 py-4 whitespace-nowrap w-[160px]">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={item?.propertyId?.images[0]}
+                            className="w-10 h-10 hidden lg:block"
+                          />
+                          <div>
+                            <div className="text-sm text-[#121212] font-medium max-w-[100px] w-full truncate text-ellipsis">
+                              {item?.propertyId?.propertyName}
+                            </div>
+                            <div className="text-[10px] text-[#808080] font-light max-w-[100px] w-full truncate text-ellipsis">
+                              {item?.propertyId?.address}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 whitespace-nowrap">
-                      <div className="text-sm text-[#121212] font-medium max-w-[120px] w-full truncate text-ellipsis">
-                        {item?.guestFirstName} {item?.guestLastName}
-                      </div>
-                    </td>
+                      </td>
+                    )}
+                    {!isListing && (
+                      <td className="px-4 py-4 whitespace-nowrap">
+                        <div className="text-sm text-[#121212] font-medium max-w-[120px] w-full truncate text-ellipsis">
+                          {item?.guestFirstName} {item?.guestLastName}
+                        </div>
+                      </td>
+                    )}
                     <td className="px-4 py-4 whitespace-nowrap w-[140px]">
                       <div className="text-sm text-[#121212] max-w-[110px] w-full font-medium">
                         {item.currency === "NGN" ? "₦" : "$"}
@@ -186,14 +194,16 @@ function BookingTable({
                         <span>{getStatus(item.startDate, item.endDate)}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-4 whitespace-nowrap w-[120px]">
-                      <div className="text-sm text-[#121212] font-medium">
-                        {item.numberOfGuests}
-                      </div>
-                      <div className="text-[10px] text-[#808080] font-light">
-                        {item.numberOfChildren} Child
-                      </div>
-                    </td>
+                    {!isListing && (
+                      <td className="px-4 py-4 whitespace-nowrap w-[120px]">
+                        <div className="text-sm text-[#121212] font-medium">
+                          {item.numberOfGuests}
+                        </div>
+                        <div className="text-[10px] text-[#808080] font-light">
+                          {item.numberOfChildren} Child
+                        </div>
+                      </td>
+                    )}
                     <td className="px-4 py-4 whitespace-nowrap w-[150px]">
                       <div className="text-sm text-[#121212] font-medium">
                         {formatDate(item?.endDate?.toString())}
