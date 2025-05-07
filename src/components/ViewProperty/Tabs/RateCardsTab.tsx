@@ -38,11 +38,12 @@ function RateCardsTab({ property }: { property: any }) {
     if (!newRate.name || !newRate.rate) return;
 
     try {
-      await apiClient.post(`/properties/${property._id}/rate`, {
+      const res = await apiClient.post(`/properties/${property._id}/rate`, {
         rateName: newRate.name,
         ratePrice: newRate.rate,
       });
-      toast.success("Rate set successfully");
+      setNewRate({ name: "", rate: 0 });
+      toast.success(res.data.message);
       setShowForm(false);
       await fetchRates();
     } catch (error) {
@@ -67,12 +68,15 @@ function RateCardsTab({ property }: { property: any }) {
     ratePrice: number
   ) => {
     try {
-      await apiClient.put(`/properties/${property._id}/rate/${rateId}`, {
-        rateName,
-        ratePrice,
-      });
+      const res = await apiClient.put(
+        `/properties/${property._id}/rate/${rateId}`,
+        {
+          rateName,
+          ratePrice,
+        }
+      );
       await fetchRates();
-      toast.success("Rate has been updated");
+      toast.success(res.data.message);
     } catch (error) {
       console.error("Failed to update rate:", error);
     }
@@ -80,10 +84,10 @@ function RateCardsTab({ property }: { property: any }) {
 
   const handleSetDefaultRate = async (rateId: string) => {
     try {
-      await apiClient.patch(
+      const res = await apiClient.patch(
         `/properties/${property._id}/rate/${rateId}/default`
       );
-      toast.success("Rate set as default");
+      toast.success(res.data.message);
       await fetchRates();
     } catch (error) {
       console.error("Failed to set default rate:", error);
@@ -92,9 +96,11 @@ function RateCardsTab({ property }: { property: any }) {
 
   const handleRemoveRate = async (rateId: string) => {
     try {
-      await apiClient.delete(`/properties/${property._id}/rate/${rateId}`);
+      const res = await apiClient.delete(
+        `/properties/${property._id}/rate/${rateId}`
+      );
       await fetchRates();
-      toast.success("Rate deleted successfully");
+      toast.success(res.data.message);
     } catch (error) {
       console.error("Failed to delete rate:", error);
     }

@@ -24,6 +24,7 @@ function StepTwo({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateId: string;
     countryCode: string;
   };
   hideFeatures?: boolean;
@@ -40,7 +41,7 @@ function StepTwo({
     guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
     numberOfChildren: 0,
     numberOfGuests: formDetails.noOfGuests,
-    priceState: formDetails.price,
+    rateId: formDetails.rateId,
     propertyId: property._id,
     startDate: formDetails.checkIn,
     status: "Upcoming",
@@ -76,43 +77,13 @@ function StepTwo({
       });
   };
 
-  function getPrice(price: string) {
-    if (!property || !property.price) {
-      return 0;
-    }
-
-    switch (price) {
-      case "base":
-        return property.price.basePrice.toFixed(2);
-
-      case "high":
-        return (
-          property?.price?.basePrice +
-          (property?.price?.boostPercentage / 100) * property?.price?.basePrice
-        ).toFixed(2);
-
-      case "low":
-        return (
-          property?.price?.basePrice -
-          (Math.abs(property?.price?.discountPercentage) / 100) *
-            property?.price?.basePrice
-        ).toFixed(2);
-
-      case "airbnb":
-        return property?.price?.airbnbPrice;
-
-      default:
-        return property.price.basePrice; // Default to basePrice if the price type is unrecognized
-    }
-  }
-
   const days = moment(formDetails.checkOut).diff(
     moment(formDetails.checkIn),
     "days"
   );
 
   function getTotalPrice() {
-    const totalBase = getPrice(formDetails.price) * days;
+    const totalBase = Number(formDetails.price) * days;
     const totalPrice = totalBase;
     return totalPrice;
   }
@@ -220,7 +191,7 @@ function StepTwo({
       <div className="-mt-4">
         {showPreview && (
           <PricePreview
-            basePrice={getPrice(formDetails.price)}
+            basePrice={Number(formDetails.price)}
             cautionFee={property.price.cautionFee || 0}
             days={days}
           />

@@ -7,7 +7,7 @@ export const useCurrency = () => {
 
     useEffect(() => {
         const user = getUser();
-        setCurrency(user.country?.toLowerCase() !== "nigeria" ? "$" : "₦");
+        setCurrency(user.country?.toLowerCase() !== "nigeria" ? "₦" : "₦");
     }, []);
 
     return currency;

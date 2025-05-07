@@ -12,6 +12,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
+import apiClient from "../../helpers/apiClient";
 
 function StepOne({
   handleChange,
@@ -30,6 +31,7 @@ function StepOne({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateId: string;
     countryCode: string;
   };
   setFormDetails: React.Dispatch<
@@ -42,6 +44,7 @@ function StepOne({
       checkIn: string;
       checkOut: string;
       price: string;
+      rateId: string;
       countryCode: string;
     }>
   >;
@@ -51,6 +54,9 @@ function StepOne({
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
+  const [rates, setRates] = useState<
+    { rateName: string; ratePrice: number; _id: string }[] | null
+  >(null);
   const emailRegex = new RegExp(
     `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
   );
@@ -67,7 +73,18 @@ function StepOne({
         toast.error("Failed to fetch bookings");
       }
     };
+    const fetchRates = async () => {
+      try {
+        const response = await apiClient.get(
+          `/properties/${property._id}/rates`
+        );
+        setRates(response.data.rateCards);
+      } catch (error) {
+        console.error("Failed to fetch rates:", error);
+      }
+    };
     fetchBookings();
+    fetchRates();
   }, [property._id]);
 
   const isDateBooked = (date: Date) => {
@@ -124,7 +141,6 @@ function StepOne({
 
     setStep(2);
   };
-
   return (
     <>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
@@ -248,16 +264,24 @@ function StepOne({
             <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
               <select
                 name="price"
-                value={formDetails.price}
+                value={formDetails.rateId}
                 onChange={(e: any) =>
-                  setFormDetails({ ...formDetails, price: e.target.value })
+                  setFormDetails({
+                    ...formDetails,
+                    rateId: e.target.value,
+                    price:
+                      rates
+                        ?.find((rate) => rate._id === e.target.value)
+                        ?.ratePrice.toString() || "",
+                  })
                 }
                 className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
               >
-                <option value="">Select price</option>
-                <option value="base">Base</option>
-                <option value="low">Low</option>
-                <option value="high">High</option>
+                {rates?.map((rate, index) => (
+                  <option key={index} value={rate._id}>
+                    {rate.rateName} - ₦{rate.ratePrice}
+                  </option>
+                ))}
               </select>
               <ChevronDownIcon width={12} />
             </div>
