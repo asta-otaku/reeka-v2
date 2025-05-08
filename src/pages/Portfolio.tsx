@@ -84,7 +84,7 @@ function Portfolio() {
               >
                 {step}
               </span>
-              {index <= currentStep ? (
+              {index <= currentStep - 1 ? (
                 <img
                   src={orangeCheck}
                   alt="completed"
@@ -106,7 +106,7 @@ function Portfolio() {
             {/* underline */}
             <div
               className={`mt-2 h-1.5 w-full rounded-full ${
-                index <= currentStep ? "bg-primary" : "bg-gray-200"
+                index <= currentStep - 1 ? "bg-primary" : "bg-gray-200"
               }`}
             />
           </div>

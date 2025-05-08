@@ -277,9 +277,10 @@ function StepOne({
                 }
                 className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
               >
+                <option value="">Select rate</option>
                 {rates?.map((rate, index) => (
                   <option key={index} value={rate._id}>
-                    {rate.rateName} - ₦{rate.ratePrice}
+                    {rate.rateName} - ₦{rate.ratePrice.toLocaleString()}
                   </option>
                 ))}
               </select>
