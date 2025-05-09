@@ -329,7 +329,7 @@ function ViewProperty() {
         </div>
 
         {/* Tab Content */}
-        <div className="mt-12">
+        <div className="my-12">
           {
             {
               property_details: (
