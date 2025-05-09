@@ -57,8 +57,10 @@ function RateCardsTab({ property }: { property: any }) {
     value: string
   ) => {
     const updated = [...rates];
-    (updated[index] as any)[field] =
-      field === "ratePrice" ? Number(value) : value;
+    updated[index] = {
+      ...updated[index],
+      [field]: field === "ratePrice" ? Number(value) : value,
+    };
     setRates(updated);
   };
 
@@ -190,7 +192,7 @@ function RateCardsTab({ property }: { property: any }) {
                   className="accent-black"
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-3">
                 <label className="text-[#344054] font-medium text-sm">
                   Rate Name
                 </label>
@@ -200,13 +202,10 @@ function RateCardsTab({ property }: { property: any }) {
                   onChange={(e) =>
                     handleRateChange(index, "rateName", e.target.value)
                   }
-                  onBlur={() =>
-                    handleUpdateRate(rate._id, rate.rateName, rate.ratePrice)
-                  }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 />
               </div>
-              <div className="col-span-4">
+              <div className="col-span-3">
                 <label className="text-[#344054] font-medium text-sm">
                   Rate
                 </label>
@@ -216,13 +215,18 @@ function RateCardsTab({ property }: { property: any }) {
                   onChange={(e) =>
                     handleRateChange(index, "ratePrice", e.target.value)
                   }
-                  onBlur={() =>
-                    handleUpdateRate(rate._id, rate.rateName, rate.ratePrice)
-                  }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 />
               </div>
-              <div className="col-span-2 flex justify-end">
+              <div className="col-span-4 flex justify-end">
+                <button
+                  onClick={() =>
+                    handleUpdateRate(rate._id, rate.rateName, rate.ratePrice)
+                  }
+                  className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ml-4"
+                >
+                  Update
+                </button>
                 <button
                   onClick={() => handleRemoveRate(rate._id)}
                   className="bg-[#FF3B30] hover:bg-red-600 text-white w-full ml-4 py-2 rounded-lg text-sm font-medium"
