@@ -13,6 +13,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 import apiClient from "../../helpers/apiClient";
+import CustomPriceModal from "./CustomPriceModal";
+import useStore from "../../store";
 
 function StepOne({
   handleChange,
@@ -32,6 +34,8 @@ function StepOne({
     checkOut: string;
     price: string;
     rateId: string;
+    note: string;
+    includeNote: boolean;
     countryCode: string;
   };
   setFormDetails: React.Dispatch<
@@ -45,6 +49,8 @@ function StepOne({
       checkOut: string;
       price: string;
       rateId: string;
+      note: string;
+      includeNote: boolean;
       countryCode: string;
     }>
   >;
@@ -61,6 +67,7 @@ function StepOne({
   const emailRegex = new RegExp(
     `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
   );
+  const setModal = useStore((state: any) => state.setModal);
 
   useEffect(() => {
     if (!formDetails.rateId && !formDetails.price) {
@@ -274,10 +281,22 @@ function StepOne({
                   onChange={(e: any) => {
                     const selectedId = e.target.value;
                     if (selectedId === "custom") {
-                      setCustomPriceSelected(true);
-                      setFormDetails({ ...formDetails, rateId: "", price: "" });
+                      setModal(
+                        <CustomPriceModal
+                          defaultValue={formDetails.price}
+                          onCancel={() => setModal(null)}
+                          onConfirm={(value) => {
+                            setFormDetails({
+                              ...formDetails,
+                              price: value,
+                              rateId: "",
+                            });
+                            setCustomPriceSelected(true);
+                            setModal(null);
+                          }}
+                        />
+                      );
                     } else {
-                      setCustomPriceSelected(false);
                       const selectedRate = rates?.find(
                         (rate) => rate._id === selectedId
                       );
@@ -286,6 +305,7 @@ function StepOne({
                         rateId: selectedId,
                         price: selectedRate?.ratePrice.toString() || "",
                       });
+                      setCustomPriceSelected(false);
                     }
                   }}
                   className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
@@ -353,6 +373,7 @@ function StepOne({
                 minDate={new Date()}
                 filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full text-[#667085]"
               />
             </div>
@@ -392,9 +413,50 @@ function StepOne({
                   return !isDateBooked(date);
                 }}
                 placeholderText="Check Out Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full text-[#667085]"
               />
             </div>
+          </div>
+          {/* Note Field */}
+          <div className="col-span-2 mt-2">
+            <label className="text-sm font-medium text-[#121212] block mb-1">
+              Booking Note
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Write any note you want to include (visible on invoice if toggled below)…"
+              value={formDetails.note}
+              onChange={(e) =>
+                setFormDetails((prev) => ({ ...prev, note: e.target.value }))
+              }
+              className="w-full border border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg px-3 py-2 text-sm text-[#667085] outline-none resize-none"
+            />
+          </div>
+
+          {/* Include Note Toggle */}
+          <div className="col-span-2 flex items-center justify-between mt-2">
+            <label className="text-sm font-medium text-[#121212]">
+              Include note in invoice
+            </label>
+            <button
+              type="button"
+              onClick={() =>
+                setFormDetails((prev) => ({
+                  ...prev,
+                  includeNote: !prev.includeNote,
+                }))
+              }
+              className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                formDetails.includeNote ? "bg-primary" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                  formDetails.includeNote ? "translate-x-4" : "translate-x-0"
+                }`}
+              />
+            </button>
           </div>
         </form>
       </div>

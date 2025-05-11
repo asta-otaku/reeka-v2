@@ -25,6 +25,8 @@ function StepTwo({
     checkOut: string;
     price: string;
     rateId: string;
+    note: string;
+    includeNote: boolean;
     countryCode: string;
   };
   hideFeatures?: boolean;
@@ -51,12 +53,14 @@ function StepTwo({
       numberOfGuests: formDetails.noOfGuests,
       propertyId: property._id,
       startDate: formatTimestamp(formDetails.checkIn),
+      note: formDetails.note,
+      includeNote: formDetails.includeNote,
     };
 
     if (formDetails.rateId) {
       payload.rateId = formDetails.rateId;
     } else {
-      payload.customPrice = formDetails.price;
+      payload.customPrice = Number(formDetails.price);
     }
 
     setLoading(true);

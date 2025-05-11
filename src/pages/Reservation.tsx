@@ -21,6 +21,8 @@ function Reservation() {
     checkOut: "",
     price: "",
     rateId: "",
+    note: "",
+    includeNote: false,
     countryCode: "",
   });
   const [property, setProperty] = useState<any>(null);

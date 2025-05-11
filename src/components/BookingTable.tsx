@@ -141,10 +141,10 @@ function BookingTable({
                           />
                           <div>
                             <div className="text-sm text-[#121212] font-medium max-w-[100px] w-full truncate text-ellipsis">
-                              {item?.propertyId?.propertyName}
+                              {item?.propertyDetails?.propertyName}
                             </div>
                             <div className="text-[10px] text-[#808080] font-light max-w-[100px] w-full truncate text-ellipsis">
-                              {item?.propertyId?.address}
+                              {item?.propertyDetails?.address}
                             </div>
                           </div>
                         </div>

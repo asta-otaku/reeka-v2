@@ -83,10 +83,10 @@ function BookingModal({
           <div className="flex w-full justify-between items-center my-3">
             <div>
               <h2 className="text-[#121212] font-semibold text-xs">
-                {booking?.propertyId?.propertyName}
+                {booking?.propertyDetails?.propertyName}
               </h2>
               <p className="text-[#3A3A3A] font-light text-[10px]">
-                {booking?.propertyId?.address}
+                {booking?.propertyDetails?.address}
               </p>
             </div>
             {incident ? (
@@ -106,7 +106,7 @@ function BookingModal({
           <div className="w-full h-40">
             <img
               className="w-full h-full object-cover rounded-xl"
-              src={booking?.propertyId?.images[0]}
+              src={booking?.propertyDetails?.images[0]}
             />
           </div>
         </div>
@@ -166,6 +166,14 @@ function BookingModal({
                 {booking?.endDate?.split("T")[0]}
               </h4>
             </div>
+            {booking?.note && (
+              <div>
+                <h2 className="text-[#808080] text-xs mb-1">Booking Note</h2>
+                <p className="text-[#121212] text-xs whitespace-pre-wrap">
+                  {booking.note}
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex justify-center flex-wrap gap-4 mt-4">
