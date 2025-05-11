@@ -41,6 +41,7 @@ function StepTwo({
     guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
     numberOfChildren: 0,
     numberOfGuests: formDetails.noOfGuests,
+    price: formDetails.price,
     rateId: formDetails.rateId,
     propertyId: property._id,
     startDate: formDetails.checkIn,

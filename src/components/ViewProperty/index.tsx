@@ -46,8 +46,6 @@ function ViewProperty() {
     price: {
       basePrice: 0,
       airbnbPrice: 0,
-      discountPercentage: 0,
-      boostPercentage: 0,
     },
     images: [],
   });
