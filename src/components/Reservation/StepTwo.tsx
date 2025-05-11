@@ -32,22 +32,6 @@ function StepTwo({
   property: any;
   setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [formData, setFormData] = useState({
-    countryCode: formDetails.countryCode,
-    endDate: formDetails.checkOut,
-    guestEmail: formDetails.email,
-    guestFirstName: formDetails.firstName,
-    guestLastName: formDetails.lastName,
-    guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
-    numberOfChildren: 0,
-    numberOfGuests: formDetails.noOfGuests,
-    price: formDetails.price,
-    rateId: formDetails.rateId,
-    propertyId: property._id,
-    startDate: formDetails.checkIn,
-    status: "Upcoming",
-    totalBookingValue: 0,
-  });
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const currency = useCurrency();
@@ -57,25 +41,37 @@ function StepTwo({
   }
 
   const handleReserve = async () => {
-    setFormData({
-      ...formData,
-      startDate: formatTimestamp(formDetails.checkIn),
+    const payload: any = {
+      countryCode: formDetails.countryCode,
       endDate: formatTimestamp(formDetails.checkOut),
-    });
+      guestEmail: formDetails.email,
+      guestFirstName: formDetails.firstName,
+      guestLastName: formDetails.lastName,
+      guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
+      numberOfGuests: formDetails.noOfGuests,
+      propertyId: property._id,
+      startDate: formatTimestamp(formDetails.checkIn),
+    };
+
+    if (formDetails.rateId) {
+      payload.rateId = formDetails.rateId;
+    } else {
+      payload.customPrice = formDetails.price;
+    }
+
     setLoading(true);
-    await apiClient
-      .post(`/booking`, formData)
-      .then((res) => {
-        setLoading(false);
-        toast.success("Reservation successful");
-        setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
-        setStep(3);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        toast.error(err.response.data.error || "An error occured");
-      });
+
+    try {
+      const res = await apiClient.post(`/booking`, payload);
+      toast.success("Reservation successful");
+      setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
+      setStep(3);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const days = moment(formDetails.checkOut).diff(
