@@ -136,7 +136,7 @@ function BookingTable({
                       <td className="px-4 py-4 whitespace-nowrap w-[160px]">
                         <div className="flex items-center gap-2">
                           <img
-                            src={item?.propertyId?.images[0]}
+                            src={item?.propertyDetails?.images[0]}
                             className="w-10 h-10 hidden lg:block"
                           />
                           <div>
