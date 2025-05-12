@@ -97,7 +97,7 @@ function DashboardCharts({
     const filterQuery =
       filterType !== "custom_date_range"
         ? `filterType=${filterType}`
-        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}&targetCurrency=${userCurrency}`;
+        : `filterType=custom_date_range&customStartDate=${formattedStartDate}&customEndDate=${formattedEndDate}`;
 
     // Fetch functions with signal
     const fetchCardData = async () => {
