@@ -11,6 +11,7 @@ function Bookings() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState([]);
   const [properties, setProperties] = useState<any[]>([]);
+  const [search, setSearch] = useState("");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
 
@@ -27,6 +28,10 @@ function Bookings() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(0);
+  }, [search, selectedProperty, statusFilter]);
+
+  useEffect(() => {
     apiClient
       .get(`/booking`)
       .then((response) => {
@@ -41,27 +46,34 @@ function Bookings() {
   const itemsPerPage = 15;
   const [currentPage, setCurrentPage] = useState(0);
 
-  // Calculate page count based on filtered bookings
-  const pageCount = Math.ceil(
-    bookings.filter((booking: any) =>
+  const filteredBookings = bookings
+    .filter((booking: any) =>
       booking?.propertyDetails?.propertyName
         ?.toLowerCase()
         .includes(selectedProperty.toLowerCase())
-    ).length / itemsPerPage
-  );
+    )
+    .filter((booking: any) => {
+      const query = search.toLowerCase();
+      return (
+        booking.guestFirstName?.toLowerCase().includes(query) ||
+        booking.guestLastName?.toLowerCase().includes(query) ||
+        booking.guestEmail?.toLowerCase().includes(query) ||
+        booking.propertyDetails?.propertyName?.toLowerCase().includes(query)
+      );
+    });
+
+  // Calculate page count based on filtered bookings
+  const pageCount = Math.ceil(filteredBookings.length / itemsPerPage);
 
   const handlePageChange = ({ selected }: { selected: any }) => {
     setCurrentPage(selected);
   };
 
   // Filter and slice the data for the current page
-  const displayedData = bookings
-    .filter((booking: any) =>
-      booking?.propertyDetails?.propertyName
-        ?.toLowerCase()
-        .includes(selectedProperty.toLowerCase())
-    )
-    .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const displayedData = filteredBookings.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <DashboardLayout>
@@ -115,7 +127,15 @@ function Bookings() {
             Create Reservation
           </button>
         </div>
-
+        <div className="flex items-center gap-4 bg-white border border-solid rounded-xl p-3 ml-6 max-w-sm w-full">
+          <input
+            type="text"
+            placeholder="Search bookings"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="outline-none bg-transparent text-xs md:text-sm text-secondary placeholder:text-gray-400 w-full"
+          />
+        </div>
         <div className="overflow-x-auto px-6 no-scrollbar mt-6">
           <BookingTable data={displayedData} statusFilter={statusFilter} />
         </div>

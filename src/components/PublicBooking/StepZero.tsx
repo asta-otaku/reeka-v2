@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
-import toast from "react-hot-toast";
 import { useLocation, useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
 
@@ -81,7 +80,11 @@ function StepZero({
           .map((property: any) => (
             <div
               key={property._id}
-              onClick={() => setSelectedApartment(property._id)}
+              onClick={() => {
+                setSelectedApartment(property._id);
+                setProperty(property);
+                setStep(1);
+              }}
               className={`bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer ${
                 selectedApartment === property._id
                   ? "border-2 border-primary"
@@ -112,25 +115,6 @@ function StepZero({
               </div>
             </div>
           ))}
-      </div>
-      <div className="my-3 w-full flex justify-center">
-        <button
-          onClick={() => {
-            if (selectedApartment) {
-              setProperty(
-                properties.find(
-                  (property: any) => property._id === selectedApartment
-                )
-              );
-              setStep(1);
-            } else {
-              toast.error("Please select an apartment");
-            }
-          }}
-          className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
-        >
-          Continue
-        </button>
       </div>
     </div>
   );

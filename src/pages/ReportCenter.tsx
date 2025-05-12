@@ -202,10 +202,21 @@ function ReportModal({ properties }: any) {
         const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = downloadUrl;
-        const filename = `${form.property ? `${form.property}-` : "report"}${
-          form.from
-        }-to-${form.to}.${form.format}`;
-        link.setAttribute("download", filename || `report.${form.format}`);
+        const formattedFrom = form.from?.replace(/-/g, "") || "";
+        const formattedTo = form.to?.replace(/-/g, "") || "";
+        const datePart =
+          formattedFrom && formattedTo
+            ? `${formattedFrom}_to_${formattedTo}`
+            : formattedFrom || formattedTo || "undated";
+
+        const propPart = form.property?.trim().replace(/\s+/g, "_");
+
+        const filename = `${propPart ? `${propPart}_` : ""}${
+          form.type
+        }_${datePart}.${form.format}`;
+
+        link.setAttribute("download", filename);
+
         document.body.appendChild(link);
         link.click();
         window.URL.revokeObjectURL(downloadUrl);
