@@ -195,6 +195,7 @@ function StepTwo({
             basePrice={Number(formDetails.price)}
             cautionFee={property.price.cautionFee || 0}
             days={days}
+            isCustom={formDetails.rateId === "" ? true : false}
           />
         )}
       </div>

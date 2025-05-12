@@ -17,7 +17,7 @@ import RateCardsTab from "./Tabs/RateCardsTab";
 const tabs = [
   { name: "Property Details", id: "property_details" },
   { name: "Booking & Reservation", id: "booking_reservation" },
-  // { name: "Reeka Rate Cards", id: "reeka_rate_cards" },
+  { name: "Reeka Rate Cards", id: "reeka_rate_cards" },
 ];
 
 function ViewProperty() {
