@@ -109,10 +109,12 @@ export const PricePreview = ({
         📊 {location.pathname.includes("listing") && "Example"} Price Preview (
         {days} night{days > 1 ? "s" : ""})
       </h4>
-      <p>
-        <span className="font-medium">Price per night:</span> {currency}
-        {basePrice?.toLocaleString(undefined, { minimumFractionDigits: 0 })}
-      </p>
+      {!isCustom && (
+        <p>
+          <span className="font-medium">Price per night:</span> {currency}
+          {basePrice?.toLocaleString(undefined, { minimumFractionDigits: 0 })}
+        </p>
+      )}
       <p>
         <span className="font-medium">
           Total room rate for {days} day{days > 1 ? "s" : ""}:
