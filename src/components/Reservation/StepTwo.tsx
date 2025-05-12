@@ -163,9 +163,11 @@ function StepTwo({
             <h2 className="text-[#808080] text-xs">Total Price</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
               {formDetails.price === "airbnb" ? "$" : currency}
-              {getTotalPrice()
-                ?.toString()
-                ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}
+              {formDetails.rateId
+                ? getTotalPrice()
+                    ?.toString()
+                    ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0
+                : formDetails.price}
             </h4>
           </div>
           <div>
