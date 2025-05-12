@@ -13,6 +13,7 @@ import ListingManagement from "./pages/ListingManagement.tsx";
 import ReportCenter from "./pages/ReportCenter.tsx";
 import Reservation from "./pages/Reservation.tsx";
 import ViewProperty from "./components/ViewProperty/index.tsx";
+import Portfolio from "./pages/Portfolio.tsx";
 import SignIn from "./pages/SignIn.tsx";
 import SignUp from "./pages/SignUp.tsx";
 import Pricing from "./pages/Pricing.tsx";
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/incident-report/:id" element={<IncidentReport />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/property/:id/:propId?" element={<PublicBooking />} />
+        <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/agent/:id" element={<PublicBooking />} />
         <Route path="/invoice/:id" element={<PublicInvoice />} />
         <Route path="/settings" element={<Settings />} />

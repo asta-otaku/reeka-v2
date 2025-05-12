@@ -24,6 +24,9 @@ function StepTwo({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateId: string;
+    note: string;
+    includeNote: boolean;
     countryCode: string;
   };
   hideFeatures?: boolean;
@@ -31,21 +34,6 @@ function StepTwo({
   property: any;
   setInvoiceId: React.Dispatch<React.SetStateAction<string>>;
 }) {
-  const [formData, setFormData] = useState({
-    countryCode: formDetails.countryCode,
-    endDate: formDetails.checkOut,
-    guestEmail: formDetails.email,
-    guestFirstName: formDetails.firstName,
-    guestLastName: formDetails.lastName,
-    guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
-    numberOfChildren: 0,
-    numberOfGuests: formDetails.noOfGuests,
-    priceState: formDetails.price,
-    propertyId: property._id,
-    startDate: formDetails.checkIn,
-    status: "Upcoming",
-    totalBookingValue: 0,
-  });
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const currency = useCurrency();
@@ -55,56 +43,40 @@ function StepTwo({
   }
 
   const handleReserve = async () => {
-    setFormData({
-      ...formData,
-      startDate: formatTimestamp(formDetails.checkIn),
+    const payload: any = {
+      countryCode: formDetails.countryCode,
       endDate: formatTimestamp(formDetails.checkOut),
-    });
+      guestEmail: formDetails.email,
+      guestFirstName: formDetails.firstName,
+      guestLastName: formDetails.lastName,
+      guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
+      numberOfGuests: formDetails.noOfGuests,
+      propertyId: property._id,
+      startDate: formatTimestamp(formDetails.checkIn),
+      note: formDetails.note,
+      includeNote: formDetails.includeNote,
+    };
+
+    if (formDetails.rateId) {
+      payload.rateId = formDetails.rateId;
+    } else {
+      payload.customPrice = Number(formDetails.price);
+    }
+
     setLoading(true);
-    await apiClient
-      .post(`/booking`, formData)
-      .then((res) => {
-        setLoading(false);
-        toast.success("Reservation successful");
-        setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
-        setStep(3);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        toast.error(err.response.data.error || "An error occured");
-      });
+
+    try {
+      const res = await apiClient.post(`/booking`, payload);
+      toast.success("Reservation successful");
+      setInvoiceId(res.data.invoices[res.data.invoices.length - 1]);
+      setStep(3);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  function getPrice(price: string) {
-    if (!property || !property.price) {
-      return 0;
-    }
-
-    switch (price) {
-      case "base":
-        return property.price.basePrice.toFixed(2);
-
-      case "high":
-        return (
-          property?.price?.basePrice +
-          (property?.price?.boostPercentage / 100) * property?.price?.basePrice
-        ).toFixed(2);
-
-      case "low":
-        return (
-          property?.price?.basePrice -
-          (Math.abs(property?.price?.discountPercentage) / 100) *
-            property?.price?.basePrice
-        ).toFixed(2);
-
-      case "airbnb":
-        return property?.price?.airbnbPrice;
-
-      default:
-        return property.price.basePrice; // Default to basePrice if the price type is unrecognized
-    }
-  }
 
   const days = moment(formDetails.checkOut).diff(
     moment(formDetails.checkIn),
@@ -112,7 +84,7 @@ function StepTwo({
   );
 
   function getTotalPrice() {
-    const totalBase = getPrice(formDetails.price) * days;
+    const totalBase = Number(formDetails.price) * days;
     const totalPrice = totalBase;
     return totalPrice;
   }
@@ -220,7 +192,7 @@ function StepTwo({
       <div className="-mt-4">
         {showPreview && (
           <PricePreview
-            basePrice={getPrice(formDetails.price)}
+            basePrice={Number(formDetails.price)}
             cautionFee={property.price.cautionFee || 0}
             days={days}
           />

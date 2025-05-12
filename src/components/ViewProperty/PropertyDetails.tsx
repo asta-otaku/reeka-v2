@@ -40,7 +40,7 @@ function PropertyDetails({
             setProperty({ ...property, propertyName: e.target.value })
           }
           placeholder="Name"
-          disabled={!edit} // Disable the input when not in edit mode
+          disabled={!edit}
           className={`px-4 py-2 border border-[#D0D5DD] rounded-lg outline-none placeholder:text-[#808080] text-[#3A3A3A] ${
             edit
               ? "focus-within:border-primary bg-white"
@@ -71,7 +71,7 @@ function PropertyDetails({
             onChange={(e) =>
               setProperty({ ...property, address: e.target.value })
             }
-            disabled={!edit} // Disable the input when not in edit mode
+            disabled={!edit}
             className={`px-4 py-2 border border-[#D0D5DD] rounded-lg outline-none placeholder:text-[#808080] text-[#3A3A3A] ${
               edit
                 ? "focus-within:border-primary bg-white"

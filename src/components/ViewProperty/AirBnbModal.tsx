@@ -152,6 +152,7 @@ export default function AirBnbModal({
               }
             }}
             className="border p-2 rounded w-full"
+            dateFormat="dd/MM/yyyy"
             minDate={utcToLocalDate(
               new Date(
                 Date.UTC(
@@ -169,6 +170,7 @@ export default function AirBnbModal({
               if (date) setEndDate(localToUTCDate(date));
             }}
             className="border p-2 rounded w-full"
+            dateFormat="dd/MM/yyyy"
             minDate={utcToLocalDate(startDate)}
           />
         </div>

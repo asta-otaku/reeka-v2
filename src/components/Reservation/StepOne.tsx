@@ -12,6 +12,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
+import apiClient from "../../helpers/apiClient";
+import CustomPriceModal from "./CustomPriceModal";
+import useStore from "../../store";
 
 function StepOne({
   handleChange,
@@ -30,6 +33,9 @@ function StepOne({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateId: string;
+    note: string;
+    includeNote: boolean;
     countryCode: string;
   };
   setFormDetails: React.Dispatch<
@@ -42,6 +48,9 @@ function StepOne({
       checkIn: string;
       checkOut: string;
       price: string;
+      rateId: string;
+      note: string;
+      includeNote: boolean;
       countryCode: string;
     }>
   >;
@@ -51,9 +60,20 @@ function StepOne({
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
+  const [rates, setRates] = useState<
+    { rateName: string; ratePrice: number; _id: string }[] | null
+  >(null);
+  const [customPriceSelected, setCustomPriceSelected] = useState(false);
   const emailRegex = new RegExp(
     `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
   );
+  const setModal = useStore((state: any) => state.setModal);
+
+  useEffect(() => {
+    if (!formDetails.rateId && !formDetails.price) {
+      setCustomPriceSelected(false);
+    }
+  }, [formDetails.rateId, formDetails.price]);
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -67,7 +87,18 @@ function StepOne({
         toast.error("Failed to fetch bookings");
       }
     };
+    const fetchRates = async () => {
+      try {
+        const response = await apiClient.get(
+          `/properties/${property._id}/rates`
+        );
+        setRates(response.data.rateCards);
+      } catch (error) {
+        console.error("Failed to fetch rates:", error);
+      }
+    };
     fetchBookings();
+    fetchRates();
   }, [property._id]);
 
   const isDateBooked = (date: Date) => {
@@ -124,7 +155,6 @@ function StepOne({
 
     setStep(2);
   };
-
   return (
     <>
       <div className="border border-[#C0C0C0] rounded-xl p-4 bg-white">
@@ -242,25 +272,85 @@ function StepOne({
 
           {/* Price */}
           <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Price per Night*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <select
-                name="price"
-                value={formDetails.price}
-                onChange={(e: any) =>
-                  setFormDetails({ ...formDetails, price: e.target.value })
-                }
-                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
-              >
-                <option value="">Select price</option>
-                <option value="base">Base</option>
-                <option value="low">Low</option>
-                <option value="high">High</option>
-              </select>
-              <ChevronDownIcon width={12} />
-            </div>
+            <h4 className="text-[#121212] text-sm font-medium">Rate*</h4>
+            {!customPriceSelected ? (
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <select
+                  name="price"
+                  value={formDetails.rateId}
+                  onChange={(e: any) => {
+                    const selectedId = e.target.value;
+                    if (selectedId === "custom") {
+                      setModal(
+                        <CustomPriceModal
+                          defaultValue={formDetails.price}
+                          onCancel={() => setModal(null)}
+                          onConfirm={(value) => {
+                            setFormDetails({
+                              ...formDetails,
+                              price: value,
+                              rateId: "",
+                            });
+                            setCustomPriceSelected(true);
+                            setModal(null);
+                          }}
+                        />
+                      );
+                    } else {
+                      const selectedRate = rates?.find(
+                        (rate) => rate._id === selectedId
+                      );
+                      setFormDetails({
+                        ...formDetails,
+                        rateId: selectedId,
+                        price: selectedRate?.ratePrice.toString() || "",
+                      });
+                      setCustomPriceSelected(false);
+                    }
+                  }}
+                  className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
+                >
+                  <option value="">Select a rate</option>
+                  {rates?.map((rate, index) => (
+                    <option key={index} value={rate._id}>
+                      {rate.rateName} - ₦{rate.ratePrice.toLocaleString()}
+                    </option>
+                  ))}
+                  <option value="custom">Enter custom price</option>
+                </select>
+                <ChevronDownIcon width={12} />
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full -mt-1">
+                  <input
+                    type="number"
+                    placeholder="Enter your custom price"
+                    value={formDetails.price}
+                    onChange={(e) =>
+                      setFormDetails({
+                        ...formDetails,
+                        price: e.target.value,
+                        rateId: "",
+                      })
+                    }
+                    className="w-full outline-none bg-transparent text-[#667085]"
+                  />
+                </div>
+                <div className="mt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomPriceSelected(false);
+                      setFormDetails({ ...formDetails, rateId: "", price: "" });
+                    }}
+                    className="text-xs text-primary underline hover:text-primary/80 transition"
+                  >
+                    Use default rate instead
+                  </button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Check In Date */}
@@ -283,6 +373,7 @@ function StepOne({
                 minDate={new Date()}
                 filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full text-[#667085]"
               />
             </div>
@@ -322,12 +413,58 @@ function StepOne({
                   return !isDateBooked(date);
                 }}
                 placeholderText="Check Out Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full text-[#667085]"
               />
             </div>
           </div>
+          {/* Note Field */}
+          <div className="col-span-2 mt-2">
+            <label className="text-sm font-medium text-[#121212] block mb-1">
+              Booking Note
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Write any note you want to include (visible on invoice if toggled below)…"
+              value={formDetails.note}
+              onChange={(e) =>
+                setFormDetails((prev) => ({ ...prev, note: e.target.value }))
+              }
+              className="w-full border border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg px-3 py-2 text-sm text-[#667085] outline-none resize-none"
+            />
+          </div>
+
+          {/* Include Note Toggle */}
+          <div className="col-span-2 flex items-center justify-between mt-2">
+            <label className="text-sm font-medium text-[#121212]">
+              Include note in invoice
+            </label>
+            <button
+              type="button"
+              onClick={() =>
+                setFormDetails((prev) => ({
+                  ...prev,
+                  includeNote: !prev.includeNote,
+                }))
+              }
+              className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                formDetails.includeNote ? "bg-primary" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                  formDetails.includeNote ? "translate-x-4" : "translate-x-0"
+                }`}
+              />
+            </button>
+          </div>
         </form>
       </div>
+      {customPriceSelected && (
+        <p className="text-xs text-[#FF8C00] italic mt-2 text-center">
+          Note: You have selected a custom price for this booking.
+        </p>
+      )}
       <div className="my-3 w-full flex justify-center">
         <button
           onClick={handleSubmit}

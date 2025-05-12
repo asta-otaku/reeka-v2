@@ -30,9 +30,6 @@ function AddProperty({ setStep }: { setStep: any }) {
     employees: [],
     price: {
       basePrice: 0,
-      airbnbPrice: 0,
-      discountPercentage: 0,
-      boostPercentage: 0,
       cautionFee: 0,
     },
     pricingState: "base",
@@ -95,9 +92,6 @@ function AddProperty({ setStep }: { setStep: any }) {
             employees: [],
             price: {
               basePrice: 0,
-              airbnbPrice: 0,
-              discountPercentage: 0,
-              boostPercentage: 0,
               cautionFee: 0,
             },
             pricingState: "base",
@@ -185,7 +179,7 @@ function AddProperty({ setStep }: { setStep: any }) {
           />
 
           <div className="flex items-center justify-between w-full border-0 border-t px-4 py-2">
-            <button className="text-[#808080] font-semibold text-sm">
+            <button className="text-[#808080] font-semibold text-sm invisible">
               Save as draft
             </button>
             <button

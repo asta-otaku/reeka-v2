@@ -19,6 +19,9 @@ function StepThree({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateId: string;
+    note: string;
+    includeNote: boolean;
     countryCode: string;
   };
   setStep: React.Dispatch<React.SetStateAction<number>>;

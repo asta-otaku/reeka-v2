@@ -31,21 +31,23 @@ function LineChart({
   labels,
   data,
   activeMonth,
+  label,
 }: {
   labels: string[]; // X-axis labels
   data: number[]; // Data to display (either current or previous month)
   activeMonth: string;
+  label: string;
 }) {
   // Data structure for the chart
   const chartData = {
     labels: labels, // X-axis labels
     datasets: [
       {
-        label: "Monthly Data", // Generic label as the data could be for current or previous month
+        label,
         data: data, // Data passed from the parent component (current or previous)
         fill: false, // No fill under the line
-        backgroundColor: activeMonth === "current" ? "#E36B37" : "#F94144", // Color for points
-        borderColor: activeMonth === "current" ? "#E36B37" : "#F94144", // Line color
+        backgroundColor: activeMonth === "current" ? "#E36B37" : "#6d6d6d", // Color for points
+        borderColor: activeMonth === "current" ? "#E36B37" : "#6d6d6d", // Line color
         borderWidth: 2, // Line thickness
         pointRadius: 3, // Size of points
         tension: 0.4, // Curve smoothness

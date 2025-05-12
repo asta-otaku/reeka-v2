@@ -229,6 +229,7 @@ function DashboardPropertyChart({
                 labels={data.labels}
                 data={data.current}
                 activeMonth={"current"}
+                label={data.title}
               />
             </div>
           </div>

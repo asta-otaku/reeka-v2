@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import apiClient from "../../../helpers/apiClient";
+import toast from "react-hot-toast";
 
 interface Rate {
-  name: string;
-  rate: number;
+  _id: string;
+  rateName: string;
+  ratePrice: number;
+  isDefault: boolean;
 }
 
 function RateCardsTab({ property }: { property: any }) {
@@ -11,12 +15,42 @@ function RateCardsTab({ property }: { property: any }) {
   const [defaultRateIndex, setDefaultRateIndex] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const handleSaveRate = () => {
+  const fetchRates = async () => {
+    try {
+      const response = await apiClient.get(`/properties/${property._id}/rates`);
+      setRates(response.data.rateCards);
+      const defaultIndex = response.data.rateCards.findIndex(
+        (rate: Rate) => rate.isDefault
+      );
+      setDefaultRateIndex(defaultIndex);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      console.error("Failed to update rate:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (property._id) {
+      fetchRates();
+    }
+  }, [property._id]);
+
+  const handleSaveRate = async () => {
     if (!newRate.name || !newRate.rate) return;
 
-    setRates([...rates, newRate]);
-    setNewRate({ name: "", rate: 0 });
-    setShowForm(false);
+    try {
+      const res = await apiClient.post(`/properties/${property._id}/rate`, {
+        rateName: newRate.name,
+        ratePrice: newRate.rate,
+      });
+      setNewRate({ name: "", rate: 0 });
+      toast.success(res.data.message);
+      setShowForm(false);
+      await fetchRates();
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      console.error("Failed to update rate:", error);
+    }
   };
 
   const handleRateChange = (
@@ -25,17 +59,57 @@ function RateCardsTab({ property }: { property: any }) {
     value: string
   ) => {
     const updated = [...rates];
-    (updated[index] as any)[field] = field === "rate" ? Number(value) : value;
+    updated[index] = {
+      ...updated[index],
+      [field]: field === "ratePrice" ? Number(value) : value,
+    };
     setRates(updated);
   };
 
-  const handleRemoveRate = (index: number) => {
-    const updated = rates.filter((_, i) => i !== index);
-    setRates(updated);
-    if (defaultRateIndex === index) {
-      setDefaultRateIndex(null);
-    } else if (defaultRateIndex !== null && defaultRateIndex > index) {
-      setDefaultRateIndex(defaultRateIndex - 1);
+  const handleUpdateRate = async (
+    rateId: string,
+    rateName: string,
+    ratePrice: number
+  ) => {
+    try {
+      const res = await apiClient.put(
+        `/properties/${property._id}ss/rate/${rateId}`,
+        {
+          rateName,
+          ratePrice,
+        }
+      );
+      await fetchRates();
+      toast.success(res.data.message);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      console.error("Failed to update rate:", error);
+    }
+  };
+
+  const handleSetDefaultRate = async (rateId: string) => {
+    try {
+      const res = await apiClient.patch(
+        `/properties/${property._id}/rate/${rateId}/default`
+      );
+      toast.success(res.data.message);
+      await fetchRates();
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      console.error("Failed to update rate:", error);
+    }
+  };
+
+  const handleRemoveRate = async (rateId: string) => {
+    try {
+      const res = await apiClient.delete(
+        `/properties/${property._id}/rate/${rateId}`
+      );
+      await fetchRates();
+      toast.success(res.data.message);
+    } catch (error: any) {
+      toast.error(error.response.data.error);
+      console.error("Failed to update rate:", error);
     }
   };
 
@@ -68,7 +142,8 @@ function RateCardsTab({ property }: { property: any }) {
       <p className="text-xs text-[#808080] font-medium my-3">
         Select your default rate
       </p>
-      {/* Rate Form */}
+
+      {/* Add Rate Form */}
       {showForm && (
         <div className="flex flex-col md:flex-row items-end gap-3 mt-4">
           <div className="flex flex-col gap-0.5 w-full">
@@ -109,63 +184,79 @@ function RateCardsTab({ property }: { property: any }) {
         </div>
       )}
 
-      {/* Saved Rates */}
+      {/* Rates List */}
       {rates.length > 0 ? (
         <div className="mt-6 space-y-4">
-          {rates.map((rate, index) => (
-            <div key={index} className="grid grid-cols-11 gap-2 items-end">
-              <div className="col-span-1 flex justify-center self-center mt-5">
-                <input
-                  type="radio"
-                  checked={defaultRateIndex === index}
-                  onChange={() => setDefaultRateIndex(index)}
-                  className="accent-black"
-                />
-              </div>
-              <div className="col-span-4">
-                <label className="text-[#344054] font-medium text-sm">
-                  Rate Name
-                </label>
-                <input
-                  type="text"
-                  value={rate.name}
-                  onChange={(e) =>
-                    handleRateChange(index, "name", e.target.value)
-                  }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                  placeholder="Rate Name"
-                />
-              </div>
-              <div className="col-span-4">
-                <label className="text-[#344054] font-medium text-sm">
-                  Rate
-                </label>
-                <input
-                  type="number"
-                  value={rate.rate}
-                  onChange={(e) =>
-                    handleRateChange(index, "rate", e.target.value)
-                  }
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                  placeholder="Rate"
-                />
-              </div>
-              <div className="col-span-2 flex justify-end">
-                <button
-                  onClick={() => handleRemoveRate(index)}
-                  className="bg-[#FF3B30] hover:bg-red-600 text-white w-full ml-4 py-2 rounded-lg text-sm font-medium"
+          {[...rates]
+            .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
+            .map((rate, index) => {
+              const actualIndex = rates.findIndex((r) => r._id === rate._id);
+              return (
+                <div
+                  key={rate._id}
+                  className="grid grid-cols-11 gap-2 items-end"
                 >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+                  <div className="col-span-1 flex justify-center self-center mt-5">
+                    <input
+                      type="radio"
+                      checked={defaultRateIndex === actualIndex}
+                      onChange={() => handleSetDefaultRate(rate._id)}
+                      className="accent-black"
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <label className="text-[#344054] font-medium text-sm">
+                      Rate Name
+                    </label>
+                    <input
+                      type="text"
+                      value={rate.rateName}
+                      onChange={(e) =>
+                        handleRateChange(index, "rateName", e.target.value)
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="col-span-3">
+                    <label className="text-[#344054] font-medium text-sm">
+                      Rate
+                    </label>
+                    <input
+                      type="number"
+                      value={rate.ratePrice}
+                      onChange={(e) =>
+                        handleRateChange(index, "ratePrice", e.target.value)
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    />
+                  </div>
+                  <div className="col-span-4 flex justify-end">
+                    <button
+                      onClick={() =>
+                        handleUpdateRate(
+                          rate._id,
+                          rate.rateName,
+                          rate.ratePrice
+                        )
+                      }
+                      className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ml-4"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleRemoveRate(rate._id)}
+                      className="bg-[#FF3B30] hover:bg-red-600 text-white w-full ml-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       ) : (
         <div className="min-h-20 flex items-center flex-col justify-center gap-1">
-          <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
-            No Rate Card
-          </h2>
+          <h2 className="text-[#121212] font-medium text-lg">No Rate Card</h2>
           <h1 className="text-[#808080] text-xs font-medium">
             Rate cards are used to set the price of your property.
           </h1>

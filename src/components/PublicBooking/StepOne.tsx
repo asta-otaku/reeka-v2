@@ -275,6 +275,7 @@ function StepOne({
                 minDate={new Date()}
                 filterDate={(date) => !isDateBooked(date)}
                 placeholderText="Check In Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full text-[#667085]"
               />
             </div>
@@ -312,6 +313,7 @@ function StepOne({
                   return !isDateBooked(date);
                 }}
                 placeholderText="Check Out Date"
+                dateFormat="dd/MM/yyyy"
                 className="w-full text-[#667085]"
               />
             </div>

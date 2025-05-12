@@ -166,36 +166,36 @@ function BookingModal({
             </h4>
           </div>
         </div>
-      </div>
-      <div className="flex justify-center gap-4 mt-4">
-        <button
-          onClick={handleShareInvoice}
-          className="text-white bg-primary/90 px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2"
-        >
-          Share invoice
-        </button>
-        <button
-          onClick={handleDelete}
-          className="text-[#F94144] font-medium text-sm flex items-center gap-2"
-        >
-          <img src={redcancel} alt="cancel booking" />
-          Cancel booking
-        </button>
-        {/* New Edit Booking button */}
-        <button
-          onClick={() =>
-            setModal(
-              <EditBookingModal
-                setModal={setModal}
-                booking={booking}
-                currency={currency}
-              />
-            )
-          }
-          className="text-white bg-secondary/90 px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2"
-        >
-          Edit Booking
-        </button>
+        <div className="flex justify-center flex-wrap gap-4 mt-4">
+          <button
+            onClick={handleShareInvoice}
+            className="text-white bg-primary/90 px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2"
+          >
+            Share invoice
+          </button>
+          <button
+            onClick={handleDelete}
+            className="text-[#F94144] font-medium text-sm flex items-center gap-2"
+          >
+            <img src={redcancel} alt="cancel booking" />
+            Cancel booking
+          </button>
+          {/* New Edit Booking button */}
+          <button
+            onClick={() =>
+              setModal(
+                <EditBookingModal
+                  setModal={setModal}
+                  booking={booking}
+                  currency={currency}
+                />
+              )
+            }
+            className="text-white bg-secondary/90 px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2"
+          >
+            Edit Booking
+          </button>
+        </div>
       </div>
     </div>
   );

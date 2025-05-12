@@ -63,6 +63,7 @@ function EditBookingModal({
             }
           }}
           className="border p-2 rounded w-full"
+          dateFormat="dd/MM/yyyy"
           minDate={utcToLocalDate(
             new Date(
               Date.UTC(
@@ -80,6 +81,7 @@ function EditBookingModal({
             if (date) setEndDate(localToUTCDate(date));
           }}
           className="border p-2 rounded w-full"
+          dateFormat="dd/MM/yyyy"
           minDate={utcToLocalDate(startDate)}
         />
       </div>

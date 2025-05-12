@@ -312,7 +312,7 @@ function DashboardCharts({
               activeMonth === "current" ? "font-bold" : ""
             }`}
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E36B37]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-primary" />
             <h5 className="text-[#808080] font-light text-sm">
               Current Period
             </h5>
@@ -323,7 +323,7 @@ function DashboardCharts({
               activeMonth === "previous" ? "font-bold" : ""
             }`}
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-[#F94144]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-secondary" />
             <h5 className="text-[#808080] font-light text-sm">
               Previous Period
             </h5>
@@ -365,6 +365,7 @@ function DashboardCharts({
                 }
                 data={activeMonth === "current" ? data.current : data.previous}
                 activeMonth={activeMonth}
+                label={data.title}
               />
             </div>
           </div>

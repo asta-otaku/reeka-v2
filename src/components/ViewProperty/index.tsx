@@ -46,8 +46,6 @@ function ViewProperty() {
     price: {
       basePrice: 0,
       airbnbPrice: 0,
-      discountPercentage: 0,
-      boostPercentage: 0,
     },
     images: [],
   });
@@ -329,7 +327,7 @@ function ViewProperty() {
         </div>
 
         {/* Tab Content */}
-        <div className="mt-12">
+        <div className="my-12">
           {
             {
               property_details: (
