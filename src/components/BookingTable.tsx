@@ -136,15 +136,15 @@ function BookingTable({
                       <td className="px-4 py-4 whitespace-nowrap w-[160px]">
                         <div className="flex items-center gap-2">
                           <img
-                            src={item?.propertyId?.images[0]}
+                            src={item?.propertyDetails?.images[0]}
                             className="w-10 h-10 hidden lg:block"
                           />
                           <div>
                             <div className="text-sm text-[#121212] font-medium max-w-[100px] w-full truncate text-ellipsis">
-                              {item?.propertyId?.propertyName}
+                              {item?.propertyDetails?.propertyName}
                             </div>
                             <div className="text-[10px] text-[#808080] font-light max-w-[100px] w-full truncate text-ellipsis">
-                              {item?.propertyId?.address}
+                              {item?.propertyDetails?.address}
                             </div>
                           </div>
                         </div>

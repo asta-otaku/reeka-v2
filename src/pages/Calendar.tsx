@@ -44,7 +44,7 @@ function Calendar() {
         const colorMap: { [key: string]: string } = {};
 
         const formattedBookings = response.data.map((booking: any) => {
-          const propertyName = booking?.propertyId?.propertyName;
+          const propertyName = booking?.propertyDetails?.propertyName;
 
           if (!colorMap[propertyName]) {
             colorMap[propertyName] =

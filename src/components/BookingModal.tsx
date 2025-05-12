@@ -82,10 +82,10 @@ function BookingModal({
         <div className="flex w-full justify-between items-center my-3">
           <div>
             <h2 className="text-[#121212] font-semibold text-xs">
-              {booking?.propertyId?.propertyName}
+              {booking?.propertyDetails?.propertyName}
             </h2>
             <p className="text-[#3A3A3A] font-light text-[10px]">
-              {booking?.propertyId?.address}
+              {booking?.propertyDetails?.address}
             </p>
           </div>
           {incident ? (
@@ -105,7 +105,7 @@ function BookingModal({
         <div className="w-full h-40">
           <img
             className="w-full h-full object-cover rounded-xl"
-            src={booking?.propertyId?.images[0]}
+            src={booking?.propertyDetails?.images[0]}
           />
         </div>
       </div>

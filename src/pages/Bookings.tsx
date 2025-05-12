@@ -44,7 +44,7 @@ function Bookings() {
   // Calculate page count based on filtered bookings
   const pageCount = Math.ceil(
     bookings.filter((booking: any) =>
-      booking?.propertyId?.propertyName
+      booking?.propertyDetails?.propertyName
         ?.toLowerCase()
         .includes(selectedProperty.toLowerCase())
     ).length / itemsPerPage
@@ -57,7 +57,7 @@ function Bookings() {
   // Filter and slice the data for the current page
   const displayedData = bookings
     .filter((booking: any) =>
-      booking?.propertyId?.propertyName
+      booking?.propertyDetails?.propertyName
         ?.toLowerCase()
         .includes(selectedProperty.toLowerCase())
     )
