@@ -49,8 +49,11 @@ function ReportCenter() {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
       })
-      .catch(() => {
-        toast.error("An error occurred while generating the report.");
+      .catch((error) => {
+        toast.error(
+          error.response.data.error ||
+            "An error occurred while generating the report."
+        );
       });
   };
 
@@ -221,9 +224,12 @@ function ReportModal({ properties }: any) {
         link.click();
         window.URL.revokeObjectURL(downloadUrl);
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
-        toast.error("An error occurred while generating the report.");
+        toast.error(
+          error.response.data.error ||
+            "An error occurred while generating the report."
+        );
       });
   };
 
