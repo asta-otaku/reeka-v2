@@ -165,6 +165,14 @@ function BookingModal({
               {booking?.endDate?.split("T")[0]}
             </h4>
           </div>
+          {booking?.note && (
+            <div>
+              <h2 className="text-[#808080] text-xs mb-1">Booking Note</h2>
+              <p className="text-[#121212] text-xs whitespace-pre-wrap">
+                {booking.note}
+              </p>
+            </div>
+          )}
         </div>
         <div className="flex justify-center flex-wrap gap-4 mt-4">
           <button
