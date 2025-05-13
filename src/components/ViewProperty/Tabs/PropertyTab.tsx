@@ -2,7 +2,6 @@ import AirBnbPricing from "../AirBnbPricing";
 import PropertyDetails from "../PropertyDetails";
 import ImageSection from "../ImageSection";
 import Amenities from "../Amenities";
-import Pricing from "../Pricing";
 import FeeSection, { PricePreview } from "../FeeSection";
 import { useState } from "react";
 import Spinner from "../../Spinner";
@@ -47,7 +46,6 @@ function PropertyTab({
           setNewImages={setNewImages}
         />
         <Amenities property={property} setProperty={setProperty} edit={edit} />
-        <Pricing property={property} setProperty={setProperty} edit={edit} />
         <FeeSection
           cautionFee={property.price.cautionFee}
           setCautionFee={(val) =>

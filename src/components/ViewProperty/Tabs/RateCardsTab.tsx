@@ -127,7 +127,7 @@ function RateCardsTab({ property }: { property: any }) {
           </span>
           <div>
             <h1 className="text-[#808080] text-xs font-medium">Rate Card</h1>
-            <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
+            <h2 className="text-[#121212] font-medium text-lg max-w-[200px] md:max-w-full truncate">
               {property?.propertyName}
             </h2>
           </div>
@@ -194,7 +194,7 @@ function RateCardsTab({ property }: { property: any }) {
               return (
                 <div
                   key={rate._id}
-                  className="grid grid-cols-11 gap-2 items-end"
+                  className="grid grid-cols-7 md:grid-cols-11 gap-2 items-end"
                 >
                   <div className="col-span-1 flex justify-center self-center mt-5">
                     <input
@@ -230,7 +230,7 @@ function RateCardsTab({ property }: { property: any }) {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                     />
                   </div>
-                  <div className="col-span-4 flex justify-end">
+                  <div className="col-span-7 md:col-span-4 flex justify-end">
                     <button
                       onClick={() =>
                         handleUpdateRate(
@@ -239,7 +239,7 @@ function RateCardsTab({ property }: { property: any }) {
                           rate.ratePrice
                         )
                       }
-                      className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ml-4"
+                      className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap w-full ml-12 md:ml-4"
                     >
                       Update
                     </button>

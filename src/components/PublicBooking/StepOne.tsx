@@ -171,151 +171,164 @@ function StepOne({
         <h4 className="font-light text-center">
           Enter the correct details required
         </h4>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">First Name*</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="firstName"
-                value={formDetails.firstName}
-                placeholder="First Name"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
+        <form className="flex flex-col gap-4 my-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                First Name*
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="firstName"
+                  value={formDetails.firstName}
+                  placeholder="First Name"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="lastName"
-                value={formDetails.lastName}
-                placeholder="Last Name"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="lastName"
+                  value={formDetails.lastName}
+                  placeholder="Last Name"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Number of guest*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="noOfGuests"
-                value={formDetails.noOfGuests}
-                placeholder="No of Guests"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Email address*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="email"
-                value={formDetails.email}
-                placeholder="Email"
-                type="email"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div>
-            <h4 className="text-[#121212] text-sm font-medium">
-              Phone Number*
-            </h4>
-            <PhoneInput
-              formDetails={formDetails}
-              setFormDetails={setFormDetails}
-            />
           </div>
 
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Price per night*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <select
-                name="price"
-                value={formDetails.price}
-                onChange={(e: any) =>
-                  setFormDetails({ ...formDetails, price: e.target.value })
-                }
-                className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
-              >
-                <option value="">Select price</option>
-                <option value="base">Base</option>
-                <option value="low">Low</option>
-                <option value="high">High</option>
-              </select>
-              <ChevronDownIcon width={12} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Number of guest*
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="noOfGuests"
+                  value={formDetails.noOfGuests}
+                  placeholder="No of Guests"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Email address*
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="email"
+                  value={formDetails.email}
+                  placeholder="Email"
+                  type="email"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Check In Date
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <DatePicker
-                selected={
-                  formDetails.checkIn ? parseISO(formDetails.checkIn) : null
-                }
-                onChange={(date: Date | null) =>
-                  setFormDetails({
-                    ...formDetails,
-                    checkIn: date ? format(date, "yyyy-MM-dd") : "",
-                  })
-                }
-                minDate={new Date()}
-                filterDate={(date) => !isDateBooked(date)}
-                placeholderText="Check In Date"
-                dateFormat="dd/MM/yyyy"
-                className="w-full text-[#667085]"
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-[#121212] text-sm font-medium">
+                Phone Number*
+              </h4>
+              <PhoneInput
+                formDetails={formDetails}
+                setFormDetails={setFormDetails}
               />
             </div>
-          </div>
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Check Out Date
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <DatePicker
-                selected={
-                  formDetails.checkOut ? parseISO(formDetails.checkOut) : null
-                }
-                onChange={(date: Date | null) =>
-                  setFormDetails({
-                    ...formDetails,
-                    checkOut: date ? format(date, "yyyy-MM-dd") : "",
-                  })
-                }
-                minDate={
-                  formDetails.checkIn
-                    ? addDays(parseISO(formDetails.checkIn), 1)
-                    : new Date()
-                }
-                filterDate={(date) => {
-                  if (!formDetails.checkIn) return true;
 
-                  const checkInDate = parseISO(formDetails.checkIn);
-                  const nextBookedDate = getNextBookedDate(checkInDate);
-
-                  if (nextBookedDate) {
-                    return date <= nextBookedDate;
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Price per night*
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <select
+                  name="price"
+                  value={formDetails.price}
+                  onChange={(e: any) =>
+                    setFormDetails({ ...formDetails, price: e.target.value })
                   }
-                  return !isDateBooked(date);
-                }}
-                placeholderText="Check Out Date"
-                dateFormat="dd/MM/yyyy"
-                className="w-full text-[#667085]"
-              />
+                  className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
+                >
+                  <option value="">Select price</option>
+                  <option value="base">Base</option>
+                  <option value="low">Low</option>
+                  <option value="high">High</option>
+                </select>
+                <ChevronDownIcon width={12} />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Check In Date
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <Calendar className="w-6" />
+                <DatePicker
+                  selected={
+                    formDetails.checkIn ? parseISO(formDetails.checkIn) : null
+                  }
+                  onChange={(date: Date | null) =>
+                    setFormDetails({
+                      ...formDetails,
+                      checkIn: date ? format(date, "yyyy-MM-dd") : "",
+                    })
+                  }
+                  minDate={new Date()}
+                  filterDate={(date) => !isDateBooked(date)}
+                  placeholderText="Check In Date"
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full text-[#667085]"
+                />
+              </div>
+            </div>
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Check Out Date
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <Calendar className="w-6" />
+                <DatePicker
+                  selected={
+                    formDetails.checkOut ? parseISO(formDetails.checkOut) : null
+                  }
+                  onChange={(date: Date | null) =>
+                    setFormDetails({
+                      ...formDetails,
+                      checkOut: date ? format(date, "yyyy-MM-dd") : "",
+                    })
+                  }
+                  minDate={
+                    formDetails.checkIn
+                      ? addDays(parseISO(formDetails.checkIn), 1)
+                      : new Date()
+                  }
+                  filterDate={(date) => {
+                    if (!formDetails.checkIn) return true;
+
+                    const checkInDate = parseISO(formDetails.checkIn);
+                    const nextBookedDate = getNextBookedDate(checkInDate);
+
+                    if (nextBookedDate) {
+                      return date <= nextBookedDate;
+                    }
+                    return !isDateBooked(date);
+                  }}
+                  placeholderText="Check Out Date"
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full text-[#667085]"
+                />
+              </div>
             </div>
           </div>
         </form>

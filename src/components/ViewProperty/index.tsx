@@ -310,11 +310,11 @@ function ViewProperty() {
           </div>
         </div>
 
-        <div className="flex border-b border-gray-200 m-4">
+        <div className="flex border-b border-gray-200 m-4 max-w-xs overflow-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`px-4 py-2 text-xs md:text-sm ${
+              className={`px-4 py-2 text-xs md:text-sm whitespace-nowrap ${
                 activeTab === tab.id
                   ? "border-b-2 border-primary text-primary"
                   : "text-[#808080]"

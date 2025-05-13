@@ -197,229 +197,243 @@ function StepOne({
         <h4 className="font-light text-center">
           Enter the correct details required
         </h4>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-          {/* First Name */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">First Name*</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="firstName"
-                value={formDetails.firstName}
-                placeholder="First Name"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Last Name */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="lastName"
-                value={formDetails.lastName}
-                placeholder="Last Name"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* No. of Guests */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Number of Guests*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="noOfGuests"
-                value={formDetails.noOfGuests}
-                placeholder="No of Guests"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Email Address*
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <input
-                name="email"
-                value={formDetails.email}
-                placeholder="Email"
-                type="email"
-                className="w-full outline-none bg-transparent text-[#667085]"
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Phone Number */}
-          <div>
-            <h4 className="text-[#121212] text-sm font-medium">
-              Phone Number*
-            </h4>
-            <PhoneInput
-              formDetails={formDetails}
-              setFormDetails={setFormDetails}
-            />
-          </div>
-
-          {/* Price */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">Rate*</h4>
-            {!customPriceSelected ? (
+        <form className="flex flex-col gap-4 my-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Name */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                First Name*
+              </h4>
               <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-                <select
-                  name="price"
-                  value={formDetails.rateId}
-                  onChange={(e: any) => {
-                    const selectedId = e.target.value;
-                    if (selectedId === "custom") {
-                      setModal(
-                        <CustomPriceModal
-                          defaultValue={formDetails.price}
-                          onCancel={() => setModal(null)}
-                          onConfirm={(value) => {
-                            setFormDetails({
-                              ...formDetails,
-                              price: value,
-                              rateId: "",
-                            });
-                            setCustomPriceSelected(true);
-                            setModal(null);
-                          }}
-                        />
-                      );
-                    } else {
-                      const selectedRate = rates?.find(
-                        (rate) => rate._id === selectedId
-                      );
-                      setFormDetails({
-                        ...formDetails,
-                        rateId: selectedId,
-                        price: selectedRate?.ratePrice.toString() || "",
-                      });
-                      setCustomPriceSelected(false);
-                    }
-                  }}
-                  className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
-                >
-                  <option value="">Select a rate</option>
-                  {rates?.map((rate, index) => (
-                    <option key={index} value={rate._id}>
-                      {rate.rateName} - ₦{rate.ratePrice.toLocaleString()}
-                    </option>
-                  ))}
-                  <option value="custom">Enter custom price</option>
-                </select>
-                <ChevronDownIcon width={12} />
+                <input
+                  name="firstName"
+                  value={formDetails.firstName}
+                  placeholder="First Name"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
               </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full -mt-1">
-                  <input
-                    type="number"
-                    placeholder="Enter your custom price"
-                    value={formDetails.price}
-                    onChange={(e) =>
-                      setFormDetails({
-                        ...formDetails,
-                        price: e.target.value,
-                        rateId: "",
-                      })
-                    }
-                    className="w-full outline-none bg-transparent text-[#667085]"
-                  />
-                </div>
-                <div className="mt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCustomPriceSelected(false);
-                      setFormDetails({ ...formDetails, rateId: "", price: "" });
-                    }}
-                    className="text-xs text-primary underline hover:text-primary/80 transition"
-                  >
-                    Use default rate instead
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+            </div>
 
-          {/* Check In Date */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Check In Date
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <DatePicker
-                selected={
-                  formDetails.checkIn ? parseISO(formDetails.checkIn) : null
-                }
-                onChange={(date: Date | null) =>
-                  setFormDetails({
-                    ...formDetails,
-                    checkIn: date ? format(date, "yyyy-MM-dd") : "",
-                  })
-                }
-                minDate={new Date()}
-                filterDate={(date) => !isDateBooked(date)}
-                placeholderText="Check In Date"
-                dateFormat="dd/MM/yyyy"
-                className="w-full text-[#667085]"
-              />
+            {/* Last Name */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">Last Name*</h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="lastName"
+                  value={formDetails.lastName}
+                  placeholder="Last Name"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Check Out Date */}
-          <div className="flex flex-col gap-1 w-full">
-            <h4 className="text-[#121212] text-sm font-medium">
-              Check Out Date
-            </h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <DatePicker
-                selected={
-                  formDetails.checkOut ? parseISO(formDetails.checkOut) : null
-                }
-                onChange={(date: Date | null) =>
-                  setFormDetails({
-                    ...formDetails,
-                    checkOut: date ? format(date, "yyyy-MM-dd") : "",
-                  })
-                }
-                minDate={
-                  formDetails.checkIn
-                    ? addDays(parseISO(formDetails.checkIn), 1)
-                    : new Date()
-                }
-                filterDate={(date) => {
-                  if (!formDetails.checkIn) return true;
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* No. of Guests */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Number of Guests*
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="noOfGuests"
+                  value={formDetails.noOfGuests}
+                  placeholder="No of Guests"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
 
-                  const checkInDate = parseISO(formDetails.checkIn);
-                  const nextBookedDate = getNextBookedDate(checkInDate);
+            {/* Email */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Email Address*
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <input
+                  name="email"
+                  value={formDetails.email}
+                  placeholder="Email"
+                  type="email"
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </div>
 
-                  if (nextBookedDate) {
-                    return date <= nextBookedDate;
-                  }
-                  return !isDateBooked(date);
-                }}
-                placeholderText="Check Out Date"
-                dateFormat="dd/MM/yyyy"
-                className="w-full text-[#667085]"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Phone Number */}
+            <div>
+              <h4 className="text-[#121212] text-sm font-medium">
+                Phone Number*
+              </h4>
+              <PhoneInput
+                formDetails={formDetails}
+                setFormDetails={setFormDetails}
               />
+            </div>
+
+            {/* Price */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">Rate*</h4>
+              {!customPriceSelected ? (
+                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                  <select
+                    name="price"
+                    value={formDetails.rateId}
+                    onChange={(e: any) => {
+                      const selectedId = e.target.value;
+                      if (selectedId === "custom") {
+                        setModal(
+                          <CustomPriceModal
+                            defaultValue={formDetails.price}
+                            onCancel={() => setModal(null)}
+                            onConfirm={(value) => {
+                              setFormDetails({
+                                ...formDetails,
+                                price: value,
+                                rateId: "",
+                              });
+                              setCustomPriceSelected(true);
+                              setModal(null);
+                            }}
+                          />
+                        );
+                      } else {
+                        const selectedRate = rates?.find(
+                          (rate) => rate._id === selectedId
+                        );
+                        setFormDetails({
+                          ...formDetails,
+                          rateId: selectedId,
+                          price: selectedRate?.ratePrice.toString() || "",
+                        });
+                        setCustomPriceSelected(false);
+                      }
+                    }}
+                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
+                  >
+                    <option value="">Select a rate</option>
+                    {rates?.map((rate, index) => (
+                      <option key={index} value={rate._id}>
+                        {rate.rateName} - ₦{rate.ratePrice.toLocaleString()}
+                      </option>
+                    ))}
+                    <option value="custom">Enter custom price</option>
+                  </select>
+                  <ChevronDownIcon width={12} />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full -mt-1">
+                    <input
+                      type="number"
+                      placeholder="Enter your custom price"
+                      value={formDetails.price}
+                      onChange={(e) =>
+                        setFormDetails({
+                          ...formDetails,
+                          price: e.target.value,
+                          rateId: "",
+                        })
+                      }
+                      className="w-full outline-none bg-transparent text-[#667085]"
+                    />
+                  </div>
+                  <div className="mt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCustomPriceSelected(false);
+                        setFormDetails({
+                          ...formDetails,
+                          rateId: "",
+                          price: "",
+                        });
+                      }}
+                      className="text-xs text-primary underline hover:text-primary/80 transition"
+                    >
+                      Use default rate instead
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Check In Date */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Check In Date
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <Calendar className="w-6" />
+                <DatePicker
+                  selected={
+                    formDetails.checkIn ? parseISO(formDetails.checkIn) : null
+                  }
+                  onChange={(date: Date | null) =>
+                    setFormDetails({
+                      ...formDetails,
+                      checkIn: date ? format(date, "yyyy-MM-dd") : "",
+                    })
+                  }
+                  minDate={new Date()}
+                  filterDate={(date) => !isDateBooked(date)}
+                  placeholderText="Check In Date"
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full text-[#667085]"
+                />
+              </div>
+            </div>
+
+            {/* Check Out Date */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Check Out Date
+              </h4>
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                <Calendar className="w-6" />
+                <DatePicker
+                  selected={
+                    formDetails.checkOut ? parseISO(formDetails.checkOut) : null
+                  }
+                  onChange={(date: Date | null) =>
+                    setFormDetails({
+                      ...formDetails,
+                      checkOut: date ? format(date, "yyyy-MM-dd") : "",
+                    })
+                  }
+                  minDate={
+                    formDetails.checkIn
+                      ? addDays(parseISO(formDetails.checkIn), 1)
+                      : new Date()
+                  }
+                  filterDate={(date) => {
+                    if (!formDetails.checkIn) return true;
+
+                    const checkInDate = parseISO(formDetails.checkIn);
+                    const nextBookedDate = getNextBookedDate(checkInDate);
+
+                    if (nextBookedDate) {
+                      return date <= nextBookedDate;
+                    }
+                    return !isDateBooked(date);
+                  }}
+                  placeholderText="Check Out Date"
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full text-[#667085]"
+                />
+              </div>
             </div>
           </div>
           {/* Note Field */}
-          <div className="col-span-2 mt-2">
+          <div className="mt-2">
             <label className="text-sm font-medium text-[#121212] block mb-1">
               Booking Note
             </label>
@@ -435,7 +449,7 @@ function StepOne({
           </div>
 
           {/* Include Note Toggle */}
-          <div className="col-span-2 flex items-center justify-between mt-2">
+          <div className="flex items-center justify-between mt-2">
             <label className="text-sm font-medium text-[#121212]">
               Include note in invoice
             </label>
