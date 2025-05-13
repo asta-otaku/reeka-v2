@@ -9,6 +9,23 @@ import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 import apiClient from "../helpers/apiClient";
 
+async function handleBlobError(error: any) {
+  if (
+    error.response &&
+    error.response.data instanceof Blob &&
+    error.response.data.type === "application/json"
+  ) {
+    try {
+      const text = await error.response.data.text();
+      const json = JSON.parse(text);
+      return json.error || "An unexpected error occurred.";
+    } catch {
+      return "Failed to parse error response.";
+    }
+  }
+  return "An error occurred while generating the report.";
+}
+
 function ReportCenter() {
   const [search, setSearch] = useState("");
   const setModal = useStore((state: any) => state.setModal);
@@ -49,11 +66,9 @@ function ReportCenter() {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
       })
-      .catch((error) => {
-        toast.error(
-          error.response.data.error ||
-            "An error occurred while generating the report."
-        );
+      .catch(async (error) => {
+        const message = await handleBlobError(error);
+        toast.error(message);
       });
   };
 
@@ -224,12 +239,10 @@ function ReportModal({ properties }: any) {
         link.click();
         window.URL.revokeObjectURL(downloadUrl);
       })
-      .catch((error) => {
+      .catch(async (error) => {
         setLoading(false);
-        toast.error(
-          error.response.data.error ||
-            "An error occurred while generating the report."
-        );
+        const message = await handleBlobError(error);
+        toast.error(message);
       });
   };
 
