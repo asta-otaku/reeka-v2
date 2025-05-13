@@ -48,11 +48,11 @@ function Settings() {
         </button> */}
         <div className="mt-4 px-6">
           {/* Tabs */}
-          <div className="flex border-b border-gray-200">
+          <div className="flex border-b border-gray-200 max-w-xs overflow-auto no-scrollbar">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                className={`px-4 py-2 text-xs md:text-sm font-medium ${
+                className={`px-4 py-2 text-xs md:text-sm font-medium whitespace-nowrap ${
                   activeTab === tab.id
                     ? "border-b-2 border-primary text-primary"
                     : "text-gray-500"
