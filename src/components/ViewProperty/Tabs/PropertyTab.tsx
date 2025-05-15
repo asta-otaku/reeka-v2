@@ -58,7 +58,7 @@ function PropertyTab({
         />
         {showPreview && (
           <PricePreview
-            basePrice={property.price.basePrice}
+            basePrice={property.defaultRate.ratePrice}
             cautionFee={property.price.cautionFee || 0}
           />
         )}
