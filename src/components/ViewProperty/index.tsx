@@ -310,7 +310,7 @@ function ViewProperty() {
           </div>
         </div>
 
-        <div className="flex border-b border-gray-200 m-4 max-w-xs overflow-auto no-scrollbar">
+        <div className="flex border-b border-gray-200 m-4 overflow-auto no-scrollbar">
           {tabs.map((tab) => (
             <button
               key={tab.id}
