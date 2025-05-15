@@ -101,7 +101,6 @@ export const PricePreview = ({
   const total = totalBase + paymentFee + cautionFee;
   const currency = useCurrency();
   const location = useLocation();
-  console.log(isCustom);
 
   return (
     <div className="bg-white mt-6 p-6 border border-[#C0C0C0]/40 rounded-xl shadow-sm text-sm text-gray-800 space-y-2">

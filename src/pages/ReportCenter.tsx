@@ -312,6 +312,7 @@ function ReportModal({ properties }: any) {
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* From Date */}
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">From</h4>
             <DatePicker
@@ -324,25 +325,29 @@ function ReportModal({ properties }: any) {
               }
               placeholderText="From"
               dateFormat="dd/MM/yyyy"
-              className="w-full text-[#667085] flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
+              className="w-full text-[#667085] bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
             />
           </div>
+
+          {/* To Date */}
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">To</h4>
             <DatePicker
-              selected={form.from ? parseISO(form.to) : null}
+              selected={form.to ? parseISO(form.to) : null}
               onChange={(date: Date | null) =>
                 setForm({
                   ...form,
                   to: date ? format(date, "yyyy-MM-dd") : "",
                 })
               }
+              minDate={form.from ? parseISO(form.from) : undefined}
               placeholderText="To"
               dateFormat="dd/MM/yyyy"
-              className="w-full text-[#667085] flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
+              className="w-full text-[#667085] bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
             />
           </div>
         </div>
+
         <button
           disabled={loading}
           onClick={handleDownload}
