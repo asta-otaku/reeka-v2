@@ -1,4 +1,4 @@
-import { Calendar, ChevronDownIcon } from "../assets/icons";
+import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import downloadIcon from "../assets/download-circle-01.svg";
@@ -8,6 +8,8 @@ import useStore from "../store";
 import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 import apiClient from "../helpers/apiClient";
+import DatePicker from "react-datepicker";
+import { format, parseISO } from "date-fns";
 
 async function handleBlobError(error: any) {
   if (
@@ -312,25 +314,33 @@ function ReportModal({ properties }: any) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">From</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <input
-                type="date"
-                onChange={(e) => setForm({ ...form, from: e.target.value })}
-                className="w-full outline-none bg-transparent text-[#667085]"
-              />
-            </div>
+            <DatePicker
+              selected={form.from ? parseISO(form.from) : null}
+              onChange={(date: Date | null) =>
+                setForm({
+                  ...form,
+                  from: date ? format(date, "yyyy-MM-dd") : "",
+                })
+              }
+              placeholderText="From"
+              dateFormat="dd/MM/yyyy"
+              className="w-full text-[#667085] flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
+            />
           </div>
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">To</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <input
-                type="date"
-                onChange={(e) => setForm({ ...form, to: e.target.value })}
-                className="w-full outline-none bg-transparent text-[#667085]"
-              />
-            </div>
+            <DatePicker
+              selected={form.from ? parseISO(form.to) : null}
+              onChange={(date: Date | null) =>
+                setForm({
+                  ...form,
+                  to: date ? format(date, "yyyy-MM-dd") : "",
+                })
+              }
+              placeholderText="To"
+              dateFormat="dd/MM/yyyy"
+              className="w-full text-[#667085] flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
+            />
           </div>
         </div>
         <button

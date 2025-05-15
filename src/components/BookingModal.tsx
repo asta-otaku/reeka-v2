@@ -157,13 +157,13 @@ function BookingModal({
             <div>
               <h2 className="text-[#808080] text-xs">Check-in</h2>
               <h4 className="text-[#121212] text-xs mt-0.5">
-                {booking?.startDate?.split("T")[0]}
+                {new Date(booking?.startDate).toLocaleDateString("en-GB")}
               </h4>
             </div>
             <div>
               <h2 className="text-[#808080] text-xs">Check-out</h2>
               <h4 className="text-[#121212] text-xs mt-0.5">
-                {booking?.endDate?.split("T")[0]}
+                {new Date(booking?.endDate).toLocaleDateString("en-GB")}
               </h4>
             </div>
             {booking?.note && (
