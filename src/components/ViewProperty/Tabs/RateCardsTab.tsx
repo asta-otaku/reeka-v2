@@ -54,16 +54,20 @@ function RateCardsTab({ property }: { property: any }) {
   };
 
   const handleRateChange = (
-    index: number,
+    rateId: string,
     field: keyof Rate,
     value: string
   ) => {
-    const updated = [...rates];
-    updated[index] = {
-      ...updated[index],
-      [field]: field === "ratePrice" ? Number(value) : value,
-    };
-    setRates(updated);
+    setRates((prevRates) =>
+      prevRates.map((rate) =>
+        rate._id === rateId
+          ? {
+              ...rate,
+              [field]: field === "ratePrice" ? Number(value) : value,
+            }
+          : rate
+      )
+    );
   };
 
   const handleUpdateRate = async (
@@ -73,7 +77,7 @@ function RateCardsTab({ property }: { property: any }) {
   ) => {
     try {
       const res = await apiClient.put(
-        `/properties/${property._id}ss/rate/${rateId}`,
+        `/properties/${property._id}/rate/${rateId}`,
         {
           rateName,
           ratePrice,
@@ -189,7 +193,7 @@ function RateCardsTab({ property }: { property: any }) {
         <div className="mt-6 space-y-4">
           {[...rates]
             .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
-            .map((rate, index) => {
+            .map((rate) => {
               const actualIndex = rates.findIndex((r) => r._id === rate._id);
               return (
                 <div
@@ -212,7 +216,7 @@ function RateCardsTab({ property }: { property: any }) {
                       type="text"
                       value={rate.rateName}
                       onChange={(e) =>
-                        handleRateChange(index, "rateName", e.target.value)
+                        handleRateChange(rate._id, "rateName", e.target.value)
                       }
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                     />
@@ -225,7 +229,7 @@ function RateCardsTab({ property }: { property: any }) {
                       type="number"
                       value={rate.ratePrice}
                       onChange={(e) =>
-                        handleRateChange(index, "ratePrice", e.target.value)
+                        handleRateChange(rate._id, "ratePrice", e.target.value)
                       }
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                     />

@@ -15,11 +15,7 @@ function BookingTable({
   const currentDate = moment.utc();
 
   function formatDate(date: string) {
-    return moment.utc(date).format("MMM DD");
-  }
-
-  function formatTime(date: string) {
-    return moment.utc(date).format("hh:mm A");
+    return moment.utc(date).format("DD MMM, YYYY");
   }
 
   function getStatus(startDate: string, endDate: string) {
@@ -127,7 +123,7 @@ function BookingTable({
                             {formatDate(item?.startDate?.toString())}
                           </div>
                           <div className="text-[10px] text-[#808080] font-light">
-                            {formatTime(item?.startDate?.toString())}
+                            2:00 PM
                           </div>
                         </div>
                       </div>
@@ -209,7 +205,7 @@ function BookingTable({
                         {formatDate(item?.endDate?.toString())}
                       </div>
                       <div className="text-[10px] text-[#808080] font-light">
-                        {formatTime(item?.endDate?.toString())}
+                        11:00 AM
                       </div>
                     </td>
                   </tr>

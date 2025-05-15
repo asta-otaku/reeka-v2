@@ -1,4 +1,4 @@
-import { Calendar, ChevronDownIcon } from "../assets/icons";
+import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import downloadIcon from "../assets/download-circle-01.svg";
@@ -8,6 +8,25 @@ import useStore from "../store";
 import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 import apiClient from "../helpers/apiClient";
+import DatePicker from "react-datepicker";
+import { format, parseISO } from "date-fns";
+
+async function handleBlobError(error: any) {
+  if (
+    error.response &&
+    error.response.data instanceof Blob &&
+    error.response.data.type === "application/json"
+  ) {
+    try {
+      const text = await error.response.data.text();
+      const json = JSON.parse(text);
+      return json.error || "An unexpected error occurred.";
+    } catch {
+      return "Failed to parse error response.";
+    }
+  }
+  return "An error occurred while generating the report.";
+}
 
 function ReportCenter() {
   const [search, setSearch] = useState("");
@@ -49,8 +68,9 @@ function ReportCenter() {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(downloadUrl);
       })
-      .catch(() => {
-        toast.error("An error occurred while generating the report.");
+      .catch(async (error) => {
+        const message = await handleBlobError(error);
+        toast.error(message);
       });
   };
 
@@ -202,17 +222,29 @@ function ReportModal({ properties }: any) {
         const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = downloadUrl;
-        const filename = `${form.property ? `${form.property}-` : "report"}${
-          form.from
-        }-to-${form.to}.${form.format}`;
-        link.setAttribute("download", filename || `report.${form.format}`);
+        const formattedFrom = form.from?.replace(/-/g, "") || "";
+        const formattedTo = form.to?.replace(/-/g, "") || "";
+        const datePart =
+          formattedFrom && formattedTo
+            ? `${formattedFrom}_to_${formattedTo}`
+            : formattedFrom || formattedTo || "undated";
+
+        const propPart = form.property?.trim().replace(/\s+/g, "_");
+
+        const filename = `${propPart ? `${propPart}_` : ""}${
+          form.type
+        }_${datePart}.${form.format}`;
+
+        link.setAttribute("download", filename);
+
         document.body.appendChild(link);
         link.click();
         window.URL.revokeObjectURL(downloadUrl);
       })
-      .catch(() => {
+      .catch(async (error) => {
         setLoading(false);
-        toast.error("An error occurred while generating the report.");
+        const message = await handleBlobError(error);
+        toast.error(message);
       });
   };
 
@@ -282,25 +314,33 @@ function ReportModal({ properties }: any) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">From</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <input
-                type="date"
-                onChange={(e) => setForm({ ...form, from: e.target.value })}
-                className="w-full outline-none bg-transparent text-[#667085]"
-              />
-            </div>
+            <DatePicker
+              selected={form.from ? parseISO(form.from) : null}
+              onChange={(date: Date | null) =>
+                setForm({
+                  ...form,
+                  from: date ? format(date, "yyyy-MM-dd") : "",
+                })
+              }
+              placeholderText="From"
+              dateFormat="dd/MM/yyyy"
+              className="w-full text-[#667085] flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
+            />
           </div>
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">To</h4>
-            <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-              <Calendar className="w-6" />
-              <input
-                type="date"
-                onChange={(e) => setForm({ ...form, to: e.target.value })}
-                className="w-full outline-none bg-transparent text-[#667085]"
-              />
-            </div>
+            <DatePicker
+              selected={form.from ? parseISO(form.to) : null}
+              onChange={(date: Date | null) =>
+                setForm({
+                  ...form,
+                  to: date ? format(date, "yyyy-MM-dd") : "",
+                })
+              }
+              placeholderText="To"
+              dateFormat="dd/MM/yyyy"
+              className="w-full text-[#667085] flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2"
+            />
           </div>
         </div>
         <button
