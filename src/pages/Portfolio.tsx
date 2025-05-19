@@ -61,7 +61,7 @@ function Portfolio() {
   console.log(startDate, endDate);
   const steps = ["Choose Apartment", "Enter Details", "Confirmartion"];
   return (
-    <div className="max-w-screen-7xl mx-auto p-4 md:p-8 lg:p-12 space-y-4 md:space-y-6">
+    <div className="max-w-screen-2xl w-full mx-auto p-4 md:p-8 lg:p-12 space-y-4 md:space-y-6">
       <div className="relative">
         <div className="w-full flex justify-between items-center">
           <span
@@ -117,7 +117,9 @@ function Portfolio() {
           <h3 className="text-[#3A3A3A] font-medium text-sm md:text-base">
             Yinka Portfolio
           </h3>
-          <p className="text-[#3A3A3A] text-[10px]">25 Properties</p>
+          <p className="text-[#3A3A3A] text-[10px] md:text-xs">
+            {dummyProperties.length} Properties
+          </p>
         </div>
         <RangePicker
           onChange={(dates, dateStrings) => {
@@ -133,12 +135,10 @@ function Portfolio() {
       {
         {
           0: (
-            <div>
-              <Apartments
-                setCurrentStep={setCurrentStep}
-                properties={dummyProperties}
-              />
-            </div>
+            <Apartments
+              setCurrentStep={setCurrentStep}
+              properties={dummyProperties}
+            />
           ),
         }[currentStep]
       }

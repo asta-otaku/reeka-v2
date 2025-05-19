@@ -42,16 +42,16 @@ export function Card({
   return (
     <div
       onClick={handleCardClick}
-      className="rounded-3xl p-2 pb-4 border border-[#ECECEC50] cursor-pointer space-y-2"
+      className="rounded-3xl max-w-md w-full p-2 pb-4 border border-[#ECECEC50] bg-[#FAFAFA] cursor-pointer flex flex-col gap-2"
     >
       <img
         src={property.image}
         alt={property.name}
-        className="h-[245px] object-cover rounded-2xl"
+        className="h-[245px] w-full object-cover rounded-2xl"
       />
       <div className="flex justify-between items-center">
-        <p className="text-secondary/70 font-semibold">
-          <span className="text-primary font-semibold">
+        <p className="text-[#9E9E9E] font-medium">
+          <span className="text-primary font-medium">
             {currency}
             {property.price}
           </span>{" "}
@@ -63,13 +63,13 @@ export function Card({
         </div>
       </div>
       <h3 className="font-semibold">{property.name}</h3>
-      <p className="text-secondary/70">{property.location}</p>
+      <p className="text-[#9E9E9E] -mt-2 text-sm">{property.location}</p>
 
-      <ul className="flex items-center gap-1 flex-wrap">
+      <ul className="flex items-center gap-2 overflow-auto no-scrollbar w-full">
         {property.amenities.map((amenity, index) => (
           <li
             key={index}
-            className="text-sm px-2.5 py-0.5 rounded-full border flex items-center gap-0.5"
+            className="text-xs px-2.5 py-0.5 rounded-full border flex bg-white items-center gap-1.5 font-medium whitespace-nowrap shrink-0"
           >
             <img src={buy} alt="buy" />
             {amenity}

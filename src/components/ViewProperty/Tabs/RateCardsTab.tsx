@@ -35,6 +35,19 @@ function RateCardsTab({ property }: { property: any }) {
     }
   }, [property._id]);
 
+  const generatePublicUrlForRate = async (rateId: string) => {
+    try {
+      const { data: url } = await apiClient.get(
+        `/public/url/${property._id}/${rateId}`
+      );
+      await navigator.clipboard.writeText(url);
+      toast.success("Copied public link for this rate!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Could not generate public link");
+    }
+  };
+
   const handleSaveRate = async () => {
     if (!newRate.name || !newRate.rate) return;
 
@@ -198,7 +211,7 @@ function RateCardsTab({ property }: { property: any }) {
               return (
                 <div
                   key={rate._id}
-                  className="grid grid-cols-7 md:grid-cols-11 gap-2 items-end"
+                  className="grid grid-cols-7 lg:grid-cols-12 gap-2 items-end"
                 >
                   <div className="col-span-1 flex justify-center self-center mt-5">
                     <input
@@ -234,7 +247,7 @@ function RateCardsTab({ property }: { property: any }) {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                     />
                   </div>
-                  <div className="col-span-7 md:col-span-4 flex justify-end">
+                  <div className="col-span-8 lg:col-span-5 flex justify-center lg:justify-end gap-2">
                     <button
                       onClick={() =>
                         handleUpdateRate(
@@ -243,13 +256,19 @@ function RateCardsTab({ property }: { property: any }) {
                           rate.ratePrice
                         )
                       }
-                      className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap w-full ml-12 md:ml-4"
+                      className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
                     >
                       Update
                     </button>
                     <button
+                      onClick={() => generatePublicUrlForRate(rate._id)}
+                      className="bg-[#3B82F6] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
+                    >
+                      Public Link
+                    </button>
+                    <button
                       onClick={() => handleRemoveRate(rate._id)}
-                      className="bg-[#FF3B30] hover:bg-red-600 text-white w-full ml-4 py-2 rounded-lg text-sm font-medium"
+                      className="bg-[#FF3B30] hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
                     >
                       Remove
                     </button>

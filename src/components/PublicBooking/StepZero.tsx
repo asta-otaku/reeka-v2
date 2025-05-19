@@ -19,23 +19,21 @@ function StepZero({
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const apiEndpoint = location.pathname.includes("/agent")
-          ? `/agents/property`
-          : `/public/property`;
+        const apiEndpoint = `/agents/property`;
 
-        const params = location.pathname.includes("/agent")
-          ? { publicKey: id }
-          : { token: id };
+        const params = { publicKey: id };
 
-        // Make the API request
         const response = await apiClient.get(apiEndpoint, { params });
         setProperties(response.data);
       } catch (error) {
         console.error(error);
       }
     };
-
-    fetchProperties();
+    if (!location.pathname.includes("/admin")) {
+      setStep(1);
+    } else {
+      fetchProperties();
+    }
   }, [id, location.pathname]);
 
   useEffect(() => {

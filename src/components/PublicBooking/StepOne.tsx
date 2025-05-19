@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Calendar, ChevronDownIcon } from "../../assets/icons";
+import { Calendar } from "../../assets/icons";
 import toast from "react-hot-toast";
 import PhoneInput from "../PhoneInput";
+import { CONSTANT } from "../../util";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { format, parseISO, isWithinInterval, parse, addDays } from "date-fns";
 import axios from "axios";
-import { CONSTANT } from "../../util";
 import prop from "../../assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -30,6 +30,11 @@ function StepOne({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateName: string;
+    rateId: string;
+    note: string;
+    includeNote: boolean;
+    userId: string;
     countryCode: string;
   };
   setFormDetails: React.Dispatch<
@@ -42,6 +47,11 @@ function StepOne({
       checkIn: string;
       checkOut: string;
       price: string;
+      rateName: string;
+      rateId: string;
+      note: string;
+      includeNote: boolean;
+      userId: string;
       countryCode: string;
     }>
   >;
@@ -106,7 +116,6 @@ function StepOne({
       !formDetails.phoneNumber ||
       !formDetails.checkIn ||
       !formDetails.checkOut ||
-      !formDetails.price ||
       !formDetails.countryCode
     ) {
       return toast.error("Please fill all fields");
@@ -245,24 +254,13 @@ function StepOne({
             </div>
 
             <div className="flex flex-col gap-1 w-full">
-              <h4 className="text-[#121212] text-sm font-medium">
-                Price per night*
-              </h4>
-              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
-                <select
-                  name="price"
-                  value={formDetails.price}
-                  onChange={(e: any) =>
-                    setFormDetails({ ...formDetails, price: e.target.value })
-                  }
-                  className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
-                >
-                  <option value="">Select price</option>
-                  <option value="base">Base</option>
-                  <option value="low">Low</option>
-                  <option value="high">High</option>
-                </select>
-                <ChevronDownIcon width={12} />
+              <h4 className="text-[#121212] text-sm font-medium">Rate</h4>
+              <div className="flex items-center justify-between gap-1 bg-gray-100 border border-solid border-[#D0D5DD] rounded-lg p-2 w-full">
+                <input
+                  readOnly
+                  value={`${formDetails.rateName} - ₦${formDetails.price}`}
+                  className="w-full outline-none bg-transparent text-[#667085]"
+                />
               </div>
             </div>
           </div>
@@ -272,7 +270,7 @@ function StepOne({
               <h4 className="text-[#121212] text-sm font-medium">
                 Check In Date
               </h4>
-              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-fit">
                 <Calendar className="w-6" />
                 <DatePicker
                   selected={
@@ -296,7 +294,7 @@ function StepOne({
               <h4 className="text-[#121212] text-sm font-medium">
                 Check Out Date
               </h4>
-              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+              <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-fit">
                 <Calendar className="w-6" />
                 <DatePicker
                   selected={
@@ -330,6 +328,45 @@ function StepOne({
                 />
               </div>
             </div>
+          </div>
+          <div className="mt-2">
+            <label className="text-sm font-medium text-[#121212] block mb-1">
+              Booking Note
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Write any note you want to include (visible on invoice if toggled below)…"
+              value={formDetails.note}
+              onChange={(e) =>
+                setFormDetails((prev) => ({ ...prev, note: e.target.value }))
+              }
+              className="w-full border border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg px-3 py-2 text-sm text-[#667085] outline-none resize-none"
+            />
+          </div>
+
+          {/* Include Note Toggle */}
+          <div className="flex items-center justify-between mt-2">
+            <label className="text-sm font-medium text-[#121212]">
+              Include note in invoice
+            </label>
+            <button
+              type="button"
+              onClick={() =>
+                setFormDetails((prev) => ({
+                  ...prev,
+                  includeNote: !prev.includeNote,
+                }))
+              }
+              className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors duration-300 ${
+                formDetails.includeNote ? "bg-primary" : "bg-gray-300"
+              }`}
+            >
+              <div
+                className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                  formDetails.includeNote ? "translate-x-4" : "translate-x-0"
+                }`}
+              />
+            </button>
           </div>
         </form>
       </div>

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StepOne from "../components/PublicBooking/StepOne";
 import StepTwo from "../components/PublicBooking/StepTwo";
 import StepZero from "../components/PublicBooking/StepZero";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import apiClient from "../helpers/apiClient";
 
 const steps = ["Apartment", "Details", "Confirmation"];
 
@@ -18,10 +19,41 @@ function PublicBooking() {
     checkIn: "",
     checkOut: "",
     price: "",
+    rateName: "",
+    rateId: "",
+    note: "",
+    includeNote: false,
+    userId: "",
     countryCode: "",
   });
   const [property, setProperty] = useState<any>(null);
+  const { token, rateId } = useParams<{ token: string; rateId: string }>();
 
+  useEffect(() => {
+    const fetchProperty = async () => {
+      try {
+        if (token && rateId) {
+          const response = await apiClient.get(
+            `/public/property/${token}/${rateId}`
+          );
+          setProperty(response.data.propertyDetails);
+          setFormDetails((prev) => ({
+            ...prev,
+            price: response.data.ratePrice.toString(),
+            rateId: response.data._id,
+            rateName: response.data.rateName,
+            userId: response.data.userId,
+          }));
+          setCurrentStep(1);
+        }
+      } catch (error: any) {
+        toast.error(error.response?.data?.error || "Failed to load property");
+        console.error("Failed to fetch property:", error);
+      }
+    };
+
+    fetchProperty();
+  }, [token, rateId]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -103,20 +135,19 @@ function PublicBooking() {
             currentStep === 0 || currentStep === 3 ? "hidden" : "block"
           }`}
         >
-          {
-            {
-              1: (
-                <StepOne
-                  handleChange={handleChange}
-                  formDetails={formDetails}
-                  setFormDetails={setFormDetails}
-                  setStep={setCurrentStep}
-                  property={property}
-                />
-              ),
-              2: <StepTwo formDetails={formDetails} property={property} />,
-            }[currentStep]
-          }
+          {/* Render StepOne only if property is loaded */}
+          {property && currentStep === 1 && (
+            <StepOne
+              handleChange={handleChange}
+              formDetails={formDetails}
+              setFormDetails={setFormDetails}
+              setStep={setCurrentStep}
+              property={property}
+            />
+          )}
+          {property && currentStep === 2 && (
+            <StepTwo formDetails={formDetails} property={property} />
+          )}
         </div>
 
         {currentStep === 0 && (

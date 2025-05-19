@@ -35,6 +35,11 @@ function StepTwo({
     checkIn: string;
     checkOut: string;
     price: string;
+    rateName: string;
+    rateId: string;
+    note: string;
+    includeNote: boolean;
+    userId: string;
     countryCode: string;
     propertyName?: string;
     propertyAddress?: string;
@@ -43,19 +48,6 @@ function StepTwo({
   hideFeatures?: boolean;
   property?: any;
 }) {
-  const [formData, setFormData] = useState({
-    propertyId: property?._id || formDetails.property,
-    startDate: formDetails.checkIn,
-    endDate: formDetails.checkOut,
-    guestFirstName: formDetails.firstName,
-    guestLastName: formDetails.lastName,
-    guestEmail: formDetails.email,
-    guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
-    countryCode: formDetails.countryCode,
-    numberOfChildren: 0,
-    numberOfGuests: formDetails.noOfGuests,
-    priceState: formDetails.price,
-  });
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const navigate = useNavigate();
@@ -64,11 +56,23 @@ function StepTwo({
   const location = useLocation();
 
   const handleReserve = async () => {
-    setFormData({
-      ...formData,
+    const payload = {
+      propertyId: property?._id || formDetails.property,
       startDate: formatTimestamp(formDetails.checkIn),
       endDate: formatTimestamp(formDetails.checkOut),
-    });
+      guestFirstName: formDetails.firstName,
+      guestLastName: formDetails.lastName,
+      guestEmail: formDetails.email,
+      guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
+      countryCode: formDetails.countryCode,
+      numberOfChildren: 0,
+      numberOfGuests: formDetails.noOfGuests,
+      priceState: formDetails.price,
+      rateId: formDetails.rateId,
+      note: formDetails.note,
+      userId: formDetails.userId,
+      includeNote: formDetails.includeNote,
+    };
 
     setLoading(true);
     const apiEndpoint = location.pathname.includes("/agent")
@@ -76,7 +80,7 @@ function StepTwo({
       : `/public/booking`;
 
     try {
-      const res = await apiClient.post(apiEndpoint, formData);
+      const res = await apiClient.post(apiEndpoint, payload);
       setLoading(false);
       toast.success("Reservation successful");
 
@@ -88,43 +92,13 @@ function StepTwo({
     }
   };
 
-  function getPrice(price: string) {
-    if (!property || !property.price) {
-      return formDetails.price;
-    }
-
-    switch (price) {
-      case "base":
-        return property.price.basePrice.toFixed(2);
-
-      case "high":
-        return (
-          property?.price?.basePrice +
-          (property?.price?.boostPercentage / 100) * property?.price?.basePrice
-        ).toFixed(2);
-
-      case "low":
-        return (
-          property?.price?.basePrice -
-          (Math.abs(property?.price?.discountPercentage) / 100) *
-            property?.price?.basePrice
-        ).toFixed(2);
-
-      case "airbnb":
-        return property?.price?.airbnbPrice;
-
-      default:
-        return property.price.basePrice; // Default to basePrice if the price type is unrecognized
-    }
-  }
-
   const days = moment(formDetails.checkOut).diff(
     moment(formDetails.checkIn),
     "days"
   );
 
   function getTotalPrice() {
-    const totalBase = getPrice(formDetails.price) * days;
+    const totalBase = Number(formDetails.price) * days;
     const totalPrice = totalBase;
     return totalPrice;
   }
@@ -233,8 +207,8 @@ function StepTwo({
       <div className="-mt-4">
         {showPreview && (
           <PricePreview
-            basePrice={getPrice(formDetails.price)}
-            cautionFee={property.price.cautionFee || 0}
+            basePrice={Number(formDetails.price)}
+            cautionFee={property?.price?.cautionFee || 0}
             days={days}
           />
         )}
