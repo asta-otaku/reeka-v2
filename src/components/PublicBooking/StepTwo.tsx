@@ -35,11 +35,11 @@ function StepTwo({
     checkIn: string;
     checkOut: string;
     price: string;
-    rateName: string;
-    rateId: string;
-    note: string;
-    includeNote: boolean;
-    userId: string;
+    rateName?: string;
+    rateId?: string;
+    note?: string;
+    includeNote?: boolean;
+    userId?: string;
     countryCode: string;
     propertyName?: string;
     propertyAddress?: string;
