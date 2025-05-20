@@ -44,6 +44,7 @@ function StepTwo({
     propertyName?: string;
     propertyAddress?: string;
     property?: string;
+    cautionFee?: number;
   };
   hideFeatures?: boolean;
   property?: any;
@@ -57,7 +58,7 @@ function StepTwo({
 
   const handleReserve = async () => {
     const payload = {
-      propertyId: property?._id || formDetails.property,
+      propertyId: property?._id,
       startDate: formatTimestamp(formDetails.checkIn),
       endDate: formatTimestamp(formDetails.checkOut),
       guestFirstName: formDetails.firstName,
@@ -208,7 +209,9 @@ function StepTwo({
         {showPreview && (
           <PricePreview
             basePrice={Number(formDetails.price)}
-            cautionFee={property?.price?.cautionFee || 0}
+            cautionFee={
+              formDetails?.cautionFee ?? property?.price?.cautionFee ?? 0
+            }
             days={days}
           />
         )}

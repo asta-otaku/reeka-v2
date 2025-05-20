@@ -23,6 +23,7 @@ function PublicInvoice() {
     propertyName: "",
     propertyAddress: "",
     property: "",
+    cautionFee: "",
     paymentStatus: "",
   });
 
@@ -42,8 +43,9 @@ function PublicInvoice() {
           propertyName,
           propertyAddress,
           property,
+          cautionFee,
           paymentStatus,
-        } = res.data.additionalInfo.booking;
+        } = res.data.booking;
         setFormDetails({
           firstName,
           lastName,
@@ -56,10 +58,11 @@ function PublicInvoice() {
           propertyName,
           propertyAddress,
           property,
+          cautionFee,
           countryCode: "",
           paymentStatus,
         });
-        setBookingId(res.data.additionalInfo.booking._id);
+        setBookingId(res.data.booking._id);
       } else {
         toast.error("An error occured");
       }
