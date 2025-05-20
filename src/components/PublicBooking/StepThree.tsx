@@ -1,11 +1,11 @@
 import StepTwo from "./StepTwo";
-import toast from "react-hot-toast";
 import axios from "axios";
 import { CONSTANT } from "../../util";
+import { Link } from "react-router-dom";
 
 function StepThree({
   formDetails,
-  invoiceId,
+  paymentLink,
   bookingId,
 }: {
   formDetails: {
@@ -23,19 +23,9 @@ function StepThree({
     property: string;
     paymentStatus: string;
   };
-  invoiceId: string;
+  paymentLink: string;
   bookingId: string;
 }) {
-  const handlePay = async () => {
-    const res = await axios.get(`${CONSTANT.BASE_URL}/invoice/${invoiceId}`);
-    if (res.status === 200) {
-      const link = res.data.invoice.paymentLink;
-      window.open(link, "_blank");
-    } else {
-      toast.error("An error occured");
-    }
-  };
-
   const handleInvoiceDownload = async () => {
     axios
       .get(`${CONSTANT.BASE_URL}/invoice/${bookingId}/pdf`, {
@@ -72,14 +62,14 @@ function StepThree({
         >
           Download Invoice
         </button>
-        <button
-          onClick={handlePay}
+        <Link
+          to={paymentLink}
           className={`w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2 ${
             formDetails.paymentStatus === "paid" ? "hidden" : ""
           }`}
         >
           Pay Now
-        </button>
+        </Link>
       </div>
     </div>
   );

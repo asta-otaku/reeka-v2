@@ -8,7 +8,7 @@ import moment from "moment";
 
 function PublicInvoice() {
   const { id } = useParams<{ id: string }>();
-  const [invoiceId, _] = useState<string>(id || "");
+  const [paymentLink, setPaymentLink] = useState("");
   const [bookingId, setBookingId] = useState("");
   const [formDetails, setFormDetails] = useState({
     firstName: "",
@@ -62,6 +62,7 @@ function PublicInvoice() {
           countryCode: "",
           paymentStatus,
         });
+        setPaymentLink(res.data.paymentLink);
         setBookingId(res.data.booking._id);
       } else {
         toast.error("An error occured");
@@ -81,7 +82,7 @@ function PublicInvoice() {
       <div className="flex flex-col lg:flex-row gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-4 md:px-6 my-24 lg:my-5">
         <StepThree
           formDetails={formDetails}
-          invoiceId={invoiceId}
+          paymentLink={paymentLink}
           bookingId={bookingId}
         />
       </div>
