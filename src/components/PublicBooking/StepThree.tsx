@@ -64,7 +64,7 @@ function StepThree({
         </button>
         <Link
           to={paymentLink}
-          className={`w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2 ${
+          className={`w-[130px] rounded-lg bg-[#6D6D6D] text-white text-center font-medium text-sm py-2 ${
             formDetails.paymentStatus === "paid" ? "hidden" : ""
           }`}
         >

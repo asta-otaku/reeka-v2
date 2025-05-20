@@ -33,7 +33,7 @@ function StepThree({
   const handleCopy = async () => {
     const res = await apiClient.get(`/invoice/${invoiceId}`);
     if (res.status === 200) {
-      const link = res.data.invoice.paymentLink;
+      const link = res.data.paymentLink;
       navigator.clipboard.writeText(link);
       toast.success("Link copied to clipboard");
     } else {
