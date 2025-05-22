@@ -4,6 +4,7 @@ import redcancel from "../assets/cancel-red.svg";
 import toast from "react-hot-toast";
 import apiClient from "../helpers/apiClient";
 import EditBookingModal from "./EditBookingModal";
+import moment from "moment";
 function BookingModal({
   booking,
   setModal,
@@ -14,6 +15,10 @@ function BookingModal({
   currency: string;
 }) {
   const [incident, setIncident] = useState<any>(null);
+
+  function formatDate(date: string) {
+    return moment.utc(date).format("YYYY-MM-DD");
+  }
 
   useEffect(() => {
     const fetchIncident = async () => {
@@ -157,13 +162,13 @@ function BookingModal({
             <div>
               <h2 className="text-[#808080] text-xs">Check-in</h2>
               <h4 className="text-[#121212] text-xs mt-0.5">
-                {new Date(booking?.startDate).toLocaleDateString("en-GB")}
+                {formatDate(booking?.startDate)}
               </h4>
             </div>
             <div>
               <h2 className="text-[#808080] text-xs">Check-out</h2>
               <h4 className="text-[#121212] text-xs mt-0.5">
-                {new Date(booking?.endDate).toLocaleDateString("en-GB")}
+                {formatDate(booking?.endDate)}
               </h4>
             </div>
             {booking?.note && (
