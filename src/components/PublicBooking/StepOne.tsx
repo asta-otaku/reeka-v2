@@ -258,7 +258,7 @@ function StepOne({
               <div className="flex items-center justify-between gap-1 bg-gray-100 border border-solid border-[#D0D5DD] rounded-lg p-2 w-full">
                 <input
                   readOnly
-                  value={`${formDetails.rateName} - ₦${formDetails.price}`}
+                  value={`₦${formDetails.price}`}
                   className="w-full outline-none bg-transparent text-[#667085]"
                 />
               </div>
@@ -329,7 +329,7 @@ function StepOne({
               </div>
             </div>
           </div>
-          <div className="mt-2">
+          {/* <div className="mt-2">
             <label className="text-sm font-medium text-[#121212] block mb-1">
               Booking Note
             </label>
@@ -344,7 +344,6 @@ function StepOne({
             />
           </div>
 
-          {/* Include Note Toggle */}
           <div className="flex items-center justify-between mt-2">
             <label className="text-sm font-medium text-[#121212]">
               Include note in invoice
@@ -367,7 +366,7 @@ function StepOne({
                 }`}
               />
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
       <div className="my-3 w-full flex justify-center">

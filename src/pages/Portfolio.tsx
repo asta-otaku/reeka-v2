@@ -4,6 +4,7 @@ import grayCheck from "../assets/graycheck.svg";
 import orangeCheck from "../assets/orangecheck.svg";
 import { DatePicker } from "antd";
 import Apartments from "../components/Portfolio/Apartments";
+import DetailsPage from "../components/Portfolio/Details";
 import prop1 from "../assets/prop1.svg";
 import prop2 from "../assets/prop2.svg";
 import prop3 from "../assets/prop3.svg";
@@ -56,9 +57,24 @@ const dummyProperties = [
 
 function Portfolio() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   console.log(startDate, endDate);
+  const [formDetails, setFormDetails] = useState({
+    firstName: "",
+    lastName: "",
+    noOfGuests: "",
+    email: "",
+    phoneNumber: "",
+    checkIn: "",
+    checkOut: "",
+    price: "",
+    rateName: "",
+    rateId: "",
+    userId: "",
+    countryCode: "",
+  });
   const steps = ["Choose Apartment", "Enter Details", "Confirmartion"];
   return (
     <div className="max-w-screen-2xl w-full mx-auto p-4 md:p-8 lg:p-12 space-y-4 md:space-y-6">
@@ -75,11 +91,19 @@ function Portfolio() {
       {/* Steps */}
       <div className="flex items-center gap-0.5 md:gap-3 w-full">
         {steps.map((step, index) => (
-          <div key={step} className="flex-1 flex flex-col items-center">
-            <div className="flex items-centr justify-between w-full">
+          <div
+            onClick={() => setCurrentStep(index)}
+            key={step}
+            className="flex-1 flex flex-col items-center cursor-pointer"
+          >
+            <div className="flex items-center justify-between w-full">
               <span
                 className={`font-medium text-[10px] md:text-xs whitespace-nowrap ${
-                  index === currentStep ? "text-black" : "text-[#808080]"
+                  index === currentStep
+                    ? "text-black"
+                    : index <= currentStep - 1
+                    ? "text-primary"
+                    : "text-[#808080]"
                 }`}
               >
                 {step}
@@ -112,32 +136,42 @@ function Portfolio() {
           </div>
         ))}
       </div>
-      <div className="flex justify-between items-center flex-wrap">
-        <div className="space-y-1">
-          <h3 className="text-[#3A3A3A] font-medium text-sm md:text-base">
-            Yinka Portfolio
-          </h3>
-          <p className="text-[#3A3A3A] text-[10px] md:text-xs">
-            {dummyProperties.length} Properties
-          </p>
+      {currentStep === 0 && (
+        <div className="flex justify-between items-center flex-wrap">
+          <div className="space-y-1">
+            <h3 className="text-[#3A3A3A] font-medium text-sm md:text-base">
+              Yinka Portfolio
+            </h3>
+            <p className="text-[#3A3A3A] text-[10px] md:text-xs">
+              {dummyProperties.length} Properties
+            </p>
+          </div>
+          <RangePicker
+            onChange={(dates, dateStrings) => {
+              setStartDate(new Date(dateStrings[0]));
+              setEndDate(new Date(dateStrings[1]));
+              console.log(dates, dateStrings);
+            }}
+            placeholder={["Check-in", "Check-out"]}
+            className="outline-none text-secondary text-xs md:text-sm rounded-xl py-2 shadow-sm bg-white"
+          />
         </div>
-        <RangePicker
-          onChange={(dates, dateStrings) => {
-            setStartDate(new Date(dateStrings[0]));
-            setEndDate(new Date(dateStrings[1]));
-            console.log(dates, dateStrings);
-          }}
-          placeholder={["Check-in", "Check-out"]}
-          className="outline-none text-secondary text-xs md:text-sm rounded-xl py-2 shadow-sm bg-white"
-        />
-      </div>
-
+      )}
       {
         {
           0: (
             <Apartments
               setCurrentStep={setCurrentStep}
               properties={dummyProperties}
+              setSelectedProperty={setSelectedProperty}
+            />
+          ),
+          1: (
+            <DetailsPage
+              setCurrentStep={setCurrentStep}
+              property={selectedProperty}
+              formDetails={formDetails}
+              setFormDetails={setFormDetails}
             />
           ),
         }[currentStep]

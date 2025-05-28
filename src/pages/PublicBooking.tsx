@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import StepOne from "../components/PublicBooking/StepOne";
+// import StepOne from "../components/PublicBooking/StepOne";
 import StepTwo from "../components/PublicBooking/StepTwo";
 import StepZero from "../components/PublicBooking/StepZero";
+import Details from "../components/PublicBooking/Details";
 import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
 import apiClient from "../helpers/apiClient";
+import grayCheck from "../assets/graycheck.svg";
+import orangeCheck from "../assets/orangecheck.svg";
 
-const steps = ["Apartment", "Details", "Confirmation"];
+const steps = ["Choose Apartment", "Enter Details", "Confirmation"];
 
 function PublicBooking() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -93,56 +96,75 @@ function PublicBooking() {
       >
         Reeka
       </Link>
-      <div className="flex flex-col lg:flex-row gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-4 md:px-6 my-24 lg:my-5">
-        <div className="relative flex lg:flex-col items-start mx-auto gap-3 lg:w-2/5 lg:gap-14">
+      <div className="flex flex-col gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-4 md:px-6 my-24 lg:my-5">
+        <div className="flex items-center gap-0.5 md:gap-3 w-full">
           {steps.map((step, index) => (
             <div
               onClick={() => setCurrentStep(index)}
-              key={index}
-              className="flex items-center cursor-pointer"
+              key={step}
+              className="flex-1 flex flex-col items-center cursor-pointer"
             >
-              <div className="relative flex items-center">
-                <div
-                  className={`flex items-center justify-center h-8 w-8 text-sm rounded-full border z-10 ${
-                    currentStep >= index
-                      ? "border-[#C4C4C4] bg-[#F3F3F3] text-gray-500"
-                      : "border-gray-300 bg-white text-[#C4C4C4]"
+              <div className="flex items-center justify-between w-full">
+                <span
+                  className={`font-medium text-[10px] md:text-xs whitespace-nowrap ${
+                    index === currentStep
+                      ? "text-black"
+                      : index <= currentStep - 1
+                      ? "text-primary"
+                      : "text-[#808080]"
                   }`}
                 >
-                  {index + 1}
-                </div>
-                {index !== steps.length - 1 && (
-                  <div
-                    className={`absolute invisible lg:visible left-1/2 transform -translate-x-1/2 w-0.5 ${
-                      currentStep > index ? "bg-gray-300" : "bg-[#F3F3F3]"
-                    }`}
-                    style={{
-                      top: "50%",
-                      height: "calc(100% + 2.5rem)",
-                    }}
+                  {step}
+                </span>
+                {index <= currentStep - 1 ? (
+                  <img
+                    src={orangeCheck}
+                    alt="completed"
+                    width={16}
+                    height={16}
+                    className="block"
+                  />
+                ) : (
+                  <img
+                    src={grayCheck}
+                    alt="completed"
+                    width={16}
+                    height={16}
+                    className="block"
                   />
                 )}
               </div>
-              <div className="ml-2 lg:ml-4 text-sm font-light text-[#121212] invisible md:visible">
-                {step}
-              </div>
+
+              {/* underline */}
+              <div
+                className={`mt-2 h-1.5 w-full rounded-full ${
+                  index <= currentStep - 1 ? "bg-primary" : "bg-gray-200"
+                }`}
+              />
             </div>
           ))}
         </div>
 
         <div
-          className={`border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] w-full ${
+          className={`border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA w-full ${
             currentStep === 0 || currentStep === 3 ? "hidden" : "block"
           }`}
         >
           {/* Render StepOne only if property is loaded */}
           {property && currentStep === 1 && (
-            <StepOne
-              handleChange={handleChange}
+            // <StepOne
+            //   handleChange={handleChange}
+            //   formDetails={formDetails}
+            //   setFormDetails={setFormDetails}
+            //   setStep={setCurrentStep}
+            //   property={property}
+            // />
+            <Details
               formDetails={formDetails}
               setFormDetails={setFormDetails}
-              setStep={setCurrentStep}
+              setCurrentStep={setCurrentStep}
               property={property}
+              handleChange={handleChange}
             />
           )}
           {property && currentStep === 2 && (
