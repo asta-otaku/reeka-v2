@@ -10,6 +10,7 @@ import Spinner from "../components/Spinner";
 import apiClient from "../helpers/apiClient";
 import DatePicker from "react-datepicker";
 import { format, parseISO } from "date-fns";
+import Select from "react-select";
 
 async function handleBlobError(error: any) {
   if (
@@ -193,13 +194,19 @@ export default ReportCenter;
 
 function ReportModal({ properties }: any) {
   const [loading, setLoading] = useState(false);
+  const [selectedProperties, setSelectedProperties] = useState<any[]>([]);
   const [form, setForm] = useState({
     type: "bookings",
-    property: "",
     from: "",
     to: "",
     format: "pdf",
   });
+
+  const propertyOptions = properties.map((property: any) => ({
+    value: property._id,
+    label: property.propertyName,
+    property: property,
+  }));
 
   const handleDownload = (e: any) => {
     e.preventDefault();
@@ -208,11 +215,24 @@ function ReportModal({ properties }: any) {
       toast.error("Please select a report type and ensure User ID is loaded.");
       return;
     }
+    if (selectedProperties.length === 0) {
+      toast.error("Please select at least one property");
+      return;
+    }
     setLoading(true);
+    const propertyIds = selectedProperties.map((option) => option.value);
+
+    const queryParams = new URLSearchParams({
+      startDate: form.from,
+      endDate: form.to,
+    });
+
+    propertyIds.forEach((id) => queryParams.append("propertyIds", id));
     const url =
       form.type === "occupancy"
-        ? `/report/occupancy/${form.format}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`
-        : `/report/${form.format}?startDate=${form.from}&endDate=${form.to}&propertyName=${form.property}`;
+        ? `/report/occupancy/${form.format}?${queryParams}`
+        : `/report/${form.format}?${queryParams}`;
+
     apiClient
       .get(url, {
         responseType: "blob",
@@ -222,6 +242,7 @@ function ReportModal({ properties }: any) {
         const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = downloadUrl;
+
         const formattedFrom = form.from?.replace(/-/g, "") || "";
         const formattedTo = form.to?.replace(/-/g, "") || "";
         const datePart =
@@ -229,23 +250,28 @@ function ReportModal({ properties }: any) {
             ? `${formattedFrom}_to_${formattedTo}`
             : formattedFrom || formattedTo || "undated";
 
-        const propPart = form.property?.trim().replace(/\s+/g, "_");
-
-        const filename = `${propPart ? `${propPart}_` : ""}${
-          form.type
-        }_${datePart}.${form.format}`;
+        const filename =
+          selectedProperties.length === 1
+            ? `${selectedProperties[0].label.replace(/\s+/g, "_")}_${
+                form.type
+              }_${datePart}.${form.format}`
+            : `${selectedProperties.length}_properties_${form.type}_${datePart}.${form.format}`;
 
         link.setAttribute("download", filename);
-
         document.body.appendChild(link);
         link.click();
         window.URL.revokeObjectURL(downloadUrl);
+        document.body.removeChild(link);
       })
       .catch(async (error) => {
         setLoading(false);
         const message = await handleBlobError(error);
         toast.error(message);
       });
+  };
+
+  const handlePropertyChange = (selectedOptions: any) => {
+    setSelectedProperties(selectedOptions || []);
   };
 
   return (
@@ -290,26 +316,58 @@ function ReportModal({ properties }: any) {
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <h4 className="text-[#3A3A3A] text-sm font-medium">Property*</h4>
-          <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-md p-2 w-full">
-            <select
-              onChange={(e) => {
-                setForm({ ...form, property: e.target.value });
-              }}
-              className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
-            >
-              <option value="">All Properties</option>
-              {properties.map((property: any) => (
-                <option
-                  key={property.propertyName}
-                  value={property.propertyName}
-                >
-                  {property.propertyName}
-                </option>
-              ))}
-            </select>
-            <ChevronDownIcon width={12} />
-          </div>
+          <h4 className="text-[#3A3A3A] text-sm font-medium">Properties*</h4>
+          <Select
+            isMulti
+            value={selectedProperties}
+            onChange={handlePropertyChange}
+            options={propertyOptions}
+            placeholder="Select properties..."
+            className="react-select-container"
+            classNamePrefix="react-select"
+            styles={{
+              control: (base) => ({
+                ...base,
+                border: "1px solid #D0D5DD",
+                boxShadow: "0 1px 2px 0 rgba(16, 24, 40, 0.05)",
+                "&:hover": {
+                  border: "1px solid #D0D5DD",
+                },
+                "&:focus-within": {
+                  border: "1px solid #D0D5DD",
+                  boxShadow: "0 0 0 3px rgba(16, 24, 40, 0.1)",
+                },
+              }),
+              placeholder: (base) => ({
+                ...base,
+                color: "#667085",
+                fontSize: "14px",
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor: "rgba(var(--primary-rgb, 59, 130, 246), 0.1)",
+                border: "1px solid rgba(var(--primary-rgb, 59, 130, 246), 1)",
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: "rgba(var(--primary-rgb, 59, 130, 246), 1)",
+                fontWeight: "500",
+              }),
+              multiValueRemove: (base) => ({
+                ...base,
+                color: "rgba(var(--primary-rgb, 59, 130, 246), 1)",
+                "&:hover": {
+                  backgroundColor:
+                    "rgba(var(--primary-rgb, 59, 130, 246), 0.2)",
+                  color: "rgba(var(--primary-rgb, 59, 130, 246), 1)",
+                },
+              }),
+            }}
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            {selectedProperties.length} property
+            {selectedProperties.length !== 1 ? "s" : ""} selected
+          </p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* From Date */}
