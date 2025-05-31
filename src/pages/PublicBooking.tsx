@@ -98,25 +98,25 @@ function PublicBooking() {
       </Link>
       <div className="flex flex-col gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-4 md:px-6 my-24 lg:my-5">
         <div className="flex items-center gap-0.5 md:gap-3 w-full">
-          {steps.map((step, index) => (
+          {steps.slice(1).map((step, index) => (
             <div
-              onClick={() => setCurrentStep(index)}
+              onClick={() => setCurrentStep(index + 1)}
               key={step}
               className="flex-1 flex flex-col items-center cursor-pointer"
             >
               <div className="flex items-center justify-between w-full">
                 <span
                   className={`font-medium text-[10px] md:text-xs whitespace-nowrap ${
-                    index === currentStep
+                    index + 1 === currentStep
                       ? "text-black"
-                      : index <= currentStep - 1
+                      : index + 1 <= currentStep - 1
                       ? "text-primary"
                       : "text-[#808080]"
                   }`}
                 >
                   {step}
                 </span>
-                {index <= currentStep - 1 ? (
+                {index + 1 <= currentStep - 1 ? (
                   <img
                     src={orangeCheck}
                     alt="completed"
@@ -138,7 +138,7 @@ function PublicBooking() {
               {/* underline */}
               <div
                 className={`mt-2 h-1.5 w-full rounded-full ${
-                  index <= currentStep - 1 ? "bg-primary" : "bg-gray-200"
+                  index + 1 <= currentStep - 1 ? "bg-primary" : "bg-gray-200"
                 }`}
               />
             </div>
@@ -150,15 +150,7 @@ function PublicBooking() {
             currentStep === 0 || currentStep === 3 ? "hidden" : "block"
           }`}
         >
-          {/* Render StepOne only if property is loaded */}
           {property && currentStep === 1 && (
-            // <StepOne
-            //   handleChange={handleChange}
-            //   formDetails={formDetails}
-            //   setFormDetails={setFormDetails}
-            //   setStep={setCurrentStep}
-            //   property={property}
-            // />
             <Details
               formDetails={formDetails}
               setFormDetails={setFormDetails}

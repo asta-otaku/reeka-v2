@@ -16,6 +16,23 @@ import apiClient from "../../helpers/apiClient";
 import CustomPriceModal from "./CustomPriceModal";
 import useStore from "../../store";
 
+export interface PropertyDetails {
+  firstName: string;
+  lastName: string;
+  noOfGuests: string;
+  email: string;
+  phoneNumber: string;
+  checkIn: string;
+  checkOut: string;
+  price: string;
+  rateId: string;
+  note: string;
+  includeNote: boolean;
+  countryCode: string;
+  agencyName: string;
+  agencyFee: string;
+}
+
 function StepOne({
   handleChange,
   formDetails,
@@ -24,36 +41,8 @@ function StepOne({
   property,
 }: {
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    rateId: string;
-    note: string;
-    includeNote: boolean;
-    countryCode: string;
-  };
-  setFormDetails: React.Dispatch<
-    React.SetStateAction<{
-      firstName: string;
-      lastName: string;
-      noOfGuests: string;
-      email: string;
-      phoneNumber: string;
-      checkIn: string;
-      checkOut: string;
-      price: string;
-      rateId: string;
-      note: string;
-      includeNote: boolean;
-      countryCode: string;
-    }>
-  >;
+  formDetails: PropertyDetails;
+  setFormDetails: React.Dispatch<React.SetStateAction<PropertyDetails>>;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
@@ -64,6 +53,7 @@ function StepOne({
     { rateName: string; ratePrice: number; _id: string }[] | null
   >(null);
   const [customPriceSelected, setCustomPriceSelected] = useState(false);
+  const [customAgencySelected, setCustomAgencySelected] = useState(false);
   const emailRegex = new RegExp(
     `^(([^<>()[\\]\\\\.,;:\\s@"]+(\\.[^<>()[\\]\\\\.,;:\\s@"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$`
   );
@@ -362,6 +352,102 @@ function StepOne({
                   </div>
                 </>
               )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Agency Fee*
+              </h4>
+              {!customAgencySelected ? (
+                <div className="flex items-center justify-between gap-1 bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
+                  <select
+                    value={formDetails.agencyFee}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "custom") {
+                        setCustomAgencySelected(true);
+                        setModal(
+                          <CustomPriceModal
+                            defaultValue={formDetails.agencyFee}
+                            onCancel={() => setModal(null)}
+                            onConfirm={(value) => {
+                              setFormDetails({
+                                ...formDetails,
+                                agencyFee: value,
+                              });
+                              setCustomAgencySelected(true);
+                              setModal(null);
+                            }}
+                          />
+                        );
+                      } else {
+                        setFormDetails({ ...formDetails, agencyFee: val });
+                      }
+                    }}
+                    className="outline-none w-full bg-transparent text-secondary text-sm appearance-none"
+                  >
+                    <option value="">Select agency fee</option>
+                    {property.price?.agencyFee != null && (
+                      <option value={property.price.agencyFee.toString()}>
+                        Built-in Agency Fee – {property.baseCurrency}
+                        {property.price.agencyFee.toLocaleString()}
+                      </option>
+                    )}
+                    <option value="custom">Enter custom fee</option>
+                  </select>
+                  <ChevronDownIcon width={12} />
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-1 bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
+                    <input
+                      type="number"
+                      placeholder="Custom agency fee"
+                      value={formDetails.agencyFee}
+                      onChange={(e) =>
+                        setFormDetails({
+                          ...formDetails,
+                          agencyFee: e.target.value,
+                        })
+                      }
+                      className="w-full outline-none bg-transparent text-[#667085]"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomAgencySelected(false);
+                      setFormDetails({ ...formDetails, agencyFee: "" });
+                    }}
+                    className="text-xs text-primary underline mt-1"
+                  >
+                    Use built-in fee instead
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Agency Name Row */}
+            <div className="flex flex-col gap-1 w-full">
+              <h4 className="text-[#121212] text-sm font-medium">
+                Agency Name
+              </h4>
+              <div className="bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
+                <input
+                  type="text"
+                  placeholder="Enter agency name"
+                  value={formDetails.agencyName}
+                  onChange={(e) =>
+                    setFormDetails({
+                      ...formDetails,
+                      agencyName: e.target.value,
+                    })
+                  }
+                  className="w-full outline-none text-[#667085]"
+                />
+              </div>
             </div>
           </div>
 

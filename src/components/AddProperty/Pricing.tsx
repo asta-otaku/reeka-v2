@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import pricetag from "../../assets/pricetag.svg";
 import { useCurrency } from "../../helpers/getCurrency";
-import FeeSection, { PricePreview } from "../ViewProperty/FeeSection";
+import FeeSection, {
+  AgencyFeeSection,
+  PricePreview,
+} from "../ViewProperty/FeeSection";
 
 function Pricing({
   toggleSection,
@@ -69,6 +72,16 @@ function Pricing({
               setFormDetails({
                 ...formDetails,
                 price: { ...formDetails.price, cautionFee: val },
+              })
+            }
+            edit={true}
+          />
+          <AgencyFeeSection
+            agencyFee={formDetails.price.agencyFee}
+            setAgencyFee={(val) =>
+              setFormDetails({
+                ...formDetails,
+                price: { ...formDetails.price, agencyFee: val },
               })
             }
             edit={true}

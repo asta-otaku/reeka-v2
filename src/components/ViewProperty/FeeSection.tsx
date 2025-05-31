@@ -2,11 +2,98 @@ import { FC } from "react";
 import { useCurrency } from "../../helpers/getCurrency";
 import { useLocation } from "react-router-dom";
 
+interface AgencyFeeSectionProps {
+  agencyFee: number;
+  setAgencyFee: (fee: number) => void;
+  edit: boolean;
+}
+
 interface FeeSectionProps {
   cautionFee: number;
   setCautionFee: (val: number) => void;
   edit: boolean;
 }
+
+export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
+  agencyFee,
+  setAgencyFee,
+  edit,
+}) => {
+  const currency = useCurrency();
+
+  return (
+    <div className="border p-6 rounded-xl shadow-sm bg-white my-6">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        Agency Commission
+      </h3>
+
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* Fee Type */}
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-sm font-medium text-gray-600 w-full">
+            Fee Type
+          </label>
+          <select
+            disabled
+            className="border px-3 py-2 rounded-md bg-gray-100 text-sm text-gray-500 w-full cursor-not-allowed"
+          >
+            <option>Agency Fee</option>
+          </select>
+        </div>
+
+        {/* Amount */}
+        <div className="flex flex-col gap-2 w-full">
+          <label
+            htmlFor="agencyFee"
+            className="text-sm font-medium text-gray-600"
+          >
+            Amount
+          </label>
+          <div className="w-full flex gap-2 items-center">
+            <input
+              id="agencyFee"
+              type="number"
+              value={agencyFee || ""}
+              onChange={(e) => setAgencyFee(Number(e.target.value))}
+              placeholder="e.g. 2500"
+              className={`border px-4 py-2 rounded-md text-sm w-full outline-none transition-all duration-200 ${
+                edit
+                  ? "bg-white"
+                  : "bg-gray-100 text-gray-500 cursor-not-allowed"
+              }`}
+              disabled={!edit}
+            />
+            {edit && (
+              <button
+                type="button"
+                onClick={() => setAgencyFee(0)}
+                className="text-red-500 text-xl px-2 hover:text-red-700"
+                title="Remove fee"
+              >
+                &minus;
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Breakdown & Note */}
+      <div className="mt-5 bg-gray-50 px-5 py-4 rounded-md text-sm text-gray-800">
+        <p className="font-medium mb-2">Fee Breakdown</p>
+        {agencyFee > 0 && (
+          <p>
+            <span className="font-semibold">Agency Fee:</span> {currency}
+            {agencyFee.toLocaleString()}
+          </p>
+        )}
+        <p className="text-gray-500 italic text-xs mt-2">
+          This fee covers the booking agency service and is{" "}
+          <strong>non‐refundable</strong>.
+        </p>
+      </div>
+    </div>
+  );
+};
 
 const FeeSection: FC<FeeSectionProps> = ({
   cautionFee,

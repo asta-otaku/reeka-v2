@@ -24,6 +24,8 @@ function Reservation() {
     note: "",
     includeNote: false,
     countryCode: "",
+    agencyFee: "",
+    agencyName: "",
   });
   const [property, setProperty] = useState<any>(null);
   const [invoiceId, setInvoiceId] = useState("");

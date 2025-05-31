@@ -2,7 +2,7 @@ import AirBnbPricing from "../AirBnbPricing";
 import PropertyDetails from "../PropertyDetails";
 import ImageSection from "../ImageSection";
 import Amenities from "../Amenities";
-import FeeSection, { PricePreview } from "../FeeSection";
+import FeeSection, { AgencyFeeSection, PricePreview } from "../FeeSection";
 import { useState } from "react";
 import Spinner from "../../Spinner";
 
@@ -52,6 +52,16 @@ function PropertyTab({
             setProperty({
               ...property,
               price: { ...property.price, cautionFee: val },
+            })
+          }
+          edit={edit}
+        />
+        <AgencyFeeSection
+          agencyFee={property.price.agencyFee}
+          setAgencyFee={(val) =>
+            setProperty({
+              ...property,
+              price: { ...property.price, agencyFee: val },
             })
           }
           edit={edit}

@@ -169,9 +169,9 @@ function Details({
   useEffect(() => {
     setFormDetails((prev) => ({
       ...prev,
-      price: priceDetails.total.toString(),
+      price: property.price.basePrice.toString(),
     }));
-  }, [priceDetails.total]);
+  }, [property]);
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -198,7 +198,11 @@ function Details({
         {property.images.length ? (
           property.images.map((image: any, index: number) => (
             <SwiperSlide key={index}>
-              <img src={image} alt="" className="object-cover rounded-lg" />
+              <img
+                src={image}
+                alt=""
+                className="object-cover rounded-lg w-full"
+              />
             </SwiperSlide>
           ))
         ) : (
@@ -247,7 +251,7 @@ function Details({
         </div>
         <div className="col-span-1 md:col-span-4 border bg-white rounded-xl shadow-black/20 shadow-sm p-4">
           <h2 className="text-[#3A3A3A] text-base md:text-lg font-medium">
-            ${property.price.basePrice}
+            ₦{property.price.basePrice}
             <span>night</span>
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 my-4">
@@ -328,17 +332,17 @@ function Details({
             <div className="space-y-2">
               <div className="flex justify-between gap-2">
                 <h2 className="underline underline-offset-4 text-sm text-[#222222]">
-                  ${property.price.basePrice} x {priceDetails.nights} night
+                  ₦{property.price.basePrice} x {priceDetails.nights} night
                   {priceDetails.nights !== 1 ? "s" : ""}
                 </h2>
-                <h5 className="">${priceDetails.basePrice.toLocaleString()}</h5>
+                <h5 className="">₦{priceDetails.basePrice.toLocaleString()}</h5>
               </div>
               <div className="flex justify-between gap-2">
                 <h2 className="underline underline-offset-4 text-sm text-[#222222]">
                   Caution fee
                 </h2>
                 <h5 className="">
-                  ${priceDetails.cautionFee.toLocaleString()}
+                  ₦{priceDetails.cautionFee.toLocaleString()}
                 </h5>
               </div>
             </div>
@@ -347,7 +351,7 @@ function Details({
               <h2 className="font-medium text-sm text-[#222222]">
                 Total before taxes
               </h2>
-              <h5 className="">${priceDetails.total.toLocaleString()}</h5>
+              <h5 className="">₦{priceDetails.total.toLocaleString()}</h5>
             </div>
           </form>
         </div>
