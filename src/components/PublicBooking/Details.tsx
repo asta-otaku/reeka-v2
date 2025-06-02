@@ -137,8 +137,8 @@ function Details({
   };
   const calculateNights = (checkIn: string, checkOut: string) => {
     if (!checkIn || !checkOut) return 0;
-    const start = dayjs(checkIn);
-    const end = dayjs(checkOut);
+    const start = dayjs(checkIn, "DD/MM/YYYY");
+    const end = dayjs(checkOut, "DD/MM/YYYY");
     return end.diff(start, "day");
   };
 
@@ -161,7 +161,7 @@ function Details({
   };
 
   const priceDetails = calculatePrices(
-    property.price.basePrice,
+    property.defaultRate.ratePrice,
     formDetails.checkIn,
     formDetails.checkOut
   );
@@ -169,7 +169,7 @@ function Details({
   useEffect(() => {
     setFormDetails((prev) => ({
       ...prev,
-      price: property.price.basePrice.toString(),
+      price: property.defaultRate.ratePrice.toString(),
     }));
   }, [property]);
 
@@ -201,13 +201,17 @@ function Details({
               <img
                 src={image}
                 alt=""
-                className="object-cover rounded-lg w-full"
+                className="object-cover max-w-screen-2xl rounded-lg w-full"
               />
             </SwiperSlide>
           ))
         ) : (
           <SwiperSlide>
-            <img src={prop} alt="" className="object-cover rounded-lg" />
+            <img
+              src={prop}
+              alt=""
+              className="object-cover max-w-screen-2xl w-full rounded-lg"
+            />
           </SwiperSlide>
         )}
       </Swiper>
@@ -217,19 +221,17 @@ function Details({
             {property.propertyName}
           </h2>
           <div className="flex gap-2 my-4 flex-wrap">
-            {Object.keys(property?.amenities).length > 0 ? (
-              Object.keys(property?.amenities).map((facility, index) => (
-                <div
-                  key={index}
-                  className="bg-[#FAFAFA] text-[#808080] border flex items-center gap-1 p-2 rounded-lg text-xs"
-                >
-                  <img src={buy} alt="buy" />
-                  <span>{facility}</span>
-                </div>
-              ))
-            ) : (
-              <p className="text-[#808080] text-sm">No amenities listed</p>
-            )}
+            {Object.keys(property?.amenities).length > 0
+              ? Object.keys(property?.amenities).map((facility, index) => (
+                  <div
+                    key={index}
+                    className="bg-[#FAFAFA] text-[#808080] border flex items-center gap-1 p-2 rounded-lg text-xs"
+                  >
+                    <img src={buy} alt="buy" />
+                    <span>{facility}</span>
+                  </div>
+                ))
+              : null}
           </div>
           <hr />
           <div className="space-y-2">
@@ -238,20 +240,16 @@ function Details({
               For precise pricing, please input your travel dates.
             </p>
             <RangePicker
+              format="DD/MM/YYYY"
               className="w-full"
               onChange={onRangeChange}
               disabledDate={disabledDate}
-              value={[
-                formDetails.checkIn ? dayjs(formDetails.checkIn) : null,
-                formDetails.checkOut ? dayjs(formDetails.checkOut) : null,
-              ]}
-              format="YYYY-MM-DD"
             />
           </div>
         </div>
         <div className="col-span-1 md:col-span-4 border bg-white rounded-xl shadow-black/20 shadow-sm p-4">
           <h2 className="text-[#3A3A3A] text-base md:text-lg font-medium">
-            ₦{property.price.basePrice}
+            ₦{property.defaultRate.ratePrice.toLocaleString()}/
             <span>night</span>
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 my-4">
@@ -332,7 +330,7 @@ function Details({
             <div className="space-y-2">
               <div className="flex justify-between gap-2">
                 <h2 className="underline underline-offset-4 text-sm text-[#222222]">
-                  ₦{property.price.basePrice} x {priceDetails.nights} night
+                  ₦{property.ratePrice} x {priceDetails.nights} night
                   {priceDetails.nights !== 1 ? "s" : ""}
                 </h2>
                 <h5 className="">₦{priceDetails.basePrice.toLocaleString()}</h5>

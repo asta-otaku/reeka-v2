@@ -37,9 +37,12 @@ function RateCardsTab({ property }: { property: any }) {
 
   const generatePublicUrlForRate = async (rateId: string) => {
     try {
-      const { data: url } = await apiClient.get(
-        `/public/url/${property._id}/${rateId}`
-      );
+      const { data: url } = await apiClient.get(`/public/url`, {
+        params: {
+          propertyId: property._id,
+          rateId: rateId,
+        },
+      });
       await navigator.clipboard.writeText(url);
       toast.success("Copied public link for this rate!");
     } catch (err) {

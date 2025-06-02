@@ -57,11 +57,11 @@ function PropertyTab({
           edit={edit}
         />
         <AgencyFeeSection
-          agencyFee={property.price.agencyFee}
+          agencyFee={property.agentFee}
           setAgencyFee={(val) =>
             setProperty({
               ...property,
-              price: { ...property.price, agencyFee: val },
+              agentFee: val,
             })
           }
           edit={edit}

@@ -28,6 +28,8 @@ function StepTwo({
     note: string;
     includeNote: boolean;
     countryCode: string;
+    agentName: string;
+    agentFee: string;
   };
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
@@ -38,23 +40,21 @@ function StepTwo({
   const [showPreview, setShowPreview] = useState(true);
   const currency = useCurrency();
 
-  function formatTimestamp(date: string) {
-    return moment(date).tz("Africa/Lagos").format("YYYY-MM-DD");
-  }
-
   const handleReserve = async () => {
     const payload: any = {
       countryCode: formDetails.countryCode,
-      endDate: formatTimestamp(formDetails.checkOut),
+      endDate: formDetails.checkOut,
       guestEmail: formDetails.email,
       guestFirstName: formDetails.firstName,
       guestLastName: formDetails.lastName,
       guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
       numberOfGuests: formDetails.noOfGuests,
       propertyId: property._id,
-      startDate: formatTimestamp(formDetails.checkIn),
+      startDate: formDetails.checkIn,
       note: formDetails.note,
       includeNote: formDetails.includeNote,
+      agentFee: Number(formDetails.agentFee) || 0,
+      agentName: formDetails.agentName,
     };
 
     if (formDetails.rateId) {
@@ -77,11 +77,14 @@ function StepTwo({
       setLoading(false);
     }
   };
+  const calculateDays = (checkIn: string, checkOut: string) => {
+    if (!checkIn || !checkOut) return 0;
+    const start = moment(checkIn);
+    const end = moment(checkOut);
+    return end.diff(start, "days");
+  };
 
-  const days = moment(formDetails.checkOut).diff(
-    moment(formDetails.checkIn),
-    "days"
-  );
+  const days = calculateDays(formDetails.checkIn, formDetails.checkOut);
 
   function getTotalPrice() {
     const totalBase = Number(formDetails.price) * days;

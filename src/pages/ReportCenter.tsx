@@ -10,7 +10,6 @@ import Spinner from "../components/Spinner";
 import apiClient from "../helpers/apiClient";
 import DatePicker from "react-datepicker";
 import { format, parseISO } from "date-fns";
-import Select from "react-select";
 
 async function handleBlobError(error: any) {
   if (
@@ -34,7 +33,8 @@ function ReportCenter() {
   const setModal = useStore((state: any) => state.setModal);
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
-  const [reportFilter, _] = useState("bookings");
+  const [reportFilter] = useState("bookings");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -45,16 +45,16 @@ function ReportCenter() {
         console.error(error);
       }
     };
-
     fetchProperties();
   }, []);
 
-  const handleSingleDownload = (propertyName: string) => {
+  const handleSingleDownload = (propertyName: string, propertyId: string) => {
     const url =
       reportFilter === "occupancy"
-        ? `/report/occupancy/pdf?startDate=&endDate=&propertyName=${propertyName}`
-        : `/report/pdf?startDate=&endDate=&propertyName=${propertyName}`;
+        ? `/report/occupancy/pdf?startDate=&endDate=&propertyIds=${propertyId}`
+        : `/report/pdf?startDate=&endDate=&propertyIds=${propertyId}`;
 
+    setLoading(true);
     apiClient
       .get(url, {
         responseType: "blob",
@@ -72,11 +72,21 @@ function ReportCenter() {
       .catch(async (error) => {
         const message = await handleBlobError(error);
         toast.error(message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
   return (
     <DashboardLayout>
+      {/* Overlay Spinner when loading */}
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-25">
+          <Spinner />
+        </div>
+      )}
+
       <div className="px-4">
         <DashboardNav
           title="Report Management"
@@ -85,6 +95,7 @@ function ReportCenter() {
 
         <div className="flex flex-wrap gap-4 items-center justify-between w-full my-4 relative">
           <div className="flex items-center gap-4">
+            {/* (Optional Report Type toggle, currently commented out) */}
             {/* <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {
@@ -100,6 +111,7 @@ function ReportCenter() {
                 width={12}
               />
             </div> */}
+
             <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
               <select
                 onChange={(e) => {
@@ -120,6 +132,7 @@ function ReportCenter() {
               />
             </div>
           </div>
+
           <div className="flex items-center gap-4 max-w-sm w-full">
             <div className="w-full flex gap-2 border border-solid border-[#E4E4E4] bg-[#F5F5F5] rounded-xl p-3">
               <img src={searchIcon} className="w-5" />
@@ -142,12 +155,12 @@ function ReportCenter() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {properties
             .filter((bk: any) =>
-              bk?.propertyName
-                ?.toLowerCase()
+              bk.propertyName
+                .toLowerCase()
                 .includes(selectedProperty.toLowerCase())
             )
             .filter((item) =>
-              item?.propertyName?.toLowerCase().includes(search.toLowerCase())
+              item.propertyName.toLowerCase().includes(search.toLowerCase())
             )
             .map((dt) => (
               <div key={dt._id} className="rounded-2xl border max-w-sm">
@@ -177,8 +190,12 @@ function ReportCenter() {
                     <img
                       src={downloadIcon}
                       alt="download"
-                      onClick={() => handleSingleDownload(dt.propertyName)}
-                      className="cursor-pointer"
+                      onClick={() =>
+                        handleSingleDownload(dt.propertyName, dt._id)
+                      }
+                      className={`cursor-pointer ${
+                        loading ? "opacity-50 pointer-events-none" : ""
+                      }`}
                     />
                   </div>
                 </div>
@@ -194,7 +211,7 @@ export default ReportCenter;
 
 function ReportModal({ properties }: any) {
   const [loading, setLoading] = useState(false);
-  const [selectedProperties, setSelectedProperties] = useState<any[]>([]);
+  const [selectedPropertyIds, setSelectedPropertyIds] = useState<string[]>([]);
   const [form, setForm] = useState({
     type: "bookings",
     from: "",
@@ -202,65 +219,69 @@ function ReportModal({ properties }: any) {
     format: "pdf",
   });
 
-  const propertyOptions = properties.map((property: any) => ({
-    value: property._id,
-    label: property.propertyName,
-    property: property,
-  }));
+  // Handle property selection
+  const handleToggleProperty = (propertyId: string) => {
+    setSelectedPropertyIds((prev) =>
+      prev.includes(propertyId)
+        ? prev.filter((id) => id !== propertyId)
+        : [...prev, propertyId]
+    );
+  };
+
+  // Handle select all/deselect all
+  const handleSelectAll = () => {
+    if (selectedPropertyIds.length === properties.length) {
+      setSelectedPropertyIds([]);
+    } else {
+      setSelectedPropertyIds(properties.map((p: any) => p._id));
+    }
+  };
 
   const handleDownload = (e: any) => {
     e.preventDefault();
 
     if (!form.type) {
-      toast.error("Please select a report type and ensure User ID is loaded.");
+      toast.error("Please select a report type.");
       return;
     }
-    if (selectedProperties.length === 0) {
-      toast.error("Please select at least one property");
+    if (selectedPropertyIds.length === 0) {
+      toast.error("Please select at least one property.");
       return;
     }
     setLoading(true);
-    const propertyIds = selectedProperties.map((option) => option.value);
-
     const queryParams = new URLSearchParams({
       startDate: form.from,
       endDate: form.to,
     });
+    selectedPropertyIds.forEach((id) => queryParams.append("propertyIds", id));
 
-    propertyIds.forEach((id) => queryParams.append("propertyIds", id));
     const url =
       form.type === "occupancy"
         ? `/report/occupancy/${form.format}?${queryParams}`
+        : form.type === "agent"
+        ? `/report/agent/${form.format}?${queryParams}`
         : `/report/${form.format}?${queryParams}`;
 
     apiClient
-      .get(url, {
-        responseType: "blob",
-      })
+      .get(url, { responseType: "blob" })
       .then((res) => {
         setLoading(false);
-        const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+        const blobUrl = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
-        link.href = downloadUrl;
-
-        const formattedFrom = form.from?.replace(/-/g, "") || "";
-        const formattedTo = form.to?.replace(/-/g, "") || "";
+        link.href = blobUrl;
+        const formattedFrom = form.from.replace(/-/g, "") || "";
+        const formattedTo = form.to.replace(/-/g, "") || "";
         const datePart =
           formattedFrom && formattedTo
             ? `${formattedFrom}_to_${formattedTo}`
             : formattedFrom || formattedTo || "undated";
 
-        const filename =
-          selectedProperties.length === 1
-            ? `${selectedProperties[0].label.replace(/\s+/g, "_")}_${
-                form.type
-              }_${datePart}.${form.format}`
-            : `${selectedProperties.length}_properties_${form.type}_${datePart}.${form.format}`;
+        const filename = `${selectedPropertyIds.length}_properties_${form.type}_${datePart}.${form.format}`;
 
         link.setAttribute("download", filename);
         document.body.appendChild(link);
         link.click();
-        window.URL.revokeObjectURL(downloadUrl);
+        window.URL.revokeObjectURL(blobUrl);
         document.body.removeChild(link);
       })
       .catch(async (error) => {
@@ -268,10 +289,6 @@ function ReportModal({ properties }: any) {
         const message = await handleBlobError(error);
         toast.error(message);
       });
-  };
-
-  const handlePropertyChange = (selectedOptions: any) => {
-    setSelectedProperties(selectedOptions || []);
   };
 
   return (
@@ -292,6 +309,7 @@ function ReportModal({ properties }: any) {
             >
               <option value="bookings">Bookings</option>
               <option value="occupancy">Occupancy</option>
+              <option value="agent">Agent</option>
             </select>
             <div className="pointer-events-none absolute right-2">
               <ChevronDownIcon width={12} />
@@ -316,57 +334,45 @@ function ReportModal({ properties }: any) {
           </div>
         </div>
         <div className="flex flex-col gap-2 w-full">
-          <h4 className="text-[#3A3A3A] text-sm font-medium">Properties*</h4>
-          <Select
-            isMulti
-            value={selectedProperties}
-            onChange={handlePropertyChange}
-            options={propertyOptions}
-            placeholder="Select properties..."
-            className="react-select-container"
-            classNamePrefix="react-select"
-            styles={{
-              control: (base) => ({
-                ...base,
-                border: "1px solid #D0D5DD",
-                boxShadow: "0 1px 2px 0 rgba(16, 24, 40, 0.05)",
-                "&:hover": {
-                  border: "1px solid #D0D5DD",
-                },
-                "&:focus-within": {
-                  border: "1px solid #D0D5DD",
-                  boxShadow: "0 0 0 3px rgba(16, 24, 40, 0.1)",
-                },
-              }),
-              placeholder: (base) => ({
-                ...base,
-                color: "#667085",
-                fontSize: "14px",
-              }),
-              multiValue: (base) => ({
-                ...base,
-                backgroundColor: "rgba(var(--primary-rgb, 59, 130, 246), 0.1)",
-                border: "1px solid rgba(var(--primary-rgb, 59, 130, 246), 1)",
-              }),
-              multiValueLabel: (base) => ({
-                ...base,
-                color: "rgba(var(--primary-rgb, 59, 130, 246), 1)",
-                fontWeight: "500",
-              }),
-              multiValueRemove: (base) => ({
-                ...base,
-                color: "rgba(var(--primary-rgb, 59, 130, 246), 1)",
-                "&:hover": {
-                  backgroundColor:
-                    "rgba(var(--primary-rgb, 59, 130, 246), 0.2)",
-                  color: "rgba(var(--primary-rgb, 59, 130, 246), 1)",
-                },
-              }),
-            }}
-          />
+          <div className="flex justify-between items-center">
+            <h4 className="text-[#3A3A3A] text-sm font-medium">Properties*</h4>
+            <button
+              type="button"
+              onClick={handleSelectAll}
+              className="text-xs text-primary underline"
+            >
+              {selectedPropertyIds.length === properties.length
+                ? "Deselect all"
+                : "Select all"}
+            </button>
+          </div>
+
+          <div className="max-h-60 overflow-y-auto border border-[#D0D5DD] rounded-md p-2 bg-white">
+            {properties.map((property: any) => (
+              <div
+                key={property._id}
+                className="flex items-center gap-2 py-2 border-b border-[#EAECF0] last:border-b-0"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedPropertyIds.includes(property._id)}
+                  onChange={() => handleToggleProperty(property._id)}
+                  id={`property-${property._id}`}
+                  className="accent-primary h-4 w-4 rounded border-gray-300"
+                />
+                <label
+                  htmlFor={`property-${property._id}`}
+                  className="text-sm text-gray-600 cursor-pointer"
+                >
+                  {property.propertyName}
+                </label>
+              </div>
+            ))}
+          </div>
+
           <p className="text-xs text-gray-500 mt-1">
-            {selectedProperties.length} property
-            {selectedProperties.length !== 1 ? "s" : ""} selected
+            {selectedPropertyIds.length} propert
+            {selectedPropertyIds.length !== 1 ? "ies" : "y"} selected
           </p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

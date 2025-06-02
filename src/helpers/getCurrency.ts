@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const getUser = () => JSON.parse(sessionStorage.getItem("user") || "{}");
+const getUser = () => JSON.parse(localStorage.getItem("user") || "{}");
 
 export const useCurrency = () => {
     const [currency, setCurrency] = useState<string>("");

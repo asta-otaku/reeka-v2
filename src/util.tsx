@@ -4,7 +4,7 @@ export const CONSTANT = {
   BASE_URL: import.meta.env.VITE_BASE_URL,
   get USER_ID() {
     if (!cachedUserId) {
-      const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
       cachedUserId = user._id || null;
     }
     return cachedUserId;
@@ -12,6 +12,6 @@ export const CONSTANT = {
 };
 
 export function logout() {
-  sessionStorage.removeItem("user");
+  localStorage.removeItem("user");
   cachedUserId = null;
 }

@@ -23,6 +23,8 @@ function StepThree({
     note: string;
     includeNote: boolean;
     countryCode: string;
+    agentName: string;
+    agentFee: string;
   };
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;

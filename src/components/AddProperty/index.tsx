@@ -24,6 +24,7 @@ function AddProperty({ setStep }: { setStep: any }) {
   const [formDetails, setFormDetails] = useState({
     propertyName: "",
     address: "",
+    agentFee: 0,
     city: "",
     country: "",
     baseCurrency: "NGN",
@@ -62,6 +63,7 @@ function AddProperty({ setStep }: { setStep: any }) {
       const formData = new FormData();
       formData.append("propertyName", formDetails.propertyName);
       formData.append("address", formDetails.address);
+      formData.append("agentFee", formDetails.agentFee.toLocaleString() || "0");
       formData.append("city", formDetails.city);
       formData.append("country", formDetails.country);
       formData.append("baseCurrency", formDetails.baseCurrency);
@@ -86,6 +88,7 @@ function AddProperty({ setStep }: { setStep: any }) {
           setFormDetails({
             propertyName: "",
             address: "",
+            agentFee: 0,
             city: "",
             country: "",
             baseCurrency: "NGN",

@@ -7,8 +7,8 @@ import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 
 function SignIn() {
-  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
-  const accessToken = sessionStorage.getItem("accessToken");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const accessToken = localStorage.getItem("accessToken");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,7 +74,7 @@ function SignIn() {
           setLoading(false);
           toast.success("Logged in successfully");
 
-          // Store tokens and user info in sessionStorage
+          // Store tokens and user info in localStorage
           const {
             accessToken,
             refreshToken,
@@ -84,9 +84,9 @@ function SignIn() {
             country,
             staffId,
           } = res.data;
-          sessionStorage.setItem("accessToken", accessToken);
-          sessionStorage.setItem("refreshToken", refreshToken);
-          sessionStorage.setItem(
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", refreshToken);
+          localStorage.setItem(
             "user",
             JSON.stringify({ firstName, lastName, userRole, country, staffId })
           );

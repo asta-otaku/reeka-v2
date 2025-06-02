@@ -9,7 +9,7 @@ function Pricing() {
 
   useEffect(() => {
     if (pricingPlan) {
-      const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
       if (Object.keys(user).length === 0) {
         navigate("/signin");
       } else {

@@ -40,28 +40,17 @@ export function getDate() {
 }
 
 export function getDateRange() {
-  const date = new Date(Date.now());
+  const currentDate = new Date(Date.now());
 
-  // Get the year of the timestamp
-  const year = date.getFullYear();
-
-  // Calculate the previous month and handle the year change if needed
-  const previousMonth = date.getMonth() === 0 ? 11 : date.getMonth() - 1;
-  const previousMonthYear = previousMonth === 11 ? year - 1 : year;
-
-  // Construct the start and end dates
-  const startDate = new Date(
-    previousMonthYear,
-    previousMonth,
-    date.getDate() + 1
-  ); // First day of the previous month
-  const endDate = new Date(year, date.getMonth(), date.getDate()); // Current day
+  // Calculate the start date (30 days ago)
+  const startDate = new Date();
+  startDate.setDate(currentDate.getDate() - 29);
 
   // Format the start and end dates
   const startMonthName = monthNames[startDate.getMonth()];
-  const endMonthName = monthNames[endDate.getMonth()];
+  const endMonthName = monthNames[currentDate.getMonth()];
   const startDateOfMonth = startDate.getDate();
-  const endDateOfMonth = endDate.getDate();
+  const endDateOfMonth = currentDate.getDate();
 
   // Format the result
   const dateRange = `${startMonthName} ${startDateOfMonth} - ${endMonthName} ${endDateOfMonth}`;

@@ -29,7 +29,7 @@ function DashboardLayout({ children }: any) {
   }, [currentModal]);
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
-  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const location = useLocation();
 
   useEffect(() => {
@@ -192,7 +192,7 @@ function ListItem({
   title: string;
 }) {
   const location = useLocation();
-  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const userSessionDetails = JSON.parse(localStorage.getItem("user") || "{}");
   const { staffId } = userSessionDetails;
 
   const handleLogout = async () => {
@@ -203,7 +203,7 @@ function ListItem({
         await apiClient.post("/auth/logout");
       }
       toast.success("Logged out successfully");
-      sessionStorage.removeItem("user");
+      localStorage.removeItem("user");
       window.location.href = "/signin";
     } catch (error) {
       toast.error("An error occurred. Please try again");

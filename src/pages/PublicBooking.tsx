@@ -36,16 +36,16 @@ function PublicBooking() {
     const fetchProperty = async () => {
       try {
         if (token && rateId) {
-          const response = await apiClient.get(
-            `/public/property/${token}/${rateId}`
-          );
-          setProperty(response.data.propertyDetails);
+          const response = await apiClient.get(`/public/property/${token}`, {
+            params: { signedRateId: rateId },
+          });
+          setProperty(response.data[0]);
           setFormDetails((prev) => ({
             ...prev,
-            price: response.data.ratePrice.toString(),
-            rateId: response.data._id,
-            rateName: response.data.rateName,
-            userId: response.data.userId,
+            price: response.data[0].defaultRate.ratePrice?.toString(),
+            rateId: response.data[0].defaultRate._id,
+            rateName: response.data[0].defaultRate.rateName,
+            userId: response.data[0].id,
           }));
           setCurrentStep(1);
         }

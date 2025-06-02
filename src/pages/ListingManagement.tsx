@@ -9,14 +9,14 @@ import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../helpers/apiClient";
-// import toast from "react-hot-toast";
+import toast from "react-hot-toast";
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
   const [properties, setProperties] = useState([]);
-  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const navigate = useNavigate();
 
@@ -32,15 +32,15 @@ function ListingManagement() {
     fetchProperties();
   }, []);
 
-  // const generatePublicUrl = async () => {
-  //   try {
-  //     const response = await apiClient.get(`/public/url`);
-  //     navigator.clipboard.writeText(response.data);
-  //     toast.success("Public URL copied to clipboard");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const generatePublicUrl = async () => {
+    try {
+      const response = await apiClient.get(`/public/url`);
+      navigator.clipboard.writeText(response.data);
+      toast.success("Public URL copied to clipboard");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -100,14 +100,14 @@ function ListingManagement() {
                   >
                     Add Property
                   </button>
-                  {/* <button
+                  <button
                     onClick={generatePublicUrl}
                     className={`bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none ${
                       user && user.userRole !== "Owner" && "hidden"
                     }`}
                   >
                     Generate Portfolio Link
-                  </button> */}
+                  </button>
                 </div>
               </div>
 

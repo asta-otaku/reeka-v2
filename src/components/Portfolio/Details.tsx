@@ -77,8 +77,8 @@ function Details({
 
   const calculateNights = (checkIn: string, checkOut: string) => {
     if (!checkIn || !checkOut) return 0;
-    const start = dayjs(checkIn);
-    const end = dayjs(checkOut);
+    const start = dayjs(checkIn, "DD/MM/YYYY");
+    const end = dayjs(checkOut, "DD/MM/YYYY");
     return end.diff(start, "day");
   };
 
@@ -142,15 +142,12 @@ function Details({
               For precise pricing, please input your travel dates.
             </p>
             <RangePicker
+              format="DD/MM/YYYY"
               placeholder={["Start Date", "End Date"]}
               className="w-full"
               defaultOpen
               placement="bottomLeft"
               onChange={handleDateChange}
-              value={[
-                formDetails.checkIn ? dayjs(formDetails.checkIn) : null,
-                formDetails.checkOut ? dayjs(formDetails.checkOut) : null,
-              ]}
             />
           </div>
         </div>

@@ -9,13 +9,8 @@ import apiClient from "../../helpers/apiClient";
 import moment from "moment";
 import { PricePreview } from "../ViewProperty/FeeSection";
 
-function formatTimestamp(timestamp: string) {
-  const date = new Date(timestamp);
-
-  // Extract date components
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+function formatTimestamp(dateString: string) {
+  const [day, month, year] = dateString.split("/");
 
   // Combine to get the desired format
   return `${year}-${month}-${day}`;
@@ -68,10 +63,10 @@ function StepTwo({
       countryCode: formDetails.countryCode,
       numberOfChildren: 0,
       numberOfGuests: formDetails.noOfGuests,
-      priceState: formDetails.price,
+      priceState: Number(formDetails.price) || 0,
       rateId: formDetails.rateId,
       note: formDetails.note,
-      userId: formDetails.userId,
+      // userId: formDetails.userId,
       includeNote: formDetails.includeNote,
     };
 
@@ -93,10 +88,23 @@ function StepTwo({
     }
   };
 
-  const days = moment(formDetails.checkOut).diff(
-    moment(formDetails.checkIn),
-    "days"
-  );
+  const calculateDays = (checkIn: string, checkOut: string) => {
+    if (!checkIn || !checkOut) return 0;
+    const start = moment(checkIn, "DD/MM/YYYY");
+    const end = moment(checkOut, "DD/MM/YYYY");
+    return end.diff(start, "days");
+  };
+
+  function daysBetween(startISO: string, endISO: string) {
+    const start = new Date(startISO);
+    const end = new Date(endISO);
+    const diffMs = end.getTime() - start.getTime();
+    return diffMs / (1000 * 60 * 60 * 24);
+  }
+
+  const days = hideFeatures
+    ? daysBetween(formDetails.checkIn, formDetails.checkOut)
+    : calculateDays(formDetails.checkIn, formDetails.checkOut);
 
   function getTotalPrice() {
     const totalBase = Number(formDetails.price) * days;
@@ -115,10 +123,12 @@ function StepTwo({
         <div className="flex w-full justify-between items-center my-3">
           <div>
             <h2 className="text-[#121212] font-semibold text-xs">
-              {property?.propertyName || formDetails.propertyName}
+              {property?.propertyDetails?.propertyName ||
+                formDetails.propertyName}
             </h2>
             <p className="text-[#3A3A3A] font-light text-[10px]">
-              {property?.address || formDetails.propertyAddress}
+              {property?.address?.propertyDetails ||
+                formDetails.propertyAddress}
             </p>
           </div>
           <img
@@ -130,7 +140,7 @@ function StepTwo({
         <div className="w-full h-40">
           <img
             className="w-full h-full object-cover rounded-xl"
-            src={property?.images[0] ?? prop}
+            src={property?.propertyDetails?.images[0] ?? prop}
           />
         </div>
       </div>
@@ -210,7 +220,9 @@ function StepTwo({
           <PricePreview
             basePrice={Number(formDetails.price)}
             cautionFee={
-              formDetails?.cautionFee ?? property?.price?.cautionFee ?? 0
+              formDetails?.cautionFee ??
+              property?.propertyDetails?.price?.cautionFee ??
+              0
             }
             days={days}
           />

@@ -46,6 +46,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/incident-report/:id" element={<IncidentReport />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/property/:token/:rateId" element={<PublicBooking />} />
+        <Route path="/property/:token" element={<PublicBooking />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/agent/:id" element={<PublicBooking />} />
         <Route path="/invoice/:id" element={<PublicInvoice />} />

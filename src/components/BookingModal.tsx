@@ -171,12 +171,28 @@ function BookingModal({
                 {formatDate(booking?.endDate)}
               </h4>
             </div>
-            {booking?.note && (
+            <div className={`${booking?.note ? "visible" : "invisible"}`}>
+              <h2 className="text-[#808080] text-xs mb-1">Booking Note</h2>
+              <p className="text-[#121212] text-xs whitespace-pre-wrap">
+                {booking.note}
+              </p>
+            </div>
+            {booking?.agentName && (
               <div>
-                <h2 className="text-[#808080] text-xs mb-1">Booking Note</h2>
-                <p className="text-[#121212] text-xs whitespace-pre-wrap">
-                  {booking.note}
-                </p>
+                <h2 className="text-[#808080] text-xs">Agent Name</h2>
+                <h4 className="text-[#121212] text-xs mt-0.5">
+                  {booking.agentName}
+                </h4>
+              </div>
+            )}
+            {booking?.agentName && (
+              <div>
+                <h2 className="text-[#808080] text-xs">Agent Fee</h2>
+                <h4 className="text-[#121212] text-xs mt-0.5">
+                  {booking.agentFee
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                </h4>
               </div>
             )}
           </div>

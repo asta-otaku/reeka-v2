@@ -12,7 +12,7 @@ function EditInfo() {
     address: "",
   });
   const [loading, setLoading] = useState(false);
-  const userSessionDetails = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const userSessionDetails = JSON.parse(localStorage.getItem("user") || "{}");
   const { staffId } = userSessionDetails;
 
   const url = staffId ? `/users/${staffId}` : "/users";

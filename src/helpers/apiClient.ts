@@ -4,8 +4,8 @@ import { CONSTANT } from '../util';
 import { toast } from "react-hot-toast";
 
 // Helper functions for tokens
-const getAccessToken = () => sessionStorage.getItem("accessToken");
-const getRefreshToken = () => sessionStorage.getItem("refreshToken");
+const getAccessToken = () => localStorage.getItem("accessToken");
+const getRefreshToken = () => localStorage.getItem("refreshToken");
 
 const apiClient = axios.create({
   baseURL: CONSTANT.BASE_URL,
@@ -21,7 +21,7 @@ const refreshAccessToken = async () => {
 
     const newAccessToken = response.data.newAccessToken;
     if (newAccessToken) {
-      sessionStorage.setItem("accessToken", newAccessToken);
+      localStorage.setItem("accessToken", newAccessToken);
       apiClient.defaults.headers['Authorization'] = `Bearer ${newAccessToken}`;
     }
     return newAccessToken;

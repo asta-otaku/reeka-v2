@@ -20,7 +20,7 @@ function Settings() {
   const [user, setUser] = useState<{ userRole?: string }>({});
 
   useEffect(() => {
-    const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
     setUser(storedUser);
   }, []);
 

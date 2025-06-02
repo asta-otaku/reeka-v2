@@ -14,7 +14,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
   const [activePropertyId, setActivePropertyId] = useState("");
@@ -158,10 +158,15 @@ function Dashboard() {
                     <div className="overflow-x-auto no-scrollbar max-w-xs md:max-w-full flex ">
                       <div className="flex items-center gap-2">
                         <RangePicker
-                          onChange={(dates, dateStrings) => {
-                            setStartDate(new Date(dateStrings[0]));
-                            setEndDate(new Date(dateStrings[1]));
-                            console.log(dates, dateStrings);
+                          format="DD/MM/YYYY"
+                          onChange={(dates) => {
+                            if (!dates || !dates[0] || !dates[1]) {
+                              setStartDate(undefined);
+                              setEndDate(undefined);
+                            } else {
+                              setStartDate(dates[0].toDate());
+                              setEndDate(dates[1].toDate());
+                            }
                           }}
                           className="outline-none text-secondary text-xs md:text-sm appearance-none border-none bg-transparent"
                         />

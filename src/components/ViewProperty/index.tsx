@@ -22,7 +22,7 @@ const tabs = [
 
 function ViewProperty() {
   const [activeTab, setActiveTab] = useState("property_details");
-  const { id } = useParams(); // Get property ID from the URL
+  const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pending, setPending] = useState(false);
@@ -35,6 +35,7 @@ function ViewProperty() {
   const [property, setProperty] = useState<any>({
     propertyName: "",
     address: "",
+    agentFee: 0,
     city: "",
     country: "",
     baseCurrency: "",
@@ -54,17 +55,19 @@ function ViewProperty() {
   const [bookings, setBookings] = useState<any>([]);
 
   // Fetch property details
+  const fetchProperty = async () => {
+    try {
+      const response = await apiClient.get(`/properties/${id}`);
+      setProperty(response.data);
+    } catch (error) {
+      console.error("Property not found", error);
+      navigate("/listing");
+    }
+  };
+
   useEffect(() => {
-    apiClient
-      .get(`/properties/${id}`)
-      .then((response) => {
-        setProperty(response.data);
-      })
-      .catch((error) => {
-        console.error("Property not found", error);
-        navigate("/listing");
-      });
-  }, [id, pending]);
+    fetchProperty();
+  }, [id]);
 
   // Fetch bookings
   useEffect(() => {
@@ -106,6 +109,7 @@ function ViewProperty() {
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);
+    formData.append("agentFee", property.agentFee.toString() || "0");
     formData.append("city", property.city);
     formData.append("country", property.country);
     formData.append("baseCurrency", property.baseCurrency);
@@ -138,6 +142,7 @@ function ViewProperty() {
         setTimeout(() => {
           navigate(`/listing/${id}`);
         }, 2000);
+        fetchProperty();
         setEdit(false);
       } else {
         toast.error("An error occurred");
@@ -196,6 +201,7 @@ function ViewProperty() {
               }
             );
             if (response.status === 200) {
+              fetchProperty();
               toast.success("Property linked with Airbnb successfully");
               setModal(null);
             } else {

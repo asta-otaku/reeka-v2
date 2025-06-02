@@ -147,10 +147,15 @@ function Portfolio() {
             </p>
           </div>
           <RangePicker
-            onChange={(dates, dateStrings) => {
-              setStartDate(new Date(dateStrings[0]));
-              setEndDate(new Date(dateStrings[1]));
-              console.log(dates, dateStrings);
+            format="DD/MM/YYYY"
+            onChange={(dates) => {
+              if (!dates || !dates[0] || !dates[1]) {
+                setStartDate(undefined);
+                setEndDate(undefined);
+              } else {
+                setStartDate(dates[0].toDate());
+                setEndDate(dates[1].toDate());
+              }
             }}
             placeholder={["Check-in", "Check-out"]}
             className="outline-none text-secondary text-xs md:text-sm rounded-xl py-2 shadow-sm bg-white"

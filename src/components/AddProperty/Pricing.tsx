@@ -77,11 +77,11 @@ function Pricing({
             edit={true}
           />
           <AgencyFeeSection
-            agencyFee={formDetails.price.agencyFee}
+            agencyFee={formDetails.agentFee}
             setAgencyFee={(val) =>
               setFormDetails({
                 ...formDetails,
-                price: { ...formDetails.price, agencyFee: val },
+                agentFee: val,
               })
             }
             edit={true}

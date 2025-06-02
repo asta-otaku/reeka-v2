@@ -4,12 +4,14 @@ interface CustomPriceModalProps {
   onConfirm: (value: string) => void;
   onCancel: () => void;
   defaultValue?: string;
+  isAgentFee?: boolean;
 }
 
 export default function CustomPriceModal({
   onConfirm,
   onCancel,
   defaultValue = "",
+  isAgentFee,
 }: CustomPriceModalProps) {
   const [price, setPrice] = useState(defaultValue);
 
@@ -20,7 +22,7 @@ export default function CustomPriceModal({
         className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-md"
       >
         <h3 className="text-lg font-semibold text-[#121212] mb-3">
-          Enter Custom Price
+          Enter Custom Rate
         </h3>
         <input
           type="text"
@@ -34,10 +36,12 @@ export default function CustomPriceModal({
             }
           }}
         />
-        <p className="text-xs text-[#FF8C00] italic mb-4">
-          Custom price is the total amount for the full duration of the booking.
-          It overrides nightly rates for this booking.
-        </p>
+        {!isAgentFee && (
+          <p className="text-xs text-[#FF8C00] italic mb-4">
+            Custom rate is the total amount for the full duration of the
+            booking. It overrides nightly rates for this booking.
+          </p>
+        )}
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}

@@ -29,8 +29,8 @@ export interface PropertyDetails {
   note: string;
   includeNote: boolean;
   countryCode: string;
-  agencyName: string;
-  agencyFee: string;
+  agentName: string;
+  agentFee: string;
 }
 
 function StepOne({
@@ -258,7 +258,7 @@ function StepOne({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Phone Number */}
             <div>
-              <h4 className="text-[#121212] text-sm font-medium">
+              <h4 className="text-[#121212] text-sm font-medium mb-1">
                 Phone Number*
               </h4>
               <PhoneInput
@@ -305,7 +305,7 @@ function StepOne({
                         setCustomPriceSelected(false);
                       }
                     }}
-                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent w-full"
+                    className="outline-none text-secondary text-xs md:text-sm font-light py-0.5 appearance-none border-none bg-transparent w-full"
                   >
                     <option value="">Select a rate</option>
                     {rates?.map((rate, index) => (
@@ -357,42 +357,40 @@ function StepOne({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1 w-full">
-              <h4 className="text-[#121212] text-sm font-medium">
-                Agency Fee*
-              </h4>
+              <h4 className="text-[#121212] text-sm font-medium">Agent Fee*</h4>
               {!customAgencySelected ? (
                 <div className="flex items-center justify-between gap-1 bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
                   <select
-                    value={formDetails.agencyFee}
+                    value={formDetails.agentFee}
                     onChange={(e) => {
                       const val = e.target.value;
                       if (val === "custom") {
                         setCustomAgencySelected(true);
                         setModal(
                           <CustomPriceModal
-                            defaultValue={formDetails.agencyFee}
+                            defaultValue={formDetails.agentFee}
                             onCancel={() => setModal(null)}
                             onConfirm={(value) => {
                               setFormDetails({
                                 ...formDetails,
-                                agencyFee: value,
+                                agentFee: value,
                               });
                               setCustomAgencySelected(true);
                               setModal(null);
                             }}
+                            isAgentFee
                           />
                         );
                       } else {
-                        setFormDetails({ ...formDetails, agencyFee: val });
+                        setFormDetails({ ...formDetails, agentFee: val });
                       }
                     }}
-                    className="outline-none w-full bg-transparent text-secondary text-sm appearance-none"
+                    className="outline-none w-full py-0.5 bg-transparent text-secondary text-sm appearance-none"
                   >
                     <option value="">Select agency fee</option>
-                    {property.price?.agencyFee != null && (
-                      <option value={property.price.agencyFee.toString()}>
-                        Built-in Agency Fee – {property.baseCurrency}
-                        {property.price.agencyFee.toLocaleString()}
+                    {property.agentFee != null && (
+                      <option value={property.agentFee.toString()}>
+                        ₦{property.agentFee.toLocaleString()}
                       </option>
                     )}
                     <option value="custom">Enter custom fee</option>
@@ -405,11 +403,11 @@ function StepOne({
                     <input
                       type="number"
                       placeholder="Custom agency fee"
-                      value={formDetails.agencyFee}
+                      value={formDetails.agentFee}
                       onChange={(e) =>
                         setFormDetails({
                           ...formDetails,
-                          agencyFee: e.target.value,
+                          agentFee: e.target.value,
                         })
                       }
                       className="w-full outline-none bg-transparent text-[#667085]"
@@ -419,7 +417,7 @@ function StepOne({
                     type="button"
                     onClick={() => {
                       setCustomAgencySelected(false);
-                      setFormDetails({ ...formDetails, agencyFee: "" });
+                      setFormDetails({ ...formDetails, agentFee: "" });
                     }}
                     className="text-xs text-primary underline mt-1"
                   >
@@ -431,18 +429,16 @@ function StepOne({
 
             {/* Agency Name Row */}
             <div className="flex flex-col gap-1 w-full">
-              <h4 className="text-[#121212] text-sm font-medium">
-                Agency Name
-              </h4>
+              <h4 className="text-[#121212] text-sm font-medium">Agent Name</h4>
               <div className="bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
                 <input
                   type="text"
                   placeholder="Enter agency name"
-                  value={formDetails.agencyName}
+                  value={formDetails.agentName}
                   onChange={(e) =>
                     setFormDetails({
                       ...formDetails,
-                      agencyName: e.target.value,
+                      agentName: e.target.value,
                     })
                   }
                   className="w-full outline-none text-[#667085]"

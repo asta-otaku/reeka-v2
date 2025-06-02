@@ -244,7 +244,7 @@ function StepOne({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <h4 className="text-[#121212] text-sm font-medium">
+              <h4 className="text-[#121212] text-sm font-medium mb-2">
                 Phone Number*
               </h4>
               <PhoneInput
