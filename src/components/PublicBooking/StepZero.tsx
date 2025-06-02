@@ -6,22 +6,28 @@ import apiClient from "../../helpers/apiClient";
 function StepZero({
   setStep,
   setProperty,
+  setFormDetails,
 }: {
   setStep: React.Dispatch<React.SetStateAction<number>>;
   setProperty: React.Dispatch<React.SetStateAction<any>>;
+  setFormDetails: React.Dispatch<React.SetStateAction<any>>;
 }) {
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
-  const { id, propId } = useParams();
+  const { id, propId, token } = useParams();
   const location = useLocation();
-  const [properties, setProperties] = useState([]);
+  const [properties, setProperties] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const apiEndpoint = `/agents/property`;
+        const apiEndpoint = location.pathname.includes("/agent")
+          ? `/agents/property`
+          : `/public/property/${token}`;
 
-        const params = { publicKey: id };
+        const params = location.pathname.includes("/agent")
+          ? { publicKey: id }
+          : {};
 
         const response = await apiClient.get(apiEndpoint, { params });
         setProperties(response.data);
@@ -29,11 +35,7 @@ function StepZero({
         console.error(error);
       }
     };
-    if (!location.pathname.includes("/admin")) {
-      setStep(1);
-    } else {
-      fetchProperties();
-    }
+    fetchProperties();
   }, [id, location.pathname]);
 
   useEffect(() => {
@@ -45,6 +47,13 @@ function StepZero({
       if (matchingProperty) {
         setSelectedApartment(propId);
         setProperty(matchingProperty);
+        setFormDetails((prev: any) => ({
+          ...prev,
+          price: matchingProperty?.defaultRate?.ratePrice?.toString(),
+          rateId: matchingProperty.defaultRate._id,
+          rateName: matchingProperty.defaultRate.rateName,
+          userId: matchingProperty.id,
+        }));
         setStep(1);
       } else {
         console.error("Property with propId not found");

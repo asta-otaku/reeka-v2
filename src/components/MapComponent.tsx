@@ -7,7 +7,7 @@ const containerStyle = {
   height: "500px",
 };
 
-const defaultCenter = { lat: 33.3152, lng: 44.3661 }; // Default to Baghdad
+const defaultCenter = { lat: 6.5244, lng: 3.3792 }; // Default to Lagos, Nigeria
 
 interface Location {
   lat: number;

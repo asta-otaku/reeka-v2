@@ -18,7 +18,7 @@ interface BookingRange {
   start: string;
   end: string;
 }
-interface Property {
+export interface Property {
   firstName: string;
   lastName: string;
   noOfGuests: string;
@@ -330,7 +330,8 @@ function Details({
             <div className="space-y-2">
               <div className="flex justify-between gap-2">
                 <h2 className="underline underline-offset-4 text-sm text-[#222222]">
-                  ₦{property.ratePrice} x {priceDetails.nights} night
+                  ₦{property.defaultRate.ratePrice.toLocaleString()} x{" "}
+                  {priceDetails.nights} night
                   {priceDetails.nights !== 1 ? "s" : ""}
                 </h2>
                 <h5 className="">₦{priceDetails.basePrice.toLocaleString()}</h5>

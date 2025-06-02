@@ -9,8 +9,6 @@ import apiClient from "../helpers/apiClient";
 import grayCheck from "../assets/graycheck.svg";
 import orangeCheck from "../assets/orangecheck.svg";
 
-const steps = ["Choose Apartment", "Enter Details", "Confirmation"];
-
 function PublicBooking() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formDetails, setFormDetails] = useState({
@@ -31,6 +29,15 @@ function PublicBooking() {
   });
   const [property, setProperty] = useState<any>(null);
   const { token, rateId } = useParams<{ token: string; rateId: string }>();
+  const [steps, setSteps] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (rateId) {
+      setSteps(["Enter Details", "Confirmation"]);
+    } else {
+      setSteps(["Choose Apartment", "Enter Details", "Confirmation"]);
+    }
+  }, [rateId]);
 
   useEffect(() => {
     const fetchProperty = async () => {
@@ -55,7 +62,11 @@ function PublicBooking() {
       }
     };
 
-    fetchProperty();
+    if (token && rateId) {
+      fetchProperty();
+    } else {
+      setCurrentStep(0);
+    }
   }, [token, rateId]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -98,25 +109,25 @@ function PublicBooking() {
       </Link>
       <div className="flex flex-col gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-4 md:px-6 my-24 lg:my-5">
         <div className="flex items-center gap-0.5 md:gap-3 w-full">
-          {steps.slice(1).map((step, index) => (
+          {steps.map((step, index) => (
             <div
-              onClick={() => setCurrentStep(index + 1)}
               key={step}
+              onClick={() => setCurrentStep(index)}
               className="flex-1 flex flex-col items-center cursor-pointer"
             >
               <div className="flex items-center justify-between w-full">
                 <span
                   className={`font-medium text-[10px] md:text-xs whitespace-nowrap ${
-                    index + 1 === currentStep
+                    index === currentStep
                       ? "text-black"
-                      : index + 1 <= currentStep - 1
+                      : index < currentStep
                       ? "text-primary"
                       : "text-[#808080]"
                   }`}
                 >
                   {step}
                 </span>
-                {index + 1 <= currentStep - 1 ? (
+                {index < currentStep ? (
                   <img
                     src={orangeCheck}
                     alt="completed"
@@ -138,7 +149,7 @@ function PublicBooking() {
               {/* underline */}
               <div
                 className={`mt-2 h-1.5 w-full rounded-full ${
-                  index + 1 <= currentStep - 1 ? "bg-primary" : "bg-gray-200"
+                  index < currentStep ? "bg-primary" : "bg-gray-200"
                 }`}
               />
             </div>
@@ -165,7 +176,11 @@ function PublicBooking() {
         </div>
 
         {currentStep === 0 && (
-          <StepZero setStep={setCurrentStep} setProperty={setProperty} />
+          <StepZero
+            setStep={setCurrentStep}
+            setProperty={setProperty}
+            setFormDetails={setFormDetails}
+          />
         )}
       </div>
     </div>
