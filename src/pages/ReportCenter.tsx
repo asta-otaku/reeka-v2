@@ -276,7 +276,13 @@ function ReportModal({ properties }: any) {
             ? `${formattedFrom}_to_${formattedTo}`
             : formattedFrom || formattedTo || "undated";
 
-        const filename = `${selectedPropertyIds.length}_properties_${form.type}_${datePart}.${form.format}`;
+        const filename =
+          selectedPropertyIds.length === 1
+            ? `${
+                properties.find((p: any) => p._id === selectedPropertyIds[0])
+                  ?.propertyName
+              }_${form.type}_${datePart}.${form.format}`
+            : `${selectedPropertyIds.length}_properties_${form.type}_${datePart}.${form.format}`;
 
         link.setAttribute("download", filename);
         document.body.appendChild(link);

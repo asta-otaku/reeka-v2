@@ -220,9 +220,7 @@ function StepTwo({
           <PricePreview
             basePrice={Number(formDetails.price)}
             cautionFee={
-              formDetails?.cautionFee ??
-              property?.propertyDetails?.price?.cautionFee ??
-              0
+              formDetails?.cautionFee ?? property?.price?.cautionFee ?? 0
             }
             days={days}
           />
