@@ -18,6 +18,7 @@ import ModalLayout from "./ModalLayout";
 import useStore from "../store";
 import toast from "react-hot-toast";
 import apiClient from "../helpers/apiClient";
+import Cookies from "js-cookie";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
@@ -29,7 +30,7 @@ function DashboardLayout({ children }: any) {
   }, [currentModal]);
   const [nav, setNav] = useState(false);
   const toggleNav = () => setNav(!nav);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(Cookies.get("user") || "{}");
   const location = useLocation();
 
   useEffect(() => {
@@ -192,7 +193,7 @@ function ListItem({
   title: string;
 }) {
   const location = useLocation();
-  const userSessionDetails = JSON.parse(localStorage.getItem("user") || "{}");
+  const userSessionDetails = JSON.parse(Cookies.get("user") || "{}");
   const { staffId } = userSessionDetails;
 
   const handleLogout = async () => {
@@ -203,7 +204,7 @@ function ListItem({
         await apiClient.post("/auth/logout");
       }
       toast.success("Logged out successfully");
-      localStorage.removeItem("user");
+      Cookies.remove("user");
       window.location.href = "/signin";
     } catch (error) {
       toast.error("An error occurred. Please try again");

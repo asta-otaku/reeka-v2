@@ -10,13 +10,14 @@ import AddProperty from "../components/AddProperty";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../helpers/apiClient";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 function ListingManagement() {
   const [step, setStep] = useState(1);
   const [search, setSearch] = useState("");
   const [grid, setGrid] = useState(false);
   const [properties, setProperties] = useState([]);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(Cookies.get("user") || "{}");
 
   const navigate = useNavigate();
 

@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import apiClient from "../../helpers/apiClient";
 import Spinner from "../Spinner";
 import EditContact from "./EditContact";
+import Cookies from "js-cookie";
 
 function EditInfo() {
   const [user, setUser] = useState({
@@ -12,7 +13,7 @@ function EditInfo() {
     address: "",
   });
   const [loading, setLoading] = useState(false);
-  const userSessionDetails = JSON.parse(localStorage.getItem("user") || "{}");
+  const userSessionDetails = JSON.parse(Cookies.get("user") || "{}");
   const { staffId } = userSessionDetails;
 
   const url = staffId ? `/users/${staffId}` : "/users";

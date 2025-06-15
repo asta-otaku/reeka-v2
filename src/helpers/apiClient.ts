@@ -2,10 +2,11 @@
 import axios from 'axios';
 import { CONSTANT } from '../util';
 import { toast } from "react-hot-toast";
+import Cookies from "js-cookie"
 
 // Helper functions for tokens
-const getAccessToken = () => localStorage.getItem("accessToken");
-const getRefreshToken = () => localStorage.getItem("refreshToken");
+const getAccessToken = () => Cookies.get("accessToken");
+const getRefreshToken = () => Cookies.get("refreshToken");
 
 const apiClient = axios.create({
   baseURL: CONSTANT.BASE_URL,
@@ -21,7 +22,7 @@ const refreshAccessToken = async () => {
 
     const newAccessToken = response.data.newAccessToken;
     if (newAccessToken) {
-      localStorage.setItem("accessToken", newAccessToken);
+      Cookies.set("accessToken", newAccessToken, { expires: 1 });
       apiClient.defaults.headers['Authorization'] = `Bearer ${newAccessToken}`;
     }
     return newAccessToken;

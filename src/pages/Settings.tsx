@@ -5,6 +5,7 @@ import ChangePassword from "../components/Settings/ChangePassword";
 import EditInfo from "../components/Settings/EditInfo";
 import PersonnelManagement from "../components/Settings/PersonnelManagement";
 import CautionInfo from "../components/Settings/CautionInfo";
+import Cookies from "js-cookie";
 // import apiClient from "../helpers/apiClient";
 
 const tabs = [
@@ -20,7 +21,7 @@ function Settings() {
   const [user, setUser] = useState<{ userRole?: string }>({});
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const storedUser = JSON.parse(Cookies.get("user") || "{}");
     setUser(storedUser);
   }, []);
 

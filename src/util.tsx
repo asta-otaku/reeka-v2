@@ -1,10 +1,11 @@
 let cachedUserId: string | null = null;
+import Cookies from "js-cookie";
 
 export const CONSTANT = {
   BASE_URL: import.meta.env.VITE_BASE_URL,
   get USER_ID() {
     if (!cachedUserId) {
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(Cookies.getI("user") || "{}");
       cachedUserId = user._id || null;
     }
     return cachedUserId;
@@ -12,6 +13,6 @@ export const CONSTANT = {
 };
 
 export function logout() {
-  localStorage.removeItem("user");
+  Cookies.remove("user");
   cachedUserId = null;
 }

@@ -1,4 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
 import authBg from "../assets/authBg.png";
 import axios from "axios";
 import { CONSTANT } from "../util";
@@ -7,8 +8,8 @@ import toast from "react-hot-toast";
 import Spinner from "../components/Spinner";
 
 function SignIn() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const accessToken = localStorage.getItem("accessToken");
+  const user = JSON.parse(Cookies.get("user") || "{}");
+  const accessToken = Cookies.get("accessToken");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,7 +75,6 @@ function SignIn() {
           setLoading(false);
           toast.success("Logged in successfully");
 
-          // Store tokens and user info in localStorage
           const {
             accessToken,
             refreshToken,
@@ -84,11 +84,12 @@ function SignIn() {
             country,
             staffId,
           } = res.data;
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-          localStorage.setItem(
+          Cookies.set("accessToken", accessToken, { expires: 1 });
+          Cookies.set("refreshToken", refreshToken, { expires: 1 });
+          Cookies.set(
             "user",
-            JSON.stringify({ firstName, lastName, userRole, country, staffId })
+            JSON.stringify({ firstName, lastName, userRole, country, staffId }),
+            { expires: 1 }
           );
 
           // Redirect the user back to the original URL (or dashboard by default)

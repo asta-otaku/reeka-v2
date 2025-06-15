@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import Cookies from "js-cookie"
 
-const getUser = () => JSON.parse(localStorage.getItem("user") || "{}");
+const getUser = () => JSON.parse(Cookies.get("user") || "{}");
 
 export const useCurrency = () => {
     const [currency, setCurrency] = useState<string>("");

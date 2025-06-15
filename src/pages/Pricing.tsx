@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import apiClient from "../helpers/apiClient";
+import Cookies from "js-cookie";
 
 function Pricing() {
   const [pricingPlan, setPricingPlan] = useState("");
@@ -9,7 +10,7 @@ function Pricing() {
 
   useEffect(() => {
     if (pricingPlan) {
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(Cookies.get("user") || "{}");
       if (Object.keys(user).length === 0) {
         navigate("/signin");
       } else {

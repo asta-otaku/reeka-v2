@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardPropertyChart from "../components/DashboardPropertyChart";
 import { DatePicker } from "antd";
 import apiClient from "../helpers/apiClient";
+import Cookies from "js-cookie";
 
 const { RangePicker } = DatePicker;
 
@@ -14,7 +15,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [selected, setSelected] = useState(0);
   const [openModal, setOpenModal] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = JSON.parse(Cookies.get("user") || "{}");
   const [properties, setProperties] = useState<any[]>([]);
   const [selectedProperty, setSelectedProperty] = useState("");
   const [activePropertyId, setActivePropertyId] = useState("");
@@ -23,14 +24,14 @@ function Dashboard() {
   const [userCurrency, setUserCurrency] = useState("");
 
   useEffect(() => {
-    const storedCurrency = localStorage.getItem("userCurrency");
+    const storedCurrency = Cookies.get("userCurrency");
     if (storedCurrency) {
       setUserCurrency(storedCurrency);
     } else {
       const defaultCurrency =
         user.country?.toLowerCase() !== "nigeria" ? "USD" : "NGN";
       setUserCurrency(defaultCurrency);
-      localStorage.setItem("userCurrency", defaultCurrency);
+      Cookies.set("userCurrency", defaultCurrency, { expires: 3 });
     }
   }, []);
 
@@ -110,7 +111,7 @@ function Dashboard() {
                     onChange={(e) => {
                       const newCurrency = e.target.value;
                       setUserCurrency(newCurrency);
-                      localStorage.setItem("userCurrency", newCurrency);
+                      Cookies.set("userCurrency", newCurrency, { expires: 3 });
                     }}
                     value={userCurrency}
                     className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"

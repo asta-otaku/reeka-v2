@@ -2,6 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Spinner from "../Spinner";
 import apiClient from "../../helpers/apiClient";
+import Cookies from "js-cookie";
 
 function ChangePassword() {
   const [formDetails, setFormDetails] = useState({
@@ -9,7 +10,7 @@ function ChangePassword() {
     newPassword: "",
   });
   const [loading, setLoading] = useState(false);
-  const userSessionDetails = JSON.parse(localStorage.getItem("user") || "{}");
+  const userSessionDetails = JSON.parse(Cookies.get("user") || "{}");
   const { staffId } = userSessionDetails;
 
   const url = staffId
