@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import cloud from "../assets/cloud-upload-white.svg";
 import apiClient from "../helpers/apiClient";
+import Spinner from "../components/Spinner";
 
 interface BookingInfo {
   bookingId: string;
@@ -23,6 +24,7 @@ export default function IncidentReport() {
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -65,6 +67,7 @@ export default function IncidentReport() {
     });
 
     try {
+      setLoading(true);
       await apiClient.post(`/booking/${id}/incident-report`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -74,6 +77,7 @@ export default function IncidentReport() {
       setTimeout(() => {
         navigate("/");
       }, 3000);
+      setLoading(false);
     } catch (err) {
       toast.error("Failed to submit incident");
     }
@@ -216,9 +220,10 @@ export default function IncidentReport() {
 
       <button
         onClick={handleSubmit}
+        disabled={loading}
         className="mt-8 px-6 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition w-full md:w-auto"
       >
-        Submit Incident Report
+        {loading ? <Spinner /> : "Submit Incident Report"}
       </button>
     </div>
   );
