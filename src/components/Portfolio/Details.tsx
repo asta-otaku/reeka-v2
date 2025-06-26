@@ -4,7 +4,6 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import PhoneInput from "../PhoneInput";
 import MapComponent from "../MapComponent";
-import { Property } from "../PublicBooking/Details";
 
 const { RangePicker } = DatePicker;
 
@@ -23,8 +22,36 @@ function Details({
     amenities: string[];
   };
   setCurrentStep: (step: number) => void;
-  formDetails: Property;
-  setFormDetails: React.Dispatch<React.SetStateAction<Property>>;
+  formDetails: {
+    firstName: string;
+    lastName: string;
+    noOfGuests: string;
+    email: string;
+    phoneNumber: string;
+    checkIn: string;
+    checkOut: string;
+    price: string;
+    rateName: string;
+    rateId: string;
+    userId: string;
+    countryCode: string;
+  };
+  setFormDetails: React.Dispatch<
+    React.SetStateAction<{
+      firstName: string;
+      lastName: string;
+      noOfGuests: string;
+      email: string;
+      phoneNumber: string;
+      checkIn: string;
+      checkOut: string;
+      price: string;
+      rateName: string;
+      rateId: string;
+      userId: string;
+      countryCode: string;
+    }>
+  >;
 }) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
