@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import StepTwo from "./StepTwo";
 import toast from "react-hot-toast";
 import apiClient from "../../helpers/apiClient";
+import { PropertyDetails } from "./StepOne";
 
 function StepThree({
   formDetails,
@@ -10,22 +11,7 @@ function StepThree({
   invoiceId,
   setInvoiceId,
 }: {
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    rateId: string;
-    note: string;
-    includeNote: boolean;
-    countryCode: string;
-    agentName: string;
-    agentFee: string;
-  };
+  formDetails: PropertyDetails;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
   invoiceId: string;

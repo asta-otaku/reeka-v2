@@ -1,15 +1,15 @@
 import editIcon from "../../assets/edit-01.svg";
 import prop from "../../assets/prop1.svg";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCurrency } from "../../helpers/getCurrency";
-import apiClient from "../../helpers/apiClient";
 import moment from "moment";
 import { PricePreview } from "../ViewProperty/FeeSection";
+import axios from "axios";
+import { CONSTANT } from "../../util";
 
-function formatTimestamp(dateString: string) {
+export function formatTimestamp(dateString: string) {
   const [day, month, year] = dateString.split("/");
 
   // Combine to get the desired format
@@ -20,6 +20,8 @@ function StepTwo({
   formDetails,
   hideFeatures,
   property,
+  paymentLink,
+  bookingId,
 }: {
   formDetails: {
     firstName: string;
@@ -40,52 +42,36 @@ function StepTwo({
     propertyAddress?: string;
     property?: string;
     cautionFee?: number;
+    paymentStatus?: string;
   };
   hideFeatures?: boolean;
   property?: any;
+  paymentLink?: string;
+  bookingId?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
-  const navigate = useNavigate();
   const currency = useCurrency();
-  const { id } = useParams();
-  const location = useLocation();
 
-  const handleReserve = async () => {
-    const payload = {
-      propertyId: property?._id,
-      startDate: formatTimestamp(formDetails.checkIn),
-      endDate: formatTimestamp(formDetails.checkOut),
-      guestFirstName: formDetails.firstName,
-      guestLastName: formDetails.lastName,
-      guestEmail: formDetails.email,
-      guestPhone: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
-      countryCode: formDetails.countryCode,
-      numberOfChildren: 0,
-      numberOfGuests: formDetails.noOfGuests,
-      priceState: Number(formDetails.price) || 0,
-      rateId: formDetails.rateId,
-      note: formDetails.note,
-      // userId: formDetails.userId,
-      includeNote: formDetails.includeNote,
-    };
-
+  const handleInvoiceDownload = async () => {
     setLoading(true);
-    const apiEndpoint = location.pathname.includes("/agent")
-      ? `/agents/${id}/booking`
-      : `/public/booking`;
-
-    try {
-      const res = await apiClient.post(apiEndpoint, payload);
-      setLoading(false);
-      toast.success("Reservation successful");
-
-      navigate(`/invoice/${res.data.invoices[res.data.invoices.length - 1]}`);
-    } catch (err: any) {
-      console.error(err);
-      setLoading(false);
-      toast.error(err.response?.data?.error || "An error occurred");
-    }
+    axios
+      .get(`${CONSTANT.BASE_URL}/invoice/${bookingId}/pdf`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `invoice-${bookingId}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
   const calculateDays = (checkIn: string, checkOut: string) => {
@@ -236,17 +222,24 @@ function StepTwo({
       </button>
 
       <div
-        className={`my-3 w-full flex justify-center ${
+        className={`my-3 w-full flex gap-4 justify-center ${
           hideFeatures && "hidden"
         }`}
       >
         <button
-          disabled={loading}
-          onClick={handleReserve}
-          className="w-[160px] rounded-lg bg-primary text-white font-medium text-sm py-2"
+          onClick={handleInvoiceDownload}
+          className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2"
         >
-          {loading ? <Spinner /> : "Reserve"}
+          {loading ? <Spinner /> : "Download Invoice"}
         </button>
+        <Link
+          to={paymentLink || "#"}
+          className={`w-[130px] rounded-lg bg-primary text-white text-center font-medium text-sm py-2 ${
+            formDetails.paymentStatus === "paid" ? "hidden" : ""
+          }`}
+        >
+          Pay Now
+        </Link>
       </div>
     </>
   );

@@ -387,7 +387,7 @@ function StepOne({
                     }}
                     className="outline-none w-full py-0.5 bg-transparent text-secondary text-sm appearance-none"
                   >
-                    <option value="">Select agency fee</option>
+                    <option value="">Select agent fee</option>
                     {property.agentFee != null && (
                       <option value={property.agentFee.toString()}>
                         ₦{property.agentFee.toLocaleString()}
@@ -402,7 +402,7 @@ function StepOne({
                   <div className="flex items-center gap-1 bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
                     <input
                       type="number"
-                      placeholder="Custom agency fee"
+                      placeholder="Custom agent fee"
                       value={formDetails.agentFee}
                       onChange={(e) =>
                         setFormDetails({
@@ -433,7 +433,7 @@ function StepOne({
               <div className="bg-white border border-[#D0D5DD] rounded-lg p-2 w-full">
                 <input
                   type="text"
-                  placeholder="Enter agency name"
+                  placeholder="Enter agent name"
                   value={formDetails.agentName}
                   onChange={(e) =>
                     setFormDetails({

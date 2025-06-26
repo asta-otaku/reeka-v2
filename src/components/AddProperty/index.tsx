@@ -20,8 +20,7 @@ function AddProperty({ setStep }: { setStep: any }) {
   const toggleSection = (section: string) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
-
-  const [formDetails, setFormDetails] = useState({
+  const defaultState = {
     propertyName: "",
     address: "",
     agentFee: 0,
@@ -38,7 +37,11 @@ function AddProperty({ setStep }: { setStep: any }) {
     bathroomCount: 1,
     amenities: {},
     images: [],
-  });
+    longitude: "",
+    latitude: "",
+  };
+
+  const [formDetails, setFormDetails] = useState(defaultState);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormDetails({
@@ -63,15 +66,16 @@ function AddProperty({ setStep }: { setStep: any }) {
       const formData = new FormData();
       formData.append("propertyName", formDetails.propertyName);
       formData.append("address", formDetails.address);
-      formData.append("agentFee", formDetails.agentFee.toLocaleString() || "0");
+      formData.append("agentFee", formDetails.agentFee.toString() || "0");
       formData.append("city", formDetails.city);
       formData.append("country", formDetails.country);
       formData.append("baseCurrency", formDetails.baseCurrency);
-      formData.append("employees", JSON.stringify(formDetails.employees));
       formData.append("bedroomCount", formDetails.bedroomCount.toString());
       formData.append("bathroomCount", formDetails.bathroomCount.toString());
       formData.append("amenities", JSON.stringify(formDetails.amenities));
       formData.append("price", JSON.stringify(formDetails.price));
+      formData.append("latitude", formDetails.latitude);
+      formData.append("longitude", formDetails.longitude);
       formDetails.images.forEach((image) => {
         formData.append("images", image);
       });
@@ -85,24 +89,7 @@ function AddProperty({ setStep }: { setStep: any }) {
         .then((res) => {
           toast.success("Property added successfully");
           setLoading(false);
-          setFormDetails({
-            propertyName: "",
-            address: "",
-            agentFee: 0,
-            city: "",
-            country: "",
-            baseCurrency: "NGN",
-            employees: [],
-            price: {
-              basePrice: 0,
-              cautionFee: 0,
-            },
-            pricingState: "base",
-            bedroomCount: 0,
-            bathroomCount: 0,
-            amenities: {},
-            images: [],
-          });
+          setFormDetails(defaultState);
           setModal(
             <SuccessModal setModal={setModal} propertyId={res.data._id} />
           );

@@ -12,6 +12,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
+import { formatTimestamp } from "./StepTwo";
+import Spinner from "../Spinner";
+import { useParams } from "react-router-dom";
+import apiClient from "../../helpers/apiClient";
 
 const { RangePicker } = DatePicker;
 interface BookingRange {
@@ -33,6 +37,7 @@ export interface Property {
   includeNote: boolean;
   userId: string;
   countryCode: string;
+  paymentStatus?: string;
 }
 
 function Details({
@@ -41,15 +46,25 @@ function Details({
   formDetails,
   setFormDetails,
   handleChange,
+  setPaymentLink,
+  setBookingId,
 }: {
   property: any;
   setCurrentStep: (step: number) => void;
   formDetails: Property;
   setFormDetails: React.Dispatch<React.SetStateAction<Property>>;
-
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setPaymentLink: React.Dispatch<React.SetStateAction<string>>;
+  setBookingId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [bookedDates, setBookedDates] = useState<BookingRange[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState({
+    lat: property.latitude || 6.5244,
+    lng: property.longtitude || 3.3792,
+  });
+
+  const { id } = useParams();
 
   useEffect(() => {
     axios
@@ -92,8 +107,9 @@ function Details({
     }
     return false;
   };
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const {
       firstName,
       lastName,
@@ -103,6 +119,10 @@ function Details({
       checkIn,
       checkOut,
       countryCode,
+      price,
+      rateId,
+      note,
+      includeNote,
     } = formDetails;
 
     if (
@@ -117,17 +137,76 @@ function Details({
     ) {
       return toast.error("Please fill in all required fields");
     }
+
     const emailRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (!emailRegex.test(email)) {
       return toast.error("Invalid email address");
     }
-    // date sanity
+
     if (dayjs(checkOut).isBefore(dayjs(checkIn))) {
       return toast.error("Check-out must be after check-in");
     }
-    setCurrentStep(2);
+
+    const payload = {
+      propertyId: property?._id,
+      startDate: formatTimestamp(checkIn),
+      endDate: formatTimestamp(checkOut),
+      guestFirstName: firstName,
+      guestLastName: lastName,
+      guestEmail: email,
+      guestPhone: `(${countryCode})${phoneNumber}`,
+      countryCode,
+      numberOfChildren: 0,
+      numberOfGuests: noOfGuests,
+      priceState: Number(price) || 0,
+      rateId,
+      note,
+      includeNote,
+    };
+
+    setLoading(true);
+    const apiEndpoint = location.pathname.includes("/agent")
+      ? `/agents/${id}/booking`
+      : `/public/booking`;
+
+    try {
+      // Step 1: Create booking
+      const res = await apiClient.post(apiEndpoint, payload);
+      const invoiceId = res.data.invoices[res.data.invoices.length - 1];
+
+      // Step 2: Fetch booking details using the invoice ID
+      const fetchRes = await axios.get(
+        `${CONSTANT.BASE_URL}/invoice/${invoiceId}`
+      );
+
+      if (fetchRes.status === 200) {
+        const { propertyName, propertyAddress, paymentStatus } =
+          fetchRes.data.booking;
+
+        setFormDetails((prev) => ({
+          ...prev,
+          propertyName,
+          propertyAddress,
+          paymentStatus,
+        }));
+
+        setPaymentLink(fetchRes.data.paymentLink);
+        setBookingId(fetchRes.data.booking._id);
+
+        // Now proceed to next step
+        setCurrentStep(2);
+      } else {
+        toast.error("An error occurred while fetching invoice data");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "An error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
+
   const onRangeChange = (_: any, [start, end]: [string, string]) => {
     setFormDetails((f) => ({
       ...f,
@@ -322,7 +401,7 @@ function Details({
               type="submit"
               className="bg-primary rounded-md py-2 text-white text-sm font-medium"
             >
-              Continue
+              {loading ? <Spinner /> : "Continue"}
             </button>
             <p className="text-center text-secondary text-xs">
               You won’t be charged yet
@@ -356,12 +435,11 @@ function Details({
         </div>
         <div className="flex w-full"></div>
       </div>
-      <div className="-mt-[300px] -z-20">
+      <div>
         <MapComponent
-          selectedLocation={{
-            lat: property.latitude,
-            lng: property.longtitude,
-          }}
+          selectedLocation={selectedLocation}
+          onLocationChange={(newLocation) => setSelectedLocation(newLocation)}
+          interactive={true}
         />
       </div>
     </div>

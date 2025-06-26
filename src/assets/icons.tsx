@@ -412,6 +412,49 @@ export function Hamburger(props: SVGAttributes<SVGElement>) {
   );
 }
 
+export function IncidentReportIcon(props: SVGAttributes<SVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#6D6D6D"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      className="lucide lucide-proportions-icon lucide-proportions"
+      {...props}
+    >
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="M12 9v11" />
+      <path d="M2 9h13a2 2 0 0 1 2 2v9" />
+    </svg>
+  );
+}
+
+export function MapPin(props: SVGAttributes<SVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      className="lucide lucide-map-pin-icon lucide-map-pin"
+      {...props}
+    >
+      <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
 export function ManagerIcon(props: SVGAttributes<SVGElement>) {
   return (
     <svg

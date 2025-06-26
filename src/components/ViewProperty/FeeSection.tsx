@@ -23,9 +23,7 @@ export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
 
   return (
     <div className="border p-6 rounded-xl shadow-sm bg-white my-6">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">
-        Agency Commission
-      </h3>
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">Agent Fee</h3>
 
       <div className="flex flex-col md:flex-row gap-4">
         {/* Fee Type */}
@@ -37,7 +35,7 @@ export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
             disabled
             className="border px-3 py-2 rounded-md bg-gray-100 text-sm text-gray-500 w-full cursor-not-allowed"
           >
-            <option>Agency Fee</option>
+            <option>Agent Fee</option>
           </select>
         </div>
 
@@ -52,8 +50,7 @@ export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
           <div className="w-full flex gap-2 items-center">
             <input
               id="agencyFee"
-              type="number"
-              value={agencyFee || ""}
+              value={agencyFee ? agencyFee.toLocaleString() : ""}
               onChange={(e) => setAgencyFee(Number(e.target.value))}
               placeholder="e.g. 2500"
               className={`border px-4 py-2 rounded-md text-sm w-full outline-none transition-all duration-200 ${
@@ -82,12 +79,12 @@ export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
         <p className="font-medium mb-2">Fee Breakdown</p>
         {agencyFee > 0 && (
           <p>
-            <span className="font-semibold">Agency Fee:</span> {currency}
+            <span className="font-semibold">Agent Fee:</span> {currency}
             {agencyFee.toLocaleString()}
           </p>
         )}
         <p className="text-gray-500 italic text-xs mt-2">
-          This fee covers the booking agency service and is{" "}
+          This fee is for the services provided by the booking agent and is{" "}
           <strong>non‐refundable</strong>.
         </p>
       </div>
@@ -130,9 +127,13 @@ const FeeSection: FC<FeeSectionProps> = ({
           <div className="w-full flex gap-2 items-center">
             <input
               id="cautionFee"
-              type="number"
-              value={cautionFee || ""}
-              onChange={(e) => setCautionFee(Number(e.target.value))}
+              value={cautionFee?.toLocaleString() || ""}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, "");
+                if (!isNaN(Number(value))) {
+                  setCautionFee(Number(value));
+                }
+              }}
               placeholder="e.g. 50000"
               className={`border px-4 py-2 rounded-md text-sm w-full outline-none transition-all duration-200 ${
                 edit

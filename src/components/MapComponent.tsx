@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import Spinner from "./Spinner";
 
@@ -16,15 +16,24 @@ interface Location {
 
 interface MapComponentProps {
   selectedLocation: Location;
+  onLocationChange?: (location: Location) => void;
+  interactive?: boolean;
 }
 
-const MapComponent = ({ selectedLocation }: MapComponentProps) => {
-  const { isLoaded } = useJsApiLoader({
+const MapComponent = ({
+  selectedLocation,
+  onLocationChange,
+  interactive = false,
+}: MapComponentProps) => {
+  const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+    libraries: ["places"],
   });
 
-  const [position, setPosition] = useState(defaultCenter);
+  const [position, setPosition] = useState<Location>(defaultCenter);
+  const mapRef = useRef<google.maps.Map | null>(null);
 
+  // Initialize position
   useEffect(() => {
     if (selectedLocation) {
       setPosition({
@@ -34,23 +43,66 @@ const MapComponent = ({ selectedLocation }: MapComponentProps) => {
     }
   }, [selectedLocation]);
 
+  const handleMapClick = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      if (!interactive || !e.latLng) return;
+
+      const newPosition = {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+      };
+
+      setPosition(newPosition);
+
+      if (onLocationChange) {
+        onLocationChange(newPosition);
+      }
+    },
+    [interactive, onLocationChange]
+  );
+
+  const handleMarkerDrag = useCallback(
+    (e: google.maps.MapMouseEvent) => {
+      if (!e.latLng) return;
+
+      const newPosition = {
+        lat: e.latLng.lat(),
+        lng: e.latLng.lng(),
+      };
+
+      setPosition(newPosition);
+
+      if (onLocationChange) {
+        onLocationChange(newPosition);
+      }
+    },
+    [onLocationChange]
+  );
+
+  const handleMapLoad = useCallback((map: google.maps.Map) => {
+    mapRef.current = map;
+  }, []);
+
   if (!isLoaded) return <Spinner />;
+  if (loadError) return <div>Error loading maps</div>;
 
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={position}
       zoom={14}
-      options={{ mapTypeControl: false }}
+      onClick={interactive ? handleMapClick : undefined}
+      onLoad={handleMapLoad}
+      options={{
+        mapTypeControl: false,
+        streetViewControl: interactive,
+        fullscreenControl: interactive,
+      }}
     >
       <Marker
         position={position}
-        draggable
-        onDragEnd={async (e) => {
-          const lat = e.latLng!.lat();
-          const lng = e.latLng!.lng();
-          setPosition({ lat, lng });
-        }}
+        draggable={interactive}
+        onDragEnd={interactive ? handleMarkerDrag : undefined}
       />
     </GoogleMap>
   );

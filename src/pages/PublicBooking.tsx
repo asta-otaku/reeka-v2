@@ -30,6 +30,8 @@ function PublicBooking() {
   const [property, setProperty] = useState<any>(null);
   const { token, rateId } = useParams<{ token: string; rateId: string }>();
   const [steps, setSteps] = useState<string[]>([]);
+  const [paymentLink, setPaymentLink] = useState("");
+  const [bookingId, setBookingId] = useState("");
 
   useEffect(() => {
     if (rateId) {
@@ -118,16 +120,12 @@ function PublicBooking() {
               <div className="flex items-center justify-between w-full">
                 <span
                   className={`font-medium text-[10px] md:text-xs whitespace-nowrap ${
-                    index === currentStep
-                      ? "text-black"
-                      : index < currentStep
-                      ? "text-primary"
-                      : "text-[#808080]"
+                    index <= currentStep ? "text-primary" : "text-[#808080]"
                   }`}
                 >
                   {step}
                 </span>
-                {index < currentStep ? (
+                {index < currentStep + 1 ? (
                   <img
                     src={orangeCheck}
                     alt="completed"
@@ -149,7 +147,7 @@ function PublicBooking() {
               {/* underline */}
               <div
                 className={`mt-2 h-1.5 w-full rounded-full ${
-                  index < currentStep ? "bg-primary" : "bg-gray-200"
+                  index < currentStep + 1 ? "bg-primary" : "bg-gray-200"
                 }`}
               />
             </div>
@@ -168,10 +166,17 @@ function PublicBooking() {
               setCurrentStep={setCurrentStep}
               property={property}
               handleChange={handleChange}
+              setPaymentLink={setPaymentLink}
+              setBookingId={setBookingId}
             />
           )}
           {property && currentStep === 2 && (
-            <StepTwo formDetails={formDetails} property={property} />
+            <StepTwo
+              formDetails={formDetails}
+              property={property}
+              paymentLink={paymentLink}
+              bookingId={bookingId}
+            />
           )}
         </div>
 

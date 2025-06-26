@@ -7,6 +7,7 @@ import apiClient from "../../helpers/apiClient";
 import { useCurrency } from "../../helpers/getCurrency";
 import moment from "moment";
 import { PricePreview } from "../ViewProperty/FeeSection";
+import { PropertyDetails } from "./StepOne";
 
 function StepTwo({
   formDetails,
@@ -15,22 +16,7 @@ function StepTwo({
   property,
   setInvoiceId,
 }: {
-  formDetails: {
-    firstName: string;
-    lastName: string;
-    noOfGuests: string;
-    email: string;
-    phoneNumber: string;
-    checkIn: string;
-    checkOut: string;
-    price: string;
-    rateId: string;
-    note: string;
-    includeNote: boolean;
-    countryCode: string;
-    agentName: string;
-    agentFee: string;
-  };
+  formDetails: PropertyDetails;
   hideFeatures?: boolean;
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;

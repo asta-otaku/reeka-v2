@@ -22,7 +22,7 @@ export default function CustomPriceModal({
         className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-md"
       >
         <h3 className="text-lg font-semibold text-[#121212] mb-3">
-          Enter Custom Rate
+          {isAgentFee ? "Set Custom Agent Fee" : "Enter Custom Rate"}
         </h3>
         <input
           type="text"

@@ -270,8 +270,9 @@ function ViewProperty() {
                 <span className="w-2 h-2 rounded-full bg-[#808080]" />
                 <span>
                   {currency}
-                  {property?.defaultRate?.ratePrice ||
-                    property.price.basePrice}{" "}
+                  {(
+                    property?.defaultRate?.ratePrice || property.price.basePrice
+                  )?.toLocaleString()}{" "}
                   per night ({property?.defaultRate?.rateName || ""})
                 </span>
               </div>
