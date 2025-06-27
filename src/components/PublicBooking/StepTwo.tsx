@@ -1,13 +1,13 @@
 import editIcon from "../../assets/edit-01.svg";
 import prop from "../../assets/prop1.svg";
 import { useState } from "react";
-import Spinner from "../Spinner";
+// import Spinner from "../Spinner";
 import { Link } from "react-router-dom";
 import { useCurrency } from "../../helpers/getCurrency";
 import moment from "moment";
 import { PricePreview } from "../ViewProperty/FeeSection";
-import axios from "axios";
-import { CONSTANT } from "../../util";
+// import axios from "axios";
+// import { CONSTANT } from "../../util";
 
 export function formatTimestamp(dateString: string) {
   const [day, month, year] = dateString.split("/");
@@ -21,8 +21,8 @@ function StepTwo({
   hideFeatures,
   property,
   paymentLink,
-  bookingId,
-}: {
+}: // bookingId,
+{
   formDetails: {
     firstName: string;
     lastName: string;
@@ -49,30 +49,30 @@ function StepTwo({
   paymentLink?: string;
   bookingId?: string;
 }) {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
   const currency = useCurrency();
 
-  const handleInvoiceDownload = async () => {
-    setLoading(true);
-    axios
-      .get(`${CONSTANT.BASE_URL}/invoice/${bookingId}/pdf`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", `invoice-${bookingId}.pdf`);
-        document.body.appendChild(link);
-        link.click();
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  };
+  // const handleInvoiceDownload = async () => {
+  //   setLoading(true);
+  //   axios
+  //     .get(`${CONSTANT.BASE_URL}/invoice/${bookingId}/pdf`, {
+  //       responseType: "blob",
+  //     })
+  //     .then((response) => {
+  //       const url = window.URL.createObjectURL(new Blob([response.data]));
+  //       const link = document.createElement("a");
+  //       link.href = url;
+  //       link.setAttribute("download", `invoice-${bookingId}.pdf`);
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setLoading(false);
+  //     });
+  // };
 
   const calculateDays = (checkIn: string, checkOut: string) => {
     if (!checkIn || !checkOut) return 0;
@@ -226,14 +226,15 @@ function StepTwo({
           hideFeatures && "hidden"
         }`}
       >
-        <button
+        {/* <button
           onClick={handleInvoiceDownload}
           className="w-[130px] rounded-lg bg-[#6D6D6D] text-white font-medium text-sm py-2"
         >
           {loading ? <Spinner /> : "Download Invoice"}
-        </button>
+        </button> */}
         <Link
           to={paymentLink || "#"}
+          target="_blank"
           className={`w-[130px] rounded-lg bg-primary text-white text-center font-medium text-sm py-2 ${
             formDetails.paymentStatus === "paid" ? "hidden" : ""
           }`}

@@ -387,7 +387,8 @@ function StepOne({
                     }}
                     className="outline-none w-full py-0.5 bg-transparent text-secondary text-sm appearance-none"
                   >
-                    <option value="">Select agent fee</option>
+                    <option disabled>Select agent fee</option>
+                    <option value="">No agent fee</option>
                     {property.agentFee != null && (
                       <option value={property.agentFee.toString()}>
                         ₦{property.agentFee.toLocaleString()}
