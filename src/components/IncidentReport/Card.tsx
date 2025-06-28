@@ -1,5 +1,10 @@
 import { IncidentReport } from "../../pages/IncidentReportCenter";
 import IncidentModal from "./Modal";
+import toast from "react-hot-toast";
+import { handleBlobError } from "../../pages/ReportCenter";
+import { useState } from "react";
+import apiClient from "../../helpers/apiClient";
+import Spinner from "../Spinner";
 
 interface CardProps {
   setModal: any;
@@ -7,6 +12,7 @@ interface CardProps {
 }
 
 function IncidentCard({ setModal, report }: CardProps) {
+  const [loading, setLoading] = useState(false);
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -15,9 +21,31 @@ function IncidentCard({ setModal, report }: CardProps) {
     });
   };
 
-  const handleDownload = (reportId: string) => {
-    console.log("Downloading report:", reportId);
-    // Implement your download logic here
+  const handleSingleDownload = (incidentName: string, incidentId: string) => {
+    const url = `/report/incident/${incidentId}/pdf`;
+
+    setLoading(true);
+    apiClient
+      .get(url, {
+        responseType: "blob",
+      })
+      .then((res) => {
+        const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.setAttribute("download", `${incidentName}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      })
+      .catch(async (error) => {
+        const message = await handleBlobError(error);
+        toast.error(message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   if (!report) return null;
   return (
@@ -162,31 +190,48 @@ function IncidentCard({ setModal, report }: CardProps) {
         </div>
 
         {/* Footer Section */}
-        <div className="flex justify-between items-center pt-4 border-t border-gray-100">
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+          className="flex justify-between items-center pt-4 border-t border-gray-100"
+        >
           <div>
             <p className="text-xs text-gray-500">
               Reported: {formatDate(report.createdAt)}
             </p>
           </div>
           <button
-            onClick={() => handleDownload(report._id)}
+            disabled={loading}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              handleSingleDownload(report.propertyName, report._id);
+            }}
             className="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
-            Download
+            {loading ? (
+              <Spinner />
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                Download
+              </>
+            )}
           </button>
         </div>
       </div>

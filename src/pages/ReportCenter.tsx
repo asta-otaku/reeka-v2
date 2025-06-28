@@ -11,7 +11,7 @@ import apiClient from "../helpers/apiClient";
 import DatePicker from "react-datepicker";
 import { format, parseISO } from "date-fns";
 
-async function handleBlobError(error: any) {
+export async function handleBlobError(error: any) {
   if (
     error.response &&
     error.response.data instanceof Blob &&

@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import searchIcon from "../../assets/search-01.svg";
 import { useLocation, useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+
+const { RangePicker } = DatePicker;
 
 function StepZero({
   setStep,
@@ -17,6 +21,14 @@ function StepZero({
   const { id, propId, token } = useParams();
   const location = useLocation();
   const [properties, setProperties] = useState<any[]>([]);
+  const [dateRange, setDateRange] = useState<
+    [dayjs.Dayjs | null, dayjs.Dayjs | null]
+  >([null, null]);
+
+  // Handle date range change
+  const handleDateChange = (dates: any) => {
+    setDateRange(dates);
+  };
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -25,9 +37,18 @@ function StepZero({
           ? `/agents/property`
           : `/public/property/${token}`;
 
-        const params = location.pathname.includes("/agent")
-          ? { publicKey: id }
-          : {};
+        // Prepare query parameters
+        const params: any = {};
+
+        if (location.pathname.includes("/agent")) {
+          params.publicKey = id;
+        }
+
+        // Add date range if selected
+        if (dateRange && dateRange[0] && dateRange[1]) {
+          params.startDate = dateRange[0].format("YYYY-MM-DD");
+          params.endDate = dateRange[1].format("YYYY-MM-DD");
+        }
 
         const response = await apiClient.get(apiEndpoint, { params });
         setProperties(response.data);
@@ -36,7 +57,7 @@ function StepZero({
       }
     };
     fetchProperties();
-  }, [id, location.pathname]);
+  }, [id, location.pathname, dateRange]);
 
   useEffect(() => {
     if (propId && properties.length > 0) {
@@ -64,6 +85,19 @@ function StepZero({
   return (
     <div className="flex flex-col gap-5 items-center w-full">
       <h3 className="text-xl font-medium text-center">Choose Apartment</h3>
+
+      {/* Date Range Picker */}
+      <div className="w-full md:w-4/5 lg:w-3/5">
+        <RangePicker
+          format="DD/MM/YYYY"
+          placeholder={["Start Date", "End Date"]}
+          className="w-full rounded-xl border border-gray-300 p-3"
+          onChange={handleDateChange}
+          minDate={dayjs().startOf("day")}
+          value={dateRange}
+        />
+      </div>
+
       <div className="flex items-center gap-2 p-2 rounded-3xl bg-[#FAFAFA] w-full md:w-4/5 lg:w-3/5">
         <img src={searchIcon} alt="search" />
         <input
