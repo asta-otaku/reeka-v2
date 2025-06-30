@@ -88,6 +88,9 @@ function StepZero({
 
       {/* Date Range Picker */}
       <div className="w-full md:w-4/5 lg:w-3/5">
+        <label className="text-sm text-gray-600 mb-1">
+          Search by availability
+        </label>
         <RangePicker
           format="DD/MM/YYYY"
           placeholder={["Start Date", "End Date"]}
@@ -104,7 +107,7 @@ function StepZero({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search"
+          placeholder="Search by property name or address"
           className="w-full bg-transparent outline-none placeholder:text-xs placeholder:text-[#6D6D6D]"
         />
       </div>
@@ -149,7 +152,8 @@ function StepZero({
                   </div>
                   <div>
                     <p className="text-secondary text-[10px] font-medium">
-                      ₦{property?.price?.basePrice?.toLocaleString()}/ night
+                      ₦{property.defaultRate.ratePrice.toLocaleString()}/
+                      <span>night</span>
                     </p>
                   </div>
                 </div>

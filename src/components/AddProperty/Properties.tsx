@@ -1,4 +1,7 @@
 import { MapPin } from "lucide-react";
+import { useMemo } from "react";
+import countryList from "react-select-country-list";
+import Select from "react-select";
 import MapPicker from "../ResponsiveMapComponent";
 import propertyIcon from "../../assets/property.svg";
 import useStore from "../../store";
@@ -17,6 +20,7 @@ function Properties({
   openSection: any;
 }) {
   const setModal = useStore((state: any) => state.setModal);
+  const options = useMemo(() => countryList().getData(), []);
 
   const handleLocationSelect = (
     address: string,
@@ -35,6 +39,11 @@ function Properties({
     });
     setModal(null);
   };
+
+  const changeHandler = (value: any) => {
+    setFormDetails({ ...formDetails, country: value.label });
+  };
+
   return (
     <div
       onClick={() => toggleSection("property")}
@@ -74,12 +83,15 @@ function Properties({
 
           <div className="flex flex-col gap-2 w-full">
             <h4 className="text-[#3A3A3A] text-sm font-medium">Country</h4>
-            <input
-              name="country"
-              placeholder="Country"
-              value={formDetails.country || ""}
-              onChange={handleChange}
-              className="px-4 py-2 border border-[#D0D5DD] rounded-lg focus-within:border-primary outline-none placeholder:text-[#808080] text-[#3A3A3A]"
+            <Select
+              className="z-20"
+              options={options}
+              value={options.find(
+                (option: any) => option.label === formDetails.country
+              )}
+              onChange={changeHandler}
+              placeholder="Select Country"
+              classNamePrefix="react-select"
             />
           </div>
 
