@@ -49,6 +49,8 @@ function ViewProperty() {
       airbnbPrice: 0,
     },
     images: [],
+    latitude: "",
+    longitude: "",
   });
   const [bookedStatus, setBookedStatus] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -118,6 +120,8 @@ function ViewProperty() {
     formData.append("bathroomCount", property.bathroomCount?.toString() || "0");
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
+    formData.append("latitude", property.latitude);
+    formData.append("longitude", property.longitude);
     if (property.images && property.images.length > 0) {
       formData.append("images", JSON.stringify(property.images));
     } else {

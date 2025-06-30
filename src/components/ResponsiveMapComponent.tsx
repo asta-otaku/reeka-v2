@@ -45,7 +45,6 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
   });
 
   const [position, setPosition] = useState(defaultCenter);
-  console.log(position);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<
     google.maps.places.AutocompletePrediction[]

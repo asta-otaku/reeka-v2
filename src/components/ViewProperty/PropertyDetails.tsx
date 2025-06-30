@@ -23,8 +23,6 @@ function PropertyDetails({
     setProperty({ ...property, country: value.label });
   };
 
-  console.log(property);
-
   const handleLocationSelect = (
     address: string,
     city: string,
