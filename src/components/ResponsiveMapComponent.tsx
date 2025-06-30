@@ -45,6 +45,7 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
   });
 
   const [position, setPosition] = useState(defaultCenter);
+  console.log(position);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<
     google.maps.places.AutocompletePrediction[]
@@ -62,10 +63,24 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
       setPosition(initialLocation);
     } else if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (pos) =>
-          setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => console.log("Geolocation permission denied")
+        (pos) => {
+          setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        },
+        (error) => {
+          console.error("Geolocation error:", error.message);
+          // Fall back to default Nigeria coordinates if permission denied
+          setPosition(defaultCenter);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        }
       );
+    } else {
+      // Browser doesn't support geolocation
+      console.warn("Geolocation not supported");
+      setPosition(defaultCenter);
     }
   }, [initialLocation]);
 

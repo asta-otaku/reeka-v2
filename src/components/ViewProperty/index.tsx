@@ -109,13 +109,13 @@ function ViewProperty() {
     const formData = new FormData();
     formData.append("propertyName", property.propertyName);
     formData.append("address", property.address);
-    formData.append("agentFee", property.agentFee.toString() || "0");
+    formData.append("agentFee", property?.agentFee?.toString() || "0");
     formData.append("city", property.city);
     formData.append("country", property.country);
     formData.append("baseCurrency", property.baseCurrency);
     formData.append("owner", property.owner);
-    formData.append("bedroomCount", property.bedroomCount.toString() || "0");
-    formData.append("bathroomCount", property.bathroomCount.toString() || "0");
+    formData.append("bedroomCount", property.bedroomCount?.toString() || "0");
+    formData.append("bathroomCount", property.bathroomCount?.toString() || "0");
     formData.append("amenities", JSON.stringify(property.amenities));
     formData.append("price", JSON.stringify(property.price));
     if (property.images && property.images.length > 0) {
