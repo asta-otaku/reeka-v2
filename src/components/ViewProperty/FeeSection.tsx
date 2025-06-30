@@ -51,7 +51,12 @@ export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
             <input
               id="agencyFee"
               value={agencyFee ? agencyFee.toLocaleString() : ""}
-              onChange={(e) => setAgencyFee(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, "");
+                if (!isNaN(Number(value))) {
+                  setAgencyFee(Number(value));
+                }
+              }}
               placeholder="e.g. 2500"
               className={`border px-4 py-2 rounded-md text-sm w-full outline-none transition-all duration-200 ${
                 edit
@@ -127,7 +132,7 @@ const FeeSection: FC<FeeSectionProps> = ({
           <div className="w-full flex gap-2 items-center">
             <input
               id="cautionFee"
-              value={cautionFee?.toLocaleString() || ""}
+              value={cautionFee ? cautionFee.toLocaleString() : ""}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, "");
                 if (!isNaN(Number(value))) {
