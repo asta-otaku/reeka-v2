@@ -60,26 +60,61 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
   useEffect(() => {
     if (initialLocation) {
       setPosition(initialLocation);
-    } else if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setPosition({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        },
-        (error) => {
-          console.error("Geolocation error:", error.message);
-          // Fall back to default Nigeria coordinates if permission denied
-          setPosition(defaultCenter);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
-        }
-      );
     } else {
-      // Browser doesn't support geolocation
-      console.warn("Geolocation not supported");
-      setPosition(defaultCenter);
+      // Use the same two-step approach for initial location
+      const initializeLocation = async () => {
+        try {
+          // Step 1: Try Google Geolocation API first
+          const apiResponse = await fetch(
+            `https://www.googleapis.com/geolocation/v1/geolocate?key=${
+              import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+            }`,
+            { method: "POST" }
+          );
+          const apiData = await apiResponse.json();
+
+          if (apiData?.location) {
+            setPosition({
+              lat: apiData.location.lat,
+              lng: apiData.location.lng,
+            });
+            return;
+          }
+        } catch (error) {
+          console.warn(
+            "Google Geolocation API failed, trying browser geolocation.",
+            error
+          );
+        }
+
+        // Step 2: Fallback to Browser Geolocation if API fails
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              setPosition({
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+              });
+            },
+            (error) => {
+              console.error("Geolocation error:", error.message);
+              // Fall back to default Nigeria coordinates if permission denied
+              setPosition(defaultCenter);
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 60000,
+            }
+          );
+        } else {
+          // Browser doesn't support geolocation
+          console.warn("Geolocation not supported");
+          setPosition(defaultCenter);
+        }
+      };
+
+      initializeLocation();
     }
   }, [initialLocation]);
 
@@ -263,31 +298,82 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
   );
 
   const getCurrentLocation = useCallback(async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          const lat = pos.coords.latitude;
-          const lng = pos.coords.longitude;
-          setPosition({ lat, lng });
+    try {
+      // Step 1: Try Google Geolocation API first
+      const apiResponse = await fetch(
+        `https://www.googleapis.com/geolocation/v1/geolocate?key=${
+          import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+        }`,
+        { method: "POST" }
+      );
+      const apiData = await apiResponse.json();
 
-          try {
-            const details = await getAddressDetailsFromLatLng(lat, lng);
-            if (details) {
-              onLocationSelect(
-                details.address,
-                details.city,
-                details.country,
-                lat,
-                lng
-              );
-            }
-          } catch (error) {
-            console.error("Geocoding error:", error);
+      if (apiData?.location) {
+        const lat = apiData.location.lat;
+        const lng = apiData.location.lng;
+        setPosition({ lat, lng });
+
+        try {
+          const details = await getAddressDetailsFromLatLng(lat, lng);
+          if (details) {
+            onLocationSelect(
+              details.address,
+              details.city,
+              details.country,
+              lat,
+              lng
+            );
           }
-        },
-        (error) => console.error("Geolocation error:", error)
+        } catch (error) {
+          console.error("Geocoding error:", error);
+        }
+        return;
+      }
+    } catch (error) {
+      console.warn(
+        "Google Geolocation API failed, trying browser geolocation.",
+        error
       );
     }
+
+    // Step 2: Fallback to Browser Geolocation if API fails
+    if (!navigator.geolocation) {
+      console.warn("Geolocation not supported");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setPosition({ lat, lng });
+
+        try {
+          const details = await getAddressDetailsFromLatLng(lat, lng);
+          if (details) {
+            onLocationSelect(
+              details.address,
+              details.city,
+              details.country,
+              lat,
+              lng
+            );
+          }
+        } catch (error) {
+          console.error("Geocoding error:", error);
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        // Fall back to default Nigeria coordinates if permission denied
+        setPosition(defaultCenter);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 60000,
+      }
+    );
   }, [getAddressDetailsFromLatLng, onLocationSelect]);
 
   const handleMapLoad = useCallback((map: google.maps.Map) => {
