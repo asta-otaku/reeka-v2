@@ -22,6 +22,7 @@ function AddNewFacility({
 
   const [selectedFacility, setSelectedFacility] = useState<any>({});
   const [newFacility, setNewFacility] = useState("");
+  const [newFacilityQuantity, setNewFacilityQuantity] = useState(1);
 
   // Initialize selectedFacility with the amenities from counterStates
   useEffect(() => {
@@ -33,9 +34,10 @@ function AddNewFacility({
     if (newFacility && !selectedFacility.hasOwnProperty(newFacility)) {
       setSelectedFacility({
         ...selectedFacility,
-        [newFacility]: 1,
+        [newFacility]: newFacilityQuantity,
       });
       setNewFacility("");
+      setNewFacilityQuantity(1);
     }
   };
 
@@ -58,13 +60,15 @@ function AddNewFacility({
         {Object.keys(facilityList).map((facility, index) => (
           <button
             key={index}
-            onClick={() =>
+            onClick={() => {
               setSelectedFacility({
                 ...selectedFacility,
-                [facility]: 1,
-              })
-            }
-            className={`${
+                [facility]: selectedFacility[facility]
+                  ? selectedFacility[facility] + 1
+                  : 1,
+              });
+            }}
+            className={`$${
               selectedFacility.hasOwnProperty(facility)
                 ? "bg-[#219653] text-white"
                 : "bg-[#FAFAFA] text-[#808080] border"
@@ -80,18 +84,41 @@ function AddNewFacility({
         className="rounded-lg border px-4 py-3 h-28 w-full flex items-start flex-wrap gap-2"
       >
         {Object.keys(selectedFacility).map((facility, index) => (
-          <button
+          <div
             key={index}
-            onClick={() => {
-              const updatedAmenities = { ...selectedFacility };
-              delete updatedAmenities[facility];
-              setSelectedFacility(updatedAmenities);
-            }}
-            className="bg-[#219653] text-white flex items-center gap-2 border py-1 px-2 rounded-lg text-xs"
+            className="flex items-center gap-2 bg-[#219653] text-white border py-1 px-2 rounded-lg text-xs"
           >
-            {facility}
-            <span>x</span>
-          </button>
+            <span>{facility}</span>
+            <input
+              type="number"
+              min={1}
+              value={
+                selectedFacility[facility] === 0
+                  ? ""
+                  : selectedFacility[facility]
+              }
+              onChange={(e) => {
+                const updatedAmenities = {
+                  ...selectedFacility,
+                  [facility]: Number(e.target.value),
+                };
+                setSelectedFacility(updatedAmenities);
+              }}
+              className="w-12 text-black rounded px-1"
+              style={{ background: "#fff" }}
+            />
+            <button
+              onClick={() => {
+                const updatedAmenities = { ...selectedFacility };
+                delete updatedAmenities[facility];
+                setSelectedFacility(updatedAmenities);
+              }}
+              className="ml-1"
+              style={{ color: "#fff" }}
+            >
+              x
+            </button>
+          </div>
         ))}
       </div>
 
@@ -105,6 +132,13 @@ function AddNewFacility({
           value={newFacility}
           onChange={(e) => setNewFacility(e.target.value)}
           className="border rounded-lg p-2 text-xs w-full"
+        />
+        <input
+          type="number"
+          min={1}
+          value={newFacilityQuantity === 0 ? "" : newFacilityQuantity}
+          onChange={(e) => setNewFacilityQuantity(Number(e.target.value))}
+          className="border rounded-lg p-2 text-xs w-20 mt-2"
         />
         <button
           onClick={handleAddNewFacility}

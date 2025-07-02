@@ -4,8 +4,22 @@ import { useLocation, useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Home, BedDouble, Bath } from "lucide-react";
+import { Autoplay, Pagination } from "swiper/modules";
+import "swiper/css";
 
 const { RangePicker } = DatePicker;
+
+function getAmenityValue(
+  amenities: Record<string, any>,
+  keys: string[]
+): number {
+  for (const key of keys) {
+    if (amenities && amenities[key]) return amenities[key];
+  }
+  return 0;
+}
 
 function StepZero({
   setStep,
@@ -121,45 +135,98 @@ function StepZero({
                 .includes(search.toLowerCase()) ||
               property?.address?.toLowerCase().includes(search.toLowerCase())
           )
-          .map((property: any) => (
-            <div
-              key={property._id}
-              onClick={() => {
-                setSelectedApartment(property._id);
-                setProperty(property);
-                setStep(1);
-              }}
-              className={`bg-[#FAFAFA] rounded-xl shadow-sm shadow-black/10 p-3 cursor-pointer ${
-                selectedApartment === property._id
-                  ? "border-2 border-primary"
-                  : "border-2"
-              }`}
-            >
-              <div>
-                <img
-                  src={property?.images[0]}
-                  alt="property"
-                  className="h-48 w-full object-cover rounded-xl"
-                />
-                <div className="mt-2 flex flex-wrap justify-between items-center gap-2">
-                  <div>
-                    <h3 className="text-[#808080] font-medium text-xs">
-                      {property?.propertyName}
-                    </h3>
-                    <p className="text-secondary text-[10px]">
-                      {property?.address}
-                    </p>
+          .map((property: any) => {
+            const bedroomCount = getAmenityValue(property.amenities, [
+              "Bedroom",
+              "Bedrooms",
+              "bedroom",
+              "bedrooms",
+            ]);
+            const bathroomCount = getAmenityValue(property.amenities, [
+              "Bathroom",
+              "Bathrooms",
+              "bathroom",
+              "bathrooms",
+            ]);
+            return (
+              <div
+                key={property._id}
+                onClick={() => {
+                  setSelectedApartment(property._id);
+                  setProperty(property);
+                  setStep(1);
+                }}
+                className={`rounded-2xl bg-white shadow-sm p-0 cursor-pointer transition border ${
+                  selectedApartment === property._id
+                    ? "border-primary"
+                    : "border-[#E4E4E4]"
+                }`}
+              >
+                {/* Swiper for images */}
+                <div className="rounded-2xl overflow-hidden relative">
+                  <Swiper
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    centeredSlides={true}
+                    autoplay={{
+                      delay: 3000,
+                      disableOnInteraction: false,
+                    }}
+                    pagination={{ clickable: true }}
+                    modules={[Pagination, Autoplay]}
+                    className="h-60"
+                    loop={true}
+                  >
+                    {(property.images && property.images.length > 0
+                      ? property.images
+                      : [property.images?.[0] || ""]
+                    ).map((img: string, idx: number) => (
+                      <SwiperSlide key={idx}>
+                        <img
+                          src={img}
+                          alt="property"
+                          className="w-full object-cover"
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+                <div className="p-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[#FF5A1F] font-semibold text-base">
+                      ₦{property.defaultRate.ratePrice.toLocaleString()}
+                      <span className="text-xs font-normal text-[#808080]">
+                        {" "}
+                        Night
+                      </span>
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-black font-medium">
+                      ★ {property.rating || "5.0"}
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-secondary text-[10px] font-medium">
-                      ₦{property.defaultRate.ratePrice.toLocaleString()}/
-                      <span>night</span>
-                    </p>
+                  <div className="font-semibold text-base mb-1">
+                    {property.propertyName}
+                  </div>
+                  <div className="text-xs text-[#808080] mb-2 line-clamp-1">
+                    {property.address}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
+                      <Home size={14} /> House
+                    </span>
+                    <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
+                      <BedDouble size={14} /> {bedroomCount} Bedroom
+                      {bedroomCount === 1 ? "" : "s"}
+                    </span>
+                    <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
+                      <Bath size={14} /> {bathroomCount} Shower
+                      {bathroomCount === 1 ? "" : "s"}
+                    </span>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
   );

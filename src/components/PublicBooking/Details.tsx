@@ -9,6 +9,15 @@ import { CONSTANT } from "../../util";
 import toast from "react-hot-toast";
 import prop from "../../assets/prop1.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  BedDouble,
+  Bath,
+  Wifi,
+  Tv,
+  Dumbbell,
+  Utensils,
+  AirVent,
+} from "lucide-react";
 
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
@@ -39,6 +48,15 @@ export interface Property {
   countryCode: string;
   paymentStatus?: string;
 }
+
+const amenityIconMap: Record<string, React.ReactNode> = {
+  Wifi: <Wifi size={18} />,
+  Television: <Tv size={18} />,
+  Gym: <Dumbbell size={18} />,
+  Kitchen: <Utensils size={18} />,
+  "Air conditioner": <AirVent size={18} />,
+  // Add more mappings as needed
+};
 
 function Details({
   property,
@@ -252,13 +270,23 @@ function Details({
     }));
   }, [property]);
 
+  // --- Amenities logic ---
+  const { amenities = {} } = property;
+  const bedroomCount = amenities["Bedroom"] || amenities["Bedrooms"] || 0;
+  const bathroomCount = amenities["Bathroom"] || amenities["Bathrooms"] || 0;
+  const restAmenities = Object.entries(amenities).filter(
+    ([key]) => !["Bedroom", "Bedrooms", "Bathroom", "Bathrooms"].includes(key)
+  );
+
   return (
     <div className="flex flex-col gap-4 p-4">
       <div className="space-y-2">
         <h2 className="font-semibold text-base md:text-xl">
           {property.propertyName}
         </h2>
-        <p className="text-secondary font-thin text-sm">{property.city}</p>
+        <p className="text-secondary font-thin text-sm">
+          {property.city}, {property.country}
+        </p>
       </div>
       <Swiper
         spaceBetween={30}
@@ -299,20 +327,43 @@ function Details({
           <h2 className="font-semibold text-xl md:text-2xl">
             {property.propertyName}
           </h2>
+          {/* Bedrooms and Bathrooms only */}
           <div className="flex gap-2 my-4 flex-wrap">
-            {Object.keys(property?.amenities).length > 0
-              ? Object.keys(property?.amenities).map((facility, index) => (
-                  <div
-                    key={index}
-                    className="bg-[#FAFAFA] text-[#808080] border flex items-center gap-1 p-2 rounded-lg text-xs"
-                  >
-                    <img src={buy} alt="buy" />
+            {bedroomCount > 0 && (
+              <div className="bg-[#FAFAFA] text-[#808080] border flex items-center gap-1 p-2 rounded-lg text-xs">
+                <BedDouble size={16} />
+                <span>
+                  {bedroomCount} Bedroom{bedroomCount > 1 ? "s" : ""}
+                </span>
+              </div>
+            )}
+            {bathroomCount > 0 && (
+              <div className="bg-[#FAFAFA] text-[#808080] border flex items-center gap-1 p-2 rounded-lg text-xs">
+                <Bath size={16} />
+                <span>
+                  {bathroomCount} Bathroom{bathroomCount > 1 ? "s" : ""}
+                </span>
+              </div>
+            )}
+          </div>
+          {/* Amenities Section */}
+          {restAmenities.length > 0 && (
+            <>
+              <h3 className="font-medium text-base mb-4">
+                Amenities or features are available at this location
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {restAmenities.map(([facility], idx) => (
+                  <div key={idx} className="flex items-center gap-4 text-xs">
+                    {amenityIconMap[facility] || (
+                      <img src={buy} alt="" className="w-4 h-4" />
+                    )}
                     <span>{facility}</span>
                   </div>
-                ))
-              : null}
-          </div>
-          <hr />
+                ))}
+              </div>
+            </>
+          )}
           <div className="space-y-2">
             <h2 className="text-base md:text-lg">Calendar and Availability</h2>
             <p className="text-xs text-[#3A3A3A]">
@@ -404,7 +455,7 @@ function Details({
               {loading ? <Spinner /> : "Continue"}
             </button>
             <p className="text-center text-secondary text-xs">
-              You won’t be charged yet
+              You won't be charged yet
             </p>
             <div className="space-y-2">
               <div className="flex justify-between gap-2">
