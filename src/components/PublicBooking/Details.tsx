@@ -17,6 +17,17 @@ import {
   Dumbbell,
   Utensils,
   AirVent,
+  Flower2,
+  Laptop,
+  Dog,
+  Flame,
+  Home,
+  ArrowBigUpDash,
+  Shield,
+  Shirt,
+  Car,
+  Waves,
+  Heater,
 } from "lucide-react";
 
 import "swiper/css";
@@ -50,12 +61,25 @@ export interface Property {
 }
 
 const amenityIconMap: Record<string, React.ReactNode> = {
-  Wifi: <Wifi size={18} />,
-  Television: <Tv size={18} />,
-  Gym: <Dumbbell size={18} />,
-  Kitchen: <Utensils size={18} />,
-  "Air conditioner": <AirVent size={18} />,
-  // Add more mappings as needed
+  wifi: <Wifi size={18} />,
+  television: <Tv size={18} />,
+  gym: <Dumbbell size={18} />,
+  kitchen: <Utensils size={18} />,
+  "air conditioner": <AirVent size={18} />,
+  "swimming pool": <Waves size={18} />,
+  parking: <Car size={18} />,
+  laundry: <Shirt size={18} />,
+  security: <Shield size={18} />,
+  elevator: <ArrowBigUpDash size={18} />,
+  balcony: <Home size={18} />,
+  bbq: <Flame size={18} />,
+  "pet friendly": <Dog size={18} />,
+  workspace: <Laptop size={18} />,
+  garden: <Flower2 size={18} />,
+  heater: <Heater size={18} />,
+  "heat extractor": <Heater size={18} />,
+  oven: <Heater size={18} />,
+  griller: <Heater size={18} />,
 };
 
 function Details({
@@ -272,10 +296,28 @@ function Details({
 
   // --- Amenities logic ---
   const { amenities = {} } = property;
-  const bedroomCount = amenities["Bedroom"] || amenities["Bedrooms"] || 0;
-  const bathroomCount = amenities["Bathroom"] || amenities["Bathrooms"] || 0;
+
+  // Helper function to get amenity value case-insensitively
+  const getAmenityValue = (
+    amenities: Record<string, any>,
+    keys: string[]
+  ): number => {
+    for (const key of keys) {
+      const actualKey = Object.keys(amenities || {}).find(
+        (amenityKey) => amenityKey.toLowerCase() === key.toLowerCase()
+      );
+      if (actualKey && amenities[actualKey]) return amenities[actualKey];
+    }
+    return 0;
+  };
+
+  const bedroomCount = getAmenityValue(amenities, ["bedroom", "bedrooms"]);
+  const bathroomCount = getAmenityValue(amenities, ["bathroom", "bathrooms"]);
   const restAmenities = Object.entries(amenities).filter(
-    ([key]) => !["Bedroom", "Bedrooms", "Bathroom", "Bathrooms"].includes(key)
+    ([key]) =>
+      !["bedroom", "bedrooms", "bathroom", "bathrooms"].includes(
+        key.toLowerCase()
+      )
   );
 
   return (
@@ -355,7 +397,7 @@ function Details({
               <div className="grid grid-cols-2 gap-4">
                 {restAmenities.map(([facility], idx) => (
                   <div key={idx} className="flex items-center gap-4 text-xs">
-                    {amenityIconMap[facility] || (
+                    {amenityIconMap[facility.toLowerCase()] || (
                       <img src={buy} alt="" className="w-4 h-4" />
                     )}
                     <span>{facility}</span>

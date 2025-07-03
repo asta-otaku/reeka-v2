@@ -16,7 +16,11 @@ function getAmenityValue(
   keys: string[]
 ): number {
   for (const key of keys) {
-    if (amenities && amenities[key]) return amenities[key];
+    // Find the actual key in amenities by comparing lowercase versions
+    const actualKey = Object.keys(amenities || {}).find(
+      (amenityKey) => amenityKey.toLowerCase() === key.toLowerCase()
+    );
+    if (actualKey && amenities[actualKey]) return amenities[actualKey];
   }
   return 0;
 }
