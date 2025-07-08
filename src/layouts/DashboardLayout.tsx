@@ -13,7 +13,7 @@ import {
   Hamburger,
   PropertyIcon,
   ScaleIcon,
-  IncidentReportIcon,
+  // IncidentReportIcon,
 } from "../assets/icons";
 import ModalLayout from "./ModalLayout";
 import useStore from "../store";
@@ -150,11 +150,11 @@ function DashboardLayout({ children }: any) {
                 Icon={FileBookmarkIcon}
                 title="Reservation Management"
               />
-              <ListItem
+              {/* <ListItem
                 route="/incident-report"
                 Icon={IncidentReportIcon}
                 title="Incident Report"
-              />
+              /> */}
               <div
                 className={`${user && user.userRole !== "Owner" && "hidden"}`}
               >
