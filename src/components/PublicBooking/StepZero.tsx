@@ -245,12 +245,8 @@ function StepZero({
                     <span className="text-[#FF5A1F] font-semibold text-base">
                       ₦{property.defaultRate.ratePrice.toLocaleString()}
                       <span className="text-xs font-normal text-[#808080]">
-                        {" "}
-                        Night
+                        /Night
                       </span>
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-black font-medium">
-                      ★ {property.rating || "5.0"}
                     </span>
                   </div>
                   <div className="font-semibold text-base mb-1">
