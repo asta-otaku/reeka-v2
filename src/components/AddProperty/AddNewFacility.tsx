@@ -13,7 +13,6 @@ function AddNewFacility({
   const [facilityList] = useState<any>({
     "Swimming Pool": 1,
     Griller: 1,
-    Bathroom: 1,
     "Basket Court": 1,
     Gym: 1,
     Wifi: 1,
@@ -23,11 +22,23 @@ function AddNewFacility({
   const [selectedFacility, setSelectedFacility] = useState<any>({});
   const [newFacility, setNewFacility] = useState("");
   const [newFacilityQuantity, setNewFacilityQuantity] = useState(1);
+  const [bedroomCount, setBedroomCount] = useState(
+    counterStates.bedroomCount || 0
+  );
+  const [bathroomCount, setBathroomCount] = useState(
+    counterStates.bathroomCount || 0
+  );
 
   // Initialize selectedFacility with the amenities from counterStates
   useEffect(() => {
     setSelectedFacility(counterStates.amenities || {});
-  }, [counterStates.amenities]);
+    setBedroomCount(counterStates.bedroomCount || 0);
+    setBathroomCount(counterStates.bathroomCount || 0);
+  }, [
+    counterStates.amenities,
+    counterStates.bedroomCount,
+    counterStates.bathroomCount,
+  ]);
 
   // Handle adding new facility
   const handleAddNewFacility = () => {
@@ -55,6 +66,32 @@ function AddNewFacility({
       <p className="text-[#3A3A3A] text-[10px] mt-1">
         Type in the amenities you have or select from the options below
       </p>
+
+      {/* Bedroom and Bathroom Count Section */}
+      <div className="flex gap-4 my-4">
+        <div className="flex-1">
+          <label className="text-xs text-[#3A3A3A] mb-1 block">Bedrooms</label>
+          <input
+            type="number"
+            min={0}
+            value={bedroomCount === 0 ? "" : bedroomCount}
+            onChange={(e) => setBedroomCount(Number(e.target.value) || 0)}
+            className="w-full border rounded-lg p-2 text-xs"
+            placeholder="Number of bedrooms"
+          />
+        </div>
+        <div className="flex-1">
+          <label className="text-xs text-[#3A3A3A] mb-1 block">Bathrooms</label>
+          <input
+            type="number"
+            min={0}
+            value={bathroomCount === 0 ? "" : bathroomCount}
+            onChange={(e) => setBathroomCount(Number(e.target.value) || 0)}
+            className="w-full border rounded-lg p-2 text-xs"
+            placeholder="Number of bathrooms"
+          />
+        </div>
+      </div>
 
       <div title="list properties" className="flex gap-2 my-4 flex-wrap">
         {Object.keys(facilityList).map((facility, index) => (
@@ -153,6 +190,8 @@ function AddNewFacility({
           onClick={() => {
             setCounterStates({
               ...counterStates,
+              bedroomCount: bedroomCount,
+              bathroomCount: bathroomCount,
               amenities: {
                 ...selectedFacility,
               },

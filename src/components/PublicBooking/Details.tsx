@@ -297,22 +297,9 @@ function Details({
   // --- Amenities logic ---
   const { amenities = {} } = property;
 
-  // Helper function to get amenity value case-insensitively
-  const getAmenityValue = (
-    amenities: Record<string, any>,
-    keys: string[]
-  ): number => {
-    for (const key of keys) {
-      const actualKey = Object.keys(amenities || {}).find(
-        (amenityKey) => amenityKey.toLowerCase() === key.toLowerCase()
-      );
-      if (actualKey && amenities[actualKey]) return amenities[actualKey];
-    }
-    return 0;
-  };
-
-  const bedroomCount = getAmenityValue(amenities, ["bedroom", "bedrooms"]);
-  const bathroomCount = getAmenityValue(amenities, ["bathroom", "bathrooms"]);
+  // Use direct count fields for bedrooms and bathrooms
+  const bedroomCount = property.bedroomCount || 0;
+  const bathroomCount = property.bathroomCount || 0;
   const restAmenities = Object.entries(amenities).filter(
     ([key]) =>
       !["bedroom", "bedrooms", "bathroom", "bathrooms"].includes(

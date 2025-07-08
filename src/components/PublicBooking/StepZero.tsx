@@ -11,17 +11,16 @@ import "swiper/css";
 
 const { RangePicker } = DatePicker;
 
-function getAmenityValue(
-  amenities: Record<string, any>,
-  keys: string[]
-): number {
-  for (const key of keys) {
-    // Find the actual key in amenities by comparing lowercase versions
-    const actualKey = Object.keys(amenities || {}).find(
-      (amenityKey) => amenityKey.toLowerCase() === key.toLowerCase()
-    );
-    if (actualKey && amenities[actualKey]) return amenities[actualKey];
+function getAmenityValue(property: any, keys: string[]): number {
+  // Check for direct count fields only
+  if (keys.some((key) => key.toLowerCase().includes("bedroom"))) {
+    return property.bedroomCount || 0;
   }
+
+  if (keys.some((key) => key.toLowerCase().includes("bathroom"))) {
+    return property.bathroomCount || 0;
+  }
+
   return 0;
 }
 
@@ -42,6 +41,7 @@ function StepZero({
   const [dateRange, setDateRange] = useState<
     [dayjs.Dayjs | null, dayjs.Dayjs | null]
   >([null, null]);
+  const [bedroomFilter, setBedroomFilter] = useState<number | null>(null);
 
   // Handle date range change
   const handleDateChange = (dates: any) => {
@@ -104,19 +104,40 @@ function StepZero({
     <div className="flex flex-col gap-5 items-center w-full">
       <h3 className="text-xl font-medium text-center">Choose Apartment</h3>
 
-      {/* Date Range Picker */}
-      <div className="w-full md:w-4/5 lg:w-3/5">
-        <label className="text-sm text-gray-600 mb-1">
-          Search by availability
-        </label>
-        <RangePicker
-          format="DD/MM/YYYY"
-          placeholder={["Start Date", "End Date"]}
-          className="w-full rounded-xl border border-gray-300 p-3"
-          onChange={handleDateChange}
-          minDate={dayjs().startOf("day")}
-          value={dateRange}
-        />
+      {/* Date Range Picker and Bedroom Filter */}
+      <div className="w-full md:w-4/5">
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <label className="text-sm text-gray-600 mb-1">
+              Search by availability
+            </label>
+            <RangePicker
+              format="DD/MM/YYYY"
+              placeholder={["Start Date", "End Date"]}
+              className="w-full rounded-xl border border-gray-300 p-3"
+              onChange={handleDateChange}
+              minDate={dayjs().startOf("day")}
+              value={dateRange}
+            />
+          </div>
+          <div className="flex-1">
+            <label className="text-sm text-gray-600 mb-1">Bedrooms</label>
+            <select
+              value={bedroomFilter || ""}
+              onChange={(e) =>
+                setBedroomFilter(e.target.value ? Number(e.target.value) : null)
+              }
+              className="w-full rounded-xl border border-gray-300 p-3 text-sm bg-white"
+            >
+              <option value="">Filter by Bedrooms</option>
+              <option value="1">1 Bedroom</option>
+              <option value="2">2 Bedrooms</option>
+              <option value="3">3 Bedrooms</option>
+              <option value="4">4 Bedrooms</option>
+              <option value="5">5+ Bedrooms</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div className="flex items-center gap-2 p-2 rounded-3xl bg-[#FAFAFA] w-full md:w-4/5 lg:w-3/5">
@@ -132,21 +153,45 @@ function StepZero({
 
       <div className="grid gap-6 px-6 grid-cols-1 lg:grid-cols-2 w-full">
         {properties
-          ?.filter(
-            (property: any) =>
+          ?.filter((property: any) => {
+            // Text search filter
+            const textMatch =
               property?.propertyName
                 ?.toLowerCase()
                 .includes(search.toLowerCase()) ||
-              property?.address?.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((property: any) => {
-            const bedroomCount = getAmenityValue(property.amenities, [
+              property?.address?.toLowerCase().includes(search.toLowerCase());
+
+            if (!textMatch) return false;
+
+            // Get bedroom count
+            const bedroomCount = getAmenityValue(property, [
               "Bedroom",
               "Bedrooms",
               "bedroom",
               "bedrooms",
             ]);
-            const bathroomCount = getAmenityValue(property.amenities, [
+
+            // Bedroom filter
+            if (bedroomFilter !== null) {
+              if (bedroomFilter === 5) {
+                // 5+ bedrooms
+                if (bedroomCount < 5) return false;
+              } else {
+                // Exact match
+                if (bedroomCount !== bedroomFilter) return false;
+              }
+            }
+
+            return true;
+          })
+          .map((property: any) => {
+            const bedroomCount = getAmenityValue(property, [
+              "Bedroom",
+              "Bedrooms",
+              "bedroom",
+              "bedrooms",
+            ]);
+            const bathroomCount = getAmenityValue(property, [
               "Bathroom",
               "Bathrooms",
               "bathroom",
@@ -223,7 +268,7 @@ function StepZero({
                       {bedroomCount === 1 ? "" : "s"}
                     </span>
                     <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
-                      <Bath size={14} /> {bathroomCount} Shower
+                      <Bath size={14} /> {bathroomCount} Bathroom
                       {bathroomCount === 1 ? "" : "s"}
                     </span>
                   </div>
