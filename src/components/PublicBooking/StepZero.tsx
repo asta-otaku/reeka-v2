@@ -5,7 +5,7 @@ import apiClient from "../../helpers/apiClient";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Home, BedDouble, Bath } from "lucide-react";
+import { BedDouble, Bath } from "lucide-react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 
@@ -256,9 +256,6 @@ function StepZero({
                     {property.address}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
-                      <Home size={14} /> House
-                    </span>
                     <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
                       <BedDouble size={14} /> {bedroomCount} Bedroom
                       {bedroomCount === 1 ? "" : "s"}

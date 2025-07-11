@@ -189,11 +189,13 @@ export const PricePreview = ({
   days?: number;
   isCustom?: boolean;
 }) => {
-  const totalBase = isCustom ? basePrice : basePrice * days;
-  const paymentFee = 0.01 * totalBase;
-  const total = totalBase + paymentFee + cautionFee;
   const currency = useCurrency();
   const location = useLocation();
+  const totalBase = isCustom ? basePrice : basePrice * days;
+  const paymentFee = 0.01 * totalBase;
+  const total = location.pathname.includes("reservation")
+    ? totalBase + cautionFee
+    : totalBase + paymentFee + cautionFee;
 
   return (
     <div className="bg-white mt-6 p-6 border border-[#C0C0C0]/40 rounded-xl shadow-sm text-sm text-gray-800 space-y-2">
@@ -214,13 +216,16 @@ export const PricePreview = ({
         {currency}
         {totalBase?.toLocaleString()}
       </p>
-      <p>
-        <span className="font-medium">Online payment fee (1%):</span> {currency}
-        {paymentFee?.toLocaleString(undefined, {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-      </p>
+      {!location.pathname.includes("reservation") && (
+        <p>
+          <span className="font-medium">Online payment fee (1%):</span>{" "}
+          {currency}
+          {paymentFee?.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+        </p>
+      )}
       <p>
         <span className="font-medium">Caution fee:</span> {currency}
         {cautionFee?.toLocaleString()}

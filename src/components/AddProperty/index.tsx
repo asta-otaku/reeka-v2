@@ -52,12 +52,12 @@ function AddProperty({ setStep }: { setStep: any }) {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
+    console.log(formDetails);
     if (
       !formDetails.propertyName ||
       !formDetails.address ||
       !formDetails.city ||
       !formDetails.country ||
-      !formDetails.bedroomCount ||
       !formDetails.bathroomCount ||
       !formDetails.price.basePrice
     ) {
