@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import prop from "../assets/prop1.svg";
+import prop from "../../assets/prop1.svg";
 
 interface ImageCarouselProps {
   images: string[];
@@ -86,6 +86,7 @@ const ImageCarousel = ({
       <div className="w-full h-full">
         <img
           src={images[currentIndex]}
+          alt=""
           className="w-full h-full object-cover transition-transform duration-300"
         />
       </div>
