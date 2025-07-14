@@ -4,10 +4,8 @@ import { useLocation, useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { BedDouble, Bath } from "lucide-react";
-import { Autoplay, Pagination } from "swiper/modules";
-import "swiper/css";
+import ImageCarousel from "./ImageCarousel";
 
 const { RangePicker } = DatePicker;
 
@@ -211,34 +209,18 @@ function StepZero({
                     : "border-[#E4E4E4]"
                 }`}
               >
-                {/* Swiper for images */}
+                {/* Image Carousel */}
                 <div className="rounded-2xl overflow-hidden relative">
-                  <Swiper
-                    spaceBetween={0}
-                    slidesPerView={1}
-                    centeredSlides={true}
-                    autoplay={{
-                      delay: 3000,
-                      disableOnInteraction: false,
-                    }}
-                    pagination={{ clickable: true }}
-                    modules={[Pagination, Autoplay]}
+                  <ImageCarousel
+                    images={
+                      property.images && property.images.length > 0
+                        ? property.images
+                        : []
+                    }
                     className="h-60"
-                    loop={true}
-                  >
-                    {(property.images && property.images.length > 0
-                      ? property.images
-                      : [property.images?.[0] || ""]
-                    ).map((img: string, idx: number) => (
-                      <SwiperSlide key={idx}>
-                        <img
-                          src={img}
-                          alt="property"
-                          className="w-full object-cover"
-                        />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
+                    navigationSize="small"
+                    paginationSize="small"
+                  />
                 </div>
                 <div className="p-3">
                   <div className="flex justify-between items-center mb-1">

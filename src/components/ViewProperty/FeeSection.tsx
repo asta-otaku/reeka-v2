@@ -238,10 +238,6 @@ export const PricePreview = ({
         Note: Caution fee will be automatically refunded 24 hours after checkout
         if no incident is reported.
       </p>
-      <p className="text-xs text-gray-500">
-        A 1% fee applies to all direct bookings processed through Reeka. (Paid
-        by <span className="font-bold">Guest</span>)
-      </p>
     </div>
   );
 };

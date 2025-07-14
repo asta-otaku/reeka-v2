@@ -7,8 +7,7 @@ import MapComponent from "../MapComponent";
 import axios from "axios";
 import { CONSTANT } from "../../util";
 import toast from "react-hot-toast";
-import prop from "../../assets/prop1.svg";
-import { Swiper, SwiperSlide } from "swiper/react";
+
 import {
   BedDouble,
   Bath,
@@ -29,15 +28,14 @@ import {
   Waves,
   Heater,
 } from "lucide-react";
-
-import "swiper/css";
-import { Autoplay } from "swiper/modules";
+import ImageCarousel from "./ImageCarousel";
 import { formatTimestamp } from "./StepTwo";
 import Spinner from "../Spinner";
 import { useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
 
 const { RangePicker } = DatePicker;
+
 interface BookingRange {
   start: string;
   end: string;
@@ -317,40 +315,12 @@ function Details({
           {property.city}, {property.country}
         </p>
       </div>
-      <Swiper
-        spaceBetween={30}
-        centeredSlides={true}
-        autoplay={{
-          delay: 3000,
-          disableOnInteraction: false,
-        }}
-        loop={true}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Autoplay]}
-        className="md:h-[400px] w-full rounded-lg"
-      >
-        {property.images.length ? (
-          property.images.map((image: any, index: number) => (
-            <SwiperSlide key={index}>
-              <img
-                src={image}
-                alt=""
-                className="object-cover max-w-screen-2xl rounded-lg w-full"
-              />
-            </SwiperSlide>
-          ))
-        ) : (
-          <SwiperSlide>
-            <img
-              src={prop}
-              alt=""
-              className="object-cover max-w-screen-2xl w-full rounded-lg"
-            />
-          </SwiperSlide>
-        )}
-      </Swiper>
+      <ImageCarousel
+        images={property.images.length ? property.images : []}
+        className="md:h-[400px] w-full"
+        navigationSize="medium"
+        paginationSize="medium"
+      />
       <div className="grid grid-cols-1 md:grid-cols-10 gap-5 w-full">
         <div className="col-span-1 md:col-span-6 flex flex-col gap-4 w-full">
           <h2 className="font-semibold text-xl md:text-2xl">
