@@ -53,7 +53,7 @@ function Amenities({
         <div onClick={(e) => e.stopPropagation()}>
           <div className="py-4">
             <h3 className="text-[#3A3A3A] font-medium text-sm">
-              BedRoom and Bath
+              {formDetails?.bedroomCount > 0 ? "Bedroom" : "Studio"} and Bath
             </h3>
             <p className="text-[#808080] text-[10px]">
               Type in the amenities you have or select from the options below
@@ -63,7 +63,7 @@ function Amenities({
                 counterStates={counterStates}
                 setCounterStates={setCounterStates}
                 tag="bedroom"
-                title="Bedroom"
+                title={formDetails?.bedroomCount > 0 ? "Bedroom" : "Studio"}
                 cat="rooms"
               />
               <CounterRender
