@@ -26,7 +26,7 @@ import PublicInvoice from "./pages/PublicInvoice.tsx";
 import { Toaster } from "react-hot-toast";
 import StripeSuccessPage from "./pages/StripeSuccess.tsx";
 import StripeCancelPage from "./pages/StripeCancel.tsx";
-import IncidentReportsPage from "./pages/IncidentReportCenter.tsx";
+// import IncidentReportsPage from "./pages/IncidentReportCenter.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -45,10 +45,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/reservation" element={<Reservation />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/incident-report/:id" element={<IncidentReport />} />
-        <Route path="/incident-report" element={<IncidentReportsPage />} />
+        {/* <Route path="/incident-report" element={<IncidentReportsPage />} /> */}
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/property/:token/:rateId" element={<PublicBooking />} />
-        <Route path="/property/:token" element={<PublicBooking />} />
+        {/* <Route path="/property/:token/:rateId" element={<PublicBooking />} /> */}
+        {/* <Route path="/property/:token" element={<PublicBooking />} /> */}
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/agent/:id" element={<PublicBooking />} />
         <Route path="/invoice/:id" element={<PublicInvoice />} />

@@ -35,21 +35,21 @@ function RateCardsTab({ property }: { property: any }) {
     }
   }, [property._id]);
 
-  const generatePublicUrlForRate = async (rateId: string) => {
-    try {
-      const { data: url } = await apiClient.get(`/public/url`, {
-        params: {
-          propertyId: property._id,
-          rateId: rateId,
-        },
-      });
-      await navigator.clipboard.writeText(url);
-      toast.success("Copied public link for this rate!");
-    } catch (err) {
-      console.error(err);
-      toast.error("Could not generate public link");
-    }
-  };
+  // const generatePublicUrlForRate = async (rateId: string) => {
+  //   try {
+  //     const { data: url } = await apiClient.get(`/public/url`, {
+  //       params: {
+  //         propertyId: property._id,
+  //         rateId: rateId,
+  //       },
+  //     });
+  //     await navigator.clipboard.writeText(url);
+  //     toast.success("Copied public link for this rate!");
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Could not generate public link");
+  //   }
+  // };
 
   const handleSaveRate = async () => {
     if (!newRate.name || !newRate.rate) return;
@@ -263,12 +263,12 @@ function RateCardsTab({ property }: { property: any }) {
                     >
                       Update
                     </button>
-                    <button
+                    {/* <button
                       onClick={() => generatePublicUrlForRate(rate._id)}
                       className="bg-[#3B82F6] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
                     >
                       Public Link
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => handleRemoveRate(rate._id)}
                       className="bg-[#FF3B30] hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
