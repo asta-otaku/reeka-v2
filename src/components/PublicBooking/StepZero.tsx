@@ -121,13 +121,14 @@ function StepZero({
           <div className="flex-1">
             <label className="text-sm text-gray-600 mb-1">Bedrooms</label>
             <select
-              value={bedroomFilter || ""}
+              value={bedroomFilter === null ? "" : bedroomFilter}
               onChange={(e) =>
                 setBedroomFilter(e.target.value ? Number(e.target.value) : null)
               }
               className="w-full rounded-xl border border-gray-300 p-3 text-sm bg-white"
             >
               <option value="">Filter by Bedrooms</option>
+              <option value="0">Studio</option>
               <option value="1">1 Bedroom</option>
               <option value="2">2 Bedrooms</option>
               <option value="3">3 Bedrooms</option>

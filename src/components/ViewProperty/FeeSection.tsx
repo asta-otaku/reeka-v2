@@ -235,7 +235,7 @@ export const PricePreview = ({
         {total.toLocaleString()}
       </p>
       <p className="italic text-xs text-gray-500 py-1">
-        Note: Caution fee will be automatically refunded 24 hours after checkout
+        Note: Caution fee will be automatically refunded 72 hours after checkout
         if no incident is reported.
       </p>
     </div>

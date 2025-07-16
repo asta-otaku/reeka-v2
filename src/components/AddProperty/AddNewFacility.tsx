@@ -70,11 +70,17 @@ function AddNewFacility({
       {/* Bedroom and Bathroom Count Section */}
       <div className="flex gap-4 my-4">
         <div className="flex-1">
-          <label className="text-xs text-[#3A3A3A] mb-1 block">Bedrooms</label>
+          <label className="text-xs text-[#3A3A3A] mb-1 block">
+            {bedroomCount === 0
+              ? "Studio"
+              : bedroomCount > 1
+              ? "Bedrooms"
+              : "Bedroom"}
+          </label>
           <input
             type="number"
             min={0}
-            value={bedroomCount === 0 ? "" : bedroomCount}
+            value={bedroomCount}
             onChange={(e) => setBedroomCount(Number(e.target.value) || 0)}
             className="w-full border rounded-lg p-2 text-xs"
             placeholder="Number of bedrooms"
