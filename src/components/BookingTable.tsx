@@ -3,45 +3,29 @@ import moment from "moment";
 import { useLocation } from "react-router-dom";
 import BookingModal from "./BookingModal";
 
-function BookingTable({
-  data,
-  statusFilter,
-}: {
-  data: any[];
-  statusFilter?: string;
-}) {
+function BookingTable({ data }: { data: any[] }) {
   const setModal = useStore((state: any) => state.setModal);
   const location = useLocation();
-  const currentDate = moment.utc();
 
   function formatDate(date: string) {
     return moment.utc(date).format("DD MMM, YYYY");
   }
 
-  function getStatus(startDate: string, endDate: string) {
-    const start = moment.utc(startDate);
-    const end = moment.utc(endDate);
-
-    if (currentDate.isAfter(end)) {
-      return "Completed";
-    } else if (currentDate.isBefore(start)) {
-      return "Upcoming";
-    } else {
-      return "Ongoing";
-    }
-  }
-
-  const filteredData = statusFilter
-    ? data.filter(
-        (item) => getStatus(item.startDate, item.endDate) === statusFilter
-      )
-    : data;
-
-  const sortedData = filteredData.slice().sort((a, b) => {
+  // Remove status filtering logic; assume data is already filtered by status
+  const sortedData = data.slice().sort((a, b) => {
     return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
   });
 
   const isListing = location.pathname.includes("/listing");
+
+  // Helper for status color
+  function getStatusColor(status: string) {
+    if (status === "Ongoing")
+      return { color: "#FFD700", backgroundColor: "#FFFACD" };
+    if (status === "Completed")
+      return { color: "#34C759", backgroundColor: "#DBFFE4" };
+    return { color: "#007BFF", backgroundColor: "#CCE5FF" };
+  }
 
   return (
     <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar">
@@ -167,27 +151,10 @@ function BookingTable({
                     </td>
                     <td className="px-4 py-4 whitespace-nowrap w-[100px]">
                       <div
-                        style={{
-                          color:
-                            getStatus(item.startDate, item.endDate) ===
-                            "Ongoing"
-                              ? "#FFD700"
-                              : getStatus(item.startDate, item.endDate) ===
-                                "Completed"
-                              ? "#34C759"
-                              : "#007BFF",
-                          backgroundColor:
-                            getStatus(item.startDate, item.endDate) ===
-                            "Ongoing"
-                              ? "#FFFACD"
-                              : getStatus(item.startDate, item.endDate) ===
-                                "Completed"
-                              ? "#DBFFE4"
-                              : "#CCE5FF",
-                        }}
+                        style={getStatusColor(item.status)}
                         className="text-xs p-1.5 rounded-lg font-medium w-full text-center"
                       >
-                        <span>{getStatus(item.startDate, item.endDate)}</span>
+                        <span>{item.status}</span>
                       </div>
                     </td>
                     {!isListing && (
