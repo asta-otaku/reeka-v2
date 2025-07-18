@@ -46,7 +46,7 @@
   box-sizing: border-box;
 }
 
-.no-scrollbar {
+.no-scrollba {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
