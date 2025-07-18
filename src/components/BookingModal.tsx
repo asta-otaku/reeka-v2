@@ -95,15 +95,15 @@ function BookingModal({
               </p>
             </div>
             {incident ? (
-              <div className="bg-yellow-100 text-yellow-700 text-[10px] font-medium px-2.5 py-1 rounded-full">
+              <div className="bg-yellow-100 text-yellow-700 text-[10px] font-medium px-2.5 py-1 rounded-full w-fit whitespace-nowrap">
                 Incident Recorded – {incident.title}
               </div>
             ) : booking?.cautionFee ? (
-              <div className="bg-green-100 text-green-700 text-[10px] font-medium px-2.5 py-1 rounded-full">
+              <div className="bg-green-100 text-green-700 text-[10px] font-medium px-2.5 py-1 rounded-full w-fit whitespace-nowrap">
                 No incidents
               </div>
             ) : (
-              <div className="bg-gray-200 text-gray-600 text-[10px] font-medium px-2.5 py-1 rounded-full">
+              <div className="bg-gray-200 text-gray-600 text-[10px] font-medium px-2.5 py-1 rounded-full w-fit whitespace-nowrap">
                 No Caution Fee Assigned
               </div>
             )}
