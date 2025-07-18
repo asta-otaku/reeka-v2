@@ -60,7 +60,13 @@ function Bookings() {
         booking.guestEmail?.toLowerCase().includes(query) ||
         booking.propertyDetails?.propertyName?.toLowerCase().includes(query)
       );
-    });
+    })
+    .filter((booking: any) =>
+      statusFilter
+        ? (booking.status || "").toLowerCase().trim() ===
+          statusFilter.toLowerCase().trim()
+        : true
+    );
 
   // Calculate page count based on filtered bookings
   const pageCount = Math.ceil(filteredBookings.length / itemsPerPage);
@@ -137,7 +143,7 @@ function Bookings() {
           />
         </div>
         <div className="overflow-x-auto px-6 no-scrollbar mt-6">
-          <BookingTable data={displayedData} statusFilter={statusFilter} />
+          <BookingTable data={displayedData} />
         </div>
         <ReactPaginate
           previousLabel={""}
