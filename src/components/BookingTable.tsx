@@ -28,10 +28,10 @@ function BookingTable({ data }: { data: any[] }) {
   }
 
   return (
-    <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar">
+    <div className="flex flex-col gap-6 overflow-x-auto no-scrollbar w-full min-w-0">
       {sortedData.length > 0 ? (
         sortedData.map((item, i) => (
-          <div key={i}>
+          <div key={i} className="w-full min-w-0">
             <div className="">
               <table
                 onClick={() =>
@@ -43,7 +43,7 @@ function BookingTable({ data }: { data: any[] }) {
                     />
                   )
                 }
-                className="min-w-full text-left text-xs border-collapse cursor-pointer bg-[#F2F2F2] rounded-xl shadow"
+                className="min-w-full w-full table-auto text-left text-xs border-collapse cursor-pointer bg-[#F2F2F2] rounded-xl shadow"
               >
                 <thead className="text-[#BDBDBD] text-sm">
                   <tr className="capitalize">
