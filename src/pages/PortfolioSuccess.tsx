@@ -25,6 +25,7 @@ function PortfolioSuccess() {
     cautionFee: "",
     paymentStatus: "",
     images: [],
+    nightsBooked: 1,
   });
 
   useEffect(() => {
@@ -46,6 +47,7 @@ function PortfolioSuccess() {
           cautionFee,
           paymentStatus,
           images,
+          nightsBooked,
         } = res.data.booking;
         setFormDetails({
           firstName,
@@ -63,6 +65,7 @@ function PortfolioSuccess() {
           countryCode: "",
           paymentStatus,
           images,
+          nightsBooked,
         });
         setPaymentLink(res.data.paymentLink);
       } else {
@@ -94,7 +97,7 @@ function PortfolioSuccess() {
               numberOfGuests: Number(formDetails.noOfGuests),
               guestEmail: formDetails.email,
               guestPhone: formDetails.phoneNumber,
-              nightsBooked: 1, // or calculate if available
+              nightsBooked: formDetails.nightsBooked,
               totalBookingValue: Number(formDetails.price),
               currency: "NGN", // or your actual currency
               price: Number(formDetails.price),

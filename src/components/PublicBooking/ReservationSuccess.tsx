@@ -85,7 +85,7 @@ const ReservationSuccess: React.FC<ReservationSuccessProps> = ({ invoice }) => {
               <span className="font-semibold">Price per night</span>
               <br />
               {currencySymbol}
-              {booking.price}
+              {booking.price?.toLocaleString()}
             </div>
             <div>
               <span className="font-semibold">Check-out</span>
