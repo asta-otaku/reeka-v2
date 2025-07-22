@@ -368,12 +368,14 @@ function Details({
             <p className="text-xs text-[#3A3A3A]">
               For precise pricing, please input your travel dates.
             </p>
-            <RangePicker
-              format="DD/MM/YYYY"
-              className="w-full"
-              onChange={onRangeChange}
-              disabledDate={disabledDate}
-            />
+            <div className="w-full max-w-xs md:max-w-md mx-auto">
+              <RangePicker
+                format="DD/MM/YYYY"
+                className="w-full"
+                onChange={onRangeChange}
+                disabledDate={disabledDate}
+              />
+            </div>
           </div>
         </div>
         <div className="col-span-1 md:col-span-4 border bg-white rounded-xl shadow-black/20 shadow-sm p-4">

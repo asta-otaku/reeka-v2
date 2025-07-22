@@ -14,6 +14,8 @@ function RateCardsTab({ property }: { property: any }) {
   const [newRate, setNewRate] = useState({ name: "", rate: 0 });
   const [defaultRateIndex, setDefaultRateIndex] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showCopyModal, setShowCopyModal] = useState(false);
+  const [copyUrl, setCopyUrl] = useState("");
 
   const fetchRates = async () => {
     try {
@@ -43,12 +45,32 @@ function RateCardsTab({ property }: { property: any }) {
           rateId: rateId,
         },
       });
-      await navigator.clipboard.writeText(url);
-      toast.success("Copied public link for this rate!");
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+        toast.success("Copied public link for this rate!");
+      } else {
+        setCopyUrl(url);
+        setShowCopyModal(true);
+      }
     } catch (err) {
       console.error(err);
       toast.error("Could not generate public link");
     }
+  };
+
+  const handleLegacyCopy = () => {
+    const input = document.createElement("input");
+    input.value = copyUrl;
+    document.body.appendChild(input);
+    input.select();
+    try {
+      document.execCommand("copy");
+      toast.success("Copied public link for this rate!");
+    } catch (err) {
+      toast.error("Could not copy. Please copy manually.");
+    }
+    document.body.removeChild(input);
+    setShowCopyModal(false);
   };
 
   const handleSaveRate = async () => {
@@ -134,161 +156,197 @@ function RateCardsTab({ property }: { property: any }) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto w-full border rounded-3xl p-4">
-      {/* Header */}
-      <div className="flex w-full justify-between items-center gap-4 border-b pb-3">
-        <div className="flex items-center gap-4 flex-wrap">
-          <span className="hidden md:block w-16 h-12 bg-[#D9D9D9] rounded-xl">
-            <img
-              src={property?.images[0]}
-              alt="property"
-              className="w-full h-full object-cover rounded-xl"
-            />
-          </span>
-          <div>
-            <h1 className="text-[#808080] text-xs font-medium">Rate Card</h1>
-            <h2 className="text-[#121212] font-medium text-lg max-w-[200px] md:max-w-full truncate">
-              {property?.propertyName}
-            </h2>
-          </div>
-        </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="px-3 py-1.5 text-white rounded-lg bg-primary text-sm"
-        >
-          Add Rate
-        </button>
-      </div>
-      <p className="text-xs text-[#808080] font-medium my-3">
-        Select your default rate
-      </p>
-
-      {/* Add Rate Form */}
-      {showForm && (
-        <div className="flex flex-col md:flex-row items-end gap-3 mt-4">
-          <div className="flex flex-col gap-0.5 w-full">
-            <label className="text-[#344054] font-medium text-sm">
-              Rate Name*
-            </label>
-            <input
-              type="text"
-              placeholder="Name"
-              value={newRate.name}
-              onChange={(e) =>
-                setNewRate((prev) => ({ ...prev, name: e.target.value }))
-              }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-            />
-          </div>
-          <div className="flex flex-col gap-0.5 w-full">
-            <label className="text-[#344054] font-medium text-sm">Rate*</label>
-            <input
-              type="number"
-              placeholder="Rate"
-              value={newRate.rate || ""}
-              onChange={(e) =>
-                setNewRate((prev) => ({
-                  ...prev,
-                  rate: Number(e.target.value),
-                }))
-              }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-            />
+    <>
+      <div className="max-w-3xl mx-auto w-full border rounded-3xl p-4">
+        {/* Header */}
+        <div className="flex w-full justify-between items-center gap-4 border-b pb-3">
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="hidden md:block w-16 h-12 bg-[#D9D9D9] rounded-xl">
+              <img
+                src={property?.images[0]}
+                alt="property"
+                className="w-full h-full object-cover rounded-xl"
+              />
+            </span>
+            <div>
+              <h1 className="text-[#808080] text-xs font-medium">Rate Card</h1>
+              <h2 className="text-[#121212] font-medium text-lg max-w-[200px] md:max-w-full truncate">
+                {property?.propertyName}
+              </h2>
+            </div>
           </div>
           <button
-            onClick={handleSaveRate}
-            className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ml-4"
+            onClick={() => setShowForm(true)}
+            className="px-3 py-1.5 text-white rounded-lg bg-primary text-sm"
           >
-            Save Rate
+            Add Rate
           </button>
         </div>
-      )}
+        <p className="text-xs text-[#808080] font-medium my-3">
+          Select your default rate
+        </p>
 
-      {/* Rates List */}
-      {rates.length > 0 ? (
-        <div className="mt-6 space-y-4">
-          {[...rates]
-            .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
-            .map((rate) => {
-              const actualIndex = rates.findIndex((r) => r._id === rate._id);
-              return (
-                <div
-                  key={rate._id}
-                  className="grid grid-cols-7 lg:grid-cols-12 gap-2 items-end"
-                >
-                  <div className="col-span-1 flex justify-center self-center mt-5">
-                    <input
-                      type="radio"
-                      checked={defaultRateIndex === actualIndex}
-                      onChange={() => handleSetDefaultRate(rate._id)}
-                      className="accent-black"
-                    />
+        {/* Add Rate Form */}
+        {showForm && (
+          <div className="flex flex-col md:flex-row items-end gap-3 mt-4">
+            <div className="flex flex-col gap-0.5 w-full">
+              <label className="text-[#344054] font-medium text-sm">
+                Rate Name*
+              </label>
+              <input
+                type="text"
+                placeholder="Name"
+                value={newRate.name}
+                onChange={(e) =>
+                  setNewRate((prev) => ({ ...prev, name: e.target.value }))
+                }
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              />
+            </div>
+            <div className="flex flex-col gap-0.5 w-full">
+              <label className="text-[#344054] font-medium text-sm">
+                Rate*
+              </label>
+              <input
+                type="number"
+                placeholder="Rate"
+                value={newRate.rate || ""}
+                onChange={(e) =>
+                  setNewRate((prev) => ({
+                    ...prev,
+                    rate: Number(e.target.value),
+                  }))
+                }
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+              />
+            </div>
+            <button
+              onClick={handleSaveRate}
+              className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ml-4"
+            >
+              Save Rate
+            </button>
+          </div>
+        )}
+
+        {/* Rates List */}
+        {rates.length > 0 ? (
+          <div className="mt-6 space-y-4">
+            {[...rates]
+              .sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0))
+              .map((rate) => {
+                const actualIndex = rates.findIndex((r) => r._id === rate._id);
+                return (
+                  <div
+                    key={rate._id}
+                    className="grid grid-cols-7 lg:grid-cols-12 gap-2 items-end"
+                  >
+                    <div className="col-span-1 flex justify-center self-center mt-5">
+                      <input
+                        type="radio"
+                        checked={defaultRateIndex === actualIndex}
+                        onChange={() => handleSetDefaultRate(rate._id)}
+                        className="accent-black"
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <label className="text-[#344054] font-medium text-sm">
+                        Rate Name
+                      </label>
+                      <input
+                        type="text"
+                        value={rate.rateName}
+                        onChange={(e) =>
+                          handleRateChange(rate._id, "rateName", e.target.value)
+                        }
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      />
+                    </div>
+                    <div className="col-span-3">
+                      <label className="text-[#344054] font-medium text-sm">
+                        Rate
+                      </label>
+                      <input
+                        type="number"
+                        value={rate.ratePrice}
+                        onChange={(e) =>
+                          handleRateChange(
+                            rate._id,
+                            "ratePrice",
+                            e.target.value
+                          )
+                        }
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      />
+                    </div>
+                    <div className="col-span-8 lg:col-span-5 flex justify-center lg:justify-end gap-2">
+                      <button
+                        onClick={() =>
+                          handleUpdateRate(
+                            rate._id,
+                            rate.rateName,
+                            rate.ratePrice
+                          )
+                        }
+                        className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
+                      >
+                        Update
+                      </button>
+                      <button
+                        onClick={() => generatePublicUrlForRate(rate._id)}
+                        className="bg-[#3B82F6] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
+                      >
+                        Public Link
+                      </button>
+                      <button
+                        onClick={() => handleRemoveRate(rate._id)}
+                        className="bg-[#FF3B30] hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                  <div className="col-span-3">
-                    <label className="text-[#344054] font-medium text-sm">
-                      Rate Name
-                    </label>
-                    <input
-                      type="text"
-                      value={rate.rateName}
-                      onChange={(e) =>
-                        handleRateChange(rate._id, "rateName", e.target.value)
-                      }
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                    />
-                  </div>
-                  <div className="col-span-3">
-                    <label className="text-[#344054] font-medium text-sm">
-                      Rate
-                    </label>
-                    <input
-                      type="number"
-                      value={rate.ratePrice}
-                      onChange={(e) =>
-                        handleRateChange(rate._id, "ratePrice", e.target.value)
-                      }
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                    />
-                  </div>
-                  <div className="col-span-8 lg:col-span-5 flex justify-center lg:justify-end gap-2">
-                    <button
-                      onClick={() =>
-                        handleUpdateRate(
-                          rate._id,
-                          rate.rateName,
-                          rate.ratePrice
-                        )
-                      }
-                      className="bg-[#219653] hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={() => generatePublicUrlForRate(rate._id)}
-                      className="bg-[#3B82F6] hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
-                    >
-                      Public Link
-                    </button>
-                    <button
-                      onClick={() => handleRemoveRate(rate._id)}
-                      className="bg-[#FF3B30] hover:bg-red-600 text-white px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
-      ) : (
-        <div className="min-h-20 flex items-center flex-col justify-center gap-1">
-          <h2 className="text-[#121212] font-medium text-lg">No Rate Card</h2>
-          <h1 className="text-[#808080] text-xs font-medium">
-            Rate cards are used to set the price of your property.
-          </h1>
+                );
+              })}
+          </div>
+        ) : (
+          <div className="min-h-20 flex items-center flex-col justify-center gap-1">
+            <h2 className="text-[#121212] font-medium text-lg">No Rate Card</h2>
+            <h1 className="text-[#808080] text-xs font-medium">
+              Rate cards are used to set the price of your property.
+            </h1>
+          </div>
+        )}
+      </div>
+      {showCopyModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-md">
+            <h3 className="text-lg font-semibold mb-3">Copy Public URL</h3>
+            <input
+              type="text"
+              value={copyUrl}
+              readOnly
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm mb-3"
+              onFocus={(e) => e.target.select()}
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCopyModal(false)}
+                className="text-sm px-4 py-2 rounded-md border border-gray-300"
+              >
+                Close
+              </button>
+              <button
+                onClick={handleLegacyCopy}
+                className="text-sm px-4 py-2 rounded-md bg-primary text-white"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

@@ -16,6 +16,8 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
   const [assignedPropertyIds, setAssignedPropertyIds] = useState<string[]>(
     staff.properties || []
   );
+  const [showCopyModal, setShowCopyModal] = useState(false);
+  const [copyUrl, setCopyUrl] = useState("");
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -74,11 +76,32 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
   const handleGenerateAgentLink = async (id: string) => {
     try {
       const response = await apiClient.get(`/agents/${id}/url`);
-      navigator.clipboard.writeText(response.data.agentLink);
-      toast.success("Public URL copied to clipboard");
+      const url = response.data.agentLink;
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+        toast.success("Public URL copied to clipboard");
+      } else {
+        setCopyUrl(url);
+        setShowCopyModal(true);
+      }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleLegacyCopy = () => {
+    const input = document.createElement("input");
+    input.value = copyUrl;
+    document.body.appendChild(input);
+    input.select();
+    try {
+      document.execCommand("copy");
+      toast.success("Public URL copied to clipboard");
+    } catch (err) {
+      toast.error("Could not copy. Please copy manually.");
+    }
+    document.body.removeChild(input);
+    setShowCopyModal(false);
   };
 
   const handlePropertyUpdate = async () => {
@@ -119,104 +142,154 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
   };
 
   return (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full relative"
-    >
-      <div className="flex items-center justify-between px-4 py-2 border-b">
-        <h3 className="text-[#121212] font-medium text-sm">
-          Edit Staff Details
-        </h3>
-        <span
-          onClick={() => setModal(null)}
-          className="cursor-pointer text-[#808080]"
-        >
-          X
-        </span>
-      </div>
-      <div className="flex border-b">
-        <button
-          className={`p-2 flex-1 ${
-            activeTab === "details"
-              ? "border-b-2 border-primary"
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("details")}
-        >
-          Details
-        </button>
-        <button
-          className={`p-2 flex-1 ${
-            activeTab === "properties"
-              ? "border-b-2 border-primary"
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveTab("properties")}
-        >
-          Properties
-        </button>
-      </div>
+    <>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="border border-[#C0C0C0] rounded-2xl p-1.5 bg-[#FAFAFA] max-w-xl w-full relative"
+      >
+        <div className="flex items-center justify-between px-4 py-2 border-b">
+          <h3 className="text-[#121212] font-medium text-sm">
+            Edit Staff Details
+          </h3>
+          <span
+            onClick={() => setModal(null)}
+            className="cursor-pointer text-[#808080]"
+          >
+            X
+          </span>
+        </div>
+        <div className="flex border-b">
+          <button
+            className={`p-2 flex-1 ${
+              activeTab === "details"
+                ? "border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab("details")}
+          >
+            Details
+          </button>
+          <button
+            className={`p-2 flex-1 ${
+              activeTab === "properties"
+                ? "border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab("properties")}
+          >
+            Properties
+          </button>
+        </div>
 
-      {activeTab === "details" && (
-        <form onSubmit={handleSubmit} className="p-4">
-          <div className="space-y-4">
-            <div className={`${isAgent && "hidden"}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Role
-              </label>
-              <select
-                value={formData.role}
-                onChange={(e) =>
-                  setFormData({ ...formData, role: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        {activeTab === "details" && (
+          <form onSubmit={handleSubmit} className="p-4">
+            <div className="space-y-4">
+              <div className={`${isAgent && "hidden"}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  value={formData.role}
+                  onChange={(e) =>
+                    setFormData({ ...formData, role: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  {roleTypes.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={`${!isAgent && "hidden"}`}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={formData.phoneNumber}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phoneNumber: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-4 mt-6">
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => handleGenerateAgentLink(staff.id)}
+                className={`px-4 py-2 text-sm font-medium text-white whitespace-nowrap bg-secondary rounded-xl hover:bg-secondary/90 ${
+                  !isAgent && "hidden"
+                }`}
               >
-                {roleTypes.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
+                {loading ? <Spinner /> : "Generate agent link"}
+              </button>
+              <div className="flex gap-4 w-full justify-end">
+                <button
+                  type="button"
+                  onClick={() => setModal(null)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
+                >
+                  {loading ? <Spinner /> : "Save Changes"}
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+
+        {activeTab === "properties" && (
+          <div className="p-4">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">
+              Assign Properties
+            </h4>
+            <div className="mt-5 text-secondary">
+              <div className="flex flex-col gap-4">
+                {properties.map((property: any) => (
+                  <div
+                    key={property._id}
+                    className="py-2 px-4 border-b border-solid border-gray-300 flex items-center gap-4"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={assignedPropertyIds.includes(property._id)}
+                      onChange={() => togglePropertyAssignment(property._id)}
+                      id={`property-${property._id}`}
+                      className="accent-primary"
+                    />
+                    <label
+                      htmlFor={`property-${property._id}`}
+                      className="text-sm text-gray-600 cursor-pointer"
+                    >
+                      {property.propertyName}
+                    </label>
+                  </div>
                 ))}
-              </select>
+              </div>
             </div>
-            <div className={`${!isAgent && "hidden"}`}>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, phoneNumber: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-          </div>
-          <div className="flex items-center justify-between gap-4 mt-6">
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => handleGenerateAgentLink(staff.id)}
-              className={`px-4 py-2 text-sm font-medium text-white whitespace-nowrap bg-secondary rounded-xl hover:bg-secondary/90 ${
-                !isAgent && "hidden"
-              }`}
-            >
-              {loading ? <Spinner /> : "Generate agent link"}
-            </button>
-            <div className="flex gap-4 w-full justify-end">
+            <div className="flex items-center justify-end gap-4 mt-6">
               <button
                 type="button"
                 onClick={() => setModal(null)}
@@ -225,64 +298,44 @@ function EditStaffModal({ staff, setModal, onUpdate, isAgent }: any) {
                 Cancel
               </button>
               <button
-                type="submit"
-                disabled={loading}
+                onClick={handlePropertyUpdate}
                 className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
               >
                 {loading ? <Spinner /> : "Save Changes"}
               </button>
             </div>
           </div>
-        </form>
-      )}
-
-      {activeTab === "properties" && (
-        <div className="p-4">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">
-            Assign Properties
-          </h4>
-          <div className="mt-5 text-secondary">
-            <div className="flex flex-col gap-4">
-              {properties.map((property: any) => (
-                <div
-                  key={property._id}
-                  className="py-2 px-4 border-b border-solid border-gray-300 flex items-center gap-4"
-                >
-                  <input
-                    type="checkbox"
-                    checked={assignedPropertyIds.includes(property._id)}
-                    onChange={() => togglePropertyAssignment(property._id)}
-                    id={`property-${property._id}`}
-                    className="accent-primary"
-                  />
-                  <label
-                    htmlFor={`property-${property._id}`}
-                    className="text-sm text-gray-600 cursor-pointer"
-                  >
-                    {property.propertyName}
-                  </label>
-                </div>
-              ))}
+        )}
+      </div>
+      {showCopyModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-md w-[90%] max-w-md">
+            <h3 className="text-lg font-semibold mb-3">Copy Public URL</h3>
+            <input
+              type="text"
+              value={copyUrl}
+              readOnly
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm mb-3"
+              onFocus={(e) => e.target.select()}
+            />
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCopyModal(false)}
+                className="text-sm px-4 py-2 rounded-md border border-gray-300"
+              >
+                Close
+              </button>
+              <button
+                onClick={handleLegacyCopy}
+                className="text-sm px-4 py-2 rounded-md bg-primary text-white"
+              >
+                Copy
+              </button>
             </div>
-          </div>
-          <div className="flex items-center justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={() => setModal(null)}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handlePropertyUpdate}
-              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-xl hover:bg-primary/90"
-            >
-              {loading ? <Spinner /> : "Save Changes"}
-            </button>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

@@ -112,7 +112,7 @@ function StepZero({
             <RangePicker
               format="DD/MM/YYYY"
               placeholder={["Start Date", "End Date"]}
-              className="w-full rounded-xl border border-gray-300 p-3"
+              className="w-full rounded-xl border border-gray-300 h-10"
               onChange={handleDateChange}
               minDate={dayjs().startOf("day")}
               value={dateRange}
@@ -125,7 +125,7 @@ function StepZero({
               onChange={(e) =>
                 setBedroomFilter(e.target.value ? Number(e.target.value) : null)
               }
-              className="w-full rounded-xl border border-gray-300 p-3 text-sm bg-white"
+              className="w-full rounded-xl border border-gray-300 p-3 text-sm bg-white h-10"
             >
               <option value="">Filter by Bedrooms</option>
               <option value="0">Studio</option>
@@ -158,7 +158,8 @@ function StepZero({
               property?.propertyName
                 ?.toLowerCase()
                 .includes(search.toLowerCase()) ||
-              property?.address?.toLowerCase().includes(search.toLowerCase());
+              property?.address?.toLowerCase().includes(search.toLowerCase()) ||
+              property?.city?.toLowerCase().includes(search.toLowerCase());
 
             if (!textMatch) return false;
 
@@ -235,13 +236,20 @@ function StepZero({
                   <div className="font-semibold text-base mb-1">
                     {property.propertyName}
                   </div>
-                  <div className="text-xs text-[#808080] mb-2 line-clamp-1">
+                  <div className="text-xs text-[#808080] my-2 line-clamp-1">
                     {property.address}
+                  </div>
+                  <div className="text-xs text-[#808080] mb-2 line-clamp-1">
+                    {property.city}
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
-                      <BedDouble size={14} /> {bedroomCount} Bedroom
-                      {bedroomCount === 1 ? "" : "s"}
+                      <BedDouble size={14} />{" "}
+                      {bedroomCount === 0
+                        ? "Studio"
+                        : `${bedroomCount} Bedroom${
+                            bedroomCount === 1 ? "" : "s"
+                          }`}
                     </span>
                     <span className="flex items-center gap-1 px-2 py-1 bg-[#FAFAFA] rounded-full border text-xs">
                       <Bath size={14} /> {bathroomCount} Bathroom

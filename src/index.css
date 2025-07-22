@@ -50,3 +50,17 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
+@media (max-width: 480px) {
+  .ant-calendar-range {
+    width: 320px;
+  }
+
+    .ant-picker-panels {
+      flex-direction: column;
+    }
+
+  .ant-calendar-range-part {
+    width: 100%;
+  }
+}
