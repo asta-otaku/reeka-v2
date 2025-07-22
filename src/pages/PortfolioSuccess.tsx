@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import moment from "moment";
 import ReservationSuccess from "../components/PublicBooking/ReservationSuccess";
 
-function StripePortfolioSuccess() {
+function PortfolioSuccess() {
   const { id } = useParams<{ id: string }>();
   const [paymentLink, setPaymentLink] = useState("");
   const [formDetails, setFormDetails] = useState({
@@ -109,4 +109,4 @@ function StripePortfolioSuccess() {
   );
 }
 
-export default StripePortfolioSuccess;
+export default PortfolioSuccess;

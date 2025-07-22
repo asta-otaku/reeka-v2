@@ -27,7 +27,7 @@ import { Toaster } from "react-hot-toast";
 import StripeSuccessPage from "./pages/StripeSuccess.tsx";
 import StripeCancelPage from "./pages/StripeCancel.tsx";
 import IncidentReportsPage from "./pages/IncidentReportCenter.tsx";
-import StripePortfolioSuccess from "./pages/StripePortfolioSuccess.tsx";
+import PortfolioSuccess from "./pages/PortfolioSuccess.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -57,10 +57,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/stripe-cancel" element={<StripeCancelPage />} />
-        <Route
-          path="/stripe-success/:id"
-          element={<StripePortfolioSuccess />}
-        />
+        <Route path="/payment-success/:id" element={<PortfolioSuccess />} />
         <Route path="/stripe-success" element={<StripeSuccessPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
