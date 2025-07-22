@@ -45,26 +45,20 @@ const ReservationSuccess: React.FC<ReservationSuccessProps> = ({ invoice }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
         {/* Glassy overlay for text area */}
-        <div
-          className="absolute left-0 right-0 z-10"
-          style={{ top: "55%", bottom: 0 }}
-        >
+        <div className="absolute left-0 right-0 z-10 top-[30%] md:top-[55%] bottom-0">
           <div className="w-full h-full bg-white/20 backdrop-blur-md" />
         </div>
       </div>
       {/* Content */}
-      <div
-        className="absolute left-0 right-0 z-20 flex flex-col items-center justify-end px-6 pb-10 pt-10"
-        style={{ top: "55%", bottom: 0 }}
-      >
+      <div className="absolute left-0 top-[30%] md:top-[55%] bottom-0 right-0 z-20 flex flex-col items-center justify-end px-3 md:px-6 pb-10 pt-10">
         <h2 className="text-white text-lg md:text-xl font-bold text-center mb-1 drop-shadow">
           Reservation successful!
         </h2>
         <p className="text-white text-sm text-center mb-6 drop-shadow">
           Email containing payment link sent to the provided email
         </p>
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 text-white text-sm drop-shadow">
-          <div className="flex flex-col gap-2 items-center md:items-start">
+        <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-6 text-white text-sm drop-shadow">
+          <div className="flex flex-col gap-2">
             <div>
               <span className="font-semibold">Name</span>
               <br />
@@ -81,7 +75,7 @@ const ReservationSuccess: React.FC<ReservationSuccessProps> = ({ invoice }) => {
               {new Date(booking.startDate).toLocaleDateString()}
             </div>
           </div>
-          <div className="flex flex-col gap-2 items-center md:items-start">
+          <div className="flex flex-col gap-2">
             <div>
               <span className="font-semibold">Phone no</span>
               <br />
@@ -99,7 +93,7 @@ const ReservationSuccess: React.FC<ReservationSuccessProps> = ({ invoice }) => {
               {new Date(booking.endDate).toLocaleDateString()}
             </div>
           </div>
-          <div className="flex flex-col gap-2 items-center md:items-start">
+          <div className="flex flex-col gap-2">
             <div>
               <span className="font-semibold">Email</span>
               <br />
