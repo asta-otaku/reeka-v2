@@ -9,12 +9,24 @@ interface Booking {
   propertyId: string;
   guestFirstName: string;
   guestLastName: string;
+  guestEmail?: string;
+  guestPhone?: string;
   startDate: string;
   endDate: string;
   color: string;
   numberOfGuests: number;
+  numberOfChildren?: number;
   totalBookingValue: number;
   currency: string;
+  status?: string;
+  paymentStatus?: string;
+  nightsBooked?: number;
+  cautionFee?: number;
+  agentFee?: number;
+  agentName?: string;
+  note?: string;
+  includeNote?: boolean;
+  sourcePlatform?: string;
 }
 
 interface CustomCalendarProps {
@@ -144,22 +156,116 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                   onClick={() => {
                     setModal(null);
                   }}
-                  className="p-2 sm:p-3 border border-gray-200 rounded-lg mb-2 sm:mb-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="p-3 sm:p-4 border border-gray-200 rounded-lg mb-3 cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderLeft: `4px solid ${booking.color}` }}
                 >
-                  <div className="font-medium text-gray-900 text-sm sm:text-base">
-                    {booking.guestFirstName} {booking.guestLastName}
+                  {/* Guest Information */}
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <div className="font-medium text-gray-900 text-sm sm:text-base">
+                        {booking.guestFirstName} {booking.guestLastName}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {booking.guestEmail}
+                      </div>
+                      {booking.guestPhone && (
+                        <div className="text-xs text-gray-600">
+                          {booking.guestPhone}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          booking.status === "Completed"
+                            ? "bg-green-100 text-green-800"
+                            : booking.status === "Cancelled"
+                            ? "bg-red-100 text-red-800"
+                            : booking.status === "Pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {booking.status}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-xs sm:text-sm text-gray-600">
+
+                  {/* Property Information */}
+                  <div className="text-xs sm:text-sm text-gray-600 mb-2">
                     {booking.propertyName}
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {booking.numberOfGuests} guest(s) • {booking.currency}{" "}
-                    {booking.totalBookingValue?.toLocaleString()}
+
+                  {/* Booking Details */}
+                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mb-2">
+                    <div>
+                      <span className="font-medium">Check-in:</span>{" "}
+                      {moment(booking.startDate).format("MMM D, YYYY")}
+                    </div>
+                    <div>
+                      <span className="font-medium">Check-out:</span>{" "}
+                      {moment(booking.endDate).format("MMM D, YYYY")}
+                    </div>
+                    <div>
+                      <span className="font-medium">Nights:</span>{" "}
+                      {booking.nightsBooked ||
+                        moment(booking.endDate).diff(
+                          moment(booking.startDate),
+                          "days"
+                        )}
+                    </div>
+                    <div>
+                      <span className="font-medium">Guests:</span>{" "}
+                      {booking.numberOfGuests}
+                      {booking.numberOfChildren &&
+                        booking.numberOfChildren > 0 && (
+                          <span> ({booking.numberOfChildren} children)</span>
+                        )}
+                    </div>
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">
-                    {moment(booking.startDate).format("MMM D")} -{" "}
-                    {moment(booking.endDate).format("MMM D, YYYY")}
+
+                  {/* Financial Information */}
+                  <div className="border-t pt-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-gray-900">
+                        Total: {booking.currency}{" "}
+                        {booking.totalBookingValue?.toLocaleString()}
+                      </span>
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          booking.paymentStatus === "paid"
+                            ? "bg-green-100 text-green-800"
+                            : booking.paymentStatus === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : booking.paymentStatus === "failed"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {booking.paymentStatus}
+                      </span>
+                    </div>
+
+                    {/* Additional fees */}
+                    {booking.cautionFee && booking.cautionFee > 0 ? (
+                      <div className="text-xs text-gray-500 mt-1">
+                        Caution Fee: {booking.currency}{" "}
+                        {booking.cautionFee.toLocaleString()}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {/* Notes */}
+                  {booking.note && booking.includeNote ? (
+                    <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
+                      <span className="font-medium">Note:</span> {booking.note}
+                    </div>
+                  ) : null}
+
+                  {/* Source Platform */}
+                  <div className="text-xs text-gray-400 mt-2 pt-2 border-t">
+                    <span className="font-medium">Source:</span>{" "}
+                    {booking.sourcePlatform}
                   </div>
                 </div>
               ))

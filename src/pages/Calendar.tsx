@@ -190,23 +190,21 @@ function Calendar() {
                               ? "opacity-50 cursor-not-allowed"
                               : "cursor-pointer"
                           }`}
-                          onClick={() => {
-                            if (!isDisabled) {
-                              handleToggleProperty(property._id);
-                            }
-                          }}
                         >
                           <input
                             type="checkbox"
                             checked={isSelected}
-                            onChange={() => handleToggleProperty(property._id)}
+                            onChange={() => {
+                              if (!isDisabled)
+                                handleToggleProperty(property._id);
+                            }}
                             disabled={isDisabled}
                             id={`calendar-property-${property._id}`}
                             className="accent-primary h-4 w-4 rounded border-gray-300 cursor-pointer"
                           />
                           <label
                             htmlFor={`calendar-property-${property._id}`}
-                            className={`text-sm flex-1 ${
+                            className={`text-sm flex-1 w-full h-full ${
                               isDisabled
                                 ? "text-gray-400 cursor-not-allowed"
                                 : "text-gray-700 cursor-pointer"
