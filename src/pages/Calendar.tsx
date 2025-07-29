@@ -230,7 +230,7 @@ function Calendar() {
 
             {/* Show selected properties as tags */}
             {selectedPropertyIds.length > 0 && (
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="hidden md:flex items-center gap-2 flex-wrap">
                 {selectedPropertyIds.slice(0, 3).map((propertyId) => {
                   const property = properties.find((p) => p._id === propertyId);
                   return property ? (
