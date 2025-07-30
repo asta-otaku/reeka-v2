@@ -1,0 +1,60 @@
+name: Deploy Web Client
+# Deploy whenever code lands on main
+on:
+  push:
+    branches: [ main ]
+    paths:    [ 'client/webClient/**' ]
+
+jobs:
+  deploy:
+    environment: production
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client/webClient
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: client/webClient/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
+      - run: npm install -g vercel@latest
+
+      - name: Debug Vercel secrets (safe)
+        run: |
+          echo "TOKEN present? $( [ -n \"$VERCEL_TOKEN\" ] && echo yes || echo no )"
+          echo "PROJECT_ID: $VERCEL_PROJECT_ID"
+          echo "ORG_ID:     $VERCEL_ORG_ID"
+          # show any hidden whitespace / newlines
+          printf 'PROJECT_ID bytes:\n'; printf '%s' "$VERCEL_PROJECT_ID" | hexdump -C
+          printf 'ORG_ID bytes:\n';     printf '%s' "$VERCEL_ORG_ID"     | hexdump -C
+        env:
+          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
+
+
+      - name: Check Vercel env
+        run: |
+          echo "TOKEN present? $( [ -n \"$VERCEL_TOKEN\" ] && echo yes || echo no )"
+          echo "PROJECT_ID: $VERCEL_PROJECT_ID"
+          echo "ORG_ID:     $VERCEL_ORG_ID"
+        env:
+          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
+
+
+      - name: Deploy to Vercel (prod)
+        if: github.ref == 'refs/heads/main'
+        run: vercel deploy --prod --yes --token $VERCEL_TOKEN
+        env:
+          VERCEL_TOKEN:      ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}

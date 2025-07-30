@@ -1,0 +1,27 @@
+name: Auto-deploy staging API
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - 'api/**'
+
+jobs:
+  auto-deploy-staging-api:
+    if: github.event.pull_request.merged == true
+    runs-on:
+      - self-hosted
+      - api-deployment
+    steps:
+      - name: Checkout default branch
+        uses: actions/checkout@v2
+
+      - name: Connect VPN
+        run: |
+          sudo openvpn --config /Users/typo/Desktop/awsVpn/downloaded-client-config.ovpn --auth-user-pass /Users/typo/Desktop/awsVpn/vpn_creds.txt --daemon
+          # Wait for VPN connection to establish
+          sleep 20
+
+      - name: Deploy
+        working-directory: ./api/deploy/test
+        run: ./deploy.sh --ci-mode

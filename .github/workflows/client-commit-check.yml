@@ -1,0 +1,41 @@
+name: client-commit-check
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+      - 'client/**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  client-commit-check:
+    runs-on:
+      - self-hosted
+      - macOS
+      - client-check
+
+    steps:
+      - name: Use Xcode 16
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
+
+      - name: Current platform versions
+        run: |
+          sw_vers
+          xcodebuild -version
+          swift --version
+
+      - name: Checkout default branch
+        uses: actions/checkout@v2
+
+      - name: Test mobile
+        run: |
+          make client_commit_check_test_mobile
+
+      - name: Lint
+        run: |
+          make client_commit_check_lint
