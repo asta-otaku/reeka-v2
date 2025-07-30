@@ -31,12 +31,21 @@ function Calendar() {
       .then((response) => {
         const colorMap: { [key: string]: string } = {};
 
+        // Generate a random color that is never too light (avoids white)
+        const randomColor = () => {
+          const r = Math.floor(Math.random() * 200);
+          const g = Math.floor(Math.random() * 200);
+          const b = Math.floor(Math.random() * 200);
+          return `#${r.toString(16).padStart(2, "0")}${g
+            .toString(16)
+            .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
+        };
+
         const formattedBookings = response.data.map((booking: any) => {
           const propertyName = booking?.propertyDetails?.propertyName;
 
           if (!colorMap[propertyName]) {
-            colorMap[propertyName] =
-              "#" + Math.floor(Math.random() * 16777215).toString(16);
+            colorMap[propertyName] = randomColor();
           }
 
           return {
