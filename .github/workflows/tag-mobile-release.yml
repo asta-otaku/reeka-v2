@@ -1,0 +1,77 @@
+name: tag_mobile_release
+
+on: 
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: 'Build number'
+        required: true
+        type: string
+
+      commit_sha:
+        description: 'SHA of commit to tag'
+        required: true
+        type: string
+
+      is_external:
+        description: 'Is external build?'
+        required: true
+        type: boolean
+        
+      version_number:
+        description: 'App version number (e.g. 2.0.4)'
+        required: true
+        type: string
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        id: get_version
+        run: |
+          if [[ "${{ github.event.inputs.is_external }}" == "true" ]]; then
+            PREFIX="E-"
+          else
+            PREFIX="S-"
+          fi
+          # Replace parentheses with underscores to avoid issues
+          BUILD_NUM="${{ github.event.inputs.build_number }}"
+          VERSION_NUM="${{ github.event.inputs.version_number }}"
+          FULL_VERSION="${PREFIX}${VERSION_NUM}-${BUILD_NUM}"
+          echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          TAG_NAME="${{ steps.get_version.outputs.version }}"
+          git tag $TAG_NAME ${{ github.event.inputs.commit_sha }}
+          git push origin $TAG_NAME
+          
+      # Only run the Linear steps if is_external is true
+      - name: Setup Node.js
+        if: ${{ github.event.inputs.is_external == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Install dependencies
+        if: ${{ github.event.inputs.is_external == 'true' }}
+        run: npm install @actions/github @actions/core
+        
+      - name: Create a new Linear View
+        if: ${{ github.event.inputs.is_external == 'true' }}
+        uses: actions/github-script@v7
+        env:
+          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
+        with:
+          script: |
+            const path = require('path');
+            const scriptPath= path.join(process.env.GITHUB_WORKSPACE, 'scripts', 'create-linear-view.js');
+            const createLinearView = require(scriptPath);
+            await createLinearView({ github, context, core });
