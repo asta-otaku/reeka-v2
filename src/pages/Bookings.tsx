@@ -6,14 +6,44 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import apiClient from "../helpers/apiClient";
+import moment from "moment";
+
+// Define the booking type
+interface Booking {
+  _id: string;
+  guestFirstName?: string;
+  guestLastName?: string;
+  guestEmail?: string;
+  startDate: string;
+  endDate: string;
+  propertyDetails?: {
+    propertyName?: string;
+  };
+  status?: string;
+}
 
 function Bookings() {
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [properties, setProperties] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+
+  const currentDate = moment.utc();
+
+  function getStatus(startDate: string, endDate: string) {
+    const start = moment.utc(startDate);
+    const end = moment.utc(endDate);
+
+    if (currentDate.isAfter(end)) {
+      return "Completed";
+    } else if (currentDate.isBefore(start)) {
+      return "Upcoming";
+    } else {
+      return "Ongoing";
+    }
+  }
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -47,12 +77,12 @@ function Bookings() {
   const [currentPage, setCurrentPage] = useState(0);
 
   const filteredBookings = bookings
-    .filter((booking: any) =>
+    .filter((booking) =>
       booking?.propertyDetails?.propertyName
         ?.toLowerCase()
         .includes(selectedProperty.toLowerCase())
     )
-    .filter((booking: any) => {
+    .filter((booking) => {
       const query = search.toLowerCase();
       return (
         booking.guestFirstName?.toLowerCase().includes(query) ||
@@ -61,22 +91,28 @@ function Bookings() {
         booking.propertyDetails?.propertyName?.toLowerCase().includes(query)
       );
     })
-    .filter((booking: any) =>
-      statusFilter
-        ? (booking.status || "").toLowerCase().trim() ===
-          statusFilter.toLowerCase().trim()
-        : true
-    );
+    .filter((booking) => {
+      if (!statusFilter) return true;
+
+      // Use dynamic status calculation instead of static status field
+      const dynamicStatus = getStatus(booking.startDate, booking.endDate);
+      return dynamicStatus === statusFilter;
+    });
+
+  // Sort bookings by start date (earliest first)
+  const sortedBookings = filteredBookings.slice().sort((a, b) => {
+    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+  });
 
   // Calculate page count based on filtered bookings
-  const pageCount = Math.ceil(filteredBookings.length / itemsPerPage);
+  const pageCount = Math.ceil(sortedBookings.length / itemsPerPage);
 
   const handlePageChange = ({ selected }: { selected: any }) => {
     setCurrentPage(selected);
   };
 
   // Filter and slice the data for the current page
-  const displayedData = filteredBookings.slice(
+  const displayedData = sortedBookings.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
