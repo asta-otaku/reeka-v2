@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import apiClient from "../helpers/apiClient";
-import moment from "moment";
 
 // Define the booking type
 interface Booking {
@@ -29,21 +28,6 @@ function Bookings() {
   const [search, setSearch] = useState("");
   const [selectedProperty, setSelectedProperty] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-
-  const currentDate = moment.utc();
-
-  function getStatus(startDate: string, endDate: string) {
-    const start = moment.utc(startDate);
-    const end = moment.utc(endDate);
-
-    if (currentDate.isAfter(end)) {
-      return "Completed";
-    } else if (currentDate.isBefore(start)) {
-      return "Upcoming";
-    } else {
-      return "Ongoing";
-    }
-  }
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -94,9 +78,7 @@ function Bookings() {
     .filter((booking) => {
       if (!statusFilter) return true;
 
-      // Use dynamic status calculation instead of static status field
-      const dynamicStatus = getStatus(booking.startDate, booking.endDate);
-      return dynamicStatus === statusFilter;
+      return booking.status?.toLowerCase() === statusFilter.toLowerCase();
     });
 
   // Sort bookings by start date (earliest first)

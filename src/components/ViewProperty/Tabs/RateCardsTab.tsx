@@ -323,15 +323,23 @@ function RateCardsTab({ property }: { property: any }) {
                         Rate
                       </label>
                       <input
-                        type="number"
-                        value={rate.ratePrice}
-                        onChange={(e) =>
-                          handleRateChange(
-                            rate._id,
-                            "ratePrice",
-                            e.target.value
-                          )
-                        }
+                        type="text"
+                        value={rate.ratePrice
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/,/g, "");
+                          const numericValue = value.replace(/[^0-9]/g, "");
+                          if (numericValue === "") {
+                            handleRateChange(rate._id, "ratePrice", "0");
+                          } else {
+                            handleRateChange(
+                              rate._id,
+                              "ratePrice",
+                              numericValue
+                            );
+                          }
+                        }}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                       />
                     </div>
