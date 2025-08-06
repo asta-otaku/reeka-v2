@@ -81,9 +81,62 @@ function Bookings() {
       return booking.status?.toLowerCase() === statusFilter.toLowerCase();
     });
 
-  // Sort bookings by start date (earliest first)
+  // Custom sorting: ongoing first, then recently completed, then upcoming, then other completed
   const sortedBookings = filteredBookings.slice().sort((a, b) => {
-    return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // Helper function to get booking status
+    const getBookingStatus = (booking: Booking) => {
+      const startDate = new Date(booking.startDate);
+      const endDate = new Date(booking.endDate);
+
+      if (startDate <= now && endDate >= now) {
+        return "ongoing";
+      } else if (endDate < now) {
+        // Check if completed today
+        const endDateOnly = new Date(
+          endDate.getFullYear(),
+          endDate.getMonth(),
+          endDate.getDate()
+        );
+        if (endDateOnly.getTime() === today.getTime()) {
+          return "recently-completed";
+        } else {
+          return "completed";
+        }
+      } else {
+        return "upcoming";
+      }
+    };
+
+    const statusA = getBookingStatus(a);
+    const statusB = getBookingStatus(b);
+
+    // Define priority order
+    const priority = {
+      ongoing: 1,
+      "recently-completed": 2,
+      upcoming: 3,
+      completed: 4,
+    };
+
+    // First sort by status priority
+    if (priority[statusA] !== priority[statusB]) {
+      return priority[statusA] - priority[statusB];
+    }
+
+    // Within the same status, sort by date
+    if (statusA === "upcoming") {
+      // For upcoming, sort by start date (earliest first)
+      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    } else if (statusA === "completed" || statusA === "recently-completed") {
+      // For completed, sort by end date (most recent first)
+      return new Date(b.endDate).getTime() - new Date(a.endDate).getTime();
+    } else {
+      // For ongoing, sort by start date (earliest first)
+      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    }
   });
 
   // Calculate page count based on filtered bookings

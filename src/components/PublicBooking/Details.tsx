@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import buy from "../../assets/Buy.svg";
-import { DatePicker } from "antd";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import isBetween from "dayjs/plugin/isBetween";
+dayjs.extend(isBetween);
 import PhoneInput from "../PhoneInput";
 import MapComponent from "../MapComponent";
 import axios from "axios";
 import { CONSTANT } from "../../util";
 import toast from "react-hot-toast";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format, parseISO, addDays } from "date-fns";
 
 import {
   BedDouble,
@@ -33,8 +37,7 @@ import { formatTimestamp } from "./StepTwo";
 import Spinner from "../Spinner";
 import { useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
-
-const { RangePicker } = DatePicker;
+import { Calendar } from "../../assets/icons";
 
 interface BookingRange {
   start: string;
@@ -117,36 +120,31 @@ function Details({
         toast.error("Failed to fetch existing bookings");
       });
   }, [property._id]);
-  const isDateBooked = (date: Date) =>
-    bookedDates.some(({ start, end }) => {
+  const isDateBooked = (date: Date) => {
+    return bookedDates.some(({ start, end }) => {
       const s = dayjs(start, "YYYY-MM-DD").toDate();
       const e = dayjs(end, "YYYY-MM-DD").toDate();
       return date >= s && date <= e;
     });
-
-  const getNextBookedDate = (checkIn: Date): Date | null => {
-    const future = bookedDates
-      .map((b) => ({
-        start: dayjs(b.start, "YYYY-MM-DD").toDate(),
-        end: dayjs(b.end, "YYYY-MM-DD").toDate(),
-      }))
-      .filter((b) => b.start > checkIn)
-      .sort((a, b) => a.start.getTime() - b.start.getTime());
-
-    return future.length ? future[0].start : null;
   };
-  const disabledDate = (current: Dayjs) => {
-    const date = current.toDate();
-    if (date < dayjs().startOf("day").toDate()) return true;
-    if (isDateBooked(date)) return true;
-    if (formDetails.checkIn) {
-      const checkInDate = dayjs(formDetails.checkIn, "YYYY-MM-DD").toDate();
-      if (date <= checkInDate) return true;
-      const next = getNextBookedDate(checkInDate);
-      if (next && date > next) return true;
+
+  const getNextBookedDate = (checkInDate: Date) => {
+    const futureBookings = bookedDates.filter(({ start }) => {
+      const bookingStart = dayjs(start, "YYYY-MM-DD").toDate();
+      return bookingStart > checkInDate;
+    });
+
+    if (futureBookings.length > 0) {
+      futureBookings.sort((a, b) => {
+        const aStart = dayjs(a.start, "YYYY-MM-DD").toDate();
+        const bStart = dayjs(b.start, "YYYY-MM-DD").toDate();
+        return aStart.getTime() - bStart.getTime();
+      });
+      return dayjs(futureBookings[0].start, "YYYY-MM-DD").toDate();
     }
-    return false;
+    return null;
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -246,18 +244,10 @@ function Details({
       setLoading(false);
     }
   };
-
-  const onRangeChange = (_: any, [start, end]: [string, string]) => {
-    setFormDetails((f) => ({
-      ...f,
-      checkIn: start,
-      checkOut: end,
-    }));
-  };
   const calculateNights = (checkIn: string, checkOut: string) => {
     if (!checkIn || !checkOut) return 0;
-    const start = dayjs(checkIn, "DD/MM/YYYY");
-    const end = dayjs(checkOut, "DD/MM/YYYY");
+    const start = dayjs(checkIn, "YYYY-MM-DD");
+    const end = dayjs(checkOut, "YYYY-MM-DD");
     return end.diff(start, "day");
   };
 
@@ -368,13 +358,74 @@ function Details({
             <p className="text-xs text-[#3A3A3A]">
               For precise pricing, please input your travel dates.
             </p>
-            <div className="w-full max-w-xs md:max-w-md mx-auto">
-              <RangePicker
-                format="DD/MM/YYYY"
-                className="w-full"
-                onChange={onRangeChange}
-                disabledDate={disabledDate}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Check In Date */}
+              <div className="flex flex-col gap-1 w-full">
+                <h4 className="text-[#121212] text-sm font-medium">
+                  Check In Date
+                </h4>
+                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                  <Calendar className="w-6" />
+                  <DatePicker
+                    selected={
+                      formDetails.checkIn ? parseISO(formDetails.checkIn) : null
+                    }
+                    onChange={(date: Date | null) =>
+                      setFormDetails({
+                        ...formDetails,
+                        checkIn: date ? format(date, "yyyy-MM-dd") : "",
+                      })
+                    }
+                    minDate={new Date()}
+                    filterDate={(date) => !isDateBooked(date)}
+                    placeholderText="Check In Date"
+                    dateFormat="dd/MM/yyyy"
+                    className="w-full text-[#667085]"
+                  />
+                </div>
+              </div>
+
+              {/* Check Out Date */}
+              <div className="flex flex-col gap-1 w-full">
+                <h4 className="text-[#121212] text-sm font-medium">
+                  Check Out Date
+                </h4>
+                <div className="flex items-center justify-between gap-1 bg-white border border-solid border-[#D0D5DD] shadow-sm shadow-[#1018280D] rounded-lg p-2 w-full">
+                  <Calendar className="w-6" />
+                  <DatePicker
+                    selected={
+                      formDetails.checkOut
+                        ? parseISO(formDetails.checkOut)
+                        : null
+                    }
+                    onChange={(date: Date | null) =>
+                      setFormDetails({
+                        ...formDetails,
+                        checkOut: date ? format(date, "yyyy-MM-dd") : "",
+                      })
+                    }
+                    minDate={
+                      formDetails.checkIn
+                        ? addDays(parseISO(formDetails.checkIn), 1)
+                        : new Date()
+                    }
+                    filterDate={(date) => {
+                      if (!formDetails.checkIn) return true;
+
+                      const checkInDate = parseISO(formDetails.checkIn);
+                      const nextBookedDate = getNextBookedDate(checkInDate);
+
+                      if (nextBookedDate) {
+                        return date <= nextBookedDate;
+                      }
+                      return !isDateBooked(date);
+                    }}
+                    placeholderText="Check Out Date"
+                    dateFormat="dd/MM/yyyy"
+                    className="w-full text-[#667085]"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

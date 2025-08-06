@@ -76,16 +76,17 @@ function StepTwo({
 
   const calculateDays = (checkIn: string, checkOut: string) => {
     if (!checkIn || !checkOut) return 0;
-    const start = moment(checkIn, "DD/MM/YYYY");
-    const end = moment(checkOut, "DD/MM/YYYY");
+    // Use the same format as Details.tsx - dates are stored in YYYY-MM-DD format
+    const start = moment(checkIn, "YYYY-MM-DD");
+    const end = moment(checkOut, "YYYY-MM-DD");
     return end.diff(start, "days");
   };
 
   function daysBetween(startISO: string, endISO: string) {
-    const start = new Date(startISO);
-    const end = new Date(endISO);
-    const diffMs = end.getTime() - start.getTime();
-    return diffMs / (1000 * 60 * 60 * 24);
+    // This function expects ISO format dates (YYYY-MM-DD)
+    const start = moment(startISO, "YYYY-MM-DD");
+    const end = moment(endISO, "YYYY-MM-DD");
+    return end.diff(start, "days");
   }
 
   const days = hideFeatures
