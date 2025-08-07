@@ -252,7 +252,7 @@ function ViewProperty() {
           </p>
         </div>
 
-        <div className="px-6 flex justify-between items-center gap-4 flex-wrap mt-6">
+        <div className="px-6 flex justify-between items-center gap-4 flex-wrap lg:flex-nowrap mt-6">
           <div className="flex items-center gap-4">
             <span className="hidden md:block w-32 h-24 bg-[#D9D9D9] rounded-2xl">
               <img
@@ -265,7 +265,7 @@ function ViewProperty() {
               <span className="bg-[#DBFFE4] rounded-lg font-medium text-xs text-[#34C759] py-1 px-2">
                 {bookedStatus ? "Booked" : "Available"}
               </span>
-              <h2 className="text-[#121212] font-medium text-lg max-w-[300px] md:max-w-full truncate">
+              <h2 className="text-[#121212] font-medium text-lg max-w-[300px] lg:max-w-[70%]">
                 {property?.propertyName},{" "}
                 <span className="text-base">{property?.address}</span>
               </h2>
@@ -282,8 +282,8 @@ function ViewProperty() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-2 relative">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-2 relative w-full lg:w-auto whitespace-nowrap">
+            <div className="flex items-center gap-2 w-full">
               {property.channexId ? (
                 <button className="px-3 py-2 text-white rounded-lg bg-green-500 text-sm font-medium">
                   Linked with Airbnb
