@@ -7,7 +7,10 @@ const containerStyle = {
   height: "500px",
 };
 
-const defaultCenter = { lat: 6.5244, lng: 3.3792 }; // Default to Lagos, Nigeria
+const defaultCenter = {
+  lat: 6.5244,
+  lng: 3.3792,
+}; // Lagos, Nigeria (consistent with MapPicker)
 
 interface Location {
   lat: number;
@@ -30,18 +33,31 @@ const MapComponent = ({
     libraries: ["places"],
   });
 
-  const [position, setPosition] = useState<Location>(defaultCenter);
+  // Initialize position with selectedLocation or defaultCenter
+  const [position, setPosition] = useState<Location>(
+    selectedLocation || defaultCenter
+  );
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  // Initialize position
+  // Update position when selectedLocation changes
   useEffect(() => {
-    if (selectedLocation) {
-      setPosition({
+    if (
+      selectedLocation &&
+      (selectedLocation.lat !== position.lat ||
+        selectedLocation.lng !== position.lng)
+    ) {
+      const newPosition = {
         lat: selectedLocation.lat,
         lng: selectedLocation.lng,
-      });
+      };
+      setPosition(newPosition);
+
+      // Update map center if map is loaded
+      if (mapRef.current) {
+        mapRef.current.panTo(newPosition);
+      }
     }
-  }, [selectedLocation]);
+  }, [selectedLocation, position.lat, position.lng]);
 
   const handleMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {

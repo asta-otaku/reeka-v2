@@ -1,5 +1,3 @@
-// MapPicker.tsx
-"use client";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { Search, LocateFixed, X } from "lucide-react";
@@ -10,8 +8,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-  lat: 9.082,
-  lng: 8.6753, // Nigeria coordinates
+  lat: 6.5244,
+  lng: 3.3792,
 };
 
 interface Location {
@@ -44,7 +42,7 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
     libraries: ["places"],
   });
 
-  const [position, setPosition] = useState(defaultCenter);
+  const [position, setPosition] = useState(initialLocation || defaultCenter);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<
     google.maps.places.AutocompletePrediction[]
@@ -56,10 +54,13 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const searchTimeout = useRef<number | null>(null);
 
-  // Initialize position
+  // Initialize position - Fixed to properly handle initialLocation
   useEffect(() => {
     if (initialLocation) {
-      setPosition(initialLocation);
+      setPosition({
+        lat: initialLocation.lat,
+        lng: initialLocation.lng,
+      });
     } else {
       // Use the same two-step approach for initial location
       const initializeLocation = async () => {
@@ -74,10 +75,11 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
           const apiData = await apiResponse.json();
 
           if (apiData?.location) {
-            setPosition({
+            const newPosition = {
               lat: apiData.location.lat,
               lng: apiData.location.lng,
-            });
+            };
+            setPosition(newPosition);
             return;
           }
         } catch (error) {
@@ -91,14 +93,15 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (pos) => {
-              setPosition({
+              const newPosition = {
                 lat: pos.coords.latitude,
                 lng: pos.coords.longitude,
-              });
+              };
+              setPosition(newPosition);
             },
             (error) => {
               console.error("Geolocation error:", error.message);
-              // Fall back to default Nigeria coordinates if permission denied
+              // Fall back to default coordinates if permission denied
               setPosition(defaultCenter);
             },
             {
@@ -223,7 +226,8 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
     async (e: google.maps.MapMouseEvent) => {
       const lat = e.latLng!.lat();
       const lng = e.latLng!.lng();
-      setPosition({ lat, lng });
+      const newPosition = { lat, lng };
+      setPosition(newPosition);
 
       try {
         const details = await getAddressDetailsFromLatLng(lat, lng);
@@ -265,7 +269,8 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
           ) {
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
-            setPosition({ lat, lng });
+            const newPosition = { lat, lng };
+            setPosition(newPosition);
             setSearchQuery("");
             setSearchResults([]);
 
@@ -311,7 +316,8 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
       if (apiData?.location) {
         const lat = apiData.location.lat;
         const lng = apiData.location.lng;
-        setPosition({ lat, lng });
+        const newPosition = { lat, lng };
+        setPosition(newPosition);
 
         try {
           const details = await getAddressDetailsFromLatLng(lat, lng);
@@ -346,7 +352,8 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
       async (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-        setPosition({ lat, lng });
+        const newPosition = { lat, lng };
+        setPosition(newPosition);
 
         try {
           const details = await getAddressDetailsFromLatLng(lat, lng);
@@ -365,7 +372,7 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
       },
       (error) => {
         console.error("Geolocation error:", error);
-        // Fall back to default Nigeria coordinates if permission denied
+        // Fall back to default coordinates if permission denied
         setPosition(defaultCenter);
       },
       {

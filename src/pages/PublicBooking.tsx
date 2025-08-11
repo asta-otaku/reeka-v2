@@ -102,13 +102,7 @@ function PublicBooking() {
   };
 
   return (
-    <div className="flex min-h-screen w-screen items-center justify-center relative">
-      <Link
-        to="/"
-        className="absolute top-4 md:top-8 left-8 text-primary font-modak text-4xl"
-      >
-        Reeka
-      </Link>
+    <div className="flex min-h-screen w-screen items-center justify-center relative flex-col gap-4">
       <div className="flex flex-col gap-6 items-start justify-center lg:justify-between max-w-4xl mx-auto w-full px-4 md:px-6 my-24 lg:my-5">
         <div className="flex items-center gap-0.5 md:gap-3 w-full">
           {steps.map((step, index) => (
@@ -188,6 +182,12 @@ function PublicBooking() {
           />
         )}
       </div>
+      <Link
+        to="/"
+        className="text-primary font-modak text-sm flex items-baseline gap-1 mb-4"
+      >
+        <span className="text-black text-xs">Powered by</span> Reeka
+      </Link>
     </div>
   );
 }
