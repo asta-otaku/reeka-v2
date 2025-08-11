@@ -33,7 +33,6 @@ import {
   Heater,
 } from "lucide-react";
 import ImageCarousel from "./ImageCarousel";
-import { formatTimestamp } from "./StepTwo";
 import Spinner from "../Spinner";
 import { useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
@@ -188,8 +187,8 @@ function Details({
 
     const payload = {
       propertyId: property?._id,
-      startDate: formatTimestamp(checkIn),
-      endDate: formatTimestamp(checkOut),
+      startDate: checkIn,
+      endDate: checkOut,
       guestFirstName: firstName,
       guestLastName: lastName,
       guestEmail: email,
@@ -284,6 +283,8 @@ function Details({
 
   // --- Amenities logic ---
   const { amenities = {} } = property;
+
+  console.log(formDetails);
 
   // Use direct count fields for bedrooms and bathrooms
   const bedroomCount = property.bedroomCount || 0;

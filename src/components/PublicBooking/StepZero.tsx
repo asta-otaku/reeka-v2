@@ -125,7 +125,7 @@ function StepZero({
               onChange={(e) =>
                 setBedroomFilter(e.target.value ? Number(e.target.value) : null)
               }
-              className="w-full rounded-xl border border-gray-300 p-3 text-sm bg-white h-10"
+              className="w-full rounded-xl border border-gray-300 px-3 text-sm bg-white h-10"
             >
               <option value="">Filter by Bedrooms</option>
               <option value="0">Studio</option>
