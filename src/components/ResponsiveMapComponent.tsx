@@ -4,7 +4,7 @@ import { Search, LocateFixed, X } from "lucide-react";
 
 const containerStyle = {
   width: "100%",
-  height: "400px",
+  height: "500px",
 };
 
 const defaultCenter = {
@@ -229,6 +229,11 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
       const newPosition = { lat, lng };
       setPosition(newPosition);
 
+      // Center the map on the clicked location
+      if (mapRef.current) {
+        mapRef.current.panTo(newPosition);
+      }
+
       try {
         const details = await getAddressDetailsFromLatLng(lat, lng);
         if (details) {
@@ -273,6 +278,11 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
             setPosition(newPosition);
             setSearchQuery("");
             setSearchResults([]);
+
+            // Center the map on the selected place
+            if (mapRef.current) {
+              mapRef.current.panTo(newPosition);
+            }
 
             // Extract city and country from place details
             let city = "";
@@ -319,6 +329,11 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
         const newPosition = { lat, lng };
         setPosition(newPosition);
 
+        // Center the map on current location
+        if (mapRef.current) {
+          mapRef.current.panTo(newPosition);
+        }
+
         try {
           const details = await getAddressDetailsFromLatLng(lat, lng);
           if (details) {
@@ -354,6 +369,11 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
         const lng = pos.coords.longitude;
         const newPosition = { lat, lng };
         setPosition(newPosition);
+
+        // Center the map on current location
+        if (mapRef.current) {
+          mapRef.current.panTo(newPosition);
+        }
 
         try {
           const details = await getAddressDetailsFromLatLng(lat, lng);
@@ -450,6 +470,12 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
           zoom={15}
           onClick={handleMapClick}
           onLoad={handleMapLoad}
+          options={{
+            zoomControl: true,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: false,
+          }}
         >
           <Marker position={position} draggable onDragEnd={handleMapClick} />
         </GoogleMap>

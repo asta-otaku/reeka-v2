@@ -10,7 +10,7 @@ const containerStyle = {
 const defaultCenter = {
   lat: 6.5244,
   lng: 3.3792,
-}; // Lagos, Nigeria (consistent with MapPicker)
+};
 
 interface Location {
   lat: number;
@@ -33,13 +33,11 @@ const MapComponent = ({
     libraries: ["places"],
   });
 
-  // Initialize position with selectedLocation or defaultCenter
   const [position, setPosition] = useState<Location>(
     selectedLocation || defaultCenter
   );
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  // Update position when selectedLocation changes
   useEffect(() => {
     if (
       selectedLocation &&
@@ -70,6 +68,11 @@ const MapComponent = ({
 
       setPosition(newPosition);
 
+      // Center the map on the clicked location
+      if (mapRef.current) {
+        mapRef.current.panTo(newPosition);
+      }
+
       if (onLocationChange) {
         onLocationChange(newPosition);
       }
@@ -88,6 +91,11 @@ const MapComponent = ({
 
       setPosition(newPosition);
 
+      // Center the map on the dragged marker position
+      if (mapRef.current) {
+        mapRef.current.panTo(newPosition);
+      }
+
       if (onLocationChange) {
         onLocationChange(newPosition);
       }
@@ -103,24 +111,27 @@ const MapComponent = ({
   if (loadError) return <div>Error loading maps</div>;
 
   return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={position}
-      zoom={14}
-      onClick={interactive ? handleMapClick : undefined}
-      onLoad={handleMapLoad}
-      options={{
-        mapTypeControl: false,
-        streetViewControl: interactive,
-        fullscreenControl: interactive,
-      }}
-    >
-      <Marker
-        position={position}
-        draggable={interactive}
-        onDragEnd={interactive ? handleMarkerDrag : undefined}
-      />
-    </GoogleMap>
+    <div className="rounded-lg overflow-hidden shadow-md relative">
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={position}
+        zoom={15}
+        onClick={interactive ? handleMapClick : undefined}
+        onLoad={handleMapLoad}
+        options={{
+          zoomControl: true,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+        }}
+      >
+        <Marker
+          position={position}
+          draggable={interactive}
+          onDragEnd={interactive ? handleMarkerDrag : undefined}
+        />
+      </GoogleMap>
+    </div>
   );
 };
 

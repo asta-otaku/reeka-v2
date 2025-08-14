@@ -102,11 +102,21 @@ function Details({
   const [bookedDates, setBookedDates] = useState<BookingRange[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState({
-    lat: property.latitude || 6.5244,
-    lng: property.longtitude || 3.3792,
+    lat: parseFloat(property.latitude) || 6.5244,
+    lng: parseFloat(property.longitude) || 3.3792,
   });
 
   const { id } = useParams();
+
+  // Update selectedLocation when property coordinates change
+  useEffect(() => {
+    if (property.latitude && property.longitude) {
+      setSelectedLocation({
+        lat: parseFloat(property.latitude),
+        lng: parseFloat(property.longitude),
+      });
+    }
+  }, [property.latitude, property.longitude]);
 
   useEffect(() => {
     axios
