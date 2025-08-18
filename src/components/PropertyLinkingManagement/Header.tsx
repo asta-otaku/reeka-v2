@@ -1,5 +1,3 @@
-import { Property } from "./types";
-
 interface HeaderProps {
   setStep: (step: number) => void;
 }
