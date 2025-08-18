@@ -7,7 +7,10 @@ function SuccessModal({ setModal, propertyId }: any) {
       <img
         src={blackcancel}
         className="absolute -top-2 z-10 right-0 cursor-pointer"
-        onClick={() => setModal(null)}
+        onClick={() => {
+          setModal(null);
+          window.location.reload();
+        }}
       />
 
       <div className="w-full">

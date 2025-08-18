@@ -7,6 +7,7 @@ import line from "../assets/line.svg";
 import menuIcon from "../assets/menu-01.svg";
 import searchIcon from "../assets/search-01.svg";
 import AddProperty from "../components/AddProperty";
+import PropertyLinkingManagement from "../components/PropertyLinkingManagement";
 import { useNavigate } from "react-router-dom";
 import apiClient from "../helpers/apiClient";
 import toast from "react-hot-toast";
@@ -23,15 +24,16 @@ function ListingManagement() {
 
   const navigate = useNavigate();
 
+  const fetchProperties = async () => {
+    try {
+      const response = await apiClient.get(`/properties`);
+      setProperties(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const response = await apiClient.get(`/properties`);
-        setProperties(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     fetchProperties();
   }, []);
 
@@ -39,8 +41,6 @@ function ListingManagement() {
     try {
       const response = await apiClient.get(`/public/url`);
       const url = response.data;
-
-      // Check if modern clipboard API is available and we're in a secure context
       const isClipboardSupported =
         navigator.clipboard &&
         typeof navigator.clipboard.writeText === "function" &&
@@ -59,7 +59,6 @@ function ListingManagement() {
           setShowCopyModal(true);
         }
       } else {
-        // Fallback for environments where clipboard API is not available
         setCopyUrl(url);
         setShowCopyModal(true);
       }
@@ -78,12 +77,10 @@ function ListingManagement() {
     document.body.appendChild(input);
 
     try {
-      // For mobile browsers, focus and select
       input.focus();
       input.select();
       input.setSelectionRange(0, copyUrl.length);
 
-      // Try the modern clipboard API first
       if (
         navigator.clipboard &&
         typeof navigator.clipboard.writeText === "function"
@@ -95,7 +92,6 @@ function ListingManagement() {
             setShowCopyModal(false);
           })
           .catch(() => {
-            // Fallback to execCommand
             const success = document.execCommand("copy");
             if (success) {
               toast.success("Public URL copied to clipboard");
@@ -105,7 +101,6 @@ function ListingManagement() {
             setShowCopyModal(false);
           });
       } else {
-        // Legacy fallback
         const success = document.execCommand("copy");
         if (success) {
           toast.success("Public URL copied to clipboard");
@@ -184,11 +179,19 @@ function ListingManagement() {
                     </button>
                     <button
                       onClick={generatePublicUrl}
-                      className={`bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary flex-1 md:flex-none ${
+                      className={`bg-primary p-2 rounded-xl text-white shrink-0 whitespace-nowrap font-medium text-sm border border-primary flex-1 md:flex-none ${
                         user && user.userRole !== "Owner" && "hidden"
                       }`}
                     >
                       Generate Portfolio Link
+                    </button>
+                    <button
+                      onClick={() => setStep(3)}
+                      className={`bg-green-600 p-2 rounded-xl text-white shrink-0 whitespace-nowrap font-medium text-sm border border-green-600 flex-1 md:flex-none ${
+                        user && user.userRole !== "Owner" && "hidden"
+                      }`}
+                    >
+                      Property Linking
                     </button>
                   </div>
                 </div>
@@ -245,6 +248,13 @@ function ListingManagement() {
               </div>
             ),
             2: <AddProperty setStep={setStep} />,
+            3: (
+              <PropertyLinkingManagement
+                setStep={setStep}
+                properties={properties}
+                onPropertiesChange={fetchProperties}
+              />
+            ),
           }[step]
         }
         {showCopyModal && (
