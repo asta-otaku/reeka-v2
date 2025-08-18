@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import apiClient from "../../helpers/apiClient";
 import { Property, LinkedPropertyResponse } from "./types";
@@ -122,8 +122,6 @@ function PropertyLinkingManagement({
       setIsLoading(false);
     }
   };
-
-  const masterProperty = properties.find((p) => p._id === masterPropertyId);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">

@@ -27,7 +27,7 @@ function Calendar() {
 
   useEffect(() => {
     apiClient
-      .get(`/booking`)
+      .get(`/booking?calendarDisplay=true`)
       .then((response) => {
         const colorMap: { [key: string]: string } = {};
 
