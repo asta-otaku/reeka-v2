@@ -11,6 +11,10 @@ function MasterPropertySelector({
   masterPropertyId,
   setMasterPropertyId,
 }: MasterPropertySelectorProps) {
+  const availableProperties = properties.filter(
+    (property) => !property.isLinkedProperty
+  );
+
   return (
     <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
       <div className="flex items-center gap-3 mb-6">
@@ -27,7 +31,7 @@ function MasterPropertySelector({
         </div>
       </div>
       <div className="space-y-4">
-        {properties.map((property) => (
+        {availableProperties.map((property) => (
           <div
             key={property._id}
             className={`border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md ${

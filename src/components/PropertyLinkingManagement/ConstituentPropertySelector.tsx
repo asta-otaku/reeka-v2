@@ -14,8 +14,9 @@ function ConstituentPropertySelector({
   handleConstituentToggle,
 }: ConstituentPropertySelectorProps) {
   // Filter out master property from constituent options
-  const availableConstituents = properties.filter(
-    (property) => property._id !== masterPropertyId
+  const availableProperties = properties.filter(
+    (property) =>
+      !property.isLinkedProperty && property._id !== masterPropertyId
   );
 
   return (
@@ -46,7 +47,7 @@ function ConstituentPropertySelector({
         </div>
       ) : (
         <div className="space-y-4">
-          {availableConstituents.length === 0 ? (
+          {availableProperties.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
                 <span className="text-gray-400 text-2xl">⚠</span>
@@ -57,7 +58,7 @@ function ConstituentPropertySelector({
               </p>
             </div>
           ) : (
-            availableConstituents.map((property) => (
+            availableProperties.map((property) => (
               <div
                 key={property._id}
                 className={`border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 hover:shadow-md ${
