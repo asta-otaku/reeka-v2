@@ -72,8 +72,8 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
   // Get bookings for a specific date
   const getBookingsForDate = (date: moment.Moment) => {
     return bookings.filter((booking) => {
-      const start = moment(booking.startDate);
-      const end = moment(booking.endDate);
+      const start = moment.utc(booking.startDate);
+      const end = moment.utc(booking.endDate);
       return date.isBetween(start, end, "day", "[]");
     });
   };
@@ -200,19 +200,18 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                   <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mb-2">
                     <div>
                       <span className="font-medium">Check-in:</span>{" "}
-                      {moment(booking.startDate).format("MMM D, YYYY")}
+                      {moment.utc(booking.startDate).format("MMM D, YYYY")}
                     </div>
                     <div>
                       <span className="font-medium">Check-out:</span>{" "}
-                      {moment(booking.endDate).format("MMM D, YYYY")}
+                      {moment.utc(booking.endDate).format("MMM D, YYYY")}
                     </div>
                     <div>
                       <span className="font-medium">Nights:</span>{" "}
                       {booking.nightsBooked ||
-                        moment(booking.endDate).diff(
-                          moment(booking.startDate),
-                          "days"
-                        )}
+                        moment
+                          .utc(booking.endDate)
+                          .diff(moment.utc(booking.startDate), "days")}
                     </div>
                     <div>
                       <span className="font-medium">Guests:</span>{" "}
