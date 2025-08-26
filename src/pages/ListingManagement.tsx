@@ -179,9 +179,7 @@ function ListingManagement() {
                     </button>
                     <button
                       onClick={generatePublicUrl}
-                      className={`bg-primary p-2 rounded-xl text-white shrink-0 whitespace-nowrap font-medium text-sm border border-primary flex-1 md:flex-none ${
-                        user && user.userRole !== "Owner" && "hidden"
-                      }`}
+                      className="bg-primary p-2 rounded-xl text-white shrink-0 whitespace-nowrap font-medium text-sm border border-primary flex-1 md:flex-none"
                     >
                       Generate Portfolio Link
                     </button>
