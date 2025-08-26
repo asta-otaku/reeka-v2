@@ -8,8 +8,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-  lat: 6.5244,
-  lng: 3.3792,
+  lat: 20,
+  lng: 0,
 };
 
 interface Location {
@@ -37,6 +37,8 @@ const MapComponent = ({
     selectedLocation || defaultCenter
   );
   const mapRef = useRef<google.maps.Map | null>(null);
+  const autocompleteService =
+    useRef<google.maps.places.AutocompleteService | null>(null);
 
   useEffect(() => {
     if (
@@ -56,6 +58,14 @@ const MapComponent = ({
       }
     }
   }, [selectedLocation, position.lat, position.lng]);
+
+  // Initialize services when map loads
+  useEffect(() => {
+    if (isLoaded) {
+      autocompleteService.current =
+        new google.maps.places.AutocompleteService();
+    }
+  }, [isLoaded]);
 
   const handleMapClick = useCallback(
     (e: google.maps.MapMouseEvent) => {

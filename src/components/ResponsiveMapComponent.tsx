@@ -8,8 +8,8 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-  lat: 6.5244,
-  lng: 3.3792,
+  lat: 20,
+  lng: 0,
 };
 
 interface Location {
@@ -150,7 +150,7 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
       autocompleteService.current!.getPlacePredictions(
         {
           input: searchQuery,
-          componentRestrictions: { country: "ng" },
+          types: ["geocode", "establishment"],
         },
         (predictions, status) => {
           setIsSearching(false);
