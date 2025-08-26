@@ -6,6 +6,7 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { BedDouble, Bath } from "lucide-react";
 import ImageCarousel from "./ImageCarousel";
+import { useCurrency } from "../../helpers/getCurrency";
 
 const { RangePicker } = DatePicker;
 
@@ -31,6 +32,7 @@ function StepZero({
   setProperty: React.Dispatch<React.SetStateAction<any>>;
   setFormDetails: React.Dispatch<React.SetStateAction<any>>;
 }) {
+  const currency = useCurrency();
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const { id, propId, token } = useParams();
@@ -125,7 +127,7 @@ function StepZero({
               onChange={(e) =>
                 setBedroomFilter(e.target.value ? Number(e.target.value) : null)
               }
-              className="w-full rounded-xl border border-gray-300 px-3 text-sm bg-white h-10"
+              className="w-full rounded-xl border border-gray-300 p-3 text-sm bg-white h-10"
             >
               <option value="">Filter by Bedrooms</option>
               <option value="0">Studio</option>
@@ -227,7 +229,7 @@ function StepZero({
                 <div className="p-3">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-[#FF5A1F] font-semibold text-base">
-                      ₦{property.defaultRate.ratePrice.toLocaleString()}
+                      {currency}{property.defaultRate.ratePrice.toLocaleString()}
                       <span className="text-xs font-normal text-[#808080]">
                         /Night
                       </span>

@@ -5,6 +5,7 @@ import { CONSTANT } from "../util";
 import toast from "react-hot-toast";
 import moment from "moment";
 import ReservationSuccess from "../components/PublicBooking/ReservationSuccess";
+import { useCurrencyCode } from "../helpers/getCurrency";
 
 function PortfolioSuccess() {
   const { id } = useParams<{ id: string }>();
@@ -27,6 +28,7 @@ function PortfolioSuccess() {
     images: [],
     nightsBooked: 1,
   });
+  const currencyCode = useCurrencyCode()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,7 +101,7 @@ function PortfolioSuccess() {
               guestPhone: formDetails.phoneNumber,
               nightsBooked: formDetails.nightsBooked,
               totalBookingValue: Number(formDetails.price),
-              currency: "NGN", // or your actual currency
+              currency: currencyCode, // or your actual currency
               price: Number(formDetails.price),
               propertyName: formDetails.propertyName,
               address: formDetails.propertyAddress,

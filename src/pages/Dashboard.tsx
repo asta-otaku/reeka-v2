@@ -8,6 +8,7 @@ import DashboardPropertyChart from "../components/DashboardPropertyChart";
 import { DatePicker } from "antd";
 import apiClient from "../helpers/apiClient";
 import Cookies from "js-cookie";
+import useStore from "../store";
 
 const { RangePicker } = DatePicker;
 
@@ -21,19 +22,22 @@ function Dashboard() {
   const [activePropertyId, setActivePropertyId] = useState("");
   const [filterType, setFilterType] = useState("last_30_days");
 
-  const [userCurrency, setUserCurrency] = useState("");
-
+  const currencyCode = useStore((s: any) => s.currencyCode);
+  // Allow toggle only if org default is NGN; otherwise lock to USD
+  const [userCurrency, setUserCurrency] = useState<"NGN" | "USD">("NGN");
   useEffect(() => {
-    const storedCurrency = Cookies.get("userCurrency");
-    if (storedCurrency) {
-      setUserCurrency(storedCurrency);
-    } else {
-      const defaultCurrency =
-        user.country?.toLowerCase() !== "nigeria" ? "USD" : "NGN";
-      setUserCurrency(defaultCurrency);
-      Cookies.set("userCurrency", defaultCurrency, { expires: 3 });
+    if (currencyCode === "NGN") {
+      const stored = Cookies.get("userCurrency");
+      if (stored === "USD" || stored === "NGN") {
+        setUserCurrency(stored as "NGN" | "USD");
+      } else {
+        setUserCurrency("NGN");
+        Cookies.set("userCurrency", "NGN", { expires: 3 });
+      }
     }
-  }, []);
+  }, [currencyCode]);
+
+  const analyticsCurrency = currencyCode === "USD" ? "USD" : userCurrency;
 
   // States for custom date range
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -106,24 +110,26 @@ function Dashboard() {
                 </button>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
-                  <select
-                    onChange={(e) => {
-                      const newCurrency = e.target.value;
-                      setUserCurrency(newCurrency);
-                      Cookies.set("userCurrency", newCurrency, { expires: 3 });
-                    }}
-                    value={userCurrency}
-                    className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
-                  >
-                    <option value="USD">USD</option>
-                    <option value="NGN">NGN</option>
-                  </select>
-                  <ChevronDownIcon
-                    className="absolute pointer-events-none cursor-pointer right-2 "
-                    width={12}
-                  />
-                </div>
+                {currencyCode === "NGN" && (
+                  <div className="relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit">
+                    <select
+                      onChange={(e) => {
+                        const newCurrency = e.target.value as "NGN" | "USD";
+                        setUserCurrency(newCurrency);
+                        Cookies.set("userCurrency", newCurrency, { expires: 3 });
+                      }}
+                      value={userCurrency}
+                      className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"
+                    >
+                      <option value="USD">USD</option>
+                      <option value="NGN">NGN</option>
+                    </select>
+                    <ChevronDownIcon
+                      className="absolute pointer-events-none cursor-pointer right-2 "
+                      width={12}
+                    />
+                  </div>
+                )}
                 <div
                   className={`relative flex items-center justify-center gap-2 bg-white border border-solid rounded-xl p-2 w-fit ${
                     selected == 0 && "hidden"
@@ -208,7 +214,7 @@ function Dashboard() {
                     filterType={filterType}
                     startDate={startDate}
                     endDate={endDate}
-                    userCurrency={userCurrency}
+                    userCurrency={analyticsCurrency}
                   />
                 ),
                 1: (
@@ -217,7 +223,7 @@ function Dashboard() {
                     filterType={filterType}
                     startDate={startDate}
                     endDate={endDate}
-                    userCurrency={userCurrency}
+                    userCurrency={analyticsCurrency}
                   />
                 ),
               }[selected]

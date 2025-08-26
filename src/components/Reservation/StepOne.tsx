@@ -15,6 +15,7 @@ import { Autoplay } from "swiper/modules";
 import apiClient from "../../helpers/apiClient";
 import CustomPriceModal from "./CustomPriceModal";
 import useStore from "../../store";
+import { useCurrency } from "../../helpers/getCurrency";
 
 export interface PropertyDetails {
   firstName: string;
@@ -46,6 +47,7 @@ function StepOne({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
+  const currency = useCurrency();
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
@@ -310,7 +312,8 @@ function StepOne({
                     <option value="">Select a rate</option>
                     {rates?.map((rate, index) => (
                       <option key={index} value={rate._id}>
-                        {rate.rateName} - ₦{rate.ratePrice.toLocaleString()}
+                        {rate.rateName} - {currency}
+                        {rate.ratePrice.toLocaleString()}
                       </option>
                     ))}
                     <option value="custom">Enter custom price</option>
@@ -391,7 +394,8 @@ function StepOne({
                     <option value="">No agent fee</option>
                     {property.agentFee != null && (
                       <option value={property.agentFee.toString()}>
-                        ₦{property.agentFee.toLocaleString()}
+                        {currency}
+                        {property.agentFee.toLocaleString()}
                       </option>
                     )}
                     <option value="custom">Enter custom fee</option>

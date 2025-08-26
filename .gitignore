@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .env
 .env.local
+
+# Cursor indexing ignore
+.cursorindexingignore
+.specstory

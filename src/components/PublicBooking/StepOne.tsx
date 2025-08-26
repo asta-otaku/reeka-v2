@@ -13,6 +13,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 import { Property } from "./Details";
+import { useCurrency } from "../../helpers/getCurrency";
 
 function StepOne({
   handleChange,
@@ -27,6 +28,7 @@ function StepOne({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
+  const currency = useCurrency();
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
@@ -227,7 +229,7 @@ function StepOne({
               <div className="flex items-center justify-between gap-1 bg-gray-100 border border-solid border-[#D0D5DD] rounded-lg p-2 w-full">
                 <input
                   readOnly
-                  value={`₦${formDetails.price}`}
+                  value={`${currency}${formDetails.price}`}
                   className="w-full outline-none bg-transparent text-[#667085]"
                 />
               </div>
