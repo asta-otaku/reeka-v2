@@ -127,7 +127,7 @@ function DashboardCharts({
     const fetchGraphData = async () => {
       try {
         const response = await apiClient.get(
-          `/analytics/user/daily?${filterQuery}`,
+          `/analytics/user/daily?${filterQuery}&targetCurrency=${userCurrency}`,
           { signal }
         );
         if (!signal.aborted) setGraphData(response.data);

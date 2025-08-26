@@ -33,10 +33,12 @@ import {
   Heater,
 } from "lucide-react";
 import ImageCarousel from "./ImageCarousel";
+import { formatTimestamp } from "./StepTwo";
 import Spinner from "../Spinner";
 import { useParams } from "react-router-dom";
 import apiClient from "../../helpers/apiClient";
 import { Calendar } from "../../assets/icons";
+import { useCurrency } from "../../helpers/getCurrency";
 
 interface BookingRange {
   start: string;
@@ -99,6 +101,7 @@ function Details({
   setPaymentLink: React.Dispatch<React.SetStateAction<string>>;
   setBookingId: React.Dispatch<React.SetStateAction<string>>;
 }) {
+  const currency = useCurrency();
   const [bookedDates, setBookedDates] = useState<BookingRange[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState({
@@ -197,8 +200,8 @@ function Details({
 
     const payload = {
       propertyId: property?._id,
-      startDate: checkIn,
-      endDate: checkOut,
+      startDate: formatTimestamp(checkIn),
+      endDate: formatTimestamp(checkOut),
       guestFirstName: firstName,
       guestLastName: lastName,
       guestEmail: email,
@@ -293,8 +296,6 @@ function Details({
 
   // --- Amenities logic ---
   const { amenities = {} } = property;
-
-  console.log(formDetails);
 
   // Use direct count fields for bedrooms and bathrooms
   const bedroomCount = property.bedroomCount || 0;
@@ -442,7 +443,8 @@ function Details({
         </div>
         <div className="col-span-1 md:col-span-4 border bg-white rounded-xl shadow-black/20 shadow-sm p-4">
           <h2 className="text-[#3A3A3A] text-base md:text-lg font-medium">
-            ₦{property.defaultRate.ratePrice.toLocaleString()}/
+            {currency}
+            {property.defaultRate.ratePrice.toLocaleString()}/
             <span>night</span>
           </h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 my-4">
@@ -523,19 +525,18 @@ function Details({
             <div className="space-y-2">
               <div className="flex justify-between gap-2">
                 <h2 className="underline underline-offset-4 text-sm text-[#222222]">
-                  ₦{property.defaultRate.ratePrice.toLocaleString()} x{" "}
+                  {currency}
+                  {property.defaultRate.ratePrice.toLocaleString()} x{" "}
                   {priceDetails.nights} night
                   {priceDetails.nights !== 1 ? "s" : ""}
                 </h2>
-                <h5 className="">₦{priceDetails.basePrice.toLocaleString()}</h5>
+                <h5 className="">{currency}{priceDetails.basePrice.toLocaleString()}</h5>
               </div>
               <div className="flex justify-between gap-2">
                 <h2 className="underline underline-offset-4 text-sm text-[#222222]">
                   Caution fee
                 </h2>
-                <h5 className="">
-                  ₦{priceDetails.cautionFee.toLocaleString()}
-                </h5>
+                <h5 className="">{currency}{priceDetails.cautionFee.toLocaleString()}</h5>
               </div>
             </div>
             <hr />
@@ -543,7 +544,7 @@ function Details({
               <h2 className="font-medium text-sm text-[#222222]">
                 Total before taxes
               </h2>
-              <h5 className="">₦{priceDetails.total.toLocaleString()}</h5>
+              <h5 className="">{currency}{priceDetails.total.toLocaleString()}</h5>
             </div>
           </form>
         </div>

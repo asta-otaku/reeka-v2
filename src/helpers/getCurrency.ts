@@ -1,15 +1,26 @@
-import { useEffect, useState } from 'react';
-import Cookies from "js-cookie"
-
-const getUser = () => JSON.parse(Cookies.get("user") || "{}");
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect } from 'react';
+import useStore from "../store";
 
 export const useCurrency = () => {
-    const [currency, setCurrency] = useState<string>("");
+  const currencySymbol = useStore((s: any) => s.currencySymbol);
+  const fetchOrgSettings = useStore((s: any) => s.fetchOrgSettings);
 
-    useEffect(() => {
-        const user = getUser();
-        setCurrency(user.country?.toLowerCase() !== "nigeria" ? "₦" : "₦");
-    }, []);
+  useEffect(() => {
+    // Attempt to fetch org settings once for authenticated flows
+    fetchOrgSettings?.();
+  }, []);
 
-    return currency;
+  return currencySymbol;
+};
+
+export const useCurrencyCode = () => {
+  const currencyCode = useStore((s: any) => s.currencyCode);
+  const fetchOrgSettings = useStore((s: any) => s.fetchOrgSettings);
+
+  useEffect(() => {
+    fetchOrgSettings?.();
+  }, []);
+
+  return currencyCode as "NGN" | "USD";
 };

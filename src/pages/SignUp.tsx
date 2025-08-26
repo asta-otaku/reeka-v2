@@ -21,6 +21,7 @@ function SignUp() {
     country: "",
     password: "",
     phoneNumber: "",
+    organizationDefaultCurrency: "NGN" as "NGN" | "USD",
   });
   const [loading, setLoading] = useState(false);
   const location = useLocation();
@@ -55,6 +56,7 @@ function SignUp() {
         {
           ...formDetails,
           phoneNumber: `(${formDetails.countryCode})${formDetails.phoneNumber}`,
+          organizationDefaultCurrency: formDetails.organizationDefaultCurrency,
         },
         {
           headers: {
@@ -178,6 +180,25 @@ function SignUp() {
                       onChange={changeHandler}
                     />
                   </div>
+                  <div className="flex flex-col gap-2 w-full">
+                  <h4 className="text-[#3A3A3A] text-sm font-medium">
+                    Organization Default Currency
+                  </h4>
+                  <select
+                    value={formDetails.organizationDefaultCurrency}
+                    onChange={(e) =>
+                      setFormDetails({
+                        ...formDetails,
+                        organizationDefaultCurrency: e.target
+                          .value as "NGN" | "USD",
+                      })
+                    }
+                    className="p-2 rounded-lg bg-transparent border border-[#808080] w-full focus-within:border-primary outline-none"
+                  >
+                    <option value="NGN">NGN (₦)</option>
+                    <option value="USD">USD ($)</option>
+                  </select>
+                </div>
                   <div className="flex flex-col gap-1">
                     <label
                       className="text-[#3A3A3A] text-sm font-medium"
