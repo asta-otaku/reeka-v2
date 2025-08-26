@@ -1,6 +1,5 @@
 import cloud from "../../assets/cloud-upload-white.svg";
 import graycancel from "../../assets/graycancel.svg";
-import toast from "react-hot-toast";
 
 function ImageSection({
   property,
@@ -18,13 +17,6 @@ function ImageSection({
   const handleAddImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      // Keep only the last 10 images considering existing ones
-      const totalImages =
-        property.images.length + newImages.length + files.length;
-      if (totalImages > 10) {
-        toast.error("Maximum 10 images allowed");
-        return;
-      }
       setNewImages((prev) => [...prev, ...files]);
     }
   };

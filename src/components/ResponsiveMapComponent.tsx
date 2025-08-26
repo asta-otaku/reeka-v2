@@ -34,9 +34,14 @@ interface MapPickerProps {
     lng: number
   ) => void;
   initialLocation: Location | null;
+  address: string;
 }
 
-const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
+const MapPicker = ({
+  onLocationSelect,
+  initialLocation,
+  address,
+}: MapPickerProps) => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
     libraries: ["places"],
@@ -421,7 +426,7 @@ const MapPicker = ({ onLocationSelect, initialLocation }: MapPickerProps) => {
         <div className="relative">
           <input
             type="text"
-            value={searchQuery}
+            value={address}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for address"
             className="w-full px-10 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"

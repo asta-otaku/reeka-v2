@@ -175,6 +175,7 @@ function MapModal({
                   }
                 : null
             }
+            address={formDetails.address}
           />
         </div>
       </div>

@@ -172,6 +172,7 @@ function MapModal({
                   }
                 : null
             }
+            address={property.address}
           />
         </div>
       </div>
