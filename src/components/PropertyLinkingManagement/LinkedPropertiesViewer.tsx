@@ -22,7 +22,7 @@ function LinkedPropertiesViewer({
   fetchLinkedProperties,
 }: LinkedPropertiesViewerProps) {
   return (
-    <div className="bg-white rounded-2xl p-4 md:p-8 shadow-lg border border-gray-100">
+    <div className="bg-white rounded-2xl md:p-8 p-4 shadow-lg border border-gray-100">
       <div className="flex items-center gap-3 mb-4 md:mb-6">
         <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-100 rounded-xl flex items-center justify-center">
           <span className="text-purple-600 font-bold text-base md:text-lg">
