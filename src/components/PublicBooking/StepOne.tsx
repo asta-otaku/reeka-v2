@@ -13,7 +13,15 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
 import { Property } from "./Details";
-import { useCurrency } from "../../helpers/getCurrency";
+
+function getCurrencySymbolFromProperty(property: any): string {
+  // Check if property has baseCurrency and return appropriate symbol
+  if (property?.baseCurrency === "NGN") {
+    return "₦";
+  }
+  // Default to dollar symbol for USD or any other currency
+  return "$";
+}
 
 function StepOne({
   handleChange,
@@ -28,7 +36,6 @@ function StepOne({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
-  const currency = useCurrency();
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);
@@ -229,7 +236,9 @@ function StepOne({
               <div className="flex items-center justify-between gap-1 bg-gray-100 border border-solid border-[#D0D5DD] rounded-lg p-2 w-full">
                 <input
                   readOnly
-                  value={`${currency}${formDetails.price}`}
+                  value={`${getCurrencySymbolFromProperty(property)}${
+                    formDetails.price
+                  }`}
                   className="w-full outline-none bg-transparent text-[#667085]"
                 />
               </div>

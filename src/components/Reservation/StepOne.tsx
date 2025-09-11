@@ -15,7 +15,7 @@ import { Autoplay } from "swiper/modules";
 import apiClient from "../../helpers/apiClient";
 import CustomPriceModal from "./CustomPriceModal";
 import useStore from "../../store";
-import { useCurrency } from "../../helpers/getCurrency";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 
 export interface PropertyDetails {
   firstName: string;
@@ -47,7 +47,7 @@ function StepOne({
   setStep: React.Dispatch<React.SetStateAction<number>>;
   property: any;
 }) {
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
   const [bookedDates, setBookedDates] = useState<
     { start: string; end: string }[]
   >([]);

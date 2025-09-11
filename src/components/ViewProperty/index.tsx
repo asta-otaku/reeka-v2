@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import Spinner from "../Spinner";
 import useStore from "../../store";
 import apiClient from "../../helpers/apiClient";
-import { useCurrency } from "../../helpers/getCurrency";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 import { AirbnbModal, DeleteModal } from "./Modals";
 
 import BookingsTab from "./Tabs/BookingsTab";
@@ -30,7 +30,7 @@ function ViewProperty() {
   const [newImages, setNewImages] = useState<File[]>([]);
   const navigate = useNavigate();
   const setModal = useStore((state: any) => state.setModal);
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
 
   const [property, setProperty] = useState<any>({
     propertyName: "",

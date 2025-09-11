@@ -3,11 +3,19 @@ import prop from "../../assets/prop1.svg";
 import { useState } from "react";
 // import Spinner from "../Spinner";
 import { Link } from "react-router-dom";
-import { useCurrency } from "../../helpers/getCurrency";
 import moment from "moment";
 import { PricePreview } from "../ViewProperty/FeeSection";
 // import axios from "axios";
 // import { CONSTANT } from "../../util";
+
+function getCurrencySymbolFromProperty(property: any): string {
+  // Check if property has baseCurrency and return appropriate symbol
+  if (property?.baseCurrency === "NGN") {
+    return "₦";
+  }
+  // Default to dollar symbol for USD or any other currency
+  return "$";
+}
 
 export function formatTimestamp(dateString: string) {
   const [day, month, year] = dateString.split("/");
@@ -51,7 +59,6 @@ function StepTwo({
 }) {
   // const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
-  const currency = useCurrency();
 
   // const handleInvoiceDownload = async () => {
   //   setLoading(true);
@@ -175,7 +182,9 @@ function StepTwo({
           <div>
             <h2 className="text-[#808080] text-xs">Total Price</h2>
             <h4 className="text-[#121212] text-xs mt-0.5 capitalize">
-              {formDetails.price === "airbnb" ? "$" : currency}
+              {formDetails.price === "airbnb"
+                ? "$"
+                : getCurrencySymbolFromProperty(property)}
               {getTotalPrice()
                 ?.toString()
                 ?.replace(/\B(?=(\d{3})+(?!\d))/g, ",") || 0}

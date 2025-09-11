@@ -6,7 +6,6 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import { BedDouble, Bath } from "lucide-react";
 import ImageCarousel from "./ImageCarousel";
-import { useCurrency } from "../../helpers/getCurrency";
 
 const { RangePicker } = DatePicker;
 
@@ -23,6 +22,15 @@ function getAmenityValue(property: any, keys: string[]): number {
   return 0;
 }
 
+function getCurrencySymbolFromProperty(property: any): string {
+  // Check if property has baseCurrency and return appropriate symbol
+  if (property?.baseCurrency === "NGN") {
+    return "₦";
+  }
+  // Default to dollar symbol for USD or any other currency
+  return "$";
+}
+
 function StepZero({
   setStep,
   setProperty,
@@ -32,7 +40,6 @@ function StepZero({
   setProperty: React.Dispatch<React.SetStateAction<any>>;
   setFormDetails: React.Dispatch<React.SetStateAction<any>>;
 }) {
-  const currency = useCurrency();
   const [search, setSearch] = useState<string>("");
   const [selectedApartment, setSelectedApartment] = useState<string | null>();
   const { id, propId, token } = useParams();
@@ -229,7 +236,8 @@ function StepZero({
                 <div className="p-3">
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-[#FF5A1F] font-semibold text-base">
-                      {currency}{property.defaultRate.ratePrice.toLocaleString()}
+                      {getCurrencySymbolFromProperty(property)}
+                      {property.defaultRate.ratePrice.toLocaleString()}
                       <span className="text-xs font-normal text-[#808080]">
                         /Night
                       </span>

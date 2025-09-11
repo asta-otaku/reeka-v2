@@ -83,12 +83,20 @@ function SignIn() {
             userRole,
             country,
             staffId,
+            currency,
           } = res.data;
           Cookies.set("accessToken", accessToken, { expires: 1 });
           Cookies.set("refreshToken", refreshToken, { expires: 1 });
           Cookies.set(
             "user",
-            JSON.stringify({ firstName, lastName, userRole, country, staffId }),
+            JSON.stringify({
+              firstName,
+              lastName,
+              userRole,
+              country,
+              staffId,
+              currency,
+            }),
             { expires: 1 }
           );
 

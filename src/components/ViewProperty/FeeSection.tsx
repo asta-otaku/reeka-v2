@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { useCurrency } from "../../helpers/getCurrency";
 import { useLocation } from "react-router-dom";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 
 interface AgencyFeeSectionProps {
   agencyFee: number;
@@ -19,7 +19,7 @@ export const AgencyFeeSection: FC<AgencyFeeSectionProps> = ({
   setAgencyFee,
   edit,
 }) => {
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
 
   return (
     <div className="border p-6 rounded-xl shadow-sm bg-white my-6">
@@ -102,7 +102,7 @@ const FeeSection: FC<FeeSectionProps> = ({
   setCautionFee,
   edit,
 }) => {
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
   return (
     <div className="border p-6 rounded-xl shadow-sm bg-white my-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">
@@ -189,7 +189,7 @@ export const PricePreview = ({
   days?: number;
   isCustom?: boolean;
 }) => {
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
   const location = useLocation();
   const totalBase = isCustom ? basePrice : basePrice * days;
   const paymentFee = 0.01 * totalBase;

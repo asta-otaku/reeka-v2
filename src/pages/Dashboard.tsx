@@ -8,7 +8,7 @@ import DashboardPropertyChart from "../components/DashboardPropertyChart";
 import { DatePicker } from "antd";
 import apiClient from "../helpers/apiClient";
 import Cookies from "js-cookie";
-import useStore from "../store";
+import { getCurrencyCode } from "../helpers/getCurrency";
 
 const { RangePicker } = DatePicker;
 
@@ -21,8 +21,8 @@ function Dashboard() {
   const [selectedProperty, setSelectedProperty] = useState("");
   const [activePropertyId, setActivePropertyId] = useState("");
   const [filterType, setFilterType] = useState("last_30_days");
+  const currencyCode = getCurrencyCode();
 
-  const currencyCode = useStore((s: any) => s.currencyCode);
   // Allow toggle only if org default is NGN; otherwise lock to USD
   const [userCurrency, setUserCurrency] = useState<"NGN" | "USD">("NGN");
   useEffect(() => {
@@ -116,7 +116,9 @@ function Dashboard() {
                       onChange={(e) => {
                         const newCurrency = e.target.value as "NGN" | "USD";
                         setUserCurrency(newCurrency);
-                        Cookies.set("userCurrency", newCurrency, { expires: 3 });
+                        Cookies.set("userCurrency", newCurrency, {
+                          expires: 3,
+                        });
                       }}
                       value={userCurrency}
                       className="outline-none text-secondary text-xs md:text-sm font-light appearance-none border-none bg-transparent pr-6"

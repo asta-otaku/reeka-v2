@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useCurrency } from "../../helpers/getCurrency";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 
 function Pricing({
   edit,
@@ -15,7 +15,7 @@ function Pricing({
     return value.replace(/[^0-9.]/g, ""); // Allow only numbers and a single decimal
   }, []);
 
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
 
   // Handler for base price
   const handleBasePrice = useCallback(

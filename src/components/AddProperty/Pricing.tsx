@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import pricetag from "../../assets/pricetag.svg";
-import { useCurrency } from "../../helpers/getCurrency";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 import FeeSection, {
   AgencyFeeSection,
   PricePreview,
@@ -21,7 +21,7 @@ function Pricing({
     cautionFee: 0,
     basePrice: 0,
   });
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
 
   useEffect(() => {
     setFormDetails({ ...formDetails, price: price });

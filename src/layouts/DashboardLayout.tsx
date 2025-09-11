@@ -23,7 +23,6 @@ import Cookies from "js-cookie";
 
 function DashboardLayout({ children }: any) {
   const currentModal = useStore((state: any) => state.currentModal);
-  const fetchOrgSettings = useStore((state: any) => state.fetchOrgSettings);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -56,9 +55,6 @@ function DashboardLayout({ children }: any) {
   }, [user]);
 
   useEffect(() => {
-    // Fetch org settings (currency) for authenticated dashboards
-    fetchOrgSettings?.();
-
     if (user && user.userRole === "Owner") {
       const fetchPricing = async () => {
         try {

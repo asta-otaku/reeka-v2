@@ -8,7 +8,7 @@ import Spinner from "./Spinner";
 import { localToUTCDate, utcToLocalDate } from "./ViewProperty/AirBnbModal";
 import { ChevronDownIcon } from "../assets/icons";
 import CustomPriceModal from "./Reservation/CustomPriceModal";
-import { useCurrency } from "../helpers/getCurrency";
+import { getCurrencySymbol } from "../helpers/getCurrency";
 
 function EditBookingModal({
   booking,
@@ -19,7 +19,7 @@ function EditBookingModal({
   setModal: any;
   currency: string;
 }) {
-  const currencySymbol = useCurrency();
+  const currencySymbol = getCurrencySymbol();
   const [startDate, setStartDate] = useState<Date>(new Date(booking.startDate));
   const [endDate, setEndDate] = useState<Date>(new Date(booking.endDate));
   const [loading, setLoading] = useState(false);

@@ -5,7 +5,7 @@ import { CONSTANT } from "../util";
 import toast from "react-hot-toast";
 import moment from "moment";
 import ReservationSuccess from "../components/PublicBooking/ReservationSuccess";
-import { useCurrencyCode } from "../helpers/getCurrency";
+import { getCurrencySymbol } from "../helpers/getCurrency";
 
 function PortfolioSuccess() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +28,7 @@ function PortfolioSuccess() {
     images: [],
     nightsBooked: 1,
   });
-  const currencyCode = useCurrencyCode()
+  const currencyCode = getCurrencySymbol();
 
   useEffect(() => {
     const fetchData = async () => {

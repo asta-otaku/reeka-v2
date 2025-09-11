@@ -4,10 +4,10 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import Spinner from "../Spinner";
 import apiClient from "../../helpers/apiClient";
-import { useCurrency } from "../../helpers/getCurrency";
 import moment from "moment";
 import { PricePreview } from "../ViewProperty/FeeSection";
 import { PropertyDetails } from "./StepOne";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 
 function StepTwo({
   formDetails,
@@ -24,7 +24,7 @@ function StepTwo({
 }) {
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(true);
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
 
   const handleReserve = async () => {
     const payload: any = {

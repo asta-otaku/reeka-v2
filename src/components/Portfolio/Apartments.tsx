@@ -1,5 +1,5 @@
-import { useCurrency } from "../../helpers/getCurrency";
 import buy from "../../assets/Buy.svg";
+import { getCurrencySymbol } from "../../helpers/getCurrency";
 
 export default function Apartments({
   properties,
@@ -45,7 +45,7 @@ export function Card({
     setSelectedProperty(property);
     setCurrentStep(1);
   };
-  const currency = useCurrency();
+  const currency = getCurrencySymbol();
   return (
     <div
       onClick={handleCardClick}
