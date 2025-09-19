@@ -7,6 +7,7 @@ interface ReservationSuccessProps {
     dueDate: string;
     status: string;
     paymentLink: string;
+    currency: string;
     booking: {
       startDate: string;
       endDate: string;
@@ -29,7 +30,29 @@ interface ReservationSuccessProps {
 const ReservationSuccess: React.FC<ReservationSuccessProps> = ({ invoice }) => {
   const { booking } = invoice;
   const propertyImage = booking.images?.[0] || "";
-  const currencySymbol = booking.currency === "NGN" ? "₦" : "$";
+
+  // Use the same currency logic as other components
+  const getCurrencySymbol = (currency: string): string => {
+    // Handle undefined or null currency
+    if (!currency) {
+      return "$";
+    }
+
+    // Check if it's already a symbol
+    if (currency === "₦" || currency === "$") {
+      return currency;
+    }
+
+    // Convert to uppercase to handle case variations for currency codes
+    const upperCurrency = currency.toUpperCase();
+
+    return upperCurrency === "NGN" ? "₦" : "$";
+  };
+
+  // Check both booking.currency and invoice.currency as fallback
+  const currencySymbol = getCurrencySymbol(
+    booking.currency || invoice.currency || "USD"
+  );
 
   return (
     <div

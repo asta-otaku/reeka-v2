@@ -16,7 +16,7 @@ function Header({ setStep }: HeaderProps) {
       </div>
       <button
         onClick={() => setStep(1)}
-        className="bg-white text-gray-700 md:px-6 md:py-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-sm border border-gray-200 font-medium text-sm md:text-base"
+        className="bg-white text-gray-700 md:px-5 md:py-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 shadow-sm border border-gray-200 font-medium text-sm md:text-base whitespace-nowrap"
       >
         ← Back to Listings
       </button>

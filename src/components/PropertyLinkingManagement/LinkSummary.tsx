@@ -1,4 +1,5 @@
 import { Property } from "./types";
+import { BedDouble, CheckCircle, AlertCircle } from "lucide-react";
 
 interface LinkSummaryProps {
   masterPropertyId: string;
@@ -16,6 +17,17 @@ function LinkSummary({
   handleLinkProperties,
 }: LinkSummaryProps) {
   const masterProperty = properties.find((p) => p._id === masterPropertyId);
+  const selectedConstituents = properties.filter((p) =>
+    selectedConstituentIds.includes(p._id)
+  );
+
+  // Calculate bedroom counts
+  const masterBedroomCount = masterProperty?.bedroomCount || 0;
+  const constituentBedroomCount = selectedConstituents.reduce(
+    (sum, property) => sum + (property.bedroomCount || 0),
+    0
+  );
+  const isBedroomCountValid = masterBedroomCount === constituentBedroomCount;
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-4 md:p-8 shadow-lg border-2 border-blue-100">
@@ -58,6 +70,18 @@ function LinkSummary({
                 <p className="text-xs md:text-sm text-gray-600 truncate">
                   {masterProperty?.address}
                 </p>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <BedDouble size={12} />
+                    <span>
+                      {masterBedroomCount === 0
+                        ? "Studio"
+                        : `${masterBedroomCount} Bedroom${
+                            masterBedroomCount === 1 ? "" : "s"
+                          }`}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -92,12 +116,101 @@ function LinkSummary({
                       <p className="text-xs text-gray-600 truncate">
                         {property?.address}
                       </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <BedDouble size={10} />
+                          <span>
+                            {property?.bedroomCount === 0
+                              ? "Studio"
+                              : `${property?.bedroomCount} Bedroom${
+                                  property?.bedroomCount === 1 ? "" : "s"
+                                }`}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               );
             })}
           </div>
+        </div>
+      </div>
+
+      {/* Bedroom Count Validation */}
+      <div className="mb-6">
+        <div
+          className={`rounded-xl p-4 border-2 ${
+            isBedroomCountValid
+              ? "bg-green-50 border-green-200"
+              : "bg-amber-50 border-amber-200"
+          }`}
+        >
+          <div className="flex items-center gap-3 mb-3">
+            {isBedroomCountValid ? (
+              <CheckCircle className="w-5 h-5 text-green-600" />
+            ) : (
+              <AlertCircle className="w-5 h-5 text-amber-600" />
+            )}
+            <h4
+              className={`font-semibold ${
+                isBedroomCountValid ? "text-green-800" : "text-amber-800"
+              }`}
+            >
+              Bedroom Count Validation
+            </h4>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Master Property</p>
+              <p
+                className={`text-2xl font-bold ${
+                  isBedroomCountValid ? "text-green-700" : "text-amber-700"
+                }`}
+              >
+                {masterBedroomCount === 0
+                  ? "Studio"
+                  : `${masterBedroomCount} Bedroom${
+                      masterBedroomCount === 1 ? "" : "s"
+                    }`}
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-1">Constituent Total</p>
+              <p
+                className={`text-2xl font-bold ${
+                  isBedroomCountValid ? "text-green-700" : "text-amber-700"
+                }`}
+              >
+                {constituentBedroomCount === 0
+                  ? "Studio"
+                  : `${constituentBedroomCount} Bedroom${
+                      constituentBedroomCount === 1 ? "" : "s"
+                    }`}
+              </p>
+            </div>
+          </div>
+
+          {!isBedroomCountValid && (
+            <div className="mt-3 p-3 bg-amber-100 rounded-lg">
+              <p className="text-sm text-amber-800">
+                ⚠️ <strong>Warning:</strong> The master property bedroom count (
+                {masterBedroomCount}) does not match the sum of constituent
+                bedroom counts ({constituentBedroomCount}). This may cause
+                issues with booking management.
+              </p>
+            </div>
+          )}
+
+          {isBedroomCountValid && (
+            <div className="mt-3 p-3 bg-green-100 rounded-lg">
+              <p className="text-sm text-green-800">
+                ✅ <strong>Perfect!</strong> The bedroom counts match perfectly.
+                Your property linking configuration is valid.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

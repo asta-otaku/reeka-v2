@@ -1,4 +1,5 @@
 import { Property } from "./types";
+import { BedDouble } from "lucide-react";
 
 interface ConstituentPropertySelectorProps {
   properties: Property[];
@@ -98,6 +99,18 @@ function ConstituentPropertySelector({
                     <p className="text-sm text-gray-600 truncate">
                       {property.address}
                     </p>
+                    <div className="flex items-center gap-3 mt-2">
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <BedDouble size={14} />
+                        <span>
+                          {property.bedroomCount === 0
+                            ? "Studio"
+                            : `${property.bedroomCount} Bedroom${
+                                property.bedroomCount === 1 ? "" : "s"
+                              }`}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-// import { ChevronDownIcon } from "../assets/icons";
+import { useEffect, useState, useRef } from "react";
+import { ChevronDownIcon } from "../assets/icons";
 import DashboardNav from "../components/DashboardNav";
 import DashboardLayout from "../layouts/DashboardLayout";
 import gridIcon from "../assets/grid-view.svg";
@@ -21,6 +21,8 @@ function ListingManagement() {
   const user = JSON.parse(Cookies.get("user") || "{}");
   const [showCopyModal, setShowCopyModal] = useState(false);
   const [copyUrl, setCopyUrl] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
@@ -35,6 +37,23 @@ function ListingManagement() {
 
   useEffect(() => {
     fetchProperties();
+  }, []);
+
+  // Handle clicking outside dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const generatePublicUrl = async () => {
@@ -177,20 +196,44 @@ function ListingManagement() {
                     >
                       Add Property
                     </button>
-                    <button
-                      onClick={generatePublicUrl}
-                      className="bg-primary p-2 rounded-xl text-white shrink-0 whitespace-nowrap font-medium text-sm border border-primary flex-1 md:flex-none"
-                    >
-                      Generate Portfolio Link
-                    </button>
-                    <button
-                      onClick={() => setStep(3)}
-                      className={`bg-green-600 p-2 rounded-xl text-white shrink-0 whitespace-nowrap font-medium text-sm border border-green-600 flex-1 md:flex-none ${
-                        user && user.userRole !== "Owner" && "hidden"
-                      }`}
-                    >
-                      Property Linking
-                    </button>
+
+                    {/* More Actions Dropdown */}
+                    <div className="relative" ref={dropdownRef}>
+                      <button
+                        onClick={() => setShowDropdown(!showDropdown)}
+                        className="bg-gray-600 p-2 rounded-xl text-white whitespace-nowrap shrink-0 font-medium text-sm border border-gray-600 flex items-center gap-1"
+                      >
+                        More Actions
+                        <ChevronDownIcon className="w-4 h-4" />
+                      </button>
+
+                      {showDropdown && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 z-10">
+                          <div className="py-1">
+                            <button
+                              onClick={() => {
+                                generatePublicUrl();
+                                setShowDropdown(false);
+                              }}
+                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                            >
+                              Generate Portfolio Link
+                            </button>
+                            <button
+                              onClick={() => {
+                                setStep(3);
+                                setShowDropdown(false);
+                              }}
+                              className={`w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center ${
+                                user && user.userRole !== "Owner" && "hidden"
+                              }`}
+                            >
+                              Property Linking
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

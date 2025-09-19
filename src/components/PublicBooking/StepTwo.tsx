@@ -18,10 +18,19 @@ function getCurrencySymbolFromProperty(property: any): string {
 }
 
 export function formatTimestamp(dateString: string) {
+  // Check if the date is already in YYYY-MM-DD format
+  if (dateString.includes("-") && dateString.length === 10) {
+    return dateString; // Already in correct format
+  }
+
+  // Handle DD/MM/YYYY format
   const [day, month, year] = dateString.split("/");
 
-  // Combine to get the desired format
-  return `${year}-${month}-${day}`;
+  // Ensure proper padding for single digits
+  const paddedDay = day.padStart(2, "0");
+  const paddedMonth = month.padStart(2, "0");
+
+  return `${year}-${paddedMonth}-${paddedDay}`;
 }
 
 function StepTwo({
