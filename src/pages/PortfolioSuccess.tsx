@@ -91,6 +91,7 @@ function PortfolioSuccess() {
             dueDate: "", // or the actual due date if available
             status: formDetails.paymentStatus || "",
             paymentLink: paymentLink,
+            currency: currencyCode,
             booking: {
               startDate: formDetails.checkIn,
               endDate: formDetails.checkOut,
