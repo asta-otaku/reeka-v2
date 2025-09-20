@@ -192,17 +192,6 @@ function LinkSummary({
             </div>
           </div>
 
-          {!isBedroomCountValid && (
-            <div className="mt-3 p-3 bg-amber-100 rounded-lg">
-              <p className="text-sm text-amber-800">
-                ⚠️ <strong>Warning:</strong> The master property bedroom count (
-                {masterBedroomCount}) does not match the sum of constituent
-                bedroom counts ({constituentBedroomCount}). This may cause
-                issues with booking management.
-              </p>
-            </div>
-          )}
-
           {isBedroomCountValid && (
             <div className="mt-3 p-3 bg-green-100 rounded-lg">
               <p className="text-sm text-green-800">

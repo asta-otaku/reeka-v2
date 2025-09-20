@@ -189,19 +189,22 @@ function ListingManagement() {
                     />
                     <img src={line} />
                     <button
-                      onClick={() => setStep(2)}
-                      className={`bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary ${
-                        user && user.userRole !== "Owner" && "hidden"
-                      }`}
+                      onClick={() => {
+                        generatePublicUrl();
+                        setShowDropdown(false);
+                      }}
+                      className="bg-primary p-2 rounded-xl text-white shrink-0 font-medium text-sm border border-primary"
                     >
-                      Add Property
+                      Generate Portfolio Link
                     </button>
 
                     {/* More Actions Dropdown */}
                     <div className="relative" ref={dropdownRef}>
                       <button
                         onClick={() => setShowDropdown(!showDropdown)}
-                        className="bg-gray-600 p-2 rounded-xl text-white whitespace-nowrap shrink-0 font-medium text-sm border border-gray-600 flex items-center gap-1"
+                        className={`bg-gray-600 p-2 rounded-xl text-white whitespace-nowrap shrink-0 font-medium text-sm border border-gray-600 flex items-center gap-1 ${
+                          user && user.userRole !== "Owner" && "hidden"
+                        }`}
                       >
                         More Actions
                         <ChevronDownIcon className="w-4 h-4" />
@@ -211,14 +214,14 @@ function ListingManagement() {
                         <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 z-10">
                           <div className="py-1">
                             <button
-                              onClick={() => {
-                                generatePublicUrl();
-                                setShowDropdown(false);
-                              }}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                              onClick={() => setStep(2)}
+                              className={`w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center ${
+                                user && user.userRole !== "Owner" && "hidden"
+                              }`}
                             >
-                              Generate Portfolio Link
+                              Add Property
                             </button>
+
                             <button
                               onClick={() => {
                                 setStep(3);
