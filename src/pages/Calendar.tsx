@@ -5,7 +5,6 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import CustomCalendar from "../components/CustomCalendar";
 import { useEffect, useState } from "react";
 import apiClient from "../helpers/apiClient";
-import moment from "moment";
 
 function Calendar() {
   const navigate = useNavigate();
@@ -65,123 +64,7 @@ function Calendar() {
           };
         });
 
-        const expandedBookings = [...formattedBookings];
-        const virtualMasterBookings: any[] = [];
-        const masterPropertyGroups: { [key: string]: any[] } = {};
-
-        formattedBookings.forEach((booking: any) => {
-          const propertyDetails = booking.propertyDetails;
-
-          if (
-            propertyDetails?.propertyLinkType === "constituent" &&
-            propertyDetails?.masterPropertyId
-          ) {
-            const masterPropertyId = propertyDetails.masterPropertyId;
-            if (!masterPropertyGroups[masterPropertyId]) {
-              masterPropertyGroups[masterPropertyId] = [];
-            }
-            masterPropertyGroups[masterPropertyId].push(booking);
-          }
-        });
-
-        Object.entries(masterPropertyGroups).forEach(
-          ([masterPropertyId, constituentBookings]) => {
-            const masterProperty = properties.find(
-              (p) => p._id === masterPropertyId
-            );
-
-            if (masterProperty) {
-              const dateGroups: any[][] = [];
-
-              constituentBookings.forEach((booking) => {
-                const hasDirectMasterBooking = formattedBookings.some(
-                  (existingBooking: any) =>
-                    existingBooking.propertyId === masterPropertyId &&
-                    existingBooking.propertyDetails?.propertyLinkType ===
-                      "master" &&
-                    moment
-                      .utc(existingBooking.startDate)
-                      .isSameOrBefore(moment.utc(booking.startDate), "day") &&
-                    moment
-                      .utc(existingBooking.endDate)
-                      .isSameOrAfter(moment.utc(booking.endDate), "day")
-                );
-
-                if (!hasDirectMasterBooking) {
-                  let addedToGroup = false;
-                  for (const group of dateGroups) {
-                    const hasOverlap = group.some((groupBooking) => {
-                      const bookingStart = moment.utc(booking.startDate);
-                      const bookingEnd = moment.utc(booking.endDate);
-                      const groupStart = moment.utc(groupBooking.startDate);
-                      const groupEnd = moment.utc(groupBooking.endDate);
-
-                      const overlap =
-                        bookingStart.isSameOrBefore(groupEnd, "day") &&
-                        bookingEnd.isSameOrAfter(groupStart, "day");
-
-                      return overlap;
-                    });
-
-                    if (hasOverlap) {
-                      group.push(booking);
-                      addedToGroup = true;
-                      break;
-                    }
-                  }
-
-                  if (!addedToGroup) {
-                    dateGroups.push([booking]);
-                  }
-                }
-              });
-
-              dateGroups.forEach((group, groupIndex) => {
-                if (group.length > 0) {
-                  if (!colorMap[masterProperty.propertyName]) {
-                    colorMap[masterProperty.propertyName] = randomColor();
-                  }
-
-                  const startDates = group.map((b) => moment.utc(b.startDate));
-                  const endDates = group.map((b) => moment.utc(b.endDate));
-                  const earliestStart = moment.min(startDates);
-                  const latestEnd = moment.max(endDates);
-
-                  const originalPropertyNames = group
-                    .map((b) => b.propertyName)
-                    .join(", ");
-                  const originalBookingIds = group.map((b) => b._id);
-
-                  const primaryBooking = group[0];
-
-                  const virtualMasterBooking = {
-                    ...primaryBooking,
-                    _id: `${masterPropertyId}_master_virtual_${groupIndex}`,
-                    propertyName: masterProperty.propertyName,
-                    propertyId: masterProperty._id,
-                    startDate: earliestStart.toISOString(),
-                    endDate: latestEnd.toISOString(),
-                    color: colorMap[masterProperty.propertyName],
-                    isVirtualMasterBooking: true,
-                    originalBookingIds: originalBookingIds,
-                    originalPropertyNames: originalPropertyNames,
-                    constituentBookingsCount: group.length,
-                    propertyDetails: {
-                      ...masterProperty,
-                      id: masterProperty._id,
-                    },
-                  };
-
-                  virtualMasterBookings.push(virtualMasterBooking);
-                }
-              });
-            }
-          }
-        );
-
-        expandedBookings.push(...virtualMasterBookings);
-
-        setBookingsArray(expandedBookings);
+        setBookingsArray(formattedBookings);
       })
       .catch((error) => {
         console.error(error);
@@ -218,41 +101,51 @@ function Calendar() {
       return bookingsArray;
     }
 
-    return bookingsArray.filter((booking) => {
-      if (selectedPropertyIds.includes(booking.propertyId)) {
-        return true;
-      }
+    return bookingsArray
+      .map((booking) => {
+        const propertyDetails = booking.propertyDetails;
+        let isLinkedDisplay = false;
+        let linkedFromProperty = null;
 
-      const propertyDetails = booking.propertyDetails;
+        if (selectedPropertyIds.includes(booking.propertyId)) {
+          return booking;
+        }
 
-      if (booking.isVirtualMasterBooking && booking.originalBookingIds) {
-        const constituentBookings = bookingsArray.filter((b) =>
-          booking.originalBookingIds!.includes(b._id)
-        );
+        if (
+          propertyDetails?.propertyLinkType === "constituent" &&
+          propertyDetails?.masterPropertyId
+        ) {
+          if (selectedPropertyIds.includes(propertyDetails.masterPropertyId)) {
+            return booking;
+          }
+        }
 
-        return constituentBookings.some((constituentBooking) =>
-          selectedPropertyIds.includes(constituentBooking.propertyId)
-        );
-      }
+        if (
+          propertyDetails?.propertyLinkType === "master" &&
+          propertyDetails?.linkedPropertyIds
+        ) {
+          const linkedConstituentId = propertyDetails.linkedPropertyIds.find(
+            (linkedId: string) => selectedPropertyIds.includes(linkedId)
+          );
 
-      if (
-        propertyDetails?.propertyLinkType === "constituent" &&
-        propertyDetails?.masterPropertyId
-      ) {
-        return selectedPropertyIds.includes(propertyDetails.masterPropertyId);
-      }
+          if (linkedConstituentId) {
+            isLinkedDisplay = true;
+            const linkedProperty = properties.find(
+              (p) => p._id === linkedConstituentId
+            );
+            linkedFromProperty =
+              linkedProperty?.propertyName || "Constituent Property";
+            return {
+              ...booking,
+              isLinkedDisplay,
+              linkedFromProperty,
+            };
+          }
+        }
 
-      if (
-        propertyDetails?.propertyLinkType === "master" &&
-        propertyDetails?.linkedPropertyIds
-      ) {
-        return propertyDetails.linkedPropertyIds.some((linkedId: string) =>
-          selectedPropertyIds.includes(linkedId)
-        );
-      }
-
-      return false;
-    });
+        return null;
+      })
+      .filter(Boolean);
   };
 
   useEffect(() => {

@@ -27,13 +27,9 @@ interface Booking {
   note?: string;
   includeNote?: boolean;
   sourcePlatform?: string;
-  isVirtualMasterBooking?: boolean;
-  originalBookingId?: string;
-  originalPropertyName?: string;
-  originalBookingIds?: string[];
-  originalPropertyNames?: string;
-  constituentBookingsCount?: number;
   propertyDetails?: any;
+  isLinkedDisplay?: boolean;
+  linkedFromProperty?: string;
 }
 
 interface CustomCalendarProps {
@@ -164,15 +160,12 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                   className="p-3 sm:p-4 border border-gray-200 rounded-lg mb-3 cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderLeft: `4px solid ${booking.color}` }}
                 >
-                  {booking.isVirtualMasterBooking && (
+                  {booking.isLinkedDisplay && (
                     <div className="mb-2 px-2 py-1 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
-                      {booking.constituentBookingsCount &&
-                      booking.constituentBookingsCount > 0
-                        ? "Master Property blocked by Constituent Properties"
-                        : null}
+                      Master property shown due to filtering by:{" "}
+                      {booking.linkedFromProperty}
                     </div>
                   )}
-
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="font-medium text-gray-900 text-sm sm:text-base">
@@ -206,7 +199,7 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
 
                   <div className="text-xs sm:text-sm text-gray-600 mb-2">
                     {booking.propertyName}
-                    {booking.isVirtualMasterBooking && (
+                    {booking.isLinkedDisplay && (
                       <span className="ml-1 text-blue-600 font-medium">
                         (Master Property)
                       </span>
@@ -415,21 +408,19 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                         handleDayClick(day);
                       }}
                       className={`text-xs p-0.5 sm:p-1 rounded cursor-pointer hover:opacity-80 transition-opacity ${
-                        booking.isVirtualMasterBooking
-                          ? "border border-white/30"
-                          : ""
+                        booking.isLinkedDisplay ? "border border-white/30" : ""
                       }`}
                       style={{ backgroundColor: booking.color }}
                     >
                       <div className="font-medium text-white truncate text-xs">
                         {booking.guestFirstName} {booking.guestLastName}
-                        {booking.isVirtualMasterBooking && (
+                        {booking.isLinkedDisplay && (
                           <span className="ml-1">📋</span>
                         )}
                       </div>
                       <div className="text-white/80 truncate text-xs hidden sm:block">
                         {booking.propertyName}
-                        {booking.isVirtualMasterBooking && (
+                        {booking.isLinkedDisplay && (
                           <span className="text-white/60 text-xs">
                             {" "}
                             (Master)
