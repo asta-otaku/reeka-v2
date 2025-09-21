@@ -27,6 +27,13 @@ interface Booking {
   note?: string;
   includeNote?: boolean;
   sourcePlatform?: string;
+  isVirtualMasterBooking?: boolean;
+  originalBookingId?: string;
+  originalPropertyName?: string;
+  originalBookingIds?: string[];
+  originalPropertyNames?: string;
+  constituentBookingsCount?: number;
+  propertyDetails?: any;
 }
 
 interface CustomCalendarProps {
@@ -43,7 +50,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
   const [_, setSelectedDay] = useState<moment.Moment | null>(null);
   const setModal = useStore((state: any) => state.setModal);
 
-  // Get days based on view mode
   const getDaysForView = () => {
     switch (viewMode) {
       case "day":
@@ -69,7 +75,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
     }
   };
 
-  // Get bookings for a specific date
   const getBookingsForDate = (date: moment.Moment) => {
     return bookings.filter((booking) => {
       const start = moment.utc(booking.startDate);
@@ -78,7 +83,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
     });
   };
 
-  // Navigation functions based on view mode
   const goToPrevious = () => {
     switch (viewMode) {
       case "day":
@@ -111,15 +115,16 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
     setCurrentDate(moment());
   };
 
-  // Handle day click
   const handleDayClick = (day: moment.Moment) => {
     const dayBookings = getBookingsForDate(day);
     setSelectedDay(day);
 
-    // Create modal content
     const modalContent = (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg shadow-xl max-w-xs md:max-w-sm lg:max-w-xl w-full max-h-[80vh] overflow-y-auto">
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-lg shadow-xl max-w-xs md:max-w-sm lg:max-w-xl w-full max-h-[80vh] overflow-y-auto"
+        >
           <div className="flex items-center justify-between p-3 sm:p-4 border-b">
             <div>
               <h3 className="text-base sm:text-lg font-semibold">
@@ -159,7 +164,15 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                   className="p-3 sm:p-4 border border-gray-200 rounded-lg mb-3 cursor-pointer hover:bg-gray-50 transition-colors"
                   style={{ borderLeft: `4px solid ${booking.color}` }}
                 >
-                  {/* Guest Information */}
+                  {booking.isVirtualMasterBooking && (
+                    <div className="mb-2 px-2 py-1 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                      {booking.constituentBookingsCount &&
+                      booking.constituentBookingsCount > 0
+                        ? "Master Property blocked by Constituent Properties"
+                        : null}
+                    </div>
+                  )}
+
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="font-medium text-gray-900 text-sm sm:text-base">
@@ -191,12 +204,15 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                     </div>
                   </div>
 
-                  {/* Property Information */}
                   <div className="text-xs sm:text-sm text-gray-600 mb-2">
                     {booking.propertyName}
+                    {booking.isVirtualMasterBooking && (
+                      <span className="ml-1 text-blue-600 font-medium">
+                        (Master Property)
+                      </span>
+                    )}
                   </div>
 
-                  {/* Booking Details */}
                   <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mb-2">
                     <div>
                       <span className="font-medium">Check-in:</span>{" "}
@@ -217,13 +233,12 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                       <span className="font-medium">Guests:</span>{" "}
                       {booking.numberOfGuests}
                       {booking.numberOfChildren &&
-                        booking.numberOfChildren > 0 && (
-                          <span> ({booking.numberOfChildren} children)</span>
-                        )}
+                      booking.numberOfChildren > 0 ? (
+                        <span> ({booking.numberOfChildren} children)</span>
+                      ) : null}
                     </div>
                   </div>
 
-                  {/* Financial Information */}
                   <div className="border-t pt-2">
                     <div className="flex justify-between items-center text-sm">
                       <span className="font-medium text-gray-900">
@@ -245,7 +260,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                       </span>
                     </div>
 
-                    {/* Additional fees */}
                     {booking.cautionFee && booking.cautionFee > 0 ? (
                       <div className="text-xs text-gray-500 mt-1">
                         Caution Fee: {booking.currency}{" "}
@@ -254,14 +268,12 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                     ) : null}
                   </div>
 
-                  {/* Notes */}
                   {booking.note && booking.includeNote ? (
                     <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
                       <span className="font-medium">Note:</span> {booking.note}
                     </div>
                   ) : null}
 
-                  {/* Source Platform */}
                   <div className="text-xs text-gray-400 mt-2 pt-2 border-t">
                     <span className="font-medium">Source:</span>{" "}
                     {booking.sourcePlatform}
@@ -280,7 +292,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
   const days = getDaysForView();
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  // Get view title
   const getViewTitle = () => {
     switch (viewMode) {
       case "day":
@@ -299,7 +310,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
 
   return (
     <div className="bg-white rounded-xl shadow-sm border">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-center justify-between p-3 sm:p-4 border-b gap-3 sm:gap-0">
         <div className="flex items-center gap-2 sm:gap-4">
           <button
@@ -353,7 +363,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
 
       {/* Calendar Grid */}
       <div className="p-2 sm:p-4">
-        {/* Week days header - only show for week and month views */}
         {viewMode !== "day" && (
           <div className="grid grid-cols-7 gap-1 mb-2">
             {weekDays.map((day) => (
@@ -367,7 +376,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
           </div>
         )}
 
-        {/* Calendar days */}
         <div
           className={`grid gap-1 ${
             viewMode === "day" ? "grid-cols-1" : "grid-cols-7"
@@ -398,7 +406,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                   {day.format("D")}
                 </div>
 
-                {/* Bookings for this day */}
                 <div className="space-y-0.5 sm:space-y-1">
                   {displayBookings.map((booking) => (
                     <div
@@ -407,14 +414,27 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
                         e.stopPropagation();
                         handleDayClick(day);
                       }}
-                      className="text-xs p-0.5 sm:p-1 rounded cursor-pointer hover:opacity-80 transition-opacity"
+                      className={`text-xs p-0.5 sm:p-1 rounded cursor-pointer hover:opacity-80 transition-opacity ${
+                        booking.isVirtualMasterBooking
+                          ? "border border-white/30"
+                          : ""
+                      }`}
                       style={{ backgroundColor: booking.color }}
                     >
                       <div className="font-medium text-white truncate text-xs">
                         {booking.guestFirstName} {booking.guestLastName}
+                        {booking.isVirtualMasterBooking && (
+                          <span className="ml-1">📋</span>
+                        )}
                       </div>
                       <div className="text-white/80 truncate text-xs hidden sm:block">
                         {booking.propertyName}
+                        {booking.isVirtualMasterBooking && (
+                          <span className="text-white/60 text-xs">
+                            {" "}
+                            (Master)
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -430,7 +450,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
         </div>
       </div>
 
-      {/* Empty state when no bookings match filter */}
       {bookings.length === 0 && selectedPropertyIds.length > 0 && (
         <div className="text-center py-8 text-gray-500 border-t">
           <p>No bookings found for the selected properties</p>
